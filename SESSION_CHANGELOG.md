@@ -589,3 +589,59 @@ This changelog is reconstructed from repository artifacts and our current thread
 - Added hard module-separation verification task `enforceProjectBoundaries` and wired it into `qualityGate`.
 - Boundary gate now fails when `afp-api`, `afp-engine`, or `afp-cli` reference project-management tooling/state sources (`afp-tools` packages or governance/project tracker paths).
 - Updated policy/docs and progress tracking to codify and report this build-time isolation enforcement.
+- Continued execution of top rendering tasks (object/image fidelity + print-centric cross-exam):
+  - tightened per-object image selection in `ImageResolutionService` so render-time binding no longer falls back to non-indexed resource images.
+  - strengthened embedded `BIM`->resource matching in `AfpNativePdfRenderer` with confidence-aware scoring (token overlap + sequence proximity + size similarity) and conservative low-confidence rejection.
+  - extended print-centric cross-exam output in `FakeEngineOutputGenerator` with `BIM`/`BOC`/`EOC` timeline slices and inferred binding-pair summaries.
+  - added regression coverage in `ImageResolutionServiceTest` for strict index binding behavior.
+- Actioned boilerplate review candidates by creating consolidated package `2026-02-18-unified-framework-rollup` under `docs/update-packages/pz-boilerplate-intelliJ/`.
+- Marked active candidates as superseded via rollup manifest `supersedes` list so only one review candidate remains active for this cycle.
+- Added new constitutional first principle for managed-tooling discipline:
+  - project-management tooling must be version-controlled, policy/build-registered, and represented in the project-state audit workflow before handoff.
+- Added hard verification task `enforceManagedTooling` and wired it into `qualityGate`.
+- `enforceManagedTooling` fails when untracked files exist under `tools/` or `afp-tools/src/main/java/com/upland/connect/afp/tools`.
+- Created checkpoint before this high-risk policy/build mutation: `20260218T223616Z-0.2.0-beta.1-tooling-registration-first-principle`.
+- Separated project-management Java tooling from AFP product namespace:
+  - introduced dedicated module `pm-tools` (replacing `afp-tools`) in Gradle settings/build wiring,
+  - moved tooling classes to package `com.upland.connect.pm.tools`,
+  - updated all Gradle task invocations and boundary checks to reference `pm-tools`,
+  - updated policy/readme/governance CSV references from `afp-tools` paths to `pm-tools` paths.
+- Moved SQLite state locations out of renderer preview space:
+  - project state moved to `project/state/project-state.sqlite`,
+  - boilerplate state moved to `boilerplate/state/boilerplate-state.sqlite`,
+  - updated build/policy/docs references accordingly.
+- Added DB-native inventory exports in `StateDatabaseTool`:
+  - `export-project-file-inventory` -> `preview/repo-file-inventory-with-context.csv`
+  - `export-boilerplate-package-inventory` -> `preview/boilerplate-package-files-with-context.csv`
+  - new Gradle task `stateInventoryCsv` wired into `documentationManifest` so inventories refresh each documentation/build cycle.
+- Enforced PM vs application realm separation:
+  - moved PM state and report artifacts out of `preview/` and into:
+    - `pm/state/*` for SQLite state
+    - `pm/reports/*` for PM-generated manifests/reports/inventories
+    - `pm/checkpoints/*` for rollback checkpoints
+  - updated build/docs/policy paths accordingly.
+  - added `enforcePmApplicationRealmSeparation` quality-gate task to fail builds when PM artifacts leak into `preview/` or PM databases are written outside `pm/state/`.
+- Added a unified dev-only PM console module:
+  - new module `pm-console` with `pmconsole` command hub (`status`, `refresh`, `tools`),
+  - reads from `pm/state/*.sqlite` and `pm/reports/*` to present aggregate PM status in one place,
+  - added Gradle tasks `pmConsoleStatus` and `pmDevAttach` for development attach workflow,
+  - kept out of production packaging path (`prodBuild` remains application-only).
+- Added installable PM console launcher helper:
+  - new root task `pmConsoleInstallPath` runs `:pm-console:installDist` and prints the local launcher path.
+- Added default execution policy coupling:
+  - application execution now defaults to launching PM console status in the same flow unless a human explicitly overrides.
+  - documented `pmDevAttach` as the default development execution entrypoint.
+- Added SQL-backed operational rule tables to reduce AI-POLICY churn:
+  - new source file `pm/policy/policy-rule-tables.sql`,
+  - `projectStateDb` now syncs policy SQL into `policy_rule_catalog` in `pm/state/project-state.sqlite`,
+  - new report task `policyRulesReport` exports `pm/reports/policy-rules.json`,
+  - PM console status now surfaces enabled SQL policy-rule count and policy-rules report presence.
+- Hardened boilerplate roll-up as enforceable process:
+  - added SQL rule `PM-ROLLUP-001` in `pm/policy/policy-rule-tables.sql`,
+  - added build gate `enforceBoilerplateRollupForFrameworkChanges` and wired it into `qualityGate`,
+  - gate fails when framework/process/policy/build files change without a same-change update package under `docs/update-packages/pz-boilerplate-intelliJ/`.
+- Normalized PM orchestration into an environment-agnostic contract:
+  - added `pm/workflow/workflow-manifest.json` defining PM phases and adapter mappings,
+  - added toolchain-neutral runner `tools/pm_workflow.py` (`list` / `run`),
+  - added Gradle adapter interface tasks `pmWorkflowList`, `pmWorkflowRun`, `pmWorkflowExecuteApplication` that resolve phase mappings from the manifest,
+  - updated docs/policy to position workflow manifest as the canonical PM sequencing contract with Gradle as one adapter.

@@ -41,7 +41,7 @@ def parse_percent(value: str) -> float:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate mechanized issue effectiveness signals.")
     parser.add_argument("--issues", required=True, help="Path to docs/issues-log.csv")
-    parser.add_argument("--tickle", required=True, help="Path to preview/issues-log-tickle.json")
+    parser.add_argument("--tickle", required=True, help="Path to pm/reports/issues-log-tickle.json")
     parser.add_argument("--progress", required=True, help="Path to docs/project-plan-progress.csv")
     parser.add_argument("--fidelity", required=True, help="Path to preview/fidelity-report.json")
     parser.add_argument("--output", required=True, help="Path to output JSON")

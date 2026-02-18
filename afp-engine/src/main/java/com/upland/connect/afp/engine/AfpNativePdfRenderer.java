@@ -2132,7 +2132,7 @@ final class AfpNativePdfRenderer {
         for (PageImageBindingState state : states) {
             List<BufferedImage> pageResolved = new ArrayList<>(state.imageReferences.size());
             for (ImageReferenceState imageReference : state.imageReferences) {
-                pageResolved.add(matchEmbeddedResourceImage(imageReference.referenceTokens, state.candidates).orElse(null));
+                pageResolved.add(matchEmbeddedResourceImage(imageReference, state.candidates, state.imageReferences.size()).orElse(null));
             }
             resolved.add(pageResolved);
         }
@@ -2196,7 +2196,11 @@ final class AfpNativePdfRenderer {
                             if (decoded != null) {
                                 containerTokens.addAll(extractStructuredFieldReferenceTokens(sf));
                                 PageImageBindingState state = ensurePageBindingState(pages, pageIndex);
-                                state.candidates.add(new EmbeddedImageResourceCandidate(decoded, containerTokens));
+                                state.candidates.add(new EmbeddedImageResourceCandidate(
+                                    decoded,
+                                    containerTokens,
+                                    state.candidates.size()
+                                ));
                             }
                         }
                         inContainer = false;
@@ -2219,7 +2223,10 @@ final class AfpNativePdfRenderer {
             int count = pageEvidence == null ? 0 : pageEvidence.size();
             PageImageBindingState state = new PageImageBindingState();
             for (int i = 0; i < count; i++) {
-                state.imageReferences.add(new ImageReferenceState());
+                ImageObjectEvidence evidence = pageEvidence == null || i >= pageEvidence.size() ? null : pageEvidence.get(i);
+                int expectedWidth = evidence != null && evidence.decoded != null ? evidence.decoded.getWidth() : 0;
+                int expectedHeight = evidence != null && evidence.decoded != null ? evidence.decoded.getHeight() : 0;
+                state.imageReferences.add(new ImageReferenceState(i, expectedWidth, expectedHeight));
             }
             pages.add(state);
         }
@@ -2237,34 +2244,71 @@ final class AfpNativePdfRenderer {
     private static ImageReferenceState ensureImageReferenceState(PageImageBindingState page, int imageIndex) {
         int idx = Math.max(0, imageIndex);
         while (page.imageReferences.size() <= idx) {
-            page.imageReferences.add(new ImageReferenceState());
+            page.imageReferences.add(new ImageReferenceState(page.imageReferences.size(), 0, 0));
         }
         return page.imageReferences.get(idx);
     }
 
-    private static Optional<BufferedImage> matchEmbeddedResourceImage(Set<String> bimReferenceTokens,
-                                                                      List<EmbeddedImageResourceCandidate> candidates) {
-        if (candidates == null || candidates.isEmpty() || bimReferenceTokens == null || bimReferenceTokens.isEmpty()) {
+    private static Optional<BufferedImage> matchEmbeddedResourceImage(ImageReferenceState imageReference,
+                                                                      List<EmbeddedImageResourceCandidate> candidates,
+                                                                      int pageImageCount) {
+        if (imageReference == null || candidates == null || candidates.isEmpty()) {
             return Optional.empty();
         }
         EmbeddedImageResourceCandidate best = null;
-        int bestOverlap = 0;
+        double bestScore = 0.0d;
+        Set<String> bimReferenceTokens = imageReference.referenceTokens;
+        int tokenCount = bimReferenceTokens == null ? 0 : bimReferenceTokens.size();
         for (EmbeddedImageResourceCandidate candidate : candidates) {
             int overlap = 0;
             for (String token : candidate.referenceTokens) {
-                if (bimReferenceTokens.contains(token)) {
+                if (bimReferenceTokens != null && bimReferenceTokens.contains(token)) {
                     overlap++;
                 }
             }
-            if (overlap > bestOverlap) {
-                bestOverlap = overlap;
+            double tokenScore = tokenCount <= 0 ? 0.0d : ((double) overlap / (double) tokenCount);
+            double sequenceScore = 1.0d / (1.0d + Math.abs(candidate.candidateIndex - imageReference.imageIndex));
+            double sizeScore = sizeSimilarityScore(
+                imageReference.expectedWidth,
+                imageReference.expectedHeight,
+                candidate.image.getWidth(),
+                candidate.image.getHeight()
+            );
+            double score = (tokenScore * 0.75d) + (sizeScore * 0.15d) + (sequenceScore * 0.10d);
+            if (score > bestScore) {
+                bestScore = score;
                 best = candidate;
             }
         }
-        if (best == null || bestOverlap <= 0) {
+        if (best == null) {
+            return Optional.empty();
+        }
+        boolean hasTokenEvidence = tokenCount > 0;
+        if (!hasTokenEvidence) {
+            // Without direct token evidence, only accept deterministic single-object page matches.
+            if (candidates.size() != 1 || pageImageCount != 1) {
+                return Optional.empty();
+            }
+            return Optional.ofNullable(best.image);
+        }
+        if (bestScore < 0.25d) {
             return Optional.empty();
         }
         return Optional.ofNullable(best.image);
+    }
+
+    private static double sizeSimilarityScore(int expectedWidth, int expectedHeight, int actualWidth, int actualHeight) {
+        if (expectedWidth <= 0 || expectedHeight <= 0 || actualWidth <= 0 || actualHeight <= 0) {
+            return 0.0d;
+        }
+        double expectedRatio = (double) expectedWidth / (double) expectedHeight;
+        double actualRatio = (double) actualWidth / (double) actualHeight;
+        double ratioDelta = Math.abs(expectedRatio - actualRatio);
+        double ratioScore = Math.max(0.0d, 1.0d - Math.min(1.0d, ratioDelta));
+        double expectedArea = (double) expectedWidth * (double) expectedHeight;
+        double actualArea = (double) actualWidth * (double) actualHeight;
+        double areaScore = Math.min(expectedArea, actualArea) / Math.max(expectedArea, actualArea);
+        return (ratioScore * 0.65d) + (areaScore * 0.35d);
     }
 
     private static BufferedImage decodeImageCandidate(byte[] bytes) {
@@ -2587,10 +2631,12 @@ final class AfpNativePdfRenderer {
     private static final class EmbeddedImageResourceCandidate {
         private final BufferedImage image;
         private final Set<String> referenceTokens;
+        private final int candidateIndex;
 
-        private EmbeddedImageResourceCandidate(BufferedImage image, Set<String> referenceTokens) {
+        private EmbeddedImageResourceCandidate(BufferedImage image, Set<String> referenceTokens, int candidateIndex) {
             this.image = image;
             this.referenceTokens = referenceTokens == null ? Set.of() : Set.copyOf(referenceTokens);
+            this.candidateIndex = Math.max(0, candidateIndex);
         }
     }
 
@@ -2600,7 +2646,16 @@ final class AfpNativePdfRenderer {
     }
 
     private static final class ImageReferenceState {
+        private final int imageIndex;
+        private final int expectedWidth;
+        private final int expectedHeight;
         private final Set<String> referenceTokens = new HashSet<>();
+
+        private ImageReferenceState(int imageIndex, int expectedWidth, int expectedHeight) {
+            this.imageIndex = Math.max(0, imageIndex);
+            this.expectedWidth = Math.max(0, expectedWidth);
+            this.expectedHeight = Math.max(0, expectedHeight);
+        }
     }
 
     private static final class ImageObjectEvidence {

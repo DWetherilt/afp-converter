@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1",
+  "packageId": "2026-02-18-pm-realm-console-sql-rules-rollup",
+  "sourceRepo": "afp-converter",
+  "targetRepo": "pz-boilerplate-intelliJ",
+  "createdAt": "2026-02-18T23:30:00Z",
+  "supersedes": [
+    "2026-02-18-unified-framework-rollup"
+  ],
+  "summary": "Roll-up for PM realm segregation, normalized workflow manifest+adapters, dev PM console module, and SQL-backed mutable policy-rule tables.",
+  "files": [
+    { "path": "AI-POLICY.md", "changeType": "update" },
+    { "path": "README.md", "changeType": "update" },
+    { "path": "settings.gradle", "changeType": "update" },
+    { "path": "build.gradle", "changeType": "update" },
+    { "path": "tools/run_excel_workbook_refresh.py", "changeType": "update" },
+    { "path": "tools/issues_effectiveness_report.py", "changeType": "update" },
+    { "path": "afp-tools/*", "changeType": "delete" },
+    { "path": "pm-tools/*", "changeType": "add_or_update" },
+    { "path": "pm-console/*", "changeType": "add" },
+    { "path": "pm/workflow/workflow-manifest.json", "changeType": "add" },
+    { "path": "pm/policy/policy-rule-tables.sql", "changeType": "add" },
+    { "path": "tools/pm_workflow.py", "changeType": "add" },
+    { "path": "patches/0001-pm-realm-console-sql-rules-rollup.patch", "changeType": "add" }
+  ],
+  "validation": [
+    "./gradlew :pm-tools:classes",
+    "./gradlew :pm-console:run --args=\"status\"",
+    "./gradlew pmWorkflowList pmWorkflowRun -PpmPhase=pm_refresh_and_reports",
+    "./gradlew enforceProjectBoundaries enforceManagedTooling enforcePmApplicationRealmSeparation",
+    "./gradlew documentationManifest"
+  ]
+}

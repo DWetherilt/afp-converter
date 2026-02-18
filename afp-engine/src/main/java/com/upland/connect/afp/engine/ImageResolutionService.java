@@ -15,7 +15,8 @@ final class ImageResolutionService {
         if (decoded != null) {
             return SelectedImage.decoded(decoded);
         }
-        BufferedImage resolved = imageAtOrAny(resolvedResourceImages, idx);
+        // Keep per-object image binding strict for rendering operations.
+        BufferedImage resolved = imageAt(resolvedResourceImages, idx);
         if (resolved != null) {
             return SelectedImage.resource(resolved);
         }
@@ -33,7 +34,23 @@ final class ImageResolutionService {
                                         List<BufferedImage> resolvedResourceImages,
                                         List<byte[]> rawImagePayloads,
                                         int idx) {
-        return selectForImageOp(decodedImages, resolvedResourceImages, rawImagePayloads, idx, 120, 64);
+        BufferedImage decoded = imageAt(decodedImages, idx);
+        if (decoded != null) {
+            return SelectedImage.decoded(decoded);
+        }
+        // Fallback tiles can show any available resource image as a best-effort visual aid.
+        BufferedImage resolved = imageAtOrAny(resolvedResourceImages, idx);
+        if (resolved != null) {
+            return SelectedImage.resource(resolved);
+        }
+        byte[] raw = payloadAt(rawImagePayloads, idx);
+        if (raw != null) {
+            BufferedImage rawDecoded = decodeRawImageCandidate(raw, 120, 64);
+            if (rawDecoded != null) {
+                return SelectedImage.raw(rawDecoded);
+            }
+        }
+        return SelectedImage.unresolved();
     }
 
     boolean hasAnyDecodedImages(List<BufferedImage> decodedImages) {

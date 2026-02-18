@@ -28,7 +28,7 @@ def run(cmd: list[str], allow_failure: bool = False, timeout_seconds: Optional[i
 def main() -> int:
     parser = argparse.ArgumentParser(description="Refresh project plan workbook through native Excel scripting.")
     parser.add_argument("--xlsx", required=True, help="Path to docs/project-plan-progress.xlsx")
-    parser.add_argument("--json", required=True, help="Path to preview/project-plan-progress-data.json")
+    parser.add_argument("--json", required=True, help="Path to pm/reports/project-plan-progress-data.json")
     parser.add_argument(
         "--script",
         default="tools/run_excel_workbook_refresh.applescript",
@@ -123,7 +123,7 @@ def write_status(mode: str, excel_ok: bool, excel_error: str) -> None:
         "excelSucceeded": excel_ok,
         "excelError": excel_error,
     }
-    out = Path("preview/workbook-refresh-status.json")
+    out = Path("pm/reports/workbook-refresh-status.json")
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(payload, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
 

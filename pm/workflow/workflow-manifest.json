@@ -1,0 +1,64 @@
+{
+  "schemaVersion": "1",
+  "name": "project-management-workflow",
+  "description": "Toolchain-neutral PM workflow contract with adapter-specific task bindings.",
+  "phases": [
+    {
+      "id": "execute_application_with_pm_console",
+      "title": "Execute Application + PM Console",
+      "description": "Runs application preview execution followed by PM console status.",
+      "intent": "development",
+      "tags": ["application", "pm", "default-execution"]
+    },
+    {
+      "id": "pm_refresh_and_reports",
+      "title": "Refresh PM State and Reports",
+      "description": "Synchronizes PM state stores and regenerates PM report artifacts.",
+      "intent": "project-management",
+      "tags": ["pm", "state", "reports"]
+    },
+    {
+      "id": "quality_gate",
+      "title": "Quality Gate",
+      "description": "Runs full quality gates including PM boundary enforcement.",
+      "intent": "verification",
+      "tags": ["quality", "verification"]
+    },
+    {
+      "id": "prod_build",
+      "title": "Production Build",
+      "description": "Builds production artifacts without test compilation/execution.",
+      "intent": "release",
+      "tags": ["production", "build"]
+    }
+  ],
+  "adapters": {
+    "gradle": {
+      "command": ["./gradlew"],
+      "phaseTaskMap": {
+        "execute_application_with_pm_console": [
+          "previewManifest",
+          "pmConsoleStatus"
+        ],
+        "pm_refresh_and_reports": [
+          "projectStateDb",
+          "boilerplateStateDb",
+          "policyRulesReport",
+          "stateInventoryCsv",
+          "documentationManifest"
+        ],
+        "quality_gate": [
+          "qualityGate"
+        ],
+        "prod_build": [
+          "prodBuild"
+        ]
+      }
+    }
+  },
+  "defaults": {
+    "executeApplicationPhase": "execute_application_with_pm_console",
+    "pmRefreshPhase": "pm_refresh_and_reports",
+    "gradleDefaultPhase": "pm_refresh_and_reports"
+  }
+}

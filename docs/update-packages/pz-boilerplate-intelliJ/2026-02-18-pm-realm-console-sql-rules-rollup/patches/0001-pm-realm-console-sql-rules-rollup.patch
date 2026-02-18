@@ -1,0 +1,3567 @@
+diff --git a/AI-POLICY.md b/AI-POLICY.md
+index 41df358..cd7f124 100644
+--- a/AI-POLICY.md
++++ b/AI-POLICY.md
+@@ -27,12 +27,15 @@ Use this file as the first-read operational contract before making changes.
+ - State separation discipline:
+   - Project execution/reporting state and boilerplate governance state must remain separated and must not be merged into one datastore/workflow.
+ - Database single-source discipline:
+-  - For project-management and governance mechanics, `preview/state/project-state.sqlite` is the single source of operational truth for this repo.
+-  - For boilerplate governance/package mechanics, `preview/state/boilerplate-state.sqlite` is the single source of operational truth.
++  - For project-management and governance mechanics, `pm/state/project-state.sqlite` is the single source of operational truth for this repo.
++  - For boilerplate governance/package mechanics, `pm/state/boilerplate-state.sqlite` is the single source of operational truth.
+   - Any human trust grant or trust boundary instruction must be logged via governance mechanics (`docs/policy-governance-events.csv` -> SQLite sync) before completion handoff.
+   - Version-control truth boundary:
+     - Git remains the canonical source of repository history and rollback lineage.
+     - SQLite must mirror a verifiable VCS snapshot (`HEAD`, branch, dirty state, file-status inventory) for governance/audit workflows.
++- Managed tooling discipline:
++  - No unmanaged project-management tooling is allowed.
++  - Any tool/script/class used for project-management workflow must be version-controlled, registered in policy/build-manifest workflow, and represented in the project-state audit path before completion handoff.
+ - Human authority:
+   - Human instruction is authoritative for prioritization and policy evolution, except where it would directly conflict with higher-priority system safety constraints.
+ 
+@@ -41,6 +44,8 @@ Use this file as the first-read operational contract before making changes.
+ - AI agents must not autonomously redefine, relax, or remove policy requirements in this file.
+ - If a policy update is needed, propose the change and wait for human confirmation before applying it.
+ - If a showstopper blocks progress (auth, permissions, service limits, missing prerequisites), escalate immediately to the human owner with exact blocker details and the smallest unblock action required.
++- Mutable operational rule tables should be maintained in SQL (`pm/policy/policy-rule-tables.sql`) and synchronized into SQLite state, instead of repeated structural edits to this policy document.
++- Workflow sequencing should be maintained in normalized manifest form (`pm/workflow/workflow-manifest.json`) with toolchain adapters (Gradle, etc.) consuming that contract.
+ 
+ ## Project-Level Change Control
+ - Project-level operations (policy/process/build/workbook/plan/versioning changes) must follow the same control model as product code changes:
+@@ -73,7 +78,12 @@ Use this file as the first-read operational contract before making changes.
+   - `afp-api` (public API contracts)
+   - `afp-engine` (core conversion/rendering/diagnostics)
+   - `afp-cli` (CLI entrypoint)
+-  - `afp-tools` (project utilities, including POI workbook updater)
++  - `pm-tools` (project utilities, including POI workbook updater)
++  - `pm-console` (dev-only PM dashboard/command hub)
++- Realm boundary:
++  - Application realm: `afp-*` modules and `preview/` renderer outputs only.
++  - PM realm: `pm/` state/report/checkpoint assets and governance/planning docs/workbooks under `docs/`.
++  - PM artifacts must never be emitted under `preview/`.
+ 
+ ## Source of Truth Files
+ - Project version: `VERSION`
+@@ -85,9 +95,14 @@ Use this file as the first-read operational contract before making changes.
+ - Policy governance workbook: `docs/policy-governance-events.xlsx`
+ - Issues log: `docs/issues-log.csv`
+ - Issues log template: `docs/issues-log-template.csv`
+-- Progress JSON intermediary: `preview/project-plan-progress-data.json`
+-- Project state database: `preview/state/project-state.sqlite`
+-- Boilerplate state database: `preview/state/boilerplate-state.sqlite`
++- Progress JSON intermediary: `pm/reports/project-plan-progress-data.json`
++- Project state database: `pm/state/project-state.sqlite`
++- Boilerplate state database: `pm/state/boilerplate-state.sqlite`
++- Policy rule SQL source: `pm/policy/policy-rule-tables.sql`
++- Policy rule report export: `pm/reports/policy-rules.json`
++- Workflow manifest source: `pm/workflow/workflow-manifest.json`
++- Project file inventory export: `pm/reports/repo-file-inventory-with-context.csv`
++- Boilerplate package inventory export: `pm/reports/boilerplate-package-files-with-context.csv`
+ - Excel macro module source: `tools/WorkbookUpdater.bas`
+ - Session history: `SESSION_CHANGELOG.md`
+ - API behavior contract: `docs/API.md`
+@@ -117,6 +132,9 @@ Use this file as the first-read operational contract before making changes.
+ - Strict native renderer is the default for PDF output.
+ - HTML renderer is retained for fallback and future usage.
+ - Diagnostics and metadata are first-class outputs and must be kept in sync with renderer behavior.
++- Default execution coupling:
++  - Unless a human explicitly defines otherwise, any request to execute/run the application must include PM console launch in the same flow.
++  - Standard default sequence is: application execution first, then PM console status (`pmConsoleStatus` / `pmconsole status`).
+ 
+ ## Standard Development Cycle
+ When implementing any meaningful change:
+@@ -146,31 +164,38 @@ When implementing any meaningful change:
+ - `rollbackCheckpoint` is dry-run by default and requires explicit `ROLLBACK_APPLY=true` to restore files.
+ - `prodBuild` is the production packaging path and must avoid test compilation/execution.
+ - `prodBuild` assumes runtime resources/environment are already correctly provisioned.
++- `prodBuild` must remain application-only (`afp-api`, `afp-engine`, `afp-cli`) and must not package PM modules (`pm-tools`, `pm-console`).
+ - `qualityGate` is the canonical readiness command.
+-- `enforceProjectBoundaries` is mandatory in `qualityGate` and must fail when `afp-api`, `afp-engine`, or `afp-cli` reference project-management tooling/state (`afp-tools`, governance/project tracker sources, or management SQLite paths).
++- `enforceProjectBoundaries` is mandatory in `qualityGate` and must fail when `afp-api`, `afp-engine`, or `afp-cli` reference project-management tooling/state (`pm-tools`, governance/project tracker sources, or management SQLite paths).
++- `enforceManagedTooling` is mandatory in `qualityGate` and must fail when project-management tooling files under `tools/` or `pm-tools/src/main/java/com/upland/connect/pm/tools` are untracked.
++- `enforcePmApplicationRealmSeparation` is mandatory in `qualityGate` and must fail when PM artifacts are written under `preview/` or PM databases are written outside `pm/state/`.
++- `enforceBoilerplateRollupForFrameworkChanges` is mandatory in `qualityGate` and must fail when framework/process/policy/build mutations occur without an accompanying update package under `docs/update-packages/pz-boilerplate-intelliJ/`.
+ - `documentationManifest` must include current docs/changelog/plan artifacts.
+ - `projectPlanNextStep` must reflect the current immediate plan instruction.
++- `stateInventoryCsv` must export project/boilerplate file inventories from SQLite state.
++- `policyRulesReport` must export SQL-backed policy rules from SQLite state into `pm/reports/policy-rules.json`.
++- `pmWorkflowRun` and related Gradle interface tasks must resolve PM workflow phases from `pm/workflow/workflow-manifest.json` instead of duplicating orchestration logic.
+ - `projectPlanWorkbook` updates `docs/project-plan-progress.xlsx` via Apache POI updater by default.
+ - `policyGovernanceWorkbook` updates `docs/policy-governance-events.xlsx` from `docs/policy-governance-events.csv` and should be used to track policy/governance execution events.
+-- `projectStateDb` is the default project-management state sync path and must populate `preview/state/project-state.sqlite` from:
++- `projectStateDb` is the default project-management state sync path and must populate `pm/state/project-state.sqlite` from:
+   - `docs/issues-log.csv`
+   - `docs/project-plan-progress.csv`
+   - `preview/fidelity-report.json`
+-- `boilerplateStateDb` is the default boilerplate-governance state sync path and must populate `preview/state/boilerplate-state.sqlite` from:
++- `boilerplateStateDb` is the default boilerplate-governance state sync path and must populate `pm/state/boilerplate-state.sqlite` from:
+   - `docs/update-packages/pz-boilerplate-intelliJ`
+ - State separation rule:
+   - project execution/reporting state belongs only in `project-state.sqlite`,
+   - boilerplate sync/package governance state belongs only in `boilerplate-state.sqlite`.
+ - Database-backed tooling rule:
+-  - prefer SQLite-backed `afp-tools` tasks over ad-hoc scripts for project/workflow automation outputs.
++  - prefer SQLite-backed `pm-tools` tasks over ad-hoc scripts for project/workflow automation outputs.
+ - `projectPlanWorkbook` must be change-driven:
+   - run when `docs/project-plan-progress.csv` is newer than workbook or workbook is missing,
+   - skip when workbook is newer (to preserve human cosmetic updates),
+   - allow explicit override with `AFP_FORCE_WORKBOOK_UPDATE=true`.
+-- Set `AFP_WORKBOOK_MODE=excel` for Excel-native scripting path using `preview/project-plan-progress-data.json` + `tools/WorkbookUpdater.bas`.
++- Set `AFP_WORKBOOK_MODE=excel` for Excel-native scripting path using `pm/reports/project-plan-progress-data.json` + `tools/WorkbookUpdater.bas`.
+ - For non-Excel/headless environments, set `AFP_WORKBOOK_MODE=xml` to use guarded XML fallback.
+ - Workbook updates must remain cell-level on managed sheets and must not rewrite non-managed sheets.
+-- Excel-native refresh must be timeout-bounded and must emit `preview/workbook-refresh-status.json`.
++- Excel-native refresh must be timeout-bounded and must emit `pm/reports/workbook-refresh-status.json`.
+ - XML fallback writes to `docs/project-plan-progress.xlsx` are **disabled by default** for corruption control; only run XML fallback with explicit human instruction for that specific operation.
+ - On any workbook-corruption signal, apply restore-first protocol:
+   - restore `docs/project-plan-progress.xlsx` from `docs/project-plan-progress.xlsx.zip`,
+@@ -178,14 +203,14 @@ When implementing any meaningful change:
+   - log the event in `docs/issues-log.csv`,
+   - then continue with Excel-native or POI-managed update paths only.
+ - `issuesLogTickle` enforces issue-log hygiene: if files referenced by `docs/issues-log.csv` change, the issues log must be updated in the same change.
+-- `governanceAlerts` generates `preview/governance-alerts.json` from SQLite governance state and should be reviewed for active governance-breach visibility.
++- `governanceAlerts` generates `pm/reports/governance-alerts.json` from SQLite governance state and should be reviewed for active governance-breach visibility.
+ - `projectPlanProgressJson`, `issuesLogTickle`, and `issuesEffectivenessReport` should execute from SQLite-backed state generated by `projectStateDb`.
+ - `boilerplateSyncWorkbook` maintains `docs/boilerplate-sync-candidates.xlsx` from `docs/update-packages/pz-boilerplate-intelliJ` and must preserve manual triage columns (`decision`, `state`, `owner_notes`).
+ - `issuesEffectivenessReport` provides mechanized debug reasoning signals from:
+-  - issue triggers (`preview/issues-log-tickle.json`)
++  - issue triggers (`pm/reports/issues-log-tickle.json`)
+   - task progress (`docs/project-plan-progress.csv`)
+   - fidelity metrics (`preview/fidelity-report.json`)
+-  and writes `preview/issues-effectiveness.json`.
++  and writes `pm/reports/issues-effectiveness.json`.
+ - Pitfall guardrail:
+   - Issues-log coupling must guide troubleshooting, not block urgent fixes; apply issue-linked context first, but do not force unrelated updates to closed/stable incidents.
+   - Do not suppress "known imperfection" logging due to low severity; low-severity issues still must be captured to prevent repeated rediscovery.
+@@ -222,8 +247,8 @@ After a normal cycle, these should be current:
+ - `preview/afp-meta.json`
+ - `preview/afp-diag.json`
+ - `preview/fidelity-report.json`
+-- `preview/project-plan-next-step.json`
+-- `preview/documentation-manifest.json`
++- `pm/reports/project-plan-next-step.json`
++- `pm/reports/documentation-manifest.json`
+ - `preview/ci-artifacts/latest/*`
+ 
+ ## Environment Metadata Change Policy
+@@ -236,7 +261,7 @@ If environment/process metadata changes (new task, new file, renamed plan path,
+ ## Agent Handover Prompt (for a fresh AI)
+ If you are a new agent on this repo:
+ - Read: `AI-POLICY.md`, `docs/project-plan.md`, `docs/project-plan-progress.csv`, `SESSION_CHANGELOG.md`.
+-- Continue from `preview/project-plan-next-step.json`.
++- Continue from `pm/reports/project-plan-next-step.json`.
+ - Maintain strict native rendering defaults.
+ - Keep edits non-destructive, especially workbook/history updates.
+ - Run `./gradlew qualityGate` before concluding substantive work.
+@@ -245,4 +270,4 @@ If you are a new agent on this repo:
+ ## Conversation Resumption Prompt
+ Use this prompt verbatim when chat history is missing and you must resume this exact workflow:
+ 
+-`Resume the workbook JSON/VBA flow for project-plan tracking. Treat AI-POLICY.md as the operating contract. Rebuild preview/project-plan-progress-data.json from docs/project-plan-progress.csv, then continue with tools/WorkbookUpdater.bas as the Excel-native update path. Do not use low-level XLSX chart/drawing XML mutation. Preserve user filters/sort and avoid touching non-managed sheets. Before changing implementation, review SESSION_CHANGELOG.md and docs/project-plan.md for the last checkpoint and pending follow-up to review restored workbook content against CSV/JSON sources.`
++`Resume the workbook JSON/VBA flow for project-plan tracking. Treat AI-POLICY.md as the operating contract. Rebuild pm/reports/project-plan-progress-data.json from docs/project-plan-progress.csv, then continue with tools/WorkbookUpdater.bas as the Excel-native update path. Do not use low-level XLSX chart/drawing XML mutation. Preserve user filters/sort and avoid touching non-managed sheets. Before changing implementation, review SESSION_CHANGELOG.md and docs/project-plan.md for the last checkpoint and pending follow-up to review restored workbook content against CSV/JSON sources.`
+diff --git a/README.md b/README.md
+index 688addb..dce4884 100644
+--- a/README.md
++++ b/README.md
+@@ -11,7 +11,8 @@ Proof-of-concept Java 21 Gradle multi-module project for:
+ - `afp-api`: stable public API (`com.upland.connect.afp.api`)
+ - `afp-engine`: converter implementation + adapter SPI (`com.upland.connect.afp.engine`)
+ - `afp-cli`: thin Picocli wrapper command `afp2pdf` (`com.upland.connect.afp.cli`)
+-- `afp-tools`: utility tooling including Apache POI workbook updater (`com.upland.connect.afp.tools`)
++- `pm-tools`: utility tooling including Apache POI workbook updater (`com.upland.connect.pm.tools`)
++- `pm-console`: dev-only PM dashboard/command hub (`com.upland.connect.pm.console`)
+ 
+ API documentation:
+ 
+@@ -47,25 +48,36 @@ API documentation:
+   - each issue lists referenced components that should trigger issue-log review when modified
+ - `docs/issues-log-template.csv`:
+   - template row for consistently logging new issues and component bindings
+-- `preview/project-plan-progress-data.json`:
++- `pm/reports/project-plan-progress-data.json`:
+   - JSON intermediary exported from SQLite project state for workbook automation workflows
+-- `preview/state/project-state.sqlite`:
++- `pm/state/project-state.sqlite`:
+   - SQLite state store for project execution/reporting workflows (issues, plan progress, fidelity signals)
+-- `preview/state/boilerplate-state.sqlite`:
++- `pm/state/boilerplate-state.sqlite`:
+   - SQLite state store for boilerplate governance/sync workflows (package candidates and file inventory)
+-- `preview/governance-alerts.json`:
+-  - generated governance/trust alert report sourced from `preview/state/project-state.sqlite`
++- `pm/policy/policy-rule-tables.sql`:
++  - SQL source of truth for mutable operational PM rule tables
++- `pm/workflow/workflow-manifest.json`:
++  - toolchain-neutral PM workflow phase contract
++  - adapters (for example Gradle) map phases to concrete execution tasks
++- `pm/reports/policy-rules.json`:
++  - generated export of SQL-backed operational PM rules from `pm/state/project-state.sqlite`
++- `pm/reports/governance-alerts.json`:
++  - generated governance/trust alert report sourced from `pm/state/project-state.sqlite`
+   - includes active governance-breach visibility and trust-event tracking for handoff/status reporting
+-- `preview/version-control-ledger.json`:
+-  - generated VCS/file-discipline ledger sourced from `preview/state/project-state.sqlite`
++- `pm/reports/version-control-ledger.json`:
++  - generated VCS/file-discipline ledger sourced from `pm/state/project-state.sqlite`
++- `pm/reports/repo-file-inventory-with-context.csv`:
++  - generated project file inventory with DB provenance/maintenance context sourced from `pm/state/project-state.sqlite`
++- `pm/reports/boilerplate-package-files-with-context.csv`:
++  - generated boilerplate package-file inventory with DB provenance/maintenance context sourced from `pm/state/boilerplate-state.sqlite`
+   - mirrors Git `HEAD`/branch/dirty state and per-path tracked/status/hash metadata for audit workflows
+   - Git remains the canonical version-control source
+-- `preview/workbook-refresh-status.json`:
++- `pm/reports/workbook-refresh-status.json`:
+   - records whether workbook refresh used Excel-native path or XML fallback, including Excel error details if fallback was required
+-- `preview/issues-log-tickle.json`:
++- `pm/reports/issues-log-tickle.json`:
+   - generated by `issuesLogTickle` and indicates whether changed files touched issue-referenced components
+   - build enforcement requires `docs/issues-log.csv` to be updated when referenced components are modified
+-- `preview/issues-effectiveness.json`:
++- `pm/reports/issues-effectiveness.json`:
+   - generated mechanized signal report combining issue triggers, plan progress, and fidelity metrics for debug reasoning
+ - `tools/WorkbookUpdater.bas`:
+    - VBA module for Excel that refreshes `Current Progress`, appends `Status History`, and rebuilds `Completion Trend` from the JSON intermediary
+@@ -120,7 +132,7 @@ This now includes `previewManifest` and regenerates:
+ - `preview/afp-output.html`
+ - `preview/afp-meta.json`
+ - `preview/afp-diag.json`
+-- `preview/documentation-manifest.json` (via `documentationManifest`)
++- `pm/reports/documentation-manifest.json` (via `documentationManifest`)
+ 
+ Run the full quality gate (tests + fidelity thresholds + docs/changelog manifest):
+ 
+@@ -129,6 +141,11 @@ Run the full quality gate (tests + fidelity thresholds + docs/changelog manifest
+ ```
+ 
+ `qualityGate` includes `enforceProjectBoundaries`, which fails if product modules (`afp-api`, `afp-engine`, `afp-cli`) reference project-management tooling/state.
++`qualityGate` also includes `enforceManagedTooling`, which fails if project-management tooling files under `tools/` or `pm-tools/.../tools` are untracked.
++`qualityGate` includes `enforcePmApplicationRealmSeparation`, which fails if PM artifacts appear under `preview/` or PM databases appear outside `pm/state/`.
++`qualityGate` includes `enforceBoilerplateRollupForFrameworkChanges`, which fails if framework/process files change without a same-change update under `docs/update-packages/pz-boilerplate-intelliJ/`.
++`documentationManifest` now runs `stateInventoryCsv`, which rebuilds the two inventory CSVs above from SQLite state on each run.
++`documentationManifest` also runs `policyRulesReport`, which exports SQL-backed PM rule tables into `pm/reports/policy-rules.json`.
+ 
+ Production build (no test compilation/execution; assumes working runtime/resources):
+ 
+@@ -136,6 +153,31 @@ Production build (no test compilation/execution; assumes working runtime/resourc
+ ./gradlew prodBuild
+ ```
+ 
++Development PM console:
++
++```bash
++./gradlew pmConsoleStatus
++./gradlew pmDevAttach
++./gradlew :pm-console:run --args="tools"
++./gradlew :pm-console:run --args="refresh --with-preview"
++./gradlew pmConsoleInstallPath
++./pm-console/build/install/pmconsole/bin/pmconsole status
++```
++
++Normalized PM workflow interface:
++
++```bash
++./gradlew pmWorkflowList
++./gradlew pmWorkflowRun
++./gradlew pmWorkflowRun -PpmPhase=execute_application_with_pm_console
++python3 tools/pm_workflow.py list --adapter gradle
++python3 tools/pm_workflow.py run --adapter gradle --phase pm_refresh_and_reports
++```
++
++Default execution behavior:
++- Unless explicitly overridden, app execution is coupled with PM console status in the same run flow (app first, PM status second).
++- Use `./gradlew pmDevAttach` as the default development execution entrypoint.
++
+ Run preview generation only:
+ 
+ ```bash
+diff --git a/afp-tools/build.gradle b/afp-tools/build.gradle
+deleted file mode 100644
+index 5f5e605..0000000
+--- a/afp-tools/build.gradle
++++ /dev/null
+@@ -1,16 +0,0 @@
+-plugins {
+-    id 'java-library'
+-}
+-
+-dependencies {
+-    implementation 'org.apache.poi:poi-ooxml:5.2.5'
+-    implementation 'org.apache.commons:commons-csv:1.11.0'
+-    implementation 'org.xerial:sqlite-jdbc:3.46.1.3'
+-    implementation 'com.google.code.gson:gson:2.11.0'
+-}
+-
+-tasks.register('printRuntimeClasspath') {
+-    doLast {
+-        println sourceSets.main.runtimeClasspath.asPath
+-    }
+-}
+diff --git a/afp-tools/src/main/java/com/upland/connect/afp/tools/BoilerplateSyncWorkbookUpdater.java b/afp-tools/src/main/java/com/upland/connect/afp/tools/BoilerplateSyncWorkbookUpdater.java
+deleted file mode 100644
+index 31c96b9..0000000
+--- a/afp-tools/src/main/java/com/upland/connect/afp/tools/BoilerplateSyncWorkbookUpdater.java
++++ /dev/null
+@@ -1,487 +0,0 @@
+-package com.upland.connect.afp.tools;
+-
+-import org.apache.poi.ss.usermodel.Cell;
+-import org.apache.poi.ss.usermodel.Row;
+-import org.apache.poi.ss.usermodel.Sheet;
+-import org.apache.poi.ss.usermodel.Workbook;
+-import org.apache.poi.ss.util.CellRangeAddress;
+-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+-
+-import java.io.IOException;
+-import java.io.InputStream;
+-import java.io.OutputStream;
+-import java.nio.charset.StandardCharsets;
+-import java.nio.file.FileVisitResult;
+-import java.nio.file.Files;
+-import java.nio.file.Path;
+-import java.nio.file.SimpleFileVisitor;
+-import java.nio.file.attribute.BasicFileAttributes;
+-import java.time.Instant;
+-import java.time.ZoneOffset;
+-import java.time.format.DateTimeFormatter;
+-import java.util.ArrayList;
+-import java.util.Comparator;
+-import java.util.HashMap;
+-import java.util.LinkedHashMap;
+-import java.util.List;
+-import java.util.Locale;
+-import java.util.Map;
+-import java.util.Set;
+-import java.util.HashSet;
+-import java.util.regex.Matcher;
+-import java.util.regex.Pattern;
+-import java.sql.Connection;
+-import java.sql.DriverManager;
+-import java.sql.PreparedStatement;
+-import java.sql.ResultSet;
+-
+-public final class BoilerplateSyncWorkbookUpdater {
+-
+-    private static final String SHEET_CANDIDATES = "Candidates";
+-    private static final String SHEET_FILES = "Package Files";
+-    private static final DateTimeFormatter ISO = DateTimeFormatter.ISO_OFFSET_DATE_TIME.withZone(ZoneOffset.UTC);
+-
+-    private BoilerplateSyncWorkbookUpdater() {}
+-
+-    public static void main(String[] args) throws Exception {
+-        Map<String, String> cli = parseArgs(args);
+-        Path packagesDir = optionalPath(cli, "--packages");
+-        Path dbPath = optionalPath(cli, "--db");
+-        Path xlsxPath = requiredPath(cli, "--xlsx");
+-        prepareWorkbookPath(xlsxPath);
+-
+-        List<Candidate> candidates;
+-        if (dbPath != null) {
+-            candidates = readCandidatesFromDatabase(dbPath);
+-        } else if (packagesDir != null) {
+-            candidates = scanCandidates(packagesDir);
+-        } else {
+-            throw new IllegalArgumentException("Provide either --db or --packages");
+-        }
+-        Map<String, ManualState> manual = readManualState(xlsxPath);
+-
+-        try (Workbook wb = openWorkbook(xlsxPath)) {
+-            Sheet candidatesSheet = ensureSheet(wb, SHEET_CANDIDATES);
+-            Sheet filesSheet = ensureSheet(wb, SHEET_FILES);
+-            writeCandidates(candidatesSheet, candidates, manual);
+-            writePackageFiles(filesSheet, candidates);
+-            try (OutputStream os = Files.newOutputStream(xlsxPath)) {
+-                wb.write(os);
+-            }
+-        }
+-    }
+-
+-    private static Map<String, String> parseArgs(String[] args) {
+-        Map<String, String> out = new HashMap<>();
+-        for (int i = 0; i < args.length; i++) {
+-            String k = args[i];
+-            if (!k.startsWith("--")) {
+-                continue;
+-            }
+-            if (i + 1 >= args.length) {
+-                throw new IllegalArgumentException("Missing value for " + k);
+-            }
+-            out.put(k, args[++i]);
+-        }
+-        return out;
+-    }
+-
+-    private static Path requiredPath(Map<String, String> cli, String key) {
+-        String v = cli.get(key);
+-        if (v == null || v.isBlank()) {
+-            throw new IllegalArgumentException("Missing required argument: " + key);
+-        }
+-        return Path.of(v);
+-    }
+-
+-    private static Path optionalPath(Map<String, String> cli, String key) {
+-        String v = cli.get(key);
+-        if (v == null || v.isBlank()) {
+-            return null;
+-        }
+-        return Path.of(v);
+-    }
+-
+-    private static void prepareWorkbookPath(Path xlsxPath) throws IOException {
+-        if (Files.exists(xlsxPath)) {
+-            return;
+-        }
+-        Path parent = xlsxPath.toAbsolutePath().getParent();
+-        if (parent != null) {
+-            Files.createDirectories(parent);
+-        }
+-        try (Workbook wb = new XSSFWorkbook(); OutputStream os = Files.newOutputStream(xlsxPath)) {
+-            wb.createSheet(SHEET_CANDIDATES);
+-            wb.createSheet(SHEET_FILES);
+-            wb.write(os);
+-        }
+-    }
+-
+-    private static Workbook openWorkbook(Path xlsxPath) throws IOException {
+-        try (InputStream is = Files.newInputStream(xlsxPath)) {
+-            return new XSSFWorkbook(is);
+-        }
+-    }
+-
+-    private static Sheet ensureSheet(Workbook workbook, String name) {
+-        Sheet s = workbook.getSheet(name);
+-        if (s != null) {
+-            return s;
+-        }
+-        return workbook.createSheet(name);
+-    }
+-
+-    private static void clearSheet(Sheet sheet) {
+-        for (int i = sheet.getLastRowNum(); i >= 0; i--) {
+-            Row row = sheet.getRow(i);
+-            if (row != null) {
+-                sheet.removeRow(row);
+-            }
+-        }
+-    }
+-
+-    private static String nowIso() {
+-        return ISO.format(Instant.now().atOffset(ZoneOffset.UTC).withNano(0));
+-    }
+-
+-    private static void setCell(Row row, int idx, String value) {
+-        Cell c = row.getCell(idx);
+-        if (c == null) {
+-            c = row.createCell(idx);
+-        }
+-        c.setCellValue(value == null ? "" : value);
+-    }
+-
+-    private static String getCell(Row row, int idx) {
+-        if (row == null) {
+-            return "";
+-        }
+-        Cell c = row.getCell(idx);
+-        if (c == null) {
+-            return "";
+-        }
+-        return switch (c.getCellType()) {
+-            case STRING -> c.getStringCellValue();
+-            case NUMERIC -> Double.toString(c.getNumericCellValue());
+-            case BOOLEAN -> Boolean.toString(c.getBooleanCellValue());
+-            case FORMULA -> c.getCellFormula();
+-            default -> "";
+-        };
+-    }
+-
+-    private static Map<String, ManualState> readManualState(Path xlsxPath) throws IOException {
+-        Map<String, ManualState> out = new LinkedHashMap<>();
+-        try (Workbook wb = openWorkbook(xlsxPath)) {
+-            Sheet sheet = wb.getSheet(SHEET_CANDIDATES);
+-            if (sheet == null) {
+-                return out;
+-            }
+-            for (int r = 1; r <= sheet.getLastRowNum(); r++) {
+-                Row row = sheet.getRow(r);
+-                String candidateId = getCell(row, 0).trim();
+-                if (candidateId.isEmpty()) {
+-                    continue;
+-                }
+-                out.put(candidateId, new ManualState(
+-                    getCell(row, 8).trim(),
+-                    getCell(row, 9).trim(),
+-                    getCell(row, 10).trim()
+-                ));
+-            }
+-        }
+-        return out;
+-    }
+-
+-    private static List<Candidate> scanCandidates(Path packagesDir) throws IOException {
+-        if (!Files.exists(packagesDir) || !Files.isDirectory(packagesDir)) {
+-            return List.of();
+-        }
+-        List<Path> dirs = new ArrayList<>();
+-        try (var stream = Files.list(packagesDir)) {
+-            stream.filter(Files::isDirectory)
+-                .sorted(Comparator.comparing(p -> p.getFileName().toString().toLowerCase(Locale.ROOT)))
+-                .forEach(dirs::add);
+-        }
+-        List<Candidate> out = new ArrayList<>(dirs.size());
+-        for (Path dir : dirs) {
+-            out.add(scanCandidate(dir, packagesDir));
+-        }
+-        return out;
+-    }
+-
+-    private static List<Candidate> readCandidatesFromDatabase(Path dbPath) throws Exception {
+-        if (!Files.exists(dbPath)) {
+-            return List.of();
+-        }
+-        Map<String, List<PackageFile>> filesByCandidate = new HashMap<>();
+-        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath.toAbsolutePath());
+-             PreparedStatement ps = conn.prepareStatement(
+-                 "select candidate_id, file_path, size_bytes from package_files order by candidate_id, file_path"
+-             );
+-             ResultSet rs = ps.executeQuery()) {
+-            while (rs.next()) {
+-                String candidateId = text(rs.getString(1));
+-                filesByCandidate.computeIfAbsent(candidateId, ignored -> new ArrayList<>())
+-                    .add(new PackageFile(text(rs.getString(2)), Long.toString(rs.getLong(3))));
+-            }
+-        }
+-
+-        List<Candidate> out = new ArrayList<>();
+-        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath.toAbsolutePath());
+-             PreparedStatement ps = conn.prepareStatement(
+-                 "select candidate_id, package_id, target_repo, source_repo, created_at, summary, package_zip, " +
+-                     "patch_count, manifest_file_count, supersedes_json from package_candidates order by candidate_id"
+-             );
+-             ResultSet rs = ps.executeQuery()) {
+-            while (rs.next()) {
+-                String candidateId = text(rs.getString(1));
+-                out.add(new Candidate(
+-                    candidateId,
+-                    text(rs.getString(2)),
+-                    text(rs.getString(3)),
+-                    text(rs.getString(4)),
+-                    text(rs.getString(5)),
+-                    text(rs.getString(6)),
+-                    text(rs.getString(7)),
+-                    rs.getInt(8),
+-                    rs.getInt(9),
+-                    parseJsonStringArray(text(rs.getString(10))),
+-                    filesByCandidate.getOrDefault(candidateId, List.of())
+-                ));
+-            }
+-        }
+-        return out;
+-    }
+-
+-    private static Candidate scanCandidate(Path dir, Path packagesRoot) throws IOException {
+-        String candidateId = dir.getFileName().toString();
+-        String targetRepo = packagesRoot.getFileName().toString();
+-        String created = ISO.format(Files.getLastModifiedTime(dir).toInstant().atOffset(ZoneOffset.UTC));
+-        Path readme = dir.resolve("README.md");
+-        Path manifest = dir.resolve("package-manifest.json");
+-        String summary = readSummary(readme);
+-        String packageId = readJsonString(manifest, "packageId");
+-        String sourceRepo = readJsonString(manifest, "sourceRepo");
+-        String targetFromManifest = readJsonString(manifest, "targetRepo");
+-        List<String> supersedes = readJsonArrayStrings(manifest, "supersedes");
+-        int patchCount = countFiles(dir.resolve("patches"), ".patch");
+-        int manifestFileCount = countManifestFiles(manifest);
+-        List<PackageFile> files = listFiles(dir);
+-        String zipName = candidateId + ".zip";
+-        Path zipPath = packagesRoot.resolve(zipName);
+-        String zipRel = Files.exists(zipPath) ? packagesRoot.relativize(zipPath).toString().replace('\\', '/') : "";
+-        return new Candidate(
+-            candidateId,
+-            packageId.isBlank() ? candidateId : packageId,
+-            targetFromManifest.isBlank() ? targetRepo : targetFromManifest,
+-            sourceRepo,
+-            created,
+-            summary,
+-            zipRel,
+-            patchCount,
+-            manifestFileCount,
+-            supersedes,
+-            files
+-        );
+-    }
+-
+-    private static String readSummary(Path readme) throws IOException {
+-        if (!Files.exists(readme)) {
+-            return "";
+-        }
+-        List<String> lines = Files.readAllLines(readme, StandardCharsets.UTF_8);
+-        for (String line : lines) {
+-            String trimmed = line == null ? "" : line.trim();
+-            if (trimmed.isEmpty()) {
+-                continue;
+-            }
+-            if (trimmed.startsWith("#")) {
+-                continue;
+-            }
+-            return trimmed.length() > 240 ? trimmed.substring(0, 240) : trimmed;
+-        }
+-        return "";
+-    }
+-
+-    private static String readJsonString(Path json, String key) throws IOException {
+-        if (!Files.exists(json)) {
+-            return "";
+-        }
+-        String text = Files.readString(json, StandardCharsets.UTF_8);
+-        Pattern p = Pattern.compile("\"" + Pattern.quote(key) + "\"\\s*:\\s*\"([^\"]*)\"");
+-        Matcher m = p.matcher(text);
+-        if (m.find()) {
+-            return m.group(1).trim();
+-        }
+-        return "";
+-    }
+-
+-    private static List<String> readJsonArrayStrings(Path json, String key) throws IOException {
+-        if (!Files.exists(json)) {
+-            return List.of();
+-        }
+-        String text = Files.readString(json, StandardCharsets.UTF_8);
+-        Pattern p = Pattern.compile("\"" + Pattern.quote(key) + "\"\\s*:\\s*\\[(.*?)\\]", Pattern.DOTALL);
+-        Matcher m = p.matcher(text);
+-        if (!m.find()) {
+-            return List.of();
+-        }
+-        String body = m.group(1);
+-        Matcher valueMatcher = Pattern.compile("\"([^\"]+)\"").matcher(body);
+-        List<String> out = new ArrayList<>();
+-        while (valueMatcher.find()) {
+-            out.add(valueMatcher.group(1).trim());
+-        }
+-        return out;
+-    }
+-
+-    private static List<String> parseJsonStringArray(String jsonArray) {
+-        if (jsonArray == null || jsonArray.isBlank()) {
+-            return List.of();
+-        }
+-        Matcher valueMatcher = Pattern.compile("\"([^\"]+)\"").matcher(jsonArray);
+-        List<String> out = new ArrayList<>();
+-        while (valueMatcher.find()) {
+-            out.add(valueMatcher.group(1).trim());
+-        }
+-        return out;
+-    }
+-
+-    private static int countManifestFiles(Path manifest) throws IOException {
+-        if (!Files.exists(manifest)) {
+-            return 0;
+-        }
+-        String text = Files.readString(manifest, StandardCharsets.UTF_8);
+-        Matcher m = Pattern.compile("\"path\"\\s*:").matcher(text);
+-        int count = 0;
+-        while (m.find()) {
+-            count++;
+-        }
+-        return count;
+-    }
+-
+-    private static int countFiles(Path dir, String suffix) throws IOException {
+-        if (!Files.exists(dir) || !Files.isDirectory(dir)) {
+-            return 0;
+-        }
+-        try (var stream = Files.walk(dir)) {
+-            return (int) stream.filter(Files::isRegularFile)
+-                .filter(p -> p.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(suffix))
+-                .count();
+-        }
+-    }
+-
+-    private static List<PackageFile> listFiles(Path packageDir) throws IOException {
+-        List<PackageFile> out = new ArrayList<>();
+-        Files.walkFileTree(packageDir, new SimpleFileVisitor<>() {
+-            @Override
+-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+-                String rel = packageDir.relativize(file).toString().replace('\\', '/');
+-                out.add(new PackageFile(rel, Long.toString(attrs.size())));
+-                return FileVisitResult.CONTINUE;
+-            }
+-        });
+-        out.sort(Comparator.comparing(PackageFile::path));
+-        return out;
+-    }
+-
+-    private static void writeCandidates(Sheet sheet, List<Candidate> candidates, Map<String, ManualState> manual) {
+-        clearSheet(sheet);
+-        Set<String> superseded = new HashSet<>();
+-        for (Candidate c : candidates) {
+-            superseded.addAll(c.supersedes());
+-        }
+-        String[] headers = {
+-            "candidate_id",
+-            "package_id",
+-            "target_repo",
+-            "source_repo",
+-            "created_at",
+-            "summary",
+-            "package_zip",
+-            "patch_count",
+-            "decision",
+-            "state",
+-            "owner_notes",
+-            "recommended_scope",
+-            "manifest_file_count",
+-            "last_seen"
+-        };
+-        Row hr = sheet.createRow(0);
+-        for (int i = 0; i < headers.length; i++) {
+-            setCell(hr, i, headers[i]);
+-        }
+-        int rowNo = 1;
+-        String now = nowIso();
+-        for (Candidate c : candidates) {
+-            ManualState st = manual.getOrDefault(c.candidateId(), ManualState.empty());
+-            Row row = sheet.createRow(rowNo++);
+-            setCell(row, 0, c.candidateId());
+-            setCell(row, 1, c.packageId());
+-            setCell(row, 2, c.targetRepo());
+-            setCell(row, 3, c.sourceRepo());
+-            setCell(row, 4, c.createdAt());
+-            setCell(row, 5, c.summary());
+-            setCell(row, 6, c.packageZip());
+-            setCell(row, 7, Integer.toString(c.patchCount()));
+-            setCell(row, 8, st.decision());
+-            setCell(row, 9, st.state());
+-            setCell(row, 10, st.ownerNotes());
+-            setCell(row, 11, superseded.contains(c.candidateId()) ? "superseded" : "review");
+-            setCell(row, 12, Integer.toString(c.manifestFileCount()));
+-            setCell(row, 13, now);
+-        }
+-        if (rowNo < 2) {
+-            sheet.createRow(1);
+-            rowNo = 2;
+-        }
+-        sheet.setAutoFilter(new CellRangeAddress(0, rowNo - 1, 0, headers.length - 1));
+-    }
+-
+-    private static void writePackageFiles(Sheet sheet, List<Candidate> candidates) {
+-        clearSheet(sheet);
+-        String[] headers = {"candidate_id", "file_path", "size_bytes"};
+-        Row hr = sheet.createRow(0);
+-        for (int i = 0; i < headers.length; i++) {
+-            setCell(hr, i, headers[i]);
+-        }
+-        int rowNo = 1;
+-        for (Candidate c : candidates) {
+-            for (PackageFile f : c.files()) {
+-                Row row = sheet.createRow(rowNo++);
+-                setCell(row, 0, c.candidateId());
+-                setCell(row, 1, f.path());
+-                setCell(row, 2, f.sizeBytes());
+-            }
+-        }
+-        if (rowNo < 2) {
+-            sheet.createRow(1);
+-            rowNo = 2;
+-        }
+-        sheet.setAutoFilter(new CellRangeAddress(0, rowNo - 1, 0, headers.length - 1));
+-    }
+-
+-    private static String text(String value) {
+-        return value == null ? "" : value.trim();
+-    }
+-
+-    private record Candidate(String candidateId,
+-                             String packageId,
+-                             String targetRepo,
+-                             String sourceRepo,
+-                             String createdAt,
+-                             String summary,
+-                             String packageZip,
+-                             int patchCount,
+-                             int manifestFileCount,
+-                             List<String> supersedes,
+-                             List<PackageFile> files) {}
+-
+-    private record PackageFile(String path, String sizeBytes) {}
+-
+-    private record ManualState(String decision, String state, String ownerNotes) {
+-        static ManualState empty() {
+-            return new ManualState("", "", "");
+-        }
+-    }
+-}
+diff --git a/afp-tools/src/main/java/com/upland/connect/afp/tools/PolicyGovernanceWorkbookUpdater.java b/afp-tools/src/main/java/com/upland/connect/afp/tools/PolicyGovernanceWorkbookUpdater.java
+deleted file mode 100644
+index 32ad306..0000000
+--- a/afp-tools/src/main/java/com/upland/connect/afp/tools/PolicyGovernanceWorkbookUpdater.java
++++ /dev/null
+@@ -1,174 +0,0 @@
+-package com.upland.connect.afp.tools;
+-
+-import org.apache.commons.csv.CSVFormat;
+-import org.apache.commons.csv.CSVParser;
+-import org.apache.commons.csv.CSVRecord;
+-import org.apache.poi.ss.usermodel.Cell;
+-import org.apache.poi.ss.usermodel.Row;
+-import org.apache.poi.ss.usermodel.Sheet;
+-import org.apache.poi.ss.usermodel.Workbook;
+-import org.apache.poi.ss.util.CellRangeAddress;
+-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+-
+-import java.io.IOException;
+-import java.io.InputStream;
+-import java.io.OutputStream;
+-import java.nio.charset.StandardCharsets;
+-import java.nio.file.Files;
+-import java.nio.file.Path;
+-import java.util.ArrayList;
+-import java.util.HashMap;
+-import java.util.LinkedHashMap;
+-import java.util.List;
+-import java.util.Map;
+-import java.util.Optional;
+-
+-public final class PolicyGovernanceWorkbookUpdater {
+-
+-    private static final String SHEET_EVENTS = "Governance Events";
+-    private static final List<String> REQUIRED_COLUMNS = List.of(
+-        "event_id",
+-        "event_date",
+-        "phase",
+-        "status",
+-        "checkpoint_id",
+-        "issue_id",
+-        "summary",
+-        "evidence",
+-        "updated_by"
+-    );
+-
+-    private PolicyGovernanceWorkbookUpdater() {}
+-
+-    public static void main(String[] args) throws Exception {
+-        Map<String, String> cli = parseArgs(args);
+-        Path csvPath = requiredPath(cli, "--csv");
+-        Path xlsxPath = requiredPath(cli, "--xlsx");
+-
+-        List<Map<String, String>> rows = readCsv(csvPath);
+-        prepareWorkbookPath(xlsxPath);
+-        try (Workbook workbook = openWorkbook(xlsxPath)) {
+-            Sheet events = ensureSheet(workbook, SHEET_EVENTS);
+-            writeEvents(events, rows);
+-            try (OutputStream os = Files.newOutputStream(xlsxPath)) {
+-                workbook.write(os);
+-            }
+-        }
+-    }
+-
+-    private static Map<String, String> parseArgs(String[] args) {
+-        Map<String, String> out = new HashMap<>();
+-        for (int i = 0; i < args.length; i++) {
+-            String key = args[i];
+-            if (!key.startsWith("--")) {
+-                continue;
+-            }
+-            if (i + 1 >= args.length) {
+-                throw new IllegalArgumentException("Missing value for " + key);
+-            }
+-            out.put(key, args[++i]);
+-        }
+-        return out;
+-    }
+-
+-    private static Path requiredPath(Map<String, String> cli, String key) {
+-        String value = cli.get(key);
+-        if (value == null || value.isBlank()) {
+-            throw new IllegalArgumentException("Missing required argument: " + key);
+-        }
+-        return Path.of(value);
+-    }
+-
+-    private static List<Map<String, String>> readCsv(Path csvPath) throws IOException {
+-        if (!Files.exists(csvPath)) {
+-            throw new IllegalArgumentException("Missing CSV: " + csvPath);
+-        }
+-        CSVFormat format = CSVFormat.DEFAULT.builder()
+-            .setHeader()
+-            .setSkipHeaderRecord(true)
+-            .setTrim(true)
+-            .build();
+-        try (CSVParser parser = CSVParser.parse(csvPath, StandardCharsets.UTF_8, format)) {
+-            List<String> headers = parser.getHeaderNames();
+-            for (String column : REQUIRED_COLUMNS) {
+-                if (!headers.contains(column)) {
+-                    throw new IllegalArgumentException("CSV missing required column: " + column);
+-                }
+-            }
+-            List<Map<String, String>> out = new ArrayList<>();
+-            for (CSVRecord record : parser) {
+-                Map<String, String> row = new LinkedHashMap<>();
+-                for (String column : REQUIRED_COLUMNS) {
+-                    row.put(column, Optional.ofNullable(record.get(column)).orElse("").trim());
+-                }
+-                out.add(row);
+-            }
+-            return out;
+-        }
+-    }
+-
+-    private static void prepareWorkbookPath(Path xlsxPath) throws IOException {
+-        if (Files.exists(xlsxPath)) {
+-            return;
+-        }
+-        Path parent = xlsxPath.toAbsolutePath().getParent();
+-        if (parent != null) {
+-            Files.createDirectories(parent);
+-        }
+-        try (Workbook wb = new XSSFWorkbook(); OutputStream os = Files.newOutputStream(xlsxPath)) {
+-            wb.createSheet(SHEET_EVENTS);
+-            wb.write(os);
+-        }
+-    }
+-
+-    private static Workbook openWorkbook(Path xlsxPath) throws IOException {
+-        try (InputStream is = Files.newInputStream(xlsxPath)) {
+-            return new XSSFWorkbook(is);
+-        }
+-    }
+-
+-    private static Sheet ensureSheet(Workbook workbook, String name) {
+-        Sheet sheet = workbook.getSheet(name);
+-        if (sheet != null) {
+-            return sheet;
+-        }
+-        return workbook.createSheet(name);
+-    }
+-
+-    private static void clearSheet(Sheet sheet) {
+-        for (int i = sheet.getLastRowNum(); i >= 0; i--) {
+-            Row row = sheet.getRow(i);
+-            if (row != null) {
+-                sheet.removeRow(row);
+-            }
+-        }
+-    }
+-
+-    private static void writeEvents(Sheet sheet, List<Map<String, String>> rows) {
+-        clearSheet(sheet);
+-        Row header = sheet.createRow(0);
+-        for (int i = 0; i < REQUIRED_COLUMNS.size(); i++) {
+-            setCell(header, i, REQUIRED_COLUMNS.get(i));
+-        }
+-        int rowNo = 1;
+-        for (Map<String, String> src : rows) {
+-            Row row = sheet.createRow(rowNo++);
+-            for (int i = 0; i < REQUIRED_COLUMNS.size(); i++) {
+-                setCell(row, i, src.get(REQUIRED_COLUMNS.get(i)));
+-            }
+-        }
+-        if (rowNo < 2) {
+-            sheet.createRow(1);
+-            rowNo = 2;
+-        }
+-        sheet.setAutoFilter(new CellRangeAddress(0, rowNo - 1, 0, REQUIRED_COLUMNS.size() - 1));
+-    }
+-
+-    private static void setCell(Row row, int index, String value) {
+-        Cell cell = row.getCell(index);
+-        if (cell == null) {
+-            cell = row.createCell(index);
+-        }
+-        cell.setCellValue(value == null ? "" : value);
+-    }
+-}
+diff --git a/afp-tools/src/main/java/com/upland/connect/afp/tools/ProjectPlanWorkbookUpdater.java b/afp-tools/src/main/java/com/upland/connect/afp/tools/ProjectPlanWorkbookUpdater.java
+deleted file mode 100644
+index 645d72b..0000000
+--- a/afp-tools/src/main/java/com/upland/connect/afp/tools/ProjectPlanWorkbookUpdater.java
++++ /dev/null
+@@ -1,532 +0,0 @@
+-package com.upland.connect.afp.tools;
+-
+-import org.apache.commons.csv.CSVFormat;
+-import org.apache.commons.csv.CSVParser;
+-import org.apache.commons.csv.CSVRecord;
+-import org.apache.poi.ooxml.POIXMLProperties;
+-import org.apache.poi.ss.usermodel.Cell;
+-import org.apache.poi.ss.usermodel.Row;
+-import org.apache.poi.ss.usermodel.Sheet;
+-import org.apache.poi.ss.usermodel.Workbook;
+-import org.apache.poi.ss.util.CellRangeAddress;
+-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+-import org.openxmlformats.schemas.officeDocument.x2006.docPropsVTypes.CTVector;
+-import org.openxmlformats.schemas.officeDocument.x2006.docPropsVTypes.CTVariant;
+-import org.openxmlformats.schemas.officeDocument.x2006.extendedProperties.CTProperties;
+-import org.openxmlformats.schemas.officeDocument.x2006.extendedProperties.CTVectorLpstr;
+-import org.openxmlformats.schemas.officeDocument.x2006.extendedProperties.CTVectorVariant;
+-
+-import java.io.IOException;
+-import java.io.InputStream;
+-import java.io.OutputStream;
+-import java.nio.charset.StandardCharsets;
+-import java.nio.file.Files;
+-import java.nio.file.Path;
+-import java.time.OffsetDateTime;
+-import java.time.ZoneOffset;
+-import java.time.format.DateTimeFormatter;
+-import java.util.ArrayList;
+-import java.util.Comparator;
+-import java.util.HashMap;
+-import java.util.LinkedHashMap;
+-import java.util.List;
+-import java.util.Map;
+-import java.util.Objects;
+-import java.util.Optional;
+-import java.util.zip.ZipEntry;
+-import java.util.zip.ZipFile;
+-
+-public final class ProjectPlanWorkbookUpdater {
+-
+-    private static final String SHEET_CURRENT = "Current Progress";
+-    private static final String SHEET_HISTORY = "Status History";
+-    private static final String SHEET_TREND = "Completion Trend";
+-    private static final String SHEET_GRAPH = "Progress Graph";
+-
+-    private static final List<String> REQUIRED_COLUMNS = List.of(
+-        "workstream", "task", "priority", "status", "percent_complete", "last_updated", "notes"
+-    );
+-
+-    private ProjectPlanWorkbookUpdater() {}
+-
+-    public static void main(String[] args) throws Exception {
+-        Map<String, String> cli = parseArgs(args);
+-        Path csvPath = requiredPath(cli, "--csv");
+-        Path xlsxPath = requiredPath(cli, "--xlsx");
+-        Path templatePath = optionalPath(cli, "--template");
+-
+-        List<Map<String, String>> rows = readCsv(csvPath);
+-        prepareWorkbookPath(xlsxPath, templatePath);
+-
+-        try (Workbook workbook = openWorkbook(xlsxPath)) {
+-            Sheet current = ensureSheet(workbook, SHEET_CURRENT);
+-            Sheet history = ensureSheet(workbook, SHEET_HISTORY);
+-            Sheet trend = ensureSheet(workbook, SHEET_TREND);
+-            Sheet graph = ensureSheet(workbook, SHEET_GRAPH);
+-
+-            updateCurrent(current, rows);
+-            appendStatusHistory(history, rows);
+-            rebuildTrend(trend, history);
+-            rebuildGraph(graph, trend);
+-            syncExtendedProperties(workbook);
+-
+-            try (OutputStream os = Files.newOutputStream(xlsxPath)) {
+-                workbook.write(os);
+-            }
+-        }
+-    }
+-
+-    private static Map<String, String> parseArgs(String[] args) {
+-        Map<String, String> out = new HashMap<>();
+-        for (int i = 0; i < args.length; i++) {
+-            String k = args[i];
+-            if (!k.startsWith("--")) {
+-                continue;
+-            }
+-            if (i + 1 >= args.length) {
+-                throw new IllegalArgumentException("Missing value for " + k);
+-            }
+-            out.put(k, args[++i]);
+-        }
+-        return out;
+-    }
+-
+-    private static Path requiredPath(Map<String, String> cli, String key) {
+-        String v = cli.get(key);
+-        if (v == null || v.isBlank()) {
+-            throw new IllegalArgumentException("Missing required argument: " + key);
+-        }
+-        return Path.of(v);
+-    }
+-
+-    private static Path optionalPath(Map<String, String> cli, String key) {
+-        String v = cli.get(key);
+-        return (v == null || v.isBlank()) ? null : Path.of(v);
+-    }
+-
+-    private static List<Map<String, String>> readCsv(Path csvPath) throws IOException {
+-        if (!Files.exists(csvPath)) {
+-            throw new IllegalArgumentException("Missing CSV: " + csvPath);
+-        }
+-        CSVFormat format = CSVFormat.DEFAULT.builder()
+-            .setHeader()
+-            .setSkipHeaderRecord(true)
+-            .setTrim(true)
+-            .build();
+-        try (CSVParser parser = CSVParser.parse(csvPath, StandardCharsets.UTF_8, format)) {
+-            List<String> headers = parser.getHeaderNames();
+-            for (String required : REQUIRED_COLUMNS) {
+-                if (!headers.contains(required)) {
+-                    throw new IllegalArgumentException("CSV missing required column: " + required);
+-                }
+-            }
+-            List<Map<String, String>> out = new ArrayList<>();
+-            for (CSVRecord r : parser) {
+-                Map<String, String> row = new HashMap<>();
+-                for (String c : REQUIRED_COLUMNS) {
+-                    row.put(c, Optional.ofNullable(r.get(c)).orElse("").trim());
+-                }
+-                out.add(row);
+-            }
+-            return out;
+-        }
+-    }
+-
+-    private static void prepareWorkbookPath(Path xlsxPath, Path templatePath) throws IOException {
+-        if (Files.exists(xlsxPath)) {
+-            return;
+-        }
+-        Files.createDirectories(xlsxPath.toAbsolutePath().getParent());
+-        if (templatePath != null && Files.exists(templatePath)) {
+-            if (templatePath.toString().toLowerCase().endsWith(".zip")) {
+-                try (ZipFile zf = new ZipFile(templatePath.toFile())) {
+-                    ZipEntry target = zf.getEntry("project-plan-progress.xlsx");
+-                    if (target != null) {
+-                        try (InputStream in = zf.getInputStream(target)) {
+-                            Files.copy(in, xlsxPath);
+-                            return;
+-                        }
+-                    }
+-                }
+-            } else {
+-                Files.copy(templatePath, xlsxPath);
+-                return;
+-            }
+-        }
+-        try (Workbook wb = new XSSFWorkbook(); OutputStream os = Files.newOutputStream(xlsxPath)) {
+-            wb.createSheet(SHEET_CURRENT);
+-            wb.createSheet(SHEET_HISTORY);
+-            wb.createSheet(SHEET_TREND);
+-            wb.createSheet(SHEET_GRAPH);
+-            wb.write(os);
+-        }
+-    }
+-
+-    private static Workbook openWorkbook(Path xlsxPath) throws IOException {
+-        try (InputStream is = Files.newInputStream(xlsxPath)) {
+-            return new XSSFWorkbook(is);
+-        }
+-    }
+-
+-    private static Sheet ensureSheet(Workbook workbook, String name) {
+-        Sheet s = workbook.getSheet(name);
+-        if (s != null) {
+-            return s;
+-        }
+-        return workbook.createSheet(name);
+-    }
+-
+-    private static void clearSheet(Sheet sheet) {
+-        for (int i = sheet.getLastRowNum(); i >= 0; i--) {
+-            Row row = sheet.getRow(i);
+-            if (row != null) {
+-                sheet.removeRow(row);
+-            }
+-        }
+-    }
+-
+-    private static String nowIso() {
+-        return OffsetDateTime.now(ZoneOffset.UTC).withNano(0).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME);
+-    }
+-
+-    private static void setCell(Row row, int idx, String value) {
+-        Cell c = row.getCell(idx);
+-        if (c == null) {
+-            c = row.createCell(idx);
+-        }
+-        c.setCellValue(value == null ? "" : value);
+-    }
+-
+-    private static String getCell(Row row, int idx) {
+-        if (row == null) {
+-            return "";
+-        }
+-        Cell c = row.getCell(idx);
+-        if (c == null) {
+-            return "";
+-        }
+-        return switch (c.getCellType()) {
+-            case STRING -> c.getStringCellValue();
+-            case NUMERIC -> Double.toString(c.getNumericCellValue());
+-            case BOOLEAN -> Boolean.toString(c.getBooleanCellValue());
+-            case FORMULA -> c.getCellFormula();
+-            default -> "";
+-        };
+-    }
+-
+-    private static void updateCurrent(Sheet current, List<Map<String, String>> rows) {
+-        clearSheet(current);
+-        String[] headers = {"workstream", "task", "priority", "status", "percent_complete", "last_updated", "notes"};
+-        Row hr = current.createRow(0);
+-        for (int i = 0; i < headers.length; i++) {
+-            setCell(hr, i, headers[i]);
+-        }
+-        int rowNo = 1;
+-        for (Map<String, String> src : rows) {
+-            Row row = current.createRow(rowNo++);
+-            setCell(row, 0, src.get("workstream"));
+-            setCell(row, 1, src.get("task"));
+-            setCell(row, 2, src.get("priority"));
+-            setCell(row, 3, src.get("status"));
+-            setCell(row, 4, src.get("percent_complete"));
+-            setCell(row, 5, src.get("last_updated"));
+-            setCell(row, 6, src.get("notes"));
+-        }
+-        if (rowNo < 2) {
+-            current.createRow(1);
+-            rowNo = 2;
+-        }
+-        current.setAutoFilter(new CellRangeAddress(0, rowNo - 1, 0, 6));
+-    }
+-
+-    private static void ensureHistoryHeader(Sheet history) {
+-        if (history.getRow(0) == null) {
+-            history.createRow(0);
+-        }
+-        String[] headers = {
+-            "updated_at",
+-            "workstream",
+-            "task",
+-            "previous_status",
+-            "new_status",
+-            "previous_priority",
+-            "new_priority",
+-            "previous_percent",
+-            "new_percent",
+-            "csv_last_updated",
+-            "notes"
+-        };
+-        Row hr = history.getRow(0);
+-        for (int i = 0; i < headers.length; i++) {
+-            setCell(hr, i, headers[i]);
+-        }
+-    }
+-
+-    private record HistState(String status, String priority, String percent, String csvLast, String notes) {}
+-
+-    private static void appendStatusHistory(Sheet history, List<Map<String, String>> currentRows) {
+-        ensureHistoryHeader(history);
+-        Map<String, Integer> lastByKey = new HashMap<>();
+-        for (int r = 1; r <= history.getLastRowNum(); r++) {
+-            Row row = history.getRow(r);
+-            String ws = getCell(row, 1).trim();
+-            String task = getCell(row, 2).trim();
+-            if (!ws.isEmpty() && !task.isEmpty()) {
+-                lastByKey.put(ws + "|" + task, r);
+-            }
+-        }
+-        int appendRow = history.getLastRowNum() + 1;
+-        String now = nowIso();
+-        for (Map<String, String> src : currentRows) {
+-            String ws = src.getOrDefault("workstream", "").trim();
+-            String task = src.getOrDefault("task", "").trim();
+-            if (ws.isEmpty() || task.isEmpty()) {
+-                continue;
+-            }
+-            String key = ws + "|" + task;
+-            HistState prev = readPrev(history, lastByKey.get(key));
+-            String status = src.getOrDefault("status", "").trim();
+-            String priority = src.getOrDefault("priority", "").trim();
+-            String percent = src.getOrDefault("percent_complete", "").trim();
+-            String csvLast = src.getOrDefault("last_updated", "").trim();
+-            String notes = src.getOrDefault("notes", "").trim();
+-
+-            boolean changed = lastByKey.get(key) == null
+-                || !Objects.equals(prev.status(), status)
+-                || !Objects.equals(prev.priority(), priority)
+-                || !Objects.equals(prev.percent(), percent)
+-                || !Objects.equals(prev.csvLast(), csvLast)
+-                || !Objects.equals(prev.notes(), notes);
+-            if (!changed) {
+-                continue;
+-            }
+-            Row out = history.createRow(appendRow++);
+-            setCell(out, 0, now);
+-            setCell(out, 1, ws);
+-            setCell(out, 2, task);
+-            setCell(out, 3, prev.status());
+-            setCell(out, 4, status);
+-            setCell(out, 5, prev.priority());
+-            setCell(out, 6, priority);
+-            setCell(out, 7, prev.percent());
+-            setCell(out, 8, percent);
+-            setCell(out, 9, csvLast);
+-            setCell(out, 10, notes);
+-            lastByKey.put(key, appendRow - 1);
+-        }
+-    }
+-
+-    private static HistState readPrev(Sheet history, Integer rowNum) {
+-        if (rowNum == null) {
+-            return new HistState("", "", "", "", "");
+-        }
+-        Row row = history.getRow(rowNum);
+-        return new HistState(
+-            getCell(row, 4).trim(),
+-            getCell(row, 6).trim(),
+-            getCell(row, 8).trim(),
+-            getCell(row, 9).trim(),
+-            getCell(row, 10).trim()
+-        );
+-    }
+-
+-    private static double parsePercent(String raw) {
+-        String norm = Optional.ofNullable(raw).orElse("").replace("%", "").trim();
+-        if (norm.isEmpty()) {
+-            return 0.0d;
+-        }
+-        try {
+-            return Double.parseDouble(norm);
+-        } catch (NumberFormatException nfe) {
+-            return 0.0d;
+-        }
+-    }
+-
+-    private static String fmtPercent(double v) {
+-        String s = String.format(java.util.Locale.ROOT, "%.2f", v);
+-        s = s.replaceAll("0+$", "");
+-        if (s.endsWith(".")) {
+-            s = s.substring(0, s.length() - 1);
+-        }
+-        return s;
+-    }
+-
+-    private static String asciiTrend(List<Double> values) {
+-        String chars = " .:-=+*#%@";
+-        StringBuilder sb = new StringBuilder();
+-        for (double v : values) {
+-            double c = Math.max(0.0, Math.min(100.0, v));
+-            int idx = (int) Math.round((chars.length() - 1) * c / 100.0);
+-            sb.append(chars.charAt(idx));
+-        }
+-        return sb.toString();
+-    }
+-
+-    private static void rebuildTrend(Sheet trend, Sheet history) {
+-        clearSheet(trend);
+-        String[] headers = {
+-            "workstream",
+-            "task",
+-            "priority",
+-            "iteration",
+-            "updated_at",
+-            "percent_complete",
+-            "delta_percent",
+-            "trend_points",
+-            "trend_line_ascii",
+-            "trend_formula_graph"
+-        };
+-        Row hr = trend.createRow(0);
+-        for (int i = 0; i < headers.length; i++) {
+-            setCell(hr, i, headers[i]);
+-        }
+-        Map<String, Integer> iterationByKey = new HashMap<>();
+-        Map<String, Double> prevPercentByKey = new HashMap<>();
+-        Map<String, List<Double>> pointsByKey = new LinkedHashMap<>();
+-
+-        int outRow = 1;
+-        for (int i = 1; i <= history.getLastRowNum(); i++) {
+-            Row in = history.getRow(i);
+-            String ws = getCell(in, 1).trim();
+-            String task = getCell(in, 2).trim();
+-            if (ws.isEmpty() || task.isEmpty()) {
+-                continue;
+-            }
+-            String key = ws + "|" + task;
+-            int it = iterationByKey.getOrDefault(key, 0) + 1;
+-            iterationByKey.put(key, it);
+-
+-            double point = parsePercent(getCell(in, 8));
+-            Double prev = prevPercentByKey.get(key);
+-            String delta = prev == null ? "" : fmtPercent(point - prev);
+-            prevPercentByKey.put(key, point);
+-
+-            List<Double> points = pointsByKey.computeIfAbsent(key, ignored -> new ArrayList<>());
+-            points.add(point);
+-
+-            Row out = trend.createRow(outRow + 1 - 1);
+-            setCell(out, 0, ws);
+-            setCell(out, 1, task);
+-            setCell(out, 2, getCell(in, 6).trim());
+-            setCell(out, 3, Integer.toString(it));
+-            String updatedAt = getCell(in, 9).trim();
+-            if (updatedAt.isEmpty()) {
+-                updatedAt = getCell(in, 0).trim();
+-            }
+-            setCell(out, 4, updatedAt);
+-            setCell(out, 5, fmtPercent(point));
+-            setCell(out, 6, delta);
+-            setCell(out, 7, String.join(",", points.stream().map(ProjectPlanWorkbookUpdater::fmtPercent).toList()));
+-            setCell(out, 8, asciiTrend(points));
+-            outRow++;
+-        }
+-    }
+-
+-    private static void rebuildGraph(Sheet graph, Sheet trend) {
+-        clearSheet(graph);
+-        Map<String, Map<Integer, Double>> pointsByTask = new LinkedHashMap<>();
+-        int maxIteration = 1;
+-        for (int r = 1; r <= trend.getLastRowNum(); r++) {
+-            Row row = trend.getRow(r);
+-            if (row == null) {
+-                continue;
+-            }
+-            String ws = getCell(row, 0).trim();
+-            String task = getCell(row, 1).trim();
+-            if (ws.isEmpty() || task.isEmpty()) {
+-                continue;
+-            }
+-            String label = ws + " | " + task;
+-            int it;
+-            try {
+-                it = Integer.parseInt(getCell(row, 3).trim());
+-            } catch (NumberFormatException nfe) {
+-                it = 1;
+-            }
+-            maxIteration = Math.max(maxIteration, it);
+-            double pct = parsePercent(getCell(row, 5));
+-            pointsByTask.computeIfAbsent(label, ignored -> new HashMap<>()).put(it, pct);
+-        }
+-
+-        Row header = graph.createRow(0);
+-        setCell(header, 0, "iteration");
+-        List<String> labels = new ArrayList<>(pointsByTask.keySet());
+-        labels.sort(Comparator.naturalOrder());
+-        for (int c = 0; c < labels.size(); c++) {
+-            setCell(header, c + 1, labels.get(c));
+-        }
+-        for (int it = 1; it <= maxIteration; it++) {
+-            Row row = graph.createRow(it);
+-            setCell(row, 0, Integer.toString(it));
+-            for (int c = 0; c < labels.size(); c++) {
+-                Double v = pointsByTask.get(labels.get(c)).get(it);
+-                setCell(row, c + 1, v == null ? "" : fmtPercent(v));
+-            }
+-        }
+-
+-        int summaryStart = maxIteration + 3;
+-        Row sh = graph.createRow(summaryStart);
+-        setCell(sh, 0, "task");
+-        setCell(sh, 1, "trend_line_ascii");
+-        setCell(sh, 2, "latest_percent");
+-        int out = summaryStart + 1;
+-        for (String label : labels) {
+-            List<Double> vals = new ArrayList<>();
+-            double latest = 0.0;
+-            for (int i = 1; i <= maxIteration; i++) {
+-                Double v = pointsByTask.get(label).get(i);
+-                if (v == null) {
+-                    v = latest;
+-                }
+-                latest = v;
+-                vals.add(v);
+-            }
+-            Row row = graph.createRow(out++);
+-            setCell(row, 0, label);
+-            setCell(row, 1, asciiTrend(vals));
+-            setCell(row, 2, fmtPercent(latest));
+-        }
+-    }
+-
+-    private static void syncExtendedProperties(Workbook workbook) {
+-        if (!(workbook instanceof XSSFWorkbook xwb)) {
+-            return;
+-        }
+-        List<String> sheetNames = new ArrayList<>();
+-        for (int i = 0; i < xwb.getNumberOfSheets(); i++) {
+-            sheetNames.add(xwb.getSheetName(i));
+-        }
+-
+-        POIXMLProperties props = xwb.getProperties();
+-        CTProperties ext = props.getExtendedProperties().getUnderlyingProperties();
+-
+-        if (!ext.isSetHeadingPairs()) {
+-            ext.addNewHeadingPairs();
+-        }
+-        CTVectorVariant headingPairs = ext.isSetHeadingPairs() ? ext.getHeadingPairs() : ext.addNewHeadingPairs();
+-        CTVector headingVector = headingPairs.getVector() != null
+-            ? headingPairs.getVector()
+-            : headingPairs.addNewVector();
+-        while (headingVector.sizeOfVariantArray() > 0) {
+-            headingVector.removeVariant(0);
+-        }
+-        headingVector.setSize(2);
+-
+-        CTVariant v1 = headingVector.addNewVariant();
+-        v1.setLpstr("Worksheets");
+-        CTVariant v2 = headingVector.addNewVariant();
+-        v2.setI4(sheetNames.size());
+-
+-        CTVectorLpstr titlesOfParts = ext.isSetTitlesOfParts() ? ext.getTitlesOfParts() : ext.addNewTitlesOfParts();
+-        CTVector titles = titlesOfParts.getVector() != null
+-            ? titlesOfParts.getVector()
+-            : titlesOfParts.addNewVector();
+-        while (titles.sizeOfLpstrArray() > 0) {
+-            titles.removeLpstr(0);
+-        }
+-        for (String name : sheetNames) {
+-            titles.addLpstr(name);
+-        }
+-        titles.setSize(sheetNames.size());
+-    }
+-}
+diff --git a/afp-tools/src/main/java/com/upland/connect/afp/tools/StateDatabaseTool.java b/afp-tools/src/main/java/com/upland/connect/afp/tools/StateDatabaseTool.java
+deleted file mode 100644
+index ca477cc..0000000
+--- a/afp-tools/src/main/java/com/upland/connect/afp/tools/StateDatabaseTool.java
++++ /dev/null
+@@ -1,1255 +0,0 @@
+-package com.upland.connect.afp.tools;
+-
+-import com.google.gson.Gson;
+-import com.google.gson.GsonBuilder;
+-import com.google.gson.JsonElement;
+-import com.google.gson.JsonObject;
+-import org.apache.commons.csv.CSVFormat;
+-import org.apache.commons.csv.CSVParser;
+-import org.apache.commons.csv.CSVRecord;
+-
+-import java.io.IOException;
+-import java.io.Reader;
+-import java.security.MessageDigest;
+-import java.nio.charset.StandardCharsets;
+-import java.nio.file.FileSystems;
+-import java.nio.file.FileVisitResult;
+-import java.nio.file.Files;
+-import java.nio.file.Path;
+-import java.nio.file.PathMatcher;
+-import java.nio.file.SimpleFileVisitor;
+-import java.nio.file.attribute.BasicFileAttributes;
+-import java.sql.Connection;
+-import java.sql.DriverManager;
+-import java.sql.PreparedStatement;
+-import java.sql.ResultSet;
+-import java.sql.SQLException;
+-import java.sql.Statement;
+-import java.time.OffsetDateTime;
+-import java.time.ZoneOffset;
+-import java.time.format.DateTimeFormatter;
+-import java.util.ArrayList;
+-import java.util.Comparator;
+-import java.util.HashMap;
+-import java.util.LinkedHashMap;
+-import java.util.LinkedHashSet;
+-import java.util.List;
+-import java.util.Locale;
+-import java.util.Map;
+-import java.util.Optional;
+-import java.util.Set;
+-
+-public final class StateDatabaseTool {
+-
+-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+-    private static final List<String> ISSUE_COLUMNS = List.of(
+-        "id", "status", "severity", "title", "components", "opened_on", "last_reviewed", "owner", "notes"
+-    );
+-    private static final List<String> PROGRESS_COLUMNS = List.of(
+-        "workstream", "task", "priority", "status", "percent_complete", "last_updated", "notes"
+-    );
+-    private static final List<String> GOVERNANCE_COLUMNS = List.of(
+-        "event_id", "event_date", "phase", "status", "checkpoint_id", "issue_id", "summary", "evidence", "updated_by"
+-    );
+-    private static final DateTimeFormatter ISO = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+-
+-    private StateDatabaseTool() {}
+-
+-    public static void main(String[] args) throws Exception {
+-        if (args.length == 0) {
+-            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger");
+-        }
+-        String command = args[0];
+-        Map<String, String> cli = parseArgs(args, 1);
+-        int exit = switch (command) {
+-            case "sync-project" -> runSyncProject(cli);
+-            case "sync-boilerplate" -> runSyncBoilerplate(cli);
+-            case "export-progress-json" -> runExportProgressJson(cli);
+-            case "issues-tickle" -> runIssuesTickle(cli);
+-            case "issues-effectiveness" -> runIssuesEffectiveness(cli);
+-            case "governance-alerts" -> runGovernanceAlerts(cli);
+-            case "version-control-ledger" -> runVersionControlLedger(cli);
+-            default -> throw new IllegalArgumentException("Unsupported command: " + command);
+-        };
+-        if (exit != 0) {
+-            System.exit(exit);
+-        }
+-    }
+-
+-    private static Map<String, String> parseArgs(String[] args, int start) {
+-        Map<String, String> out = new HashMap<>();
+-        for (int i = start; i < args.length; i++) {
+-            String token = args[i];
+-            if ("--enforce".equals(token)) {
+-                out.put("--enforce", "true");
+-                continue;
+-            }
+-            if (!token.startsWith("--")) {
+-                continue;
+-            }
+-            if (i + 1 >= args.length) {
+-                throw new IllegalArgumentException("Missing value for " + token);
+-            }
+-            out.put(token, args[++i]);
+-        }
+-        return out;
+-    }
+-
+-    private static Path requiredPath(Map<String, String> cli, String key) {
+-        String value = cli.get(key);
+-        if (value == null || value.isBlank()) {
+-            throw new IllegalArgumentException("Missing required argument: " + key);
+-        }
+-        return Path.of(value);
+-    }
+-
+-    private static Path optionalPath(Map<String, String> cli, String key) {
+-        String value = cli.get(key);
+-        if (value == null || value.isBlank()) {
+-            return null;
+-        }
+-        return Path.of(value);
+-    }
+-
+-    private static int runSyncProject(Map<String, String> cli) throws Exception {
+-        Path dbPath = requiredPath(cli, "--db");
+-        Path issuesPath = requiredPath(cli, "--issues");
+-        Path progressPath = requiredPath(cli, "--progress");
+-        Path fidelityPath = optionalPath(cli, "--fidelity");
+-        Path governanceEventsPath = optionalPath(cli, "--governance-events");
+-        ensureParent(dbPath);
+-        try (Connection conn = connect(dbPath)) {
+-            initProjectSchema(conn);
+-            syncIssues(conn, issuesPath);
+-            syncProgress(conn, progressPath);
+-            syncFidelity(conn, fidelityPath);
+-            syncGovernanceEvents(conn, governanceEventsPath);
+-            syncVersionControlState(conn);
+-        }
+-        return 0;
+-    }
+-
+-    private static int runSyncBoilerplate(Map<String, String> cli) throws Exception {
+-        Path dbPath = requiredPath(cli, "--db");
+-        Path packagesDir = requiredPath(cli, "--packages");
+-        ensureParent(dbPath);
+-        try (Connection conn = connect(dbPath)) {
+-            initBoilerplateSchema(conn);
+-            syncBoilerplatePackages(conn, packagesDir);
+-        }
+-        return 0;
+-    }
+-
+-    private static int runExportProgressJson(Map<String, String> cli) throws Exception {
+-        Path dbPath = requiredPath(cli, "--db");
+-        Path jsonPath = requiredPath(cli, "--json");
+-        ensureParent(jsonPath);
+-
+-        List<Map<String, String>> tasks = new ArrayList<>();
+-        try (Connection conn = connect(dbPath);
+-             PreparedStatement ps = conn.prepareStatement(
+-                 "select workstream, task, priority, status, percent_complete, last_updated, notes " +
+-                     "from plan_tasks order by row_index asc"
+-             );
+-             ResultSet rs = ps.executeQuery()) {
+-            while (rs.next()) {
+-                Map<String, String> row = new LinkedHashMap<>();
+-                row.put("workstream", text(rs.getString(1)));
+-                row.put("task", text(rs.getString(2)));
+-                row.put("priority", text(rs.getString(3)));
+-                row.put("status", text(rs.getString(4)));
+-                row.put("percent_complete", text(rs.getString(5)));
+-                row.put("last_updated", text(rs.getString(6)));
+-                row.put("notes", text(rs.getString(7)));
+-                tasks.add(row);
+-            }
+-        }
+-
+-        Map<String, Object> payload = new LinkedHashMap<>();
+-        payload.put("schemaVersion", "1");
+-        payload.put("generatedAt", nowIso());
+-        payload.put("source", "sqlite");
+-        payload.put("taskCount", tasks.size());
+-        payload.put("tasks", tasks);
+-        payload.put("followUps", List.of(Map.of(
+-            "id", "restored-workbook-content-review",
+-            "status", "pending",
+-            "note", "Circle back and review restored workbook content against JSON/CSV sources."
+-        )));
+-        writeJson(jsonPath, payload);
+-        return 0;
+-    }
+-
+-    private static int runIssuesTickle(Map<String, String> cli) throws Exception {
+-        Path dbPath = requiredPath(cli, "--db");
+-        Path issuesPath = requiredPath(cli, "--issues");
+-        Path outputPath = requiredPath(cli, "--output");
+-        boolean enforce = "true".equalsIgnoreCase(cli.getOrDefault("--enforce", "false"));
+-        ensureParent(outputPath);
+-
+-        List<String> changed = changedPaths();
+-        Set<String> changedSet = new LinkedHashSet<>(changed);
+-        String issuesPathPosix = issuesPath.toString().replace('\\', '/');
+-        boolean issuesChanged = changedSet.stream().anyMatch(ch -> changeCoversTarget(ch, issuesPathPosix));
+-
+-        List<Map<String, Object>> triggered = new ArrayList<>();
+-        try (Connection conn = connect(dbPath);
+-             PreparedStatement ps = conn.prepareStatement("select id, status, title, components from issues order by id asc");
+-             ResultSet rs = ps.executeQuery()) {
+-            while (rs.next()) {
+-                String components = text(rs.getString(4));
+-                if (components.isBlank()) {
+-                    continue;
+-                }
+-                List<String> patterns = splitPipe(components);
+-                Set<String> matches = new LinkedHashSet<>();
+-                for (String path : changed) {
+-                    for (String pattern : patterns) {
+-                        if (globMatch(path, pattern) || changeCoversTarget(path, pattern)) {
+-                            matches.add(path);
+-                            break;
+-                        }
+-                    }
+-                }
+-                if (!matches.isEmpty()) {
+-                    Map<String, Object> t = new LinkedHashMap<>();
+-                    t.put("id", text(rs.getString(1)));
+-                    t.put("status", text(rs.getString(2)));
+-                    t.put("title", text(rs.getString(3)));
+-                    t.put("matchedComponents", new ArrayList<>(matches));
+-                    triggered.add(t);
+-                }
+-            }
+-        }
+-
+-        boolean requiresUpdate = !triggered.isEmpty() && !issuesChanged;
+-        Map<String, Object> payload = new LinkedHashMap<>();
+-        payload.put("schemaVersion", "1");
+-        payload.put("generatedAt", nowIso());
+-        payload.put("issuesLogPath", issuesPathPosix);
+-        payload.put("issuesLogTouchedInWorkingTree", issuesChanged);
+-        payload.put("changedPathCount", changed.size());
+-        payload.put("triggeredIssueCount", triggered.size());
+-        payload.put("requiresIssuesLogUpdate", requiresUpdate);
+-        payload.put("triggeredIssues", triggered);
+-        payload.put(
+-            "message",
+-            requiresUpdate
+-                ? "Issue-referenced components are being modified; update docs/issues-log.csv in the same change."
+-                : "No issue-log tickle required."
+-        );
+-        writeJson(outputPath, payload);
+-        return (enforce && requiresUpdate) ? 2 : 0;
+-    }
+-
+-    private static int runIssuesEffectiveness(Map<String, String> cli) throws Exception {
+-        Path dbPath = requiredPath(cli, "--db");
+-        Path ticklePath = requiredPath(cli, "--tickle");
+-        Path outputPath = requiredPath(cli, "--output");
+-        ensureParent(outputPath);
+-
+-        JsonObject tickle = readJsonObject(ticklePath);
+-        List<Map<String, String>> issues = new ArrayList<>();
+-        double percentSum = 0.0;
+-        int percentCount = 0;
+-        Double fidelityScore = null;
+-        Double pixelDiff = null;
+-        Double tokenRecall = null;
+-        Double tokenPrecision = null;
+-
+-        try (Connection conn = connect(dbPath)) {
+-            try (PreparedStatement ps = conn.prepareStatement(
+-                "select id, status, severity, title, owner, last_reviewed from issues order by id asc"
+-            ); ResultSet rs = ps.executeQuery()) {
+-                while (rs.next()) {
+-                    Map<String, String> i = new LinkedHashMap<>();
+-                    i.put("id", text(rs.getString(1)));
+-                    i.put("status", text(rs.getString(2)));
+-                    i.put("severity", text(rs.getString(3)));
+-                    i.put("title", text(rs.getString(4)));
+-                    i.put("owner", text(rs.getString(5)));
+-                    i.put("last_reviewed", text(rs.getString(6)));
+-                    issues.add(i);
+-                }
+-            }
+-
+-            try (PreparedStatement ps = conn.prepareStatement("select percent_complete from plan_tasks");
+-                 ResultSet rs = ps.executeQuery()) {
+-                while (rs.next()) {
+-                    percentSum += parsePercent(rs.getString(1));
+-                    percentCount++;
+-                }
+-            }
+-
+-            try (PreparedStatement ps = conn.prepareStatement(
+-                "select fidelity_score, average_pixel_diff_ratio, token_recall, token_precision " +
+-                    "from fidelity_snapshot where id = 1"
+-            ); ResultSet rs = ps.executeQuery()) {
+-                if (rs.next()) {
+-                    fidelityScore = numberOrNull(rs, 1);
+-                    pixelDiff = numberOrNull(rs, 2);
+-                    tokenRecall = numberOrNull(rs, 3);
+-                    tokenPrecision = numberOrNull(rs, 4);
+-                }
+-            }
+-        }
+-
+-        List<Map<String, String>> openIssues = issues.stream()
+-            .filter(i -> isOpenStatus(i.get("status")))
+-            .toList();
+-        List<Map<String, String>> highOpen = openIssues.stream()
+-            .filter(i -> "high".equalsIgnoreCase(text(i.get("severity"))))
+-            .toList();
+-
+-        boolean requiresUpdate = tickle.has("requiresIssuesLogUpdate") && tickle.get("requiresIssuesLogUpdate").getAsBoolean();
+-        int triggeredCount = tickle.has("triggeredIssueCount") ? tickle.get("triggeredIssueCount").getAsInt() : 0;
+-        List<String> signals = new ArrayList<>();
+-        if (requiresUpdate) {
+-            signals.add("Issue log update required for changed issue-referenced components.");
+-        }
+-        if (fidelityScore != null && fidelityScore < 0.95d) {
+-            signals.add("Fidelity score below target (0.95).");
+-        }
+-        if (pixelDiff != null && pixelDiff > 0.03d) {
+-            signals.add("Average pixel diff ratio above target (0.03).");
+-        }
+-        if (tokenRecall != null && tokenRecall < 0.98d) {
+-            signals.add("Token recall below target (0.98).");
+-        }
+-        if (tokenPrecision != null && tokenPrecision < 0.98d) {
+-            signals.add("Token precision below target (0.98).");
+-        }
+-        double avgPercent = percentCount > 0 ? (percentSum / percentCount) : 0.0;
+-        if (avgPercent < 85.0d) {
+-            signals.add("Average plan task completion below 85%.");
+-        }
+-        if (!highOpen.isEmpty()) {
+-            signals.add("High-severity issues remain open.");
+-        }
+-
+-        List<Map<String, String>> openHighSeverity = new ArrayList<>();
+-        for (Map<String, String> i : highOpen) {
+-            Map<String, String> entry = new LinkedHashMap<>();
+-            entry.put("id", i.get("id"));
+-            entry.put("title", i.get("title"));
+-            entry.put("owner", i.get("owner"));
+-            entry.put("last_reviewed", i.get("last_reviewed"));
+-            openHighSeverity.add(entry);
+-        }
+-
+-        Map<String, Object> fidelityMap = new LinkedHashMap<>();
+-        fidelityMap.put("fidelityScore", fidelityScore);
+-        fidelityMap.put("averagePixelDiffRatio", pixelDiff);
+-        fidelityMap.put("tokenRecall", tokenRecall);
+-        fidelityMap.put("tokenPrecision", tokenPrecision);
+-
+-        Map<String, Object> payload = new LinkedHashMap<>();
+-        payload.put("schemaVersion", "1");
+-        payload.put("generatedAt", nowIso());
+-        payload.put("summary", Map.of(
+-            "issueCount", issues.size(),
+-            "openIssueCount", openIssues.size(),
+-            "highSeverityOpenCount", highOpen.size(),
+-            "triggeredIssueCount", triggeredCount,
+-            "requiresIssuesLogUpdate", requiresUpdate,
+-            "taskCount", percentCount,
+-            "averageTaskPercentComplete", round2(avgPercent)
+-        ));
+-        payload.put("fidelity", fidelityMap);
+-        payload.put("signals", signals);
+-        payload.put("triggeredIssues", readArrayOrEmpty(tickle, "triggeredIssues"));
+-        payload.put("openHighSeverityIssues", openHighSeverity);
+-        writeJson(outputPath, payload);
+-        return 0;
+-    }
+-
+-    private static int runGovernanceAlerts(Map<String, String> cli) throws Exception {
+-        Path dbPath = requiredPath(cli, "--db");
+-        Path outputPath = requiredPath(cli, "--output");
+-        boolean enforce = "true".equalsIgnoreCase(cli.getOrDefault("--enforce", "false"));
+-        ensureParent(outputPath);
+-
+-        List<Map<String, String>> activeBreaches = new ArrayList<>();
+-        List<Map<String, String>> trustEntries = new ArrayList<>();
+-        try (Connection conn = connect(dbPath)) {
+-            try (PreparedStatement ps = conn.prepareStatement(
+-                "select event_id, event_date, phase, status, checkpoint_id, issue_id, summary, evidence, updated_by " +
+-                    "from governance_events order by event_date desc, event_id desc"
+-            ); ResultSet rs = ps.executeQuery()) {
+-                while (rs.next()) {
+-                    Map<String, String> event = new LinkedHashMap<>();
+-                    event.put("event_id", text(rs.getString(1)));
+-                    event.put("event_date", text(rs.getString(2)));
+-                    event.put("phase", text(rs.getString(3)));
+-                    event.put("status", text(rs.getString(4)));
+-                    event.put("checkpoint_id", text(rs.getString(5)));
+-                    event.put("issue_id", text(rs.getString(6)));
+-                    event.put("summary", text(rs.getString(7)));
+-                    event.put("evidence", text(rs.getString(8)));
+-                    event.put("updated_by", text(rs.getString(9)));
+-                    String status = event.get("status").toLowerCase(Locale.ROOT);
+-                    if (status.equals("open") || status.equals("in_progress") || status.equals("breach")) {
+-                        activeBreaches.add(event);
+-                    }
+-                    String summary = event.get("summary").toLowerCase(Locale.ROOT);
+-                    String phase = event.get("phase").toLowerCase(Locale.ROOT);
+-                    if (summary.contains("trust") || phase.contains("trust")) {
+-                        trustEntries.add(event);
+-                    }
+-                }
+-            }
+-        }
+-
+-        boolean hasBreach = !activeBreaches.isEmpty();
+-        Map<String, Object> payload = new LinkedHashMap<>();
+-        payload.put("schemaVersion", "1");
+-        payload.put("generatedAt", nowIso());
+-        payload.put("source", "sqlite");
+-        payload.put("hasActiveGovernanceBreach", hasBreach);
+-        payload.put("activeBreachCount", activeBreaches.size());
+-        payload.put("trustEventCount", trustEntries.size());
+-        payload.put("activeBreaches", activeBreaches);
+-        payload.put("trustEvents", trustEntries);
+-        payload.put("message", hasBreach
+-            ? "Governance breach/in-progress items require human visibility."
+-            : "No active governance breaches.");
+-        writeJson(outputPath, payload);
+-        return (enforce && hasBreach) ? 2 : 0;
+-    }
+-
+-    private static int runVersionControlLedger(Map<String, String> cli) throws Exception {
+-        Path dbPath = requiredPath(cli, "--db");
+-        Path outputPath = requiredPath(cli, "--output");
+-        ensureParent(outputPath);
+-
+-        Map<String, Object> repo = new LinkedHashMap<>();
+-        List<Map<String, Object>> files = new ArrayList<>();
+-        try (Connection conn = connect(dbPath)) {
+-            try (PreparedStatement ps = conn.prepareStatement(
+-                "select git_head, git_branch, is_dirty, tracked_count, modified_count, untracked_count, deleted_count, updated_at " +
+-                    "from repo_vcs_snapshot where id = 1"
+-            ); ResultSet rs = ps.executeQuery()) {
+-                if (rs.next()) {
+-                    repo.put("gitHead", text(rs.getString(1)));
+-                    repo.put("gitBranch", text(rs.getString(2)));
+-                    repo.put("isDirty", rs.getInt(3) != 0);
+-                    repo.put("trackedCount", rs.getInt(4));
+-                    repo.put("modifiedCount", rs.getInt(5));
+-                    repo.put("untrackedCount", rs.getInt(6));
+-                    repo.put("deletedCount", rs.getInt(7));
+-                    repo.put("updatedAt", text(rs.getString(8)));
+-                }
+-            }
+-            try (PreparedStatement ps = conn.prepareStatement(
+-                "select path, tracked, status_code, exists_on_disk, size_bytes, sha256 from repo_file_state order by path asc"
+-            ); ResultSet rs = ps.executeQuery()) {
+-                while (rs.next()) {
+-                    Map<String, Object> row = new LinkedHashMap<>();
+-                    row.put("path", text(rs.getString(1)));
+-                    row.put("tracked", rs.getInt(2) != 0);
+-                    row.put("statusCode", text(rs.getString(3)));
+-                    row.put("existsOnDisk", rs.getInt(4) != 0);
+-                    row.put("sizeBytes", rs.getLong(5));
+-                    row.put("sha256", text(rs.getString(6)));
+-                    files.add(row);
+-                }
+-            }
+-        }
+-
+-        Map<String, Object> payload = new LinkedHashMap<>();
+-        payload.put("schemaVersion", "1");
+-        payload.put("generatedAt", nowIso());
+-        payload.put("source", "sqlite");
+-        payload.put("repo", repo);
+-        payload.put("fileCount", files.size());
+-        payload.put("files", files);
+-        payload.put("note", "Git is the canonical version-control source; this ledger is an auditable mirror in project state.");
+-        writeJson(outputPath, payload);
+-        return 0;
+-    }
+-
+-    private static Connection connect(Path dbPath) throws SQLException {
+-        return DriverManager.getConnection("jdbc:sqlite:" + dbPath.toAbsolutePath());
+-    }
+-
+-    private static void initProjectSchema(Connection conn) throws SQLException {
+-        try (Statement st = conn.createStatement()) {
+-            st.execute("pragma journal_mode = wal");
+-            st.execute("""
+-                create table if not exists issues (
+-                    id text primary key,
+-                    status text not null default '',
+-                    severity text not null default '',
+-                    title text not null default '',
+-                    components text not null default '',
+-                    opened_on text not null default '',
+-                    last_reviewed text not null default '',
+-                    owner text not null default '',
+-                    notes text not null default '',
+-                    updated_at text not null
+-                )
+-                """);
+-            st.execute("""
+-                create table if not exists plan_tasks (
+-                    row_index integer primary key,
+-                    task_key text not null,
+-                    workstream text not null default '',
+-                    task text not null default '',
+-                    priority text not null default '',
+-                    status text not null default '',
+-                    percent_complete text not null default '',
+-                    last_updated text not null default '',
+-                    notes text not null default '',
+-                    updated_at text not null
+-                )
+-                """);
+-            st.execute("create index if not exists idx_plan_task_key on plan_tasks(task_key)");
+-            st.execute("""
+-                create table if not exists fidelity_snapshot (
+-                    id integer primary key check(id = 1),
+-                    fidelity_score real,
+-                    average_pixel_diff_ratio real,
+-                    token_recall real,
+-                    token_precision real,
+-                    source_path text not null default '',
+-                    updated_at text not null
+-                )
+-                """);
+-            st.execute("""
+-                create table if not exists governance_events (
+-                    event_id text primary key,
+-                    event_date text not null default '',
+-                    phase text not null default '',
+-                    status text not null default '',
+-                    checkpoint_id text not null default '',
+-                    issue_id text not null default '',
+-                    summary text not null default '',
+-                    evidence text not null default '',
+-                    updated_by text not null default '',
+-                    updated_at text not null
+-                )
+-                """);
+-            st.execute("""
+-                create table if not exists repo_vcs_snapshot (
+-                    id integer primary key check(id = 1),
+-                    git_head text not null default '',
+-                    git_branch text not null default '',
+-                    is_dirty integer not null default 0,
+-                    tracked_count integer not null default 0,
+-                    modified_count integer not null default 0,
+-                    untracked_count integer not null default 0,
+-                    deleted_count integer not null default 0,
+-                    updated_at text not null
+-                )
+-                """);
+-            st.execute("""
+-                create table if not exists repo_file_state (
+-                    path text primary key,
+-                    tracked integer not null default 0,
+-                    status_code text not null default '',
+-                    exists_on_disk integer not null default 0,
+-                    size_bytes integer not null default 0,
+-                    sha256 text not null default '',
+-                    updated_at text not null
+-                )
+-                """);
+-            st.execute("create index if not exists idx_repo_file_status on repo_file_state(status_code)");
+-        }
+-    }
+-
+-    private static void initBoilerplateSchema(Connection conn) throws SQLException {
+-        try (Statement st = conn.createStatement()) {
+-            st.execute("pragma journal_mode = wal");
+-            st.execute("""
+-                create table if not exists package_candidates (
+-                    candidate_id text primary key,
+-                    package_id text not null default '',
+-                    target_repo text not null default '',
+-                    source_repo text not null default '',
+-                    created_at text not null default '',
+-                    summary text not null default '',
+-                    package_zip text not null default '',
+-                    patch_count integer not null default 0,
+-                    manifest_file_count integer not null default 0,
+-                    supersedes_json text not null default '[]',
+-                    updated_at text not null
+-                )
+-                """);
+-            st.execute("""
+-                create table if not exists package_files (
+-                    candidate_id text not null,
+-                    file_path text not null,
+-                    size_bytes integer not null default 0,
+-                    updated_at text not null,
+-                    primary key(candidate_id, file_path)
+-                )
+-                """);
+-        }
+-    }
+-
+-    private static void syncIssues(Connection conn, Path csvPath) throws Exception {
+-        List<Map<String, String>> rows = readCsv(csvPath, ISSUE_COLUMNS);
+-        String now = nowIso();
+-        conn.setAutoCommit(false);
+-        try (Statement clear = conn.createStatement()) {
+-            clear.execute("delete from issues");
+-        }
+-        try (PreparedStatement ps = conn.prepareStatement(
+-            "insert into issues(id,status,severity,title,components,opened_on,last_reviewed,owner,notes,updated_at) " +
+-                "values(?,?,?,?,?,?,?,?,?,?)"
+-        )) {
+-            for (Map<String, String> row : rows) {
+-                for (int i = 0; i < ISSUE_COLUMNS.size(); i++) {
+-                    ps.setString(i + 1, row.get(ISSUE_COLUMNS.get(i)));
+-                }
+-                ps.setString(10, now);
+-                ps.addBatch();
+-            }
+-            ps.executeBatch();
+-        }
+-        conn.commit();
+-        conn.setAutoCommit(true);
+-    }
+-
+-    private static void syncProgress(Connection conn, Path csvPath) throws Exception {
+-        List<Map<String, String>> rows = readCsv(csvPath, PROGRESS_COLUMNS);
+-        String now = nowIso();
+-        conn.setAutoCommit(false);
+-        try (Statement clear = conn.createStatement()) {
+-            clear.execute("delete from plan_tasks");
+-        }
+-        try (PreparedStatement ps = conn.prepareStatement(
+-            "insert into plan_tasks(row_index,task_key,workstream,task,priority,status,percent_complete,last_updated,notes,updated_at) " +
+-                "values(?,?,?,?,?,?,?,?,?,?)"
+-        )) {
+-            int rowIndex = 1;
+-            for (Map<String, String> row : rows) {
+-                String taskKey = row.get("workstream") + "|" + row.get("task");
+-                ps.setInt(1, rowIndex++);
+-                ps.setString(2, taskKey);
+-                ps.setString(3, row.get("workstream"));
+-                ps.setString(4, row.get("task"));
+-                ps.setString(5, row.get("priority"));
+-                ps.setString(6, row.get("status"));
+-                ps.setString(7, row.get("percent_complete"));
+-                ps.setString(8, row.get("last_updated"));
+-                ps.setString(9, row.get("notes"));
+-                ps.setString(10, now);
+-                ps.addBatch();
+-            }
+-            ps.executeBatch();
+-        }
+-        conn.commit();
+-        conn.setAutoCommit(true);
+-    }
+-
+-    private static void syncFidelity(Connection conn, Path fidelityPath) throws Exception {
+-        JsonObject obj = readJsonObject(fidelityPath);
+-        Double fidelityScore = numberAtPath(obj, List.of("fidelityScore"), List.of("summary", "fidelityScore"));
+-        Double pixelDiff = numberAtPath(obj, List.of("averagePixelDiffRatio"), List.of("summary", "averagePixelDiffRatio"));
+-        Double tokenRecall = numberAtPath(obj, List.of("tokenRecall"), List.of("text", "tokenRecall"));
+-        Double tokenPrecision = numberAtPath(obj, List.of("tokenPrecision"), List.of("text", "tokenPrecision"));
+-
+-        try (PreparedStatement ps = conn.prepareStatement(
+-            "insert into fidelity_snapshot(id,fidelity_score,average_pixel_diff_ratio,token_recall,token_precision,source_path,updated_at) " +
+-                "values(1,?,?,?,?,?,?) " +
+-                "on conflict(id) do update set " +
+-                "fidelity_score=excluded.fidelity_score, " +
+-                "average_pixel_diff_ratio=excluded.average_pixel_diff_ratio, " +
+-                "token_recall=excluded.token_recall, " +
+-                "token_precision=excluded.token_precision, " +
+-                "source_path=excluded.source_path, " +
+-                "updated_at=excluded.updated_at"
+-        )) {
+-            bindNumber(ps, 1, fidelityScore);
+-            bindNumber(ps, 2, pixelDiff);
+-            bindNumber(ps, 3, tokenRecall);
+-            bindNumber(ps, 4, tokenPrecision);
+-            ps.setString(5, fidelityPath == null ? "" : fidelityPath.toString().replace('\\', '/'));
+-            ps.setString(6, nowIso());
+-            ps.executeUpdate();
+-        }
+-    }
+-
+-    private static void syncGovernanceEvents(Connection conn, Path csvPath) throws Exception {
+-        if (csvPath == null || !Files.exists(csvPath)) {
+-            return;
+-        }
+-        List<Map<String, String>> rows = readCsv(csvPath, GOVERNANCE_COLUMNS);
+-        String now = nowIso();
+-        conn.setAutoCommit(false);
+-        try (Statement clear = conn.createStatement()) {
+-            clear.execute("delete from governance_events");
+-        }
+-        try (PreparedStatement ps = conn.prepareStatement(
+-            "insert into governance_events(event_id,event_date,phase,status,checkpoint_id,issue_id,summary,evidence,updated_by,updated_at) " +
+-                "values(?,?,?,?,?,?,?,?,?,?)"
+-        )) {
+-            for (Map<String, String> row : rows) {
+-                for (int i = 0; i < GOVERNANCE_COLUMNS.size(); i++) {
+-                    ps.setString(i + 1, row.get(GOVERNANCE_COLUMNS.get(i)));
+-                }
+-                ps.setString(10, now);
+-                ps.addBatch();
+-            }
+-            ps.executeBatch();
+-        }
+-        conn.commit();
+-        conn.setAutoCommit(true);
+-    }
+-
+-    private static void syncVersionControlState(Connection conn) throws Exception {
+-        List<String> trackedFiles = gitLines("git", "ls-files");
+-        Map<String, String> statusByPath = gitStatusByPath();
+-        String gitHead = gitSingle("git", "rev-parse", "HEAD");
+-        String gitBranch = gitSingle("git", "rev-parse", "--abbrev-ref", "HEAD");
+-
+-        int modifiedCount = 0;
+-        int untrackedCount = 0;
+-        int deletedCount = 0;
+-        for (String code : statusByPath.values()) {
+-            String normalized = text(code);
+-            if (normalized.startsWith("??")) {
+-                untrackedCount++;
+-            }
+-            if (normalized.contains("D")) {
+-                deletedCount++;
+-            }
+-            if (!normalized.isBlank() && !normalized.equals("??")) {
+-                modifiedCount++;
+-            }
+-        }
+-        boolean isDirty = !statusByPath.isEmpty();
+-        Set<String> allPaths = new LinkedHashSet<>(trackedFiles);
+-        allPaths.addAll(statusByPath.keySet());
+-
+-        String now = nowIso();
+-        conn.setAutoCommit(false);
+-        try (PreparedStatement ps = conn.prepareStatement(
+-            "insert into repo_vcs_snapshot(id,git_head,git_branch,is_dirty,tracked_count,modified_count,untracked_count,deleted_count,updated_at) " +
+-                "values(1,?,?,?,?,?,?,?,?) " +
+-                "on conflict(id) do update set " +
+-                "git_head=excluded.git_head, git_branch=excluded.git_branch, is_dirty=excluded.is_dirty, " +
+-                "tracked_count=excluded.tracked_count, modified_count=excluded.modified_count, " +
+-                "untracked_count=excluded.untracked_count, deleted_count=excluded.deleted_count, updated_at=excluded.updated_at"
+-        )) {
+-            ps.setString(1, gitHead);
+-            ps.setString(2, gitBranch);
+-            ps.setInt(3, isDirty ? 1 : 0);
+-            ps.setInt(4, trackedFiles.size());
+-            ps.setInt(5, modifiedCount);
+-            ps.setInt(6, untrackedCount);
+-            ps.setInt(7, deletedCount);
+-            ps.setString(8, now);
+-            ps.executeUpdate();
+-        }
+-
+-        try (Statement clear = conn.createStatement()) {
+-            clear.execute("delete from repo_file_state");
+-        }
+-        try (PreparedStatement ps = conn.prepareStatement(
+-            "insert into repo_file_state(path,tracked,status_code,exists_on_disk,size_bytes,sha256,updated_at) values(?,?,?,?,?,?,?)"
+-        )) {
+-            Set<String> trackedSet = new LinkedHashSet<>(trackedFiles);
+-            for (String path : allPaths) {
+-                Path p = Path.of(path);
+-                boolean exists = Files.exists(p);
+-                long sizeBytes = exists ? safeSize(p) : 0L;
+-                String sha = exists && Files.isRegularFile(p) ? safeSha256(p) : "";
+-                ps.setString(1, path.replace('\\', '/'));
+-                ps.setInt(2, trackedSet.contains(path) ? 1 : 0);
+-                ps.setString(3, statusByPath.getOrDefault(path, ""));
+-                ps.setInt(4, exists ? 1 : 0);
+-                ps.setLong(5, sizeBytes);
+-                ps.setString(6, sha);
+-                ps.setString(7, now);
+-                ps.addBatch();
+-            }
+-            ps.executeBatch();
+-        }
+-        conn.commit();
+-        conn.setAutoCommit(true);
+-    }
+-
+-    private static void syncBoilerplatePackages(Connection conn, Path packagesDir) throws Exception {
+-        String now = nowIso();
+-        List<CandidateRow> candidates = scanCandidates(packagesDir);
+-
+-        conn.setAutoCommit(false);
+-        try (Statement clear = conn.createStatement()) {
+-            clear.execute("delete from package_files");
+-            clear.execute("delete from package_candidates");
+-        }
+-        try (PreparedStatement ps = conn.prepareStatement(
+-            "insert into package_candidates(candidate_id,package_id,target_repo,source_repo,created_at,summary,package_zip,patch_count,manifest_file_count,supersedes_json,updated_at) " +
+-                "values(?,?,?,?,?,?,?,?,?,?,?)"
+-        )) {
+-            for (CandidateRow row : candidates) {
+-                ps.setString(1, row.candidateId());
+-                ps.setString(2, row.packageId());
+-                ps.setString(3, row.targetRepo());
+-                ps.setString(4, row.sourceRepo());
+-                ps.setString(5, row.createdAt());
+-                ps.setString(6, row.summary());
+-                ps.setString(7, row.packageZip());
+-                ps.setInt(8, row.patchCount());
+-                ps.setInt(9, row.manifestFileCount());
+-                ps.setString(10, GSON.toJson(row.supersedes()));
+-                ps.setString(11, now);
+-                ps.addBatch();
+-            }
+-            ps.executeBatch();
+-        }
+-
+-        try (PreparedStatement ps = conn.prepareStatement(
+-            "insert into package_files(candidate_id,file_path,size_bytes,updated_at) values(?,?,?,?)"
+-        )) {
+-            for (CandidateRow row : candidates) {
+-                for (PackageFileRow file : row.files()) {
+-                    ps.setString(1, row.candidateId());
+-                    ps.setString(2, file.path());
+-                    ps.setLong(3, file.sizeBytes());
+-                    ps.setString(4, now);
+-                    ps.addBatch();
+-                }
+-            }
+-            ps.executeBatch();
+-        }
+-        conn.commit();
+-        conn.setAutoCommit(true);
+-    }
+-
+-    private static List<CandidateRow> scanCandidates(Path packagesDir) throws Exception {
+-        if (packagesDir == null || !Files.exists(packagesDir) || !Files.isDirectory(packagesDir)) {
+-            return List.of();
+-        }
+-        List<Path> dirs;
+-        try (var stream = Files.list(packagesDir)) {
+-            dirs = stream.filter(Files::isDirectory)
+-                .sorted(Comparator.comparing(p -> p.getFileName().toString().toLowerCase(Locale.ROOT)))
+-                .toList();
+-        }
+-        List<CandidateRow> out = new ArrayList<>();
+-        for (Path dir : dirs) {
+-            String candidateId = dir.getFileName().toString();
+-            String targetRepo = packagesDir.getFileName().toString();
+-            String created = ISO.format(Files.getLastModifiedTime(dir).toInstant().atOffset(ZoneOffset.UTC));
+-            Path readme = dir.resolve("README.md");
+-            Path manifest = dir.resolve("package-manifest.json");
+-            String summary = readSummary(readme);
+-            String packageId = readManifestString(manifest, "packageId");
+-            String sourceRepo = readManifestString(manifest, "sourceRepo");
+-            String targetFromManifest = readManifestString(manifest, "targetRepo");
+-            List<String> supersedes = readManifestArray(manifest, "supersedes");
+-            int patchCount = countFiles(dir.resolve("patches"), ".patch");
+-            int manifestFileCount = countManifestFiles(manifest);
+-            List<PackageFileRow> files = listFiles(dir);
+-            Path zipPath = packagesDir.resolve(candidateId + ".zip");
+-            String zipRel = Files.exists(zipPath) ? packagesDir.relativize(zipPath).toString().replace('\\', '/') : "";
+-            out.add(new CandidateRow(
+-                candidateId,
+-                packageId.isBlank() ? candidateId : packageId,
+-                targetFromManifest.isBlank() ? targetRepo : targetFromManifest,
+-                sourceRepo,
+-                created,
+-                summary,
+-                zipRel,
+-                patchCount,
+-                manifestFileCount,
+-                supersedes,
+-                files
+-            ));
+-        }
+-        return out;
+-    }
+-
+-    private static List<Map<String, String>> readCsv(Path csvPath, List<String> requiredColumns) throws Exception {
+-        if (csvPath == null || !Files.exists(csvPath)) {
+-            throw new IllegalArgumentException("Missing CSV: " + csvPath);
+-        }
+-        CSVFormat format = CSVFormat.DEFAULT.builder()
+-            .setHeader()
+-            .setSkipHeaderRecord(true)
+-            .setTrim(true)
+-            .build();
+-        try (Reader reader = Files.newBufferedReader(csvPath, StandardCharsets.UTF_8);
+-             CSVParser parser = format.parse(reader)) {
+-            List<String> headers = parser.getHeaderNames();
+-            for (String required : requiredColumns) {
+-                if (!headers.contains(required)) {
+-                    throw new IllegalArgumentException("CSV missing required column: " + required + " in " + csvPath);
+-                }
+-            }
+-            List<Map<String, String>> rows = new ArrayList<>();
+-            for (CSVRecord record : parser) {
+-                Map<String, String> row = new LinkedHashMap<>();
+-                for (String key : requiredColumns) {
+-                    row.put(key, Optional.ofNullable(record.get(key)).orElse("").trim());
+-                }
+-                rows.add(row);
+-            }
+-            return rows;
+-        }
+-    }
+-
+-    private static List<String> changedPaths() {
+-        ProcessBuilder pb = new ProcessBuilder("git", "status", "--porcelain");
+-        pb.redirectErrorStream(true);
+-        try {
+-            Process process = pb.start();
+-            List<String> lines = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8).lines().toList();
+-            int exit = process.waitFor();
+-            if (exit != 0) {
+-                return List.of();
+-            }
+-            List<String> paths = new ArrayList<>();
+-            for (String line : lines) {
+-                if (line == null || line.isBlank()) {
+-                    continue;
+-                }
+-                String raw = line.length() >= 4 ? line.substring(3).trim() : "";
+-                if (raw.contains(" -> ")) {
+-                    raw = raw.substring(raw.indexOf(" -> ") + 4).trim();
+-                }
+-                if (!raw.isBlank()) {
+-                    paths.add(raw.replace('\\', '/'));
+-                }
+-            }
+-            return paths;
+-        } catch (Exception e) {
+-            return List.of();
+-        }
+-    }
+-
+-    private static List<String> gitLines(String... command) {
+-        ProcessBuilder pb = new ProcessBuilder(command);
+-        pb.redirectErrorStream(true);
+-        try {
+-            Process process = pb.start();
+-            List<String> lines = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8).lines()
+-                .map(String::trim)
+-                .filter(s -> !s.isEmpty())
+-                .toList();
+-            int exit = process.waitFor();
+-            if (exit != 0) {
+-                return List.of();
+-            }
+-            List<String> normalized = new ArrayList<>();
+-            for (String line : lines) {
+-                normalized.add(line.replace('\\', '/'));
+-            }
+-            return normalized;
+-        } catch (Exception e) {
+-            return List.of();
+-        }
+-    }
+-
+-    private static String gitSingle(String... command) {
+-        List<String> lines = gitLines(command);
+-        return lines.isEmpty() ? "" : lines.get(0);
+-    }
+-
+-    private static Map<String, String> gitStatusByPath() {
+-        Map<String, String> out = new LinkedHashMap<>();
+-        ProcessBuilder pb = new ProcessBuilder("git", "status", "--porcelain");
+-        pb.redirectErrorStream(true);
+-        try {
+-            Process process = pb.start();
+-            List<String> lines = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8).lines().toList();
+-            int exit = process.waitFor();
+-            if (exit != 0) {
+-                return out;
+-            }
+-            for (String line : lines) {
+-                if (line == null || line.isBlank() || line.length() < 3) {
+-                    continue;
+-                }
+-                String code = line.substring(0, 2);
+-                String raw = line.substring(3).trim();
+-                if (raw.contains(" -> ")) {
+-                    raw = raw.substring(raw.indexOf(" -> ") + 4).trim();
+-                }
+-                if (!raw.isBlank()) {
+-                    out.put(raw.replace('\\', '/'), code);
+-                }
+-            }
+-            return out;
+-        } catch (Exception e) {
+-            return out;
+-        }
+-    }
+-
+-    private static boolean globMatch(String path, String pattern) {
+-        if (pattern == null || pattern.isBlank()) {
+-            return false;
+-        }
+-        try {
+-            PathMatcher matcher = FileSystems.getDefault().getPathMatcher("glob:" + pattern);
+-            return matcher.matches(Path.of(path));
+-        } catch (Exception e) {
+-            return path.equals(pattern);
+-        }
+-    }
+-
+-    private static boolean changeCoversTarget(String changePath, String targetPath) {
+-        String c = trimTrailingSlash(changePath);
+-        String t = trimTrailingSlash(targetPath);
+-        if (c.equals(t)) {
+-            return true;
+-        }
+-        return t.startsWith(c + "/") || c.startsWith(t + "/");
+-    }
+-
+-    private static String trimTrailingSlash(String in) {
+-        String s = in == null ? "" : in;
+-        while (s.endsWith("/")) {
+-            s = s.substring(0, s.length() - 1);
+-        }
+-        return s;
+-    }
+-
+-    private static boolean isOpenStatus(String status) {
+-        String normalized = text(status).toLowerCase(Locale.ROOT);
+-        return normalized.equals("open") || normalized.equals("in progress") || normalized.equals("active");
+-    }
+-
+-    private static List<String> splitPipe(String value) {
+-        if (value == null || value.isBlank()) {
+-            return List.of();
+-        }
+-        List<String> out = new ArrayList<>();
+-        for (String token : value.split("\\|")) {
+-            String t = token.trim();
+-            if (!t.isEmpty()) {
+-                out.add(t);
+-            }
+-        }
+-        return out;
+-    }
+-
+-    private static double parsePercent(String value) {
+-        String text = text(value).replace("%", "").trim();
+-        if (text.isEmpty()) {
+-            return 0.0d;
+-        }
+-        try {
+-            return Double.parseDouble(text);
+-        } catch (NumberFormatException ignored) {
+-            return 0.0d;
+-        }
+-    }
+-
+-    private static double round2(double value) {
+-        return Math.round(value * 100.0d) / 100.0d;
+-    }
+-
+-    private static Double number(JsonObject object, String key) {
+-        if (object == null || !object.has(key) || object.get(key).isJsonNull()) {
+-            return null;
+-        }
+-        try {
+-            return object.get(key).getAsDouble();
+-        } catch (Exception e) {
+-            return null;
+-        }
+-    }
+-
+-    private static Double numberAtPath(JsonObject root, List<String>... paths) {
+-        for (List<String> path : paths) {
+-            JsonElement cursor = root;
+-            boolean ok = true;
+-            for (String key : path) {
+-                if (cursor == null || !cursor.isJsonObject()) {
+-                    ok = false;
+-                    break;
+-                }
+-                JsonObject asObject = cursor.getAsJsonObject();
+-                if (!asObject.has(key) || asObject.get(key).isJsonNull()) {
+-                    ok = false;
+-                    break;
+-                }
+-                cursor = asObject.get(key);
+-            }
+-            if (ok && cursor != null) {
+-                try {
+-                    return cursor.getAsDouble();
+-                } catch (Exception ignored) {
+-                    // Continue trying alternate paths.
+-                }
+-            }
+-        }
+-        return null;
+-    }
+-
+-    private static Double numberOrNull(ResultSet rs, int index) throws SQLException {
+-        double value = rs.getDouble(index);
+-        return rs.wasNull() ? null : value;
+-    }
+-
+-    private static void bindNumber(PreparedStatement ps, int index, Double value) throws SQLException {
+-        if (value == null) {
+-            ps.setNull(index, java.sql.Types.REAL);
+-        } else {
+-            ps.setDouble(index, value);
+-        }
+-    }
+-
+-    private static JsonObject readJsonObject(Path path) throws IOException {
+-        if (path == null || !Files.exists(path)) {
+-            return new JsonObject();
+-        }
+-        String text = Files.readString(path, StandardCharsets.UTF_8);
+-        try {
+-            JsonElement parsed = GSON.fromJson(text, JsonElement.class);
+-            if (parsed != null && parsed.isJsonObject()) {
+-                return parsed.getAsJsonObject();
+-            }
+-            return new JsonObject();
+-        } catch (Exception e) {
+-            return new JsonObject();
+-        }
+-    }
+-
+-    private static Object readArrayOrEmpty(JsonObject object, String key) {
+-        if (object != null && object.has(key) && object.get(key).isJsonArray()) {
+-            return GSON.fromJson(object.get(key), List.class);
+-        }
+-        return List.of();
+-    }
+-
+-    private static void writeJson(Path path, Object payload) throws IOException {
+-        ensureParent(path);
+-        Files.writeString(path, GSON.toJson(payload) + "\n", StandardCharsets.UTF_8);
+-    }
+-
+-    private static void ensureParent(Path path) throws IOException {
+-        Path parent = path.toAbsolutePath().getParent();
+-        if (parent != null) {
+-            Files.createDirectories(parent);
+-        }
+-    }
+-
+-    private static String nowIso() {
+-        return OffsetDateTime.now(ZoneOffset.UTC).withNano(0).format(ISO);
+-    }
+-
+-    private static long safeSize(Path path) {
+-        try {
+-            return Files.size(path);
+-        } catch (Exception e) {
+-            return 0L;
+-        }
+-    }
+-
+-    private static String safeSha256(Path path) {
+-        try {
+-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+-            byte[] bytes = Files.readAllBytes(path);
+-            byte[] hash = digest.digest(bytes);
+-            StringBuilder sb = new StringBuilder(hash.length * 2);
+-            for (byte b : hash) {
+-                sb.append(String.format("%02x", b));
+-            }
+-            return sb.toString();
+-        } catch (Exception e) {
+-            return "";
+-        }
+-    }
+-
+-    private static String text(String value) {
+-        return value == null ? "" : value.trim();
+-    }
+-
+-    private static String readSummary(Path readme) throws IOException {
+-        if (!Files.exists(readme)) {
+-            return "";
+-        }
+-        List<String> lines = Files.readAllLines(readme, StandardCharsets.UTF_8);
+-        for (String line : lines) {
+-            String trimmed = line == null ? "" : line.trim();
+-            if (trimmed.isEmpty() || trimmed.startsWith("#")) {
+-                continue;
+-            }
+-            return trimmed.length() > 240 ? trimmed.substring(0, 240) : trimmed;
+-        }
+-        return "";
+-    }
+-
+-    private static String readManifestString(Path manifest, String key) throws IOException {
+-        JsonObject object = readJsonObject(manifest);
+-        if (!object.has(key) || object.get(key).isJsonNull()) {
+-            return "";
+-        }
+-        try {
+-            return object.get(key).getAsString().trim();
+-        } catch (Exception e) {
+-            return "";
+-        }
+-    }
+-
+-    private static List<String> readManifestArray(Path manifest, String key) throws IOException {
+-        JsonObject object = readJsonObject(manifest);
+-        if (!object.has(key) || !object.get(key).isJsonArray()) {
+-            return List.of();
+-        }
+-        List<String> out = new ArrayList<>();
+-        for (JsonElement e : object.get(key).getAsJsonArray()) {
+-            try {
+-                String s = e.getAsString().trim();
+-                if (!s.isEmpty()) {
+-                    out.add(s);
+-                }
+-            } catch (Exception ignored) {
+-                // Skip malformed entries.
+-            }
+-        }
+-        return out;
+-    }
+-
+-    private static int countManifestFiles(Path manifest) throws IOException {
+-        JsonObject object = readJsonObject(manifest);
+-        if (!object.has("files") || !object.get("files").isJsonArray()) {
+-            return 0;
+-        }
+-        return object.get("files").getAsJsonArray().size();
+-    }
+-
+-    private static int countFiles(Path dir, String suffix) throws IOException {
+-        if (!Files.exists(dir) || !Files.isDirectory(dir)) {
+-            return 0;
+-        }
+-        try (var stream = Files.walk(dir)) {
+-            return (int) stream.filter(Files::isRegularFile)
+-                .filter(p -> p.getFileName().toString().toLowerCase(Locale.ROOT).endsWith(suffix))
+-                .count();
+-        }
+-    }
+-
+-    private static List<PackageFileRow> listFiles(Path packageDir) throws IOException {
+-        List<PackageFileRow> out = new ArrayList<>();
+-        Files.walkFileTree(packageDir, new SimpleFileVisitor<>() {
+-            @Override
+-            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+-                String rel = packageDir.relativize(file).toString().replace('\\', '/');
+-                out.add(new PackageFileRow(rel, attrs.size()));
+-                return FileVisitResult.CONTINUE;
+-            }
+-        });
+-        out.sort(Comparator.comparing(PackageFileRow::path));
+-        return out;
+-    }
+-
+-    private record CandidateRow(String candidateId,
+-                                String packageId,
+-                                String targetRepo,
+-                                String sourceRepo,
+-                                String createdAt,
+-                                String summary,
+-                                String packageZip,
+-                                int patchCount,
+-                                int manifestFileCount,
+-                                List<String> supersedes,
+-                                List<PackageFileRow> files) {}
+-
+-    private record PackageFileRow(String path, long sizeBytes) {}
+-}
+diff --git a/build.gradle b/build.gradle
+index 11036ae..c526530 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -4,6 +4,7 @@ plugins {
+ 
+ import java.security.MessageDigest
+ import groovy.json.JsonOutput
++import groovy.json.JsonSlurper
+ import java.util.Locale
+ 
+ def versionFile = file('VERSION')
+@@ -12,6 +13,33 @@ if (!resolvedVersion) {
+     throw new GradleException("VERSION file is empty")
+ }
+ 
++def pmWorkflowManifestFile = file('pm/workflow/workflow-manifest.json')
++def pmWorkflowManifest = pmWorkflowManifestFile.exists()
++    ? (new JsonSlurper().parse(pmWorkflowManifestFile) as Map)
++    : [:]
++def pmWorkflowGradleMap = (pmWorkflowManifest?.adapters instanceof Map
++    && pmWorkflowManifest.adapters.gradle instanceof Map
++    && pmWorkflowManifest.adapters.gradle.phaseTaskMap instanceof Map)
++    ? (pmWorkflowManifest.adapters.gradle.phaseTaskMap as Map)
++    : [:]
++def pmWorkflowDefaults = (pmWorkflowManifest?.defaults instanceof Map)
++    ? (pmWorkflowManifest.defaults as Map)
++    : [:]
++
++def resolvePmWorkflowTasks = { String phaseId ->
++    Object raw = pmWorkflowGradleMap.get(phaseId)
++    if (!(raw instanceof List)) {
++        throw new GradleException("No Gradle phase mapping found for PM workflow phase '${phaseId}' in ${pmWorkflowManifestFile.path}")
++    }
++    List<String> tasks = (raw as List)
++        .collect { it == null ? '' : it.toString().trim() }
++        .findAll { !it.isEmpty() }
++    if (tasks.isEmpty()) {
++        throw new GradleException("Empty Gradle task list for PM workflow phase '${phaseId}' in ${pmWorkflowManifestFile.path}")
++    }
++    return tasks
++}
++
+ allprojects {
+     group = 'com.upland.connect'
+     version = resolvedVersion
+@@ -27,6 +55,73 @@ tasks.register('previewManifest') {
+     dependsOn(':afp-cli:generatePreview')
+ }
+ 
++tasks.register('pmConsoleStatus', JavaExec) {
++    group = 'documentation'
++    description = 'Runs the development PM console status dashboard'
++    dependsOn(':pm-console:classes')
++    dependsOn('policyRulesReport')
++    dependsOn('issuesEffectivenessReport')
++    dependsOn('governanceAlerts')
++    classpath = project(':pm-console').sourceSets.main.runtimeClasspath
++    mainClass = 'com.upland.connect.pm.console.PmConsoleMain'
++    workingDir = rootProject.projectDir
++    args 'status'
++}
++
++tasks.register('pmDevAttach') {
++    group = 'documentation'
++    description = 'Development attach workflow: regenerate preview and show PM console status'
++    dependsOn('pmWorkflowExecuteApplication')
++}
++
++tasks.register('pmWorkflowList', Exec) {
++    group = 'documentation'
++    description = 'Lists normalized PM workflow phases and Gradle mappings from pm/workflow/workflow-manifest.json'
++    commandLine 'python3', 'tools/pm_workflow.py', 'list', '--adapter', 'gradle'
++}
++
++tasks.register('pmWorkflowRun') {
++    group = 'documentation'
++    description = 'Runs a normalized PM workflow phase through Gradle mapping (set -PpmPhase=<phaseId>).'
++    def phaseProvider = providers.gradleProperty('pmPhase')
++        .orElse(pmWorkflowDefaults.get('gradleDefaultPhase')?.toString() ?: 'pm_refresh_and_reports')
++    dependsOn {
++        String phase = phaseProvider.get()
++        return resolvePmWorkflowTasks(phase)
++    }
++    doFirst {
++        String phase = phaseProvider.get()
++        logger.lifecycle("pmWorkflowRun: phase='${phase}' via ${pmWorkflowManifestFile.path}")
++    }
++}
++
++tasks.register('pmWorkflowExecuteApplication') {
++    group = 'documentation'
++    description = 'Runs normalized default application execution phase (app execution + PM console).'
++    String phase = pmWorkflowDefaults.get('executeApplicationPhase')?.toString() ?: 'execute_application_with_pm_console'
++    dependsOn(resolvePmWorkflowTasks(phase))
++}
++
++tasks.register('pmConsoleInstallPath') {
++    group = 'documentation'
++    description = 'Installs pm-console launcher and prints the executable path.'
++    dependsOn(':pm-console:installDist')
++    doLast {
++        File installDir = file('pm-console/build/install/pmconsole')
++        File unixBin = new File(installDir, 'bin/pmconsole')
++        File winBin = new File(installDir, 'bin/pmconsole.bat')
++        if (unixBin.exists()) {
++            println unixBin.path
++            return
++        }
++        if (winBin.exists()) {
++            println winBin.path
++            return
++        }
++        throw new GradleException("pm-console launcher not found under " + installDir.path)
++    }
++}
++
+ tasks.register('versionInfo') {
+     group = 'release'
+     description = 'Prints the current project version from VERSION'
+@@ -55,9 +150,9 @@ tasks.register('versionBump', Exec) {
+ 
+ tasks.register('versionStamp') {
+     group = 'documentation'
+-    description = 'Writes preview/version.json from VERSION'
++    description = 'Writes pm/reports/version.json from VERSION'
+     doLast {
+-        File out = file('preview/version.json')
++        File out = file('pm/reports/version.json')
+         out.parentFile.mkdirs()
+         out.text = JsonOutput.prettyPrint(JsonOutput.toJson([
+             schemaVersion: '1',
+@@ -71,7 +166,7 @@ tasks.register('projectPlanWorkbook', Exec) {
+     group = 'documentation'
+     description = 'Updates docs/project-plan-progress.xlsx when CSV source changes. Force with AFP_FORCE_WORKBOOK_UPDATE=true. Default mode is POI-based updater; set AFP_WORKBOOK_MODE=excel|xml to use legacy paths.'
+     dependsOn('projectPlanProgressJson')
+-    dependsOn(':afp-tools:classes')
++    dependsOn(':pm-tools:classes')
+     onlyIf {
+         File csv = file('docs/project-plan-progress.csv')
+         File xlsx = file('docs/project-plan-progress.xlsx')
+@@ -100,12 +195,12 @@ tasks.register('projectPlanWorkbook', Exec) {
+     doFirst {
+         String mode = ((System.getenv('AFP_WORKBOOK_MODE') ?: 'poi') as String).trim().toLowerCase()
+         if (mode == 'poi') {
+-            def sourceSets = project(':afp-tools').sourceSets
++            def sourceSets = project(':pm-tools').sourceSets
+             String cp = sourceSets.main.runtimeClasspath.asPath
+             List<String> cmd = [
+                 'java',
+                 '-cp', cp,
+-                'com.upland.connect.afp.tools.ProjectPlanWorkbookUpdater',
++                'com.upland.connect.pm.tools.ProjectPlanWorkbookUpdater',
+                 '--csv', 'docs/project-plan-progress.csv',
+                 '--xlsx', 'docs/project-plan-progress.xlsx'
+             ]
+@@ -137,14 +232,14 @@ tasks.register('projectPlanWorkbook', Exec) {
+         commandLine 'python3',
+             'tools/run_excel_workbook_refresh.py',
+             '--xlsx', 'docs/project-plan-progress.xlsx',
+-            '--json', 'preview/project-plan-progress-data.json'
++            '--json', 'pm/reports/project-plan-progress-data.json'
+     }
+ }
+ 
+ tasks.register('policyGovernanceWorkbook', Exec) {
+     group = 'documentation'
+     description = 'Updates docs/policy-governance-events.xlsx from docs/policy-governance-events.csv.'
+-    dependsOn(':afp-tools:classes')
++    dependsOn(':pm-tools:classes')
+     onlyIf {
+         File csv = file('docs/policy-governance-events.csv')
+         File xlsx = file('docs/policy-governance-events.xlsx')
+@@ -171,11 +266,11 @@ tasks.register('policyGovernanceWorkbook', Exec) {
+         return shouldRun
+     }
+     doFirst {
+-        def sourceSets = project(':afp-tools').sourceSets
++        def sourceSets = project(':pm-tools').sourceSets
+         String cp = sourceSets.main.runtimeClasspath.asPath
+         commandLine 'java',
+             '-cp', cp,
+-            'com.upland.connect.afp.tools.PolicyGovernanceWorkbookUpdater',
++            'com.upland.connect.pm.tools.PolicyGovernanceWorkbookUpdater',
+             '--csv', 'docs/policy-governance-events.csv',
+             '--xlsx', 'docs/policy-governance-events.xlsx'
+     }
+@@ -183,38 +278,55 @@ tasks.register('policyGovernanceWorkbook', Exec) {
+ 
+ tasks.register('projectPlanProgressJson', Exec) {
+     group = 'documentation'
+-    description = 'Exports project plan progress from SQLite state into preview/project-plan-progress-data.json for workbook automation'
++    description = 'Exports project plan progress from SQLite state into pm/reports/project-plan-progress-data.json for workbook automation'
+     dependsOn('projectStateDb')
+     doFirst {
+-        def sourceSets = project(':afp-tools').sourceSets
++        def sourceSets = project(':pm-tools').sourceSets
+         String cp = sourceSets.main.runtimeClasspath.asPath
+         commandLine 'java',
+             '-cp', cp,
+-            'com.upland.connect.afp.tools.StateDatabaseTool',
++            'com.upland.connect.pm.tools.StateDatabaseTool',
+             'export-progress-json',
+-            '--db', 'preview/state/project-state.sqlite',
+-            '--json', 'preview/project-plan-progress-data.json'
++            '--db', 'pm/state/project-state.sqlite',
++            '--json', 'pm/reports/project-plan-progress-data.json'
+     }
+ }
+ 
+ tasks.register('projectStateDb', Exec) {
+     group = 'documentation'
+-    description = 'Builds preview/state/project-state.sqlite from issues/progress/fidelity sources'
+-    dependsOn(':afp-tools:classes')
++    description = 'Builds pm/state/project-state.sqlite from issues/progress/fidelity sources'
++    dependsOn(':pm-tools:classes')
+     dependsOn(':afp-engine:fidelityReport')
+     commandLine 'true'
+     doFirst {
+-        def sourceSets = project(':afp-tools').sourceSets
++        def sourceSets = project(':pm-tools').sourceSets
+         String cp = sourceSets.main.runtimeClasspath.asPath
+         commandLine 'java',
+             '-cp', cp,
+-            'com.upland.connect.afp.tools.StateDatabaseTool',
++            'com.upland.connect.pm.tools.StateDatabaseTool',
+             'sync-project',
+-            '--db', 'preview/state/project-state.sqlite',
++            '--db', 'pm/state/project-state.sqlite',
+             '--issues', 'docs/issues-log.csv',
+             '--progress', 'docs/project-plan-progress.csv',
+             '--fidelity', 'preview/fidelity-report.json',
+-            '--governance-events', 'docs/policy-governance-events.csv'
++            '--governance-events', 'docs/policy-governance-events.csv',
++            '--policy-sql', 'pm/policy/policy-rule-tables.sql'
++    }
++}
++
++tasks.register('policyRulesReport', Exec) {
++    group = 'documentation'
++    description = 'Exports SQL-backed policy rule table from SQLite state into pm/reports/policy-rules.json'
++    dependsOn('projectStateDb')
++    doFirst {
++        def sourceSets = project(':pm-tools').sourceSets
++        String cp = sourceSets.main.runtimeClasspath.asPath
++        commandLine 'java',
++            '-cp', cp,
++            'com.upland.connect.pm.tools.StateDatabaseTool',
++            'export-policy-rules',
++            '--db', 'pm/state/project-state.sqlite',
++            '--json', 'pm/reports/policy-rules.json'
+     }
+ }
+ 
+@@ -223,17 +335,17 @@ tasks.register('governanceAlerts', Exec) {
+     description = 'Generates governance/trust alerts from SQLite project state.'
+     dependsOn('projectStateDb')
+     doFirst {
+-        def sourceSets = project(':afp-tools').sourceSets
++        def sourceSets = project(':pm-tools').sourceSets
+         String cp = sourceSets.main.runtimeClasspath.asPath
+         String enforceRaw = (System.getenv('AFP_ENFORCE_GOVERNANCE_ALERTS') ?: '').trim().toLowerCase(Locale.ROOT)
+         boolean enforce = enforceRaw == '1' || enforceRaw == 'true' || enforceRaw == 'yes'
+         List<String> cmd = [
+             'java',
+             '-cp', cp,
+-            'com.upland.connect.afp.tools.StateDatabaseTool',
++            'com.upland.connect.pm.tools.StateDatabaseTool',
+             'governance-alerts',
+-            '--db', 'preview/state/project-state.sqlite',
+-            '--output', 'preview/governance-alerts.json'
++            '--db', 'pm/state/project-state.sqlite',
++            '--output', 'pm/reports/governance-alerts.json'
+         ]
+         if (enforce) {
+             cmd.add('--enforce')
+@@ -244,45 +356,86 @@ tasks.register('governanceAlerts', Exec) {
+ 
+ tasks.register('versionControlLedger', Exec) {
+     group = 'documentation'
+-    description = 'Generates preview/version-control-ledger.json from SQLite project state.'
++    description = 'Generates pm/reports/version-control-ledger.json from SQLite project state.'
+     dependsOn('projectStateDb')
+     doFirst {
+-        def sourceSets = project(':afp-tools').sourceSets
++        def sourceSets = project(':pm-tools').sourceSets
+         String cp = sourceSets.main.runtimeClasspath.asPath
+         commandLine 'java',
+             '-cp', cp,
+-            'com.upland.connect.afp.tools.StateDatabaseTool',
++            'com.upland.connect.pm.tools.StateDatabaseTool',
+             'version-control-ledger',
+-            '--db', 'preview/state/project-state.sqlite',
+-            '--output', 'preview/version-control-ledger.json'
++            '--db', 'pm/state/project-state.sqlite',
++            '--output', 'pm/reports/version-control-ledger.json'
+     }
+ }
+ 
+ tasks.register('boilerplateStateDb', Exec) {
+     group = 'documentation'
+-    description = 'Builds preview/state/boilerplate-state.sqlite from update packages'
+-    dependsOn(':afp-tools:classes')
++    description = 'Builds pm/state/boilerplate-state.sqlite from update packages'
++    dependsOn(':pm-tools:classes')
+     onlyIf {
+         File packagesDir = file('docs/update-packages/pz-boilerplate-intelliJ')
+         return packagesDir.exists() && packagesDir.isDirectory()
+     }
+     commandLine 'true'
+     doFirst {
+-        def sourceSets = project(':afp-tools').sourceSets
++        def sourceSets = project(':pm-tools').sourceSets
+         String cp = sourceSets.main.runtimeClasspath.asPath
+         commandLine 'java',
+             '-cp', cp,
+-            'com.upland.connect.afp.tools.StateDatabaseTool',
++            'com.upland.connect.pm.tools.StateDatabaseTool',
+             'sync-boilerplate',
+-            '--db', 'preview/state/boilerplate-state.sqlite',
++            '--db', 'pm/state/boilerplate-state.sqlite',
+             '--packages', 'docs/update-packages/pz-boilerplate-intelliJ'
+     }
+ }
+ 
++tasks.register('projectFileInventoryCsv', Exec) {
++    group = 'documentation'
++    description = 'Exports project repo-file inventory with DB provenance and maintenance context.'
++    dependsOn(':pm-tools:classes')
++    dependsOn('projectStateDb')
++    doFirst {
++        def sourceSets = project(':pm-tools').sourceSets
++        String cp = sourceSets.main.runtimeClasspath.asPath
++        commandLine 'java',
++            '-cp', cp,
++            'com.upland.connect.pm.tools.StateDatabaseTool',
++            'export-project-file-inventory',
++            '--db', 'pm/state/project-state.sqlite',
++            '--csv', 'pm/reports/repo-file-inventory-with-context.csv'
++    }
++}
++
++tasks.register('boilerplatePackageInventoryCsv', Exec) {
++    group = 'documentation'
++    description = 'Exports boilerplate package-file inventory with DB provenance and maintenance context.'
++    dependsOn(':pm-tools:classes')
++    dependsOn('boilerplateStateDb')
++    doFirst {
++        def sourceSets = project(':pm-tools').sourceSets
++        String cp = sourceSets.main.runtimeClasspath.asPath
++        commandLine 'java',
++            '-cp', cp,
++            'com.upland.connect.pm.tools.StateDatabaseTool',
++            'export-boilerplate-package-inventory',
++            '--db', 'pm/state/boilerplate-state.sqlite',
++            '--csv', 'pm/reports/boilerplate-package-files-with-context.csv'
++    }
++}
++
++tasks.register('stateInventoryCsv') {
++    group = 'documentation'
++    description = 'Exports DB-backed project/boilerplate file inventories with maintenance context.'
++    dependsOn('projectFileInventoryCsv')
++    dependsOn('boilerplatePackageInventoryCsv')
++}
++
+ tasks.register('boilerplateSyncWorkbook', Exec) {
+     group = 'documentation'
+     description = 'Builds docs/boilerplate-sync-candidates.xlsx from docs/update-packages/pz-boilerplate-intelliJ while preserving manual decision columns.'
+-    dependsOn(':afp-tools:classes')
++    dependsOn(':pm-tools:classes')
+     dependsOn('boilerplateStateDb')
+     onlyIf {
+         File packagesDir = file('docs/update-packages/pz-boilerplate-intelliJ')
+@@ -316,12 +469,12 @@ tasks.register('boilerplateSyncWorkbook', Exec) {
+         return shouldRun
+     }
+     doFirst {
+-        def sourceSets = project(':afp-tools').sourceSets
++        def sourceSets = project(':pm-tools').sourceSets
+         String cp = sourceSets.main.runtimeClasspath.asPath
+         commandLine 'java',
+             '-cp', cp,
+-            'com.upland.connect.afp.tools.BoilerplateSyncWorkbookUpdater',
+-            '--db', 'preview/state/boilerplate-state.sqlite',
++            'com.upland.connect.pm.tools.BoilerplateSyncWorkbookUpdater',
++            '--db', 'pm/state/boilerplate-state.sqlite',
+             '--xlsx', 'docs/boilerplate-sync-candidates.xlsx'
+     }
+ }
+@@ -331,15 +484,15 @@ tasks.register('issuesLogTickle', Exec) {
+     description = 'Checks for changes to issue-referenced components using SQLite state and tickles docs/issues-log.csv expectations'
+     dependsOn('projectStateDb')
+     doFirst {
+-        def sourceSets = project(':afp-tools').sourceSets
++        def sourceSets = project(':pm-tools').sourceSets
+         String cp = sourceSets.main.runtimeClasspath.asPath
+         commandLine 'java',
+             '-cp', cp,
+-            'com.upland.connect.afp.tools.StateDatabaseTool',
++            'com.upland.connect.pm.tools.StateDatabaseTool',
+             'issues-tickle',
+-            '--db', 'preview/state/project-state.sqlite',
++            '--db', 'pm/state/project-state.sqlite',
+             '--issues', 'docs/issues-log.csv',
+-            '--output', 'preview/issues-log-tickle.json',
++            '--output', 'pm/reports/issues-log-tickle.json',
+             '--enforce'
+     }
+ }
+@@ -350,15 +503,15 @@ tasks.register('issuesEffectivenessReport', Exec) {
+     dependsOn('issuesLogTickle')
+     dependsOn('projectStateDb')
+     doFirst {
+-        def sourceSets = project(':afp-tools').sourceSets
++        def sourceSets = project(':pm-tools').sourceSets
+         String cp = sourceSets.main.runtimeClasspath.asPath
+         commandLine 'java',
+             '-cp', cp,
+-            'com.upland.connect.afp.tools.StateDatabaseTool',
++            'com.upland.connect.pm.tools.StateDatabaseTool',
+             'issues-effectiveness',
+-            '--db', 'preview/state/project-state.sqlite',
+-            '--tickle', 'preview/issues-log-tickle.json',
+-            '--output', 'preview/issues-effectiveness.json'
++            '--db', 'pm/state/project-state.sqlite',
++            '--tickle', 'pm/reports/issues-log-tickle.json',
++            '--output', 'pm/reports/issues-effectiveness.json'
+     }
+ }
+ 
+@@ -376,7 +529,7 @@ def sha256Hex = { File file ->
+ 
+ tasks.register('documentationManifest') {
+     group = 'documentation'
+-    description = 'Updates preview/documentation-manifest.json with checksums for changelog and docs files'
++    description = 'Updates pm/reports/documentation-manifest.json with checksums for changelog and docs files'
+     dependsOn('versionStamp')
+     dependsOn('previewManifest')
+     dependsOn(':afp-engine:fidelityReport')
+@@ -386,11 +539,13 @@ tasks.register('documentationManifest') {
+     dependsOn('versionControlLedger')
+     dependsOn('issuesLogTickle')
+     dependsOn('issuesEffectivenessReport')
++    dependsOn('policyRulesReport')
++    dependsOn('stateInventoryCsv')
+     dependsOn('projectPlanWorkbook')
+     dependsOn('policyGovernanceWorkbook')
+     dependsOn('boilerplateSyncWorkbook')
+     doLast {
+-        File output = file('preview/documentation-manifest.json')
++        File output = file('pm/reports/documentation-manifest.json')
+         output.parentFile.mkdirs()
+         List<File> tracked = [
+             file('AI-POLICY.md'),
+@@ -404,16 +559,20 @@ tasks.register('documentationManifest') {
+             file('preview/afp-meta.json'),
+             file('preview/afp-diag.json'),
+             file('preview/fidelity-report.json'),
+-            file('preview/project-plan-progress-data.json'),
+-            file('preview/governance-alerts.json'),
+-            file('preview/version-control-ledger.json'),
+-            file('preview/issues-log-tickle.json'),
+-            file('preview/issues-effectiveness.json'),
+-            file('preview/project-plan-next-step.json'),
+-            file('preview/workbook-refresh-status.json'),
+-            file('preview/state/project-state.sqlite'),
+-            file('preview/state/boilerplate-state.sqlite'),
+-            file('preview/version.json'),
++            file('pm/reports/project-plan-progress-data.json'),
++            file('pm/reports/governance-alerts.json'),
++            file('pm/reports/version-control-ledger.json'),
++            file('pm/reports/issues-log-tickle.json'),
++            file('pm/reports/issues-effectiveness.json'),
++            file('pm/reports/policy-rules.json'),
++            file('pm/reports/project-plan-next-step.json'),
++            file('pm/reports/workbook-refresh-status.json'),
++            file('pm/policy/policy-rule-tables.sql'),
++            file('pm/reports/repo-file-inventory-with-context.csv'),
++            file('pm/reports/boilerplate-package-files-with-context.csv'),
++            file('pm/state/project-state.sqlite'),
++            file('pm/state/boilerplate-state.sqlite'),
++            file('pm/reports/version.json'),
+             file('VERSION')
+         ]
+         tracked.addAll(fileTree('docs') {
+@@ -470,17 +629,21 @@ tasks.register('publishCiArtifacts') {
+             file('preview/afp-meta.json'),
+             file('preview/afp-diag.json'),
+             file('preview/fidelity-report.json'),
+-            file('preview/project-plan-progress-data.json'),
+-            file('preview/governance-alerts.json'),
+-            file('preview/version-control-ledger.json'),
+-            file('preview/issues-log-tickle.json'),
+-            file('preview/issues-effectiveness.json'),
+-            file('preview/documentation-manifest.json'),
+-            file('preview/project-plan-next-step.json'),
+-            file('preview/workbook-refresh-status.json'),
+-            file('preview/state/project-state.sqlite'),
+-            file('preview/state/boilerplate-state.sqlite'),
+-            file('preview/version.json'),
++            file('pm/reports/project-plan-progress-data.json'),
++            file('pm/reports/governance-alerts.json'),
++            file('pm/reports/version-control-ledger.json'),
++            file('pm/reports/issues-log-tickle.json'),
++            file('pm/reports/issues-effectiveness.json'),
++            file('pm/reports/policy-rules.json'),
++            file('pm/policy/policy-rule-tables.sql'),
++            file('pm/reports/repo-file-inventory-with-context.csv'),
++            file('pm/reports/boilerplate-package-files-with-context.csv'),
++            file('pm/reports/documentation-manifest.json'),
++            file('pm/reports/project-plan-next-step.json'),
++            file('pm/reports/workbook-refresh-status.json'),
++            file('pm/state/project-state.sqlite'),
++            file('pm/state/boilerplate-state.sqlite'),
++            file('pm/reports/version.json'),
+             file('docs/fidelity-corpus.txt'),
+             file('docs/project-plan.md'),
+             file('docs/project-plan-progress.csv'),
+@@ -524,15 +687,15 @@ tasks.register('publishCiArtifacts') {
+ 
+ tasks.register('createRollbackCheckpoint', Exec) {
+     group = 'release'
+-    description = 'Creates a rollback checkpoint under preview/checkpoints from current manifest + baseline files'
++    description = 'Creates a rollback checkpoint under pm/checkpoints from current manifest + baseline files'
+     dependsOn('documentationManifest')
+     doFirst {
+         List<String> cmd = [
+             'python3',
+             'tools/rollback_manager.py',
+             '--root', '.',
+-            '--base', 'preview/checkpoints',
+-            '--manifest', 'preview/documentation-manifest.json',
++            '--base', 'pm/checkpoints',
++            '--manifest', 'pm/reports/documentation-manifest.json',
+             'create'
+         ]
+         String label = (System.getenv('CHECKPOINT_LABEL') ?: '').trim()
+@@ -549,7 +712,7 @@ tasks.register('listRollbackCheckpoints', Exec) {
+     commandLine 'python3',
+         'tools/rollback_manager.py',
+         '--root', '.',
+-        '--base', 'preview/checkpoints',
++        '--base', 'pm/checkpoints',
+         'list'
+ }
+ 
+@@ -565,7 +728,7 @@ tasks.register('rollbackCheckpoint', Exec) {
+             'python3',
+             'tools/rollback_manager.py',
+             '--root', '.',
+-            '--base', 'preview/checkpoints',
++            '--base', 'pm/checkpoints',
+             'restore',
+             '--id', checkpointId
+         ]
+@@ -586,10 +749,10 @@ tasks.register('releaseSnapshot') {
+ 
+ tasks.register('projectPlanNextStep') {
+     group = 'documentation'
+-    description = 'Extracts the next instruction from docs/project-plan.md into preview/project-plan-next-step.json'
++    description = 'Extracts the next instruction from docs/project-plan.md into pm/reports/project-plan-next-step.json'
+     doLast {
+         File plan = file('docs/project-plan.md')
+-        File output = file('preview/project-plan-next-step.json')
++        File output = file('pm/reports/project-plan-next-step.json')
+         output.parentFile.mkdirs()
+         if (!plan.exists()) {
+             output.text = JsonOutput.prettyPrint(JsonOutput.toJson([
+@@ -713,7 +876,7 @@ tasks.register('enforceProjectBoundaries') {
+             [module: 'afp-cli', dir: file('afp-cli/src/main/java')]
+         ]
+         List<Map<String, Object>> forbidden = [
+-            [pattern: ~/com\.upland\.connect\.afp\.tools\./, reason: 'product modules must not reference afp-tools classes'],
++            [pattern: ~/com\.upland\.connect\.pm\.tools\./, reason: 'product modules must not reference pm-tools classes'],
+             [pattern: ~/preview\/state\//, reason: 'product modules must not reference project-management state databases'],
+             [pattern: ~/docs\/policy-governance-events/, reason: 'product modules must not reference governance tracker sources'],
+             [pattern: ~/docs\/project-plan-progress/, reason: 'product modules must not reference project-plan tracker sources'],
+@@ -749,8 +912,8 @@ tasks.register('enforceProjectBoundaries') {
+                 return
+             }
+             String text = f.getText('UTF-8')
+-            if (text.contains("project(':afp-tools')")) {
+-                violations.add("${path}: disallowed dependency on :afp-tools")
++            if (text.contains("project(':pm-tools')")) {
++                violations.add("${path}: disallowed dependency on :pm-tools")
+             }
+         }
+ 
+@@ -760,6 +923,153 @@ tasks.register('enforceProjectBoundaries') {
+     }
+ }
+ 
++tasks.register('enforceManagedTooling') {
++    group = 'verification'
++    description = 'Fails when project-management tooling files are untracked.'
++    doLast {
++        List<String> roots = [
++            'tools',
++            'pm-tools/src/main/java/com/upland/connect/pm/tools'
++        ]
++        List<String> unmanaged = []
++        roots.each { String root ->
++            File dir = file(root)
++            if (!dir.exists()) {
++                return
++            }
++            Process process = new ProcessBuilder('git', 'ls-files', '--others', '--exclude-standard', root)
++                .directory(projectDir)
++                .redirectErrorStream(true)
++                .start()
++            String stdout = new String(process.inputStream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8)
++            int exit = process.waitFor()
++            if (exit != 0) {
++                throw new GradleException("Unable to inspect tooling tracking state for root '${root}'")
++            }
++            List<String> lines = stdout.readLines()
++                .collect { it == null ? '' : it.trim() }
++                .findAll { !it.isEmpty() }
++            unmanaged.addAll(lines)
++        }
++        if (!unmanaged.isEmpty()) {
++            throw new GradleException(
++                "Unmanaged project-management tooling detected:\n - " + unmanaged.join('\n - ') +
++                    "\nAll tooling under tools/ and pm-tools/.../tools must be version-controlled."
++            )
++        }
++    }
++}
++
++tasks.register('enforcePmApplicationRealmSeparation') {
++    group = 'verification'
++    description = 'Fails when PM artifacts leak into preview/ or PM state escapes pm/state.'
++    doLast {
++        List<String> violations = []
++        List<String> forbiddenPreviewArtifacts = [
++            'preview/governance-alerts.json',
++            'preview/version-control-ledger.json',
++            'preview/issues-log-tickle.json',
++            'preview/issues-effectiveness.json',
++            'preview/project-plan-next-step.json',
++            'preview/project-plan-progress-data.json',
++            'preview/workbook-refresh-status.json',
++            'preview/repo-file-inventory-with-context.csv',
++            'preview/boilerplate-package-files-with-context.csv',
++            'preview/documentation-manifest.json',
++            'preview/version.json'
++        ]
++        forbiddenPreviewArtifacts.each { String path ->
++            if (file(path).exists()) {
++                violations.add("${path}: PM artifact must live under pm/reports/")
++            }
++        }
++
++        List<String> forbiddenStateLocations = [
++            'preview/state/project-state.sqlite',
++            'preview/state/boilerplate-state.sqlite',
++            'project/state/project-state.sqlite',
++            'boilerplate/state/boilerplate-state.sqlite'
++        ]
++        forbiddenStateLocations.each { String path ->
++            if (file(path).exists()) {
++                violations.add("${path}: PM database must live under pm/state/")
++            }
++        }
++
++        if (!violations.isEmpty()) {
++            throw new GradleException("PM/Application realm separation violations detected:\n - " + violations.join('\n - '))
++        }
++    }
++}
++
++tasks.register('enforceBoilerplateRollupForFrameworkChanges') {
++    group = 'verification'
++    description = 'Fails when framework/process mutations are made without an accompanying boilerplate roll-up package update.'
++    doLast {
++        Process diffProc = new ProcessBuilder('git', 'diff', '--name-only')
++            .directory(projectDir)
++            .redirectErrorStream(true)
++            .start()
++        String diffOut = new String(diffProc.inputStream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8)
++        int diffExit = diffProc.waitFor()
++        if (diffExit != 0) {
++            throw new GradleException('Unable to inspect git diff for boilerplate roll-up enforcement.')
++        }
++        Process untrackedProc = new ProcessBuilder('git', 'ls-files', '--others', '--exclude-standard')
++            .directory(projectDir)
++            .redirectErrorStream(true)
++            .start()
++        String untrackedOut = new String(untrackedProc.inputStream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8)
++        int untrackedExit = untrackedProc.waitFor()
++        if (untrackedExit != 0) {
++            throw new GradleException('Unable to inspect git untracked files for boilerplate roll-up enforcement.')
++        }
++
++        List<String> changed = diffOut.readLines()
++            .collect { it == null ? '' : it.trim() }
++            .findAll { !it.isEmpty() }
++        changed.addAll(
++            untrackedOut.readLines()
++                .collect { it == null ? '' : it.trim() }
++                .findAll { !it.isEmpty() }
++        )
++
++        if (changed.isEmpty()) {
++            return
++        }
++
++        List<String> frameworkTriggers = [
++            'AI-POLICY.md',
++            'README.md',
++            'build.gradle',
++            'settings.gradle',
++            'pm-tools/',
++            'pm-console/',
++            'tools/run_excel_workbook_refresh.py',
++            'tools/issues_effectiveness_report.py',
++            'pm/policy/'
++        ]
++        boolean touchedFramework = changed.any { path ->
++            frameworkTriggers.any { trigger ->
++                path == trigger || path.startsWith(trigger)
++            }
++        }
++        if (!touchedFramework) {
++            return
++        }
++
++        boolean hasRollupUpdate = changed.any { path ->
++            path.startsWith('docs/update-packages/pz-boilerplate-intelliJ/')
++        }
++        if (!hasRollupUpdate) {
++            throw new GradleException(
++                "Framework/process files changed without boilerplate roll-up update.\n" +
++                "Add/update a package under docs/update-packages/pz-boilerplate-intelliJ/ in the same change set."
++            )
++        }
++    }
++}
++
+ tasks.register('prodBuild') {
+     group = 'build'
+     description = 'Production build path without test compilation/execution; assumes a prepared runtime/resource environment'
+@@ -773,6 +1083,9 @@ tasks.register('qualityGate') {
+     group = 'verification'
+     description = 'Runs tests, fidelity gate, and documentation manifest generation as a release readiness gate'
+     dependsOn('enforceProjectBoundaries')
++    dependsOn('enforceManagedTooling')
++    dependsOn('enforcePmApplicationRealmSeparation')
++    dependsOn('enforceBoilerplateRollupForFrameworkChanges')
+     dependsOn(':afp-engine:test')
+     dependsOn(':afp-engine:fidelityGate')
+     dependsOn('documentationManifest')
+diff --git a/settings.gradle b/settings.gradle
+index 22814b4..d0d8e18 100644
+--- a/settings.gradle
++++ b/settings.gradle
+@@ -1,3 +1,3 @@
+ rootProject.name = 'afp-converter'
+ 
+-include 'afp-api', 'afp-engine', 'afp-cli', 'afp-tools'
++include 'afp-api', 'afp-engine', 'afp-cli', 'pm-tools', 'pm-console'
+diff --git a/tools/issues_effectiveness_report.py b/tools/issues_effectiveness_report.py
+index cf6f404..012e5bc 100644
+--- a/tools/issues_effectiveness_report.py
++++ b/tools/issues_effectiveness_report.py
+@@ -41,7 +41,7 @@ def parse_percent(value: str) -> float:
+ def main() -> int:
+     parser = argparse.ArgumentParser(description="Generate mechanized issue effectiveness signals.")
+     parser.add_argument("--issues", required=True, help="Path to docs/issues-log.csv")
+-    parser.add_argument("--tickle", required=True, help="Path to preview/issues-log-tickle.json")
++    parser.add_argument("--tickle", required=True, help="Path to pm/reports/issues-log-tickle.json")
+     parser.add_argument("--progress", required=True, help="Path to docs/project-plan-progress.csv")
+     parser.add_argument("--fidelity", required=True, help="Path to preview/fidelity-report.json")
+     parser.add_argument("--output", required=True, help="Path to output JSON")
+diff --git a/tools/run_excel_workbook_refresh.py b/tools/run_excel_workbook_refresh.py
+index 8e45e13..0863c2c 100755
+--- a/tools/run_excel_workbook_refresh.py
++++ b/tools/run_excel_workbook_refresh.py
+@@ -28,7 +28,7 @@ def run(cmd: list[str], allow_failure: bool = False, timeout_seconds: Optional[i
+ def main() -> int:
+     parser = argparse.ArgumentParser(description="Refresh project plan workbook through native Excel scripting.")
+     parser.add_argument("--xlsx", required=True, help="Path to docs/project-plan-progress.xlsx")
+-    parser.add_argument("--json", required=True, help="Path to preview/project-plan-progress-data.json")
++    parser.add_argument("--json", required=True, help="Path to pm/reports/project-plan-progress-data.json")
+     parser.add_argument(
+         "--script",
+         default="tools/run_excel_workbook_refresh.applescript",
+@@ -123,7 +123,7 @@ def write_status(mode: str, excel_ok: bool, excel_error: str) -> None:
+         "excelSucceeded": excel_ok,
+         "excelError": excel_error,
+     }
+-    out = Path("preview/workbook-refresh-status.json")
++    out = Path("pm/reports/workbook-refresh-status.json")
+     out.parent.mkdir(parents=True, exist_ok=True)
+     out.write_text(json.dumps(payload, indent=2, ensure_ascii=True) + "\n", encoding="utf-8")
+ 

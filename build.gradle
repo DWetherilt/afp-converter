@@ -4,12 +4,40 @@ plugins {
 
 import java.security.MessageDigest
 import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
 import java.util.Locale
 
 def versionFile = file('VERSION')
 def resolvedVersion = versionFile.exists() ? versionFile.text.trim() : '0.2.0-beta.1'
 if (!resolvedVersion) {
     throw new GradleException("VERSION file is empty")
+}
+
+def pmWorkflowManifestFile = file('pm/workflow/workflow-manifest.json')
+def pmWorkflowManifest = pmWorkflowManifestFile.exists()
+    ? (new JsonSlurper().parse(pmWorkflowManifestFile) as Map)
+    : [:]
+def pmWorkflowGradleMap = (pmWorkflowManifest?.adapters instanceof Map
+    && pmWorkflowManifest.adapters.gradle instanceof Map
+    && pmWorkflowManifest.adapters.gradle.phaseTaskMap instanceof Map)
+    ? (pmWorkflowManifest.adapters.gradle.phaseTaskMap as Map)
+    : [:]
+def pmWorkflowDefaults = (pmWorkflowManifest?.defaults instanceof Map)
+    ? (pmWorkflowManifest.defaults as Map)
+    : [:]
+
+def resolvePmWorkflowTasks = { String phaseId ->
+    Object raw = pmWorkflowGradleMap.get(phaseId)
+    if (!(raw instanceof List)) {
+        throw new GradleException("No Gradle phase mapping found for PM workflow phase '${phaseId}' in ${pmWorkflowManifestFile.path}")
+    }
+    List<String> tasks = (raw as List)
+        .collect { it == null ? '' : it.toString().trim() }
+        .findAll { !it.isEmpty() }
+    if (tasks.isEmpty()) {
+        throw new GradleException("Empty Gradle task list for PM workflow phase '${phaseId}' in ${pmWorkflowManifestFile.path}")
+    }
+    return tasks
 }
 
 allprojects {
@@ -25,6 +53,73 @@ tasks.register('previewManifest') {
     group = 'build'
     description = 'Regenerates preview artifacts under preview/ using the current converter'
     dependsOn(':afp-cli:generatePreview')
+}
+
+tasks.register('pmConsoleStatus', JavaExec) {
+    group = 'documentation'
+    description = 'Runs the development PM console status dashboard'
+    dependsOn(':pm-console:classes')
+    dependsOn('policyRulesReport')
+    dependsOn('issuesEffectivenessReport')
+    dependsOn('governanceAlerts')
+    classpath = project(':pm-console').sourceSets.main.runtimeClasspath
+    mainClass = 'com.upland.connect.pm.console.PmConsoleMain'
+    workingDir = rootProject.projectDir
+    args 'status'
+}
+
+tasks.register('pmDevAttach') {
+    group = 'documentation'
+    description = 'Development attach workflow: regenerate preview and show PM console status'
+    dependsOn('pmWorkflowExecuteApplication')
+}
+
+tasks.register('pmWorkflowList', Exec) {
+    group = 'documentation'
+    description = 'Lists normalized PM workflow phases and Gradle mappings from pm/workflow/workflow-manifest.json'
+    commandLine 'python3', 'tools/pm_workflow.py', 'list', '--adapter', 'gradle'
+}
+
+tasks.register('pmWorkflowRun') {
+    group = 'documentation'
+    description = 'Runs a normalized PM workflow phase through Gradle mapping (set -PpmPhase=<phaseId>).'
+    def phaseProvider = providers.gradleProperty('pmPhase')
+        .orElse(pmWorkflowDefaults.get('gradleDefaultPhase')?.toString() ?: 'pm_refresh_and_reports')
+    dependsOn {
+        String phase = phaseProvider.get()
+        return resolvePmWorkflowTasks(phase)
+    }
+    doFirst {
+        String phase = phaseProvider.get()
+        logger.lifecycle("pmWorkflowRun: phase='${phase}' via ${pmWorkflowManifestFile.path}")
+    }
+}
+
+tasks.register('pmWorkflowExecuteApplication') {
+    group = 'documentation'
+    description = 'Runs normalized default application execution phase (app execution + PM console).'
+    String phase = pmWorkflowDefaults.get('executeApplicationPhase')?.toString() ?: 'execute_application_with_pm_console'
+    dependsOn(resolvePmWorkflowTasks(phase))
+}
+
+tasks.register('pmConsoleInstallPath') {
+    group = 'documentation'
+    description = 'Installs pm-console launcher and prints the executable path.'
+    dependsOn(':pm-console:installDist')
+    doLast {
+        File installDir = file('pm-console/build/install/pmconsole')
+        File unixBin = new File(installDir, 'bin/pmconsole')
+        File winBin = new File(installDir, 'bin/pmconsole.bat')
+        if (unixBin.exists()) {
+            println unixBin.path
+            return
+        }
+        if (winBin.exists()) {
+            println winBin.path
+            return
+        }
+        throw new GradleException("pm-console launcher not found under " + installDir.path)
+    }
 }
 
 tasks.register('versionInfo') {
@@ -55,9 +150,9 @@ tasks.register('versionBump', Exec) {
 
 tasks.register('versionStamp') {
     group = 'documentation'
-    description = 'Writes preview/version.json from VERSION'
+    description = 'Writes pm/reports/version.json from VERSION'
     doLast {
-        File out = file('preview/version.json')
+        File out = file('pm/reports/version.json')
         out.parentFile.mkdirs()
         out.text = JsonOutput.prettyPrint(JsonOutput.toJson([
             schemaVersion: '1',
@@ -71,7 +166,7 @@ tasks.register('projectPlanWorkbook', Exec) {
     group = 'documentation'
     description = 'Updates docs/project-plan-progress.xlsx when CSV source changes. Force with AFP_FORCE_WORKBOOK_UPDATE=true. Default mode is POI-based updater; set AFP_WORKBOOK_MODE=excel|xml to use legacy paths.'
     dependsOn('projectPlanProgressJson')
-    dependsOn(':afp-tools:classes')
+    dependsOn(':pm-tools:classes')
     onlyIf {
         File csv = file('docs/project-plan-progress.csv')
         File xlsx = file('docs/project-plan-progress.xlsx')
@@ -100,12 +195,12 @@ tasks.register('projectPlanWorkbook', Exec) {
     doFirst {
         String mode = ((System.getenv('AFP_WORKBOOK_MODE') ?: 'poi') as String).trim().toLowerCase()
         if (mode == 'poi') {
-            def sourceSets = project(':afp-tools').sourceSets
+            def sourceSets = project(':pm-tools').sourceSets
             String cp = sourceSets.main.runtimeClasspath.asPath
             List<String> cmd = [
                 'java',
                 '-cp', cp,
-                'com.upland.connect.afp.tools.ProjectPlanWorkbookUpdater',
+                'com.upland.connect.pm.tools.ProjectPlanWorkbookUpdater',
                 '--csv', 'docs/project-plan-progress.csv',
                 '--xlsx', 'docs/project-plan-progress.xlsx'
             ]
@@ -137,14 +232,14 @@ tasks.register('projectPlanWorkbook', Exec) {
         commandLine 'python3',
             'tools/run_excel_workbook_refresh.py',
             '--xlsx', 'docs/project-plan-progress.xlsx',
-            '--json', 'preview/project-plan-progress-data.json'
+            '--json', 'pm/reports/project-plan-progress-data.json'
     }
 }
 
 tasks.register('policyGovernanceWorkbook', Exec) {
     group = 'documentation'
     description = 'Updates docs/policy-governance-events.xlsx from docs/policy-governance-events.csv.'
-    dependsOn(':afp-tools:classes')
+    dependsOn(':pm-tools:classes')
     onlyIf {
         File csv = file('docs/policy-governance-events.csv')
         File xlsx = file('docs/policy-governance-events.xlsx')
@@ -171,11 +266,11 @@ tasks.register('policyGovernanceWorkbook', Exec) {
         return shouldRun
     }
     doFirst {
-        def sourceSets = project(':afp-tools').sourceSets
+        def sourceSets = project(':pm-tools').sourceSets
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.afp.tools.PolicyGovernanceWorkbookUpdater',
+            'com.upland.connect.pm.tools.PolicyGovernanceWorkbookUpdater',
             '--csv', 'docs/policy-governance-events.csv',
             '--xlsx', 'docs/policy-governance-events.xlsx'
     }
@@ -183,38 +278,55 @@ tasks.register('policyGovernanceWorkbook', Exec) {
 
 tasks.register('projectPlanProgressJson', Exec) {
     group = 'documentation'
-    description = 'Exports project plan progress from SQLite state into preview/project-plan-progress-data.json for workbook automation'
+    description = 'Exports project plan progress from SQLite state into pm/reports/project-plan-progress-data.json for workbook automation'
     dependsOn('projectStateDb')
     doFirst {
-        def sourceSets = project(':afp-tools').sourceSets
+        def sourceSets = project(':pm-tools').sourceSets
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.afp.tools.StateDatabaseTool',
+            'com.upland.connect.pm.tools.StateDatabaseTool',
             'export-progress-json',
-            '--db', 'preview/state/project-state.sqlite',
-            '--json', 'preview/project-plan-progress-data.json'
+            '--db', 'pm/state/project-state.sqlite',
+            '--json', 'pm/reports/project-plan-progress-data.json'
     }
 }
 
 tasks.register('projectStateDb', Exec) {
     group = 'documentation'
-    description = 'Builds preview/state/project-state.sqlite from issues/progress/fidelity sources'
-    dependsOn(':afp-tools:classes')
+    description = 'Builds pm/state/project-state.sqlite from issues/progress/fidelity sources'
+    dependsOn(':pm-tools:classes')
     dependsOn(':afp-engine:fidelityReport')
     commandLine 'true'
     doFirst {
-        def sourceSets = project(':afp-tools').sourceSets
+        def sourceSets = project(':pm-tools').sourceSets
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.afp.tools.StateDatabaseTool',
+            'com.upland.connect.pm.tools.StateDatabaseTool',
             'sync-project',
-            '--db', 'preview/state/project-state.sqlite',
+            '--db', 'pm/state/project-state.sqlite',
             '--issues', 'docs/issues-log.csv',
             '--progress', 'docs/project-plan-progress.csv',
             '--fidelity', 'preview/fidelity-report.json',
-            '--governance-events', 'docs/policy-governance-events.csv'
+            '--governance-events', 'docs/policy-governance-events.csv',
+            '--policy-sql', 'pm/policy/policy-rule-tables.sql'
+    }
+}
+
+tasks.register('policyRulesReport', Exec) {
+    group = 'documentation'
+    description = 'Exports SQL-backed policy rule table from SQLite state into pm/reports/policy-rules.json'
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'com.upland.connect.pm.tools.StateDatabaseTool',
+            'export-policy-rules',
+            '--db', 'pm/state/project-state.sqlite',
+            '--json', 'pm/reports/policy-rules.json'
     }
 }
 
@@ -223,17 +335,17 @@ tasks.register('governanceAlerts', Exec) {
     description = 'Generates governance/trust alerts from SQLite project state.'
     dependsOn('projectStateDb')
     doFirst {
-        def sourceSets = project(':afp-tools').sourceSets
+        def sourceSets = project(':pm-tools').sourceSets
         String cp = sourceSets.main.runtimeClasspath.asPath
         String enforceRaw = (System.getenv('AFP_ENFORCE_GOVERNANCE_ALERTS') ?: '').trim().toLowerCase(Locale.ROOT)
         boolean enforce = enforceRaw == '1' || enforceRaw == 'true' || enforceRaw == 'yes'
         List<String> cmd = [
             'java',
             '-cp', cp,
-            'com.upland.connect.afp.tools.StateDatabaseTool',
+            'com.upland.connect.pm.tools.StateDatabaseTool',
             'governance-alerts',
-            '--db', 'preview/state/project-state.sqlite',
-            '--output', 'preview/governance-alerts.json'
+            '--db', 'pm/state/project-state.sqlite',
+            '--output', 'pm/reports/governance-alerts.json'
         ]
         if (enforce) {
             cmd.add('--enforce')
@@ -244,45 +356,86 @@ tasks.register('governanceAlerts', Exec) {
 
 tasks.register('versionControlLedger', Exec) {
     group = 'documentation'
-    description = 'Generates preview/version-control-ledger.json from SQLite project state.'
+    description = 'Generates pm/reports/version-control-ledger.json from SQLite project state.'
     dependsOn('projectStateDb')
     doFirst {
-        def sourceSets = project(':afp-tools').sourceSets
+        def sourceSets = project(':pm-tools').sourceSets
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.afp.tools.StateDatabaseTool',
+            'com.upland.connect.pm.tools.StateDatabaseTool',
             'version-control-ledger',
-            '--db', 'preview/state/project-state.sqlite',
-            '--output', 'preview/version-control-ledger.json'
+            '--db', 'pm/state/project-state.sqlite',
+            '--output', 'pm/reports/version-control-ledger.json'
     }
 }
 
 tasks.register('boilerplateStateDb', Exec) {
     group = 'documentation'
-    description = 'Builds preview/state/boilerplate-state.sqlite from update packages'
-    dependsOn(':afp-tools:classes')
+    description = 'Builds pm/state/boilerplate-state.sqlite from update packages'
+    dependsOn(':pm-tools:classes')
     onlyIf {
         File packagesDir = file('docs/update-packages/pz-boilerplate-intelliJ')
         return packagesDir.exists() && packagesDir.isDirectory()
     }
     commandLine 'true'
     doFirst {
-        def sourceSets = project(':afp-tools').sourceSets
+        def sourceSets = project(':pm-tools').sourceSets
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.afp.tools.StateDatabaseTool',
+            'com.upland.connect.pm.tools.StateDatabaseTool',
             'sync-boilerplate',
-            '--db', 'preview/state/boilerplate-state.sqlite',
+            '--db', 'pm/state/boilerplate-state.sqlite',
             '--packages', 'docs/update-packages/pz-boilerplate-intelliJ'
     }
+}
+
+tasks.register('projectFileInventoryCsv', Exec) {
+    group = 'documentation'
+    description = 'Exports project repo-file inventory with DB provenance and maintenance context.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'com.upland.connect.pm.tools.StateDatabaseTool',
+            'export-project-file-inventory',
+            '--db', 'pm/state/project-state.sqlite',
+            '--csv', 'pm/reports/repo-file-inventory-with-context.csv'
+    }
+}
+
+tasks.register('boilerplatePackageInventoryCsv', Exec) {
+    group = 'documentation'
+    description = 'Exports boilerplate package-file inventory with DB provenance and maintenance context.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('boilerplateStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'com.upland.connect.pm.tools.StateDatabaseTool',
+            'export-boilerplate-package-inventory',
+            '--db', 'pm/state/boilerplate-state.sqlite',
+            '--csv', 'pm/reports/boilerplate-package-files-with-context.csv'
+    }
+}
+
+tasks.register('stateInventoryCsv') {
+    group = 'documentation'
+    description = 'Exports DB-backed project/boilerplate file inventories with maintenance context.'
+    dependsOn('projectFileInventoryCsv')
+    dependsOn('boilerplatePackageInventoryCsv')
 }
 
 tasks.register('boilerplateSyncWorkbook', Exec) {
     group = 'documentation'
     description = 'Builds docs/boilerplate-sync-candidates.xlsx from docs/update-packages/pz-boilerplate-intelliJ while preserving manual decision columns.'
-    dependsOn(':afp-tools:classes')
+    dependsOn(':pm-tools:classes')
     dependsOn('boilerplateStateDb')
     onlyIf {
         File packagesDir = file('docs/update-packages/pz-boilerplate-intelliJ')
@@ -316,12 +469,12 @@ tasks.register('boilerplateSyncWorkbook', Exec) {
         return shouldRun
     }
     doFirst {
-        def sourceSets = project(':afp-tools').sourceSets
+        def sourceSets = project(':pm-tools').sourceSets
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.afp.tools.BoilerplateSyncWorkbookUpdater',
-            '--db', 'preview/state/boilerplate-state.sqlite',
+            'com.upland.connect.pm.tools.BoilerplateSyncWorkbookUpdater',
+            '--db', 'pm/state/boilerplate-state.sqlite',
             '--xlsx', 'docs/boilerplate-sync-candidates.xlsx'
     }
 }
@@ -331,15 +484,15 @@ tasks.register('issuesLogTickle', Exec) {
     description = 'Checks for changes to issue-referenced components using SQLite state and tickles docs/issues-log.csv expectations'
     dependsOn('projectStateDb')
     doFirst {
-        def sourceSets = project(':afp-tools').sourceSets
+        def sourceSets = project(':pm-tools').sourceSets
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.afp.tools.StateDatabaseTool',
+            'com.upland.connect.pm.tools.StateDatabaseTool',
             'issues-tickle',
-            '--db', 'preview/state/project-state.sqlite',
+            '--db', 'pm/state/project-state.sqlite',
             '--issues', 'docs/issues-log.csv',
-            '--output', 'preview/issues-log-tickle.json',
+            '--output', 'pm/reports/issues-log-tickle.json',
             '--enforce'
     }
 }
@@ -350,15 +503,15 @@ tasks.register('issuesEffectivenessReport', Exec) {
     dependsOn('issuesLogTickle')
     dependsOn('projectStateDb')
     doFirst {
-        def sourceSets = project(':afp-tools').sourceSets
+        def sourceSets = project(':pm-tools').sourceSets
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.afp.tools.StateDatabaseTool',
+            'com.upland.connect.pm.tools.StateDatabaseTool',
             'issues-effectiveness',
-            '--db', 'preview/state/project-state.sqlite',
-            '--tickle', 'preview/issues-log-tickle.json',
-            '--output', 'preview/issues-effectiveness.json'
+            '--db', 'pm/state/project-state.sqlite',
+            '--tickle', 'pm/reports/issues-log-tickle.json',
+            '--output', 'pm/reports/issues-effectiveness.json'
     }
 }
 
@@ -376,7 +529,7 @@ def sha256Hex = { File file ->
 
 tasks.register('documentationManifest') {
     group = 'documentation'
-    description = 'Updates preview/documentation-manifest.json with checksums for changelog and docs files'
+    description = 'Updates pm/reports/documentation-manifest.json with checksums for changelog and docs files'
     dependsOn('versionStamp')
     dependsOn('previewManifest')
     dependsOn(':afp-engine:fidelityReport')
@@ -386,11 +539,13 @@ tasks.register('documentationManifest') {
     dependsOn('versionControlLedger')
     dependsOn('issuesLogTickle')
     dependsOn('issuesEffectivenessReport')
+    dependsOn('policyRulesReport')
+    dependsOn('stateInventoryCsv')
     dependsOn('projectPlanWorkbook')
     dependsOn('policyGovernanceWorkbook')
     dependsOn('boilerplateSyncWorkbook')
     doLast {
-        File output = file('preview/documentation-manifest.json')
+        File output = file('pm/reports/documentation-manifest.json')
         output.parentFile.mkdirs()
         List<File> tracked = [
             file('AI-POLICY.md'),
@@ -404,16 +559,20 @@ tasks.register('documentationManifest') {
             file('preview/afp-meta.json'),
             file('preview/afp-diag.json'),
             file('preview/fidelity-report.json'),
-            file('preview/project-plan-progress-data.json'),
-            file('preview/governance-alerts.json'),
-            file('preview/version-control-ledger.json'),
-            file('preview/issues-log-tickle.json'),
-            file('preview/issues-effectiveness.json'),
-            file('preview/project-plan-next-step.json'),
-            file('preview/workbook-refresh-status.json'),
-            file('preview/state/project-state.sqlite'),
-            file('preview/state/boilerplate-state.sqlite'),
-            file('preview/version.json'),
+            file('pm/reports/project-plan-progress-data.json'),
+            file('pm/reports/governance-alerts.json'),
+            file('pm/reports/version-control-ledger.json'),
+            file('pm/reports/issues-log-tickle.json'),
+            file('pm/reports/issues-effectiveness.json'),
+            file('pm/reports/policy-rules.json'),
+            file('pm/reports/project-plan-next-step.json'),
+            file('pm/reports/workbook-refresh-status.json'),
+            file('pm/policy/policy-rule-tables.sql'),
+            file('pm/reports/repo-file-inventory-with-context.csv'),
+            file('pm/reports/boilerplate-package-files-with-context.csv'),
+            file('pm/state/project-state.sqlite'),
+            file('pm/state/boilerplate-state.sqlite'),
+            file('pm/reports/version.json'),
             file('VERSION')
         ]
         tracked.addAll(fileTree('docs') {
@@ -470,17 +629,21 @@ tasks.register('publishCiArtifacts') {
             file('preview/afp-meta.json'),
             file('preview/afp-diag.json'),
             file('preview/fidelity-report.json'),
-            file('preview/project-plan-progress-data.json'),
-            file('preview/governance-alerts.json'),
-            file('preview/version-control-ledger.json'),
-            file('preview/issues-log-tickle.json'),
-            file('preview/issues-effectiveness.json'),
-            file('preview/documentation-manifest.json'),
-            file('preview/project-plan-next-step.json'),
-            file('preview/workbook-refresh-status.json'),
-            file('preview/state/project-state.sqlite'),
-            file('preview/state/boilerplate-state.sqlite'),
-            file('preview/version.json'),
+            file('pm/reports/project-plan-progress-data.json'),
+            file('pm/reports/governance-alerts.json'),
+            file('pm/reports/version-control-ledger.json'),
+            file('pm/reports/issues-log-tickle.json'),
+            file('pm/reports/issues-effectiveness.json'),
+            file('pm/reports/policy-rules.json'),
+            file('pm/policy/policy-rule-tables.sql'),
+            file('pm/reports/repo-file-inventory-with-context.csv'),
+            file('pm/reports/boilerplate-package-files-with-context.csv'),
+            file('pm/reports/documentation-manifest.json'),
+            file('pm/reports/project-plan-next-step.json'),
+            file('pm/reports/workbook-refresh-status.json'),
+            file('pm/state/project-state.sqlite'),
+            file('pm/state/boilerplate-state.sqlite'),
+            file('pm/reports/version.json'),
             file('docs/fidelity-corpus.txt'),
             file('docs/project-plan.md'),
             file('docs/project-plan-progress.csv'),
@@ -524,15 +687,15 @@ tasks.register('publishCiArtifacts') {
 
 tasks.register('createRollbackCheckpoint', Exec) {
     group = 'release'
-    description = 'Creates a rollback checkpoint under preview/checkpoints from current manifest + baseline files'
+    description = 'Creates a rollback checkpoint under pm/checkpoints from current manifest + baseline files'
     dependsOn('documentationManifest')
     doFirst {
         List<String> cmd = [
             'python3',
             'tools/rollback_manager.py',
             '--root', '.',
-            '--base', 'preview/checkpoints',
-            '--manifest', 'preview/documentation-manifest.json',
+            '--base', 'pm/checkpoints',
+            '--manifest', 'pm/reports/documentation-manifest.json',
             'create'
         ]
         String label = (System.getenv('CHECKPOINT_LABEL') ?: '').trim()
@@ -549,7 +712,7 @@ tasks.register('listRollbackCheckpoints', Exec) {
     commandLine 'python3',
         'tools/rollback_manager.py',
         '--root', '.',
-        '--base', 'preview/checkpoints',
+        '--base', 'pm/checkpoints',
         'list'
 }
 
@@ -565,7 +728,7 @@ tasks.register('rollbackCheckpoint', Exec) {
             'python3',
             'tools/rollback_manager.py',
             '--root', '.',
-            '--base', 'preview/checkpoints',
+            '--base', 'pm/checkpoints',
             'restore',
             '--id', checkpointId
         ]
@@ -586,10 +749,10 @@ tasks.register('releaseSnapshot') {
 
 tasks.register('projectPlanNextStep') {
     group = 'documentation'
-    description = 'Extracts the next instruction from docs/project-plan.md into preview/project-plan-next-step.json'
+    description = 'Extracts the next instruction from docs/project-plan.md into pm/reports/project-plan-next-step.json'
     doLast {
         File plan = file('docs/project-plan.md')
-        File output = file('preview/project-plan-next-step.json')
+        File output = file('pm/reports/project-plan-next-step.json')
         output.parentFile.mkdirs()
         if (!plan.exists()) {
             output.text = JsonOutput.prettyPrint(JsonOutput.toJson([
@@ -713,7 +876,7 @@ tasks.register('enforceProjectBoundaries') {
             [module: 'afp-cli', dir: file('afp-cli/src/main/java')]
         ]
         List<Map<String, Object>> forbidden = [
-            [pattern: ~/com\.upland\.connect\.afp\.tools\./, reason: 'product modules must not reference afp-tools classes'],
+            [pattern: ~/com\.upland\.connect\.pm\.tools\./, reason: 'product modules must not reference pm-tools classes'],
             [pattern: ~/preview\/state\//, reason: 'product modules must not reference project-management state databases'],
             [pattern: ~/docs\/policy-governance-events/, reason: 'product modules must not reference governance tracker sources'],
             [pattern: ~/docs\/project-plan-progress/, reason: 'product modules must not reference project-plan tracker sources'],
@@ -749,13 +912,160 @@ tasks.register('enforceProjectBoundaries') {
                 return
             }
             String text = f.getText('UTF-8')
-            if (text.contains("project(':afp-tools')")) {
-                violations.add("${path}: disallowed dependency on :afp-tools")
+            if (text.contains("project(':pm-tools')")) {
+                violations.add("${path}: disallowed dependency on :pm-tools")
             }
         }
 
         if (!violations.isEmpty()) {
             throw new GradleException("Project boundary violations detected:\n - " + violations.join('\n - '))
+        }
+    }
+}
+
+tasks.register('enforceManagedTooling') {
+    group = 'verification'
+    description = 'Fails when project-management tooling files are untracked.'
+    doLast {
+        List<String> roots = [
+            'tools',
+            'pm-tools/src/main/java/com/upland/connect/pm/tools'
+        ]
+        List<String> unmanaged = []
+        roots.each { String root ->
+            File dir = file(root)
+            if (!dir.exists()) {
+                return
+            }
+            Process process = new ProcessBuilder('git', 'ls-files', '--others', '--exclude-standard', root)
+                .directory(projectDir)
+                .redirectErrorStream(true)
+                .start()
+            String stdout = new String(process.inputStream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8)
+            int exit = process.waitFor()
+            if (exit != 0) {
+                throw new GradleException("Unable to inspect tooling tracking state for root '${root}'")
+            }
+            List<String> lines = stdout.readLines()
+                .collect { it == null ? '' : it.trim() }
+                .findAll { !it.isEmpty() }
+            unmanaged.addAll(lines)
+        }
+        if (!unmanaged.isEmpty()) {
+            throw new GradleException(
+                "Unmanaged project-management tooling detected:\n - " + unmanaged.join('\n - ') +
+                    "\nAll tooling under tools/ and pm-tools/.../tools must be version-controlled."
+            )
+        }
+    }
+}
+
+tasks.register('enforcePmApplicationRealmSeparation') {
+    group = 'verification'
+    description = 'Fails when PM artifacts leak into preview/ or PM state escapes pm/state.'
+    doLast {
+        List<String> violations = []
+        List<String> forbiddenPreviewArtifacts = [
+            'preview/governance-alerts.json',
+            'preview/version-control-ledger.json',
+            'preview/issues-log-tickle.json',
+            'preview/issues-effectiveness.json',
+            'preview/project-plan-next-step.json',
+            'preview/project-plan-progress-data.json',
+            'preview/workbook-refresh-status.json',
+            'preview/repo-file-inventory-with-context.csv',
+            'preview/boilerplate-package-files-with-context.csv',
+            'preview/documentation-manifest.json',
+            'preview/version.json'
+        ]
+        forbiddenPreviewArtifacts.each { String path ->
+            if (file(path).exists()) {
+                violations.add("${path}: PM artifact must live under pm/reports/")
+            }
+        }
+
+        List<String> forbiddenStateLocations = [
+            'preview/state/project-state.sqlite',
+            'preview/state/boilerplate-state.sqlite',
+            'project/state/project-state.sqlite',
+            'boilerplate/state/boilerplate-state.sqlite'
+        ]
+        forbiddenStateLocations.each { String path ->
+            if (file(path).exists()) {
+                violations.add("${path}: PM database must live under pm/state/")
+            }
+        }
+
+        if (!violations.isEmpty()) {
+            throw new GradleException("PM/Application realm separation violations detected:\n - " + violations.join('\n - '))
+        }
+    }
+}
+
+tasks.register('enforceBoilerplateRollupForFrameworkChanges') {
+    group = 'verification'
+    description = 'Fails when framework/process mutations are made without an accompanying boilerplate roll-up package update.'
+    doLast {
+        Process diffProc = new ProcessBuilder('git', 'diff', '--name-only')
+            .directory(projectDir)
+            .redirectErrorStream(true)
+            .start()
+        String diffOut = new String(diffProc.inputStream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8)
+        int diffExit = diffProc.waitFor()
+        if (diffExit != 0) {
+            throw new GradleException('Unable to inspect git diff for boilerplate roll-up enforcement.')
+        }
+        Process untrackedProc = new ProcessBuilder('git', 'ls-files', '--others', '--exclude-standard')
+            .directory(projectDir)
+            .redirectErrorStream(true)
+            .start()
+        String untrackedOut = new String(untrackedProc.inputStream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8)
+        int untrackedExit = untrackedProc.waitFor()
+        if (untrackedExit != 0) {
+            throw new GradleException('Unable to inspect git untracked files for boilerplate roll-up enforcement.')
+        }
+
+        List<String> changed = diffOut.readLines()
+            .collect { it == null ? '' : it.trim() }
+            .findAll { !it.isEmpty() }
+        changed.addAll(
+            untrackedOut.readLines()
+                .collect { it == null ? '' : it.trim() }
+                .findAll { !it.isEmpty() }
+        )
+
+        if (changed.isEmpty()) {
+            return
+        }
+
+        List<String> frameworkTriggers = [
+            'AI-POLICY.md',
+            'README.md',
+            'build.gradle',
+            'settings.gradle',
+            'pm-tools/',
+            'pm-console/',
+            'tools/run_excel_workbook_refresh.py',
+            'tools/issues_effectiveness_report.py',
+            'pm/policy/'
+        ]
+        boolean touchedFramework = changed.any { path ->
+            frameworkTriggers.any { trigger ->
+                path == trigger || path.startsWith(trigger)
+            }
+        }
+        if (!touchedFramework) {
+            return
+        }
+
+        boolean hasRollupUpdate = changed.any { path ->
+            path.startsWith('docs/update-packages/pz-boilerplate-intelliJ/')
+        }
+        if (!hasRollupUpdate) {
+            throw new GradleException(
+                "Framework/process files changed without boilerplate roll-up update.\n" +
+                "Add/update a package under docs/update-packages/pz-boilerplate-intelliJ/ in the same change set."
+            )
         }
     }
 }
@@ -773,6 +1083,9 @@ tasks.register('qualityGate') {
     group = 'verification'
     description = 'Runs tests, fidelity gate, and documentation manifest generation as a release readiness gate'
     dependsOn('enforceProjectBoundaries')
+    dependsOn('enforceManagedTooling')
+    dependsOn('enforcePmApplicationRealmSeparation')
+    dependsOn('enforceBoilerplateRollupForFrameworkChanges')
     dependsOn(':afp-engine:test')
     dependsOn(':afp-engine:fidelityGate')
     dependsOn('documentationManifest')

@@ -27,12 +27,15 @@ Use this file as the first-read operational contract before making changes.
 - State separation discipline:
   - Project execution/reporting state and boilerplate governance state must remain separated and must not be merged into one datastore/workflow.
 - Database single-source discipline:
-  - For project-management and governance mechanics, `preview/state/project-state.sqlite` is the single source of operational truth for this repo.
-  - For boilerplate governance/package mechanics, `preview/state/boilerplate-state.sqlite` is the single source of operational truth.
+  - For project-management and governance mechanics, `pm/state/project-state.sqlite` is the single source of operational truth for this repo.
+  - For boilerplate governance/package mechanics, `pm/state/boilerplate-state.sqlite` is the single source of operational truth.
   - Any human trust grant or trust boundary instruction must be logged via governance mechanics (`docs/policy-governance-events.csv` -> SQLite sync) before completion handoff.
   - Version-control truth boundary:
     - Git remains the canonical source of repository history and rollback lineage.
     - SQLite must mirror a verifiable VCS snapshot (`HEAD`, branch, dirty state, file-status inventory) for governance/audit workflows.
+- Managed tooling discipline:
+  - No unmanaged project-management tooling is allowed.
+  - Any tool/script/class used for project-management workflow must be version-controlled, registered in policy/build-manifest workflow, and represented in the project-state audit path before completion handoff.
 - Human authority:
   - Human instruction is authoritative for prioritization and policy evolution, except where it would directly conflict with higher-priority system safety constraints.
 
@@ -41,6 +44,8 @@ Use this file as the first-read operational contract before making changes.
 - AI agents must not autonomously redefine, relax, or remove policy requirements in this file.
 - If a policy update is needed, propose the change and wait for human confirmation before applying it.
 - If a showstopper blocks progress (auth, permissions, service limits, missing prerequisites), escalate immediately to the human owner with exact blocker details and the smallest unblock action required.
+- Mutable operational rule tables should be maintained in SQL (`pm/policy/policy-rule-tables.sql`) and synchronized into SQLite state, instead of repeated structural edits to this policy document.
+- Workflow sequencing should be maintained in normalized manifest form (`pm/workflow/workflow-manifest.json`) with toolchain adapters (Gradle, etc.) consuming that contract.
 
 ## Project-Level Change Control
 - Project-level operations (policy/process/build/workbook/plan/versioning changes) must follow the same control model as product code changes:
@@ -73,7 +78,12 @@ Use this file as the first-read operational contract before making changes.
   - `afp-api` (public API contracts)
   - `afp-engine` (core conversion/rendering/diagnostics)
   - `afp-cli` (CLI entrypoint)
-  - `afp-tools` (project utilities, including POI workbook updater)
+  - `pm-tools` (project utilities, including POI workbook updater)
+  - `pm-console` (dev-only PM dashboard/command hub)
+- Realm boundary:
+  - Application realm: `afp-*` modules and `preview/` renderer outputs only.
+  - PM realm: `pm/` state/report/checkpoint assets and governance/planning docs/workbooks under `docs/`.
+  - PM artifacts must never be emitted under `preview/`.
 
 ## Source of Truth Files
 - Project version: `VERSION`
@@ -85,9 +95,14 @@ Use this file as the first-read operational contract before making changes.
 - Policy governance workbook: `docs/policy-governance-events.xlsx`
 - Issues log: `docs/issues-log.csv`
 - Issues log template: `docs/issues-log-template.csv`
-- Progress JSON intermediary: `preview/project-plan-progress-data.json`
-- Project state database: `preview/state/project-state.sqlite`
-- Boilerplate state database: `preview/state/boilerplate-state.sqlite`
+- Progress JSON intermediary: `pm/reports/project-plan-progress-data.json`
+- Project state database: `pm/state/project-state.sqlite`
+- Boilerplate state database: `pm/state/boilerplate-state.sqlite`
+- Policy rule SQL source: `pm/policy/policy-rule-tables.sql`
+- Policy rule report export: `pm/reports/policy-rules.json`
+- Workflow manifest source: `pm/workflow/workflow-manifest.json`
+- Project file inventory export: `pm/reports/repo-file-inventory-with-context.csv`
+- Boilerplate package inventory export: `pm/reports/boilerplate-package-files-with-context.csv`
 - Excel macro module source: `tools/WorkbookUpdater.bas`
 - Session history: `SESSION_CHANGELOG.md`
 - API behavior contract: `docs/API.md`
@@ -117,6 +132,9 @@ Use this file as the first-read operational contract before making changes.
 - Strict native renderer is the default for PDF output.
 - HTML renderer is retained for fallback and future usage.
 - Diagnostics and metadata are first-class outputs and must be kept in sync with renderer behavior.
+- Default execution coupling:
+  - Unless a human explicitly defines otherwise, any request to execute/run the application must include PM console launch in the same flow.
+  - Standard default sequence is: application execution first, then PM console status (`pmConsoleStatus` / `pmconsole status`).
 
 ## Standard Development Cycle
 When implementing any meaningful change:
@@ -146,31 +164,38 @@ When implementing any meaningful change:
 - `rollbackCheckpoint` is dry-run by default and requires explicit `ROLLBACK_APPLY=true` to restore files.
 - `prodBuild` is the production packaging path and must avoid test compilation/execution.
 - `prodBuild` assumes runtime resources/environment are already correctly provisioned.
+- `prodBuild` must remain application-only (`afp-api`, `afp-engine`, `afp-cli`) and must not package PM modules (`pm-tools`, `pm-console`).
 - `qualityGate` is the canonical readiness command.
-- `enforceProjectBoundaries` is mandatory in `qualityGate` and must fail when `afp-api`, `afp-engine`, or `afp-cli` reference project-management tooling/state (`afp-tools`, governance/project tracker sources, or management SQLite paths).
+- `enforceProjectBoundaries` is mandatory in `qualityGate` and must fail when `afp-api`, `afp-engine`, or `afp-cli` reference project-management tooling/state (`pm-tools`, governance/project tracker sources, or management SQLite paths).
+- `enforceManagedTooling` is mandatory in `qualityGate` and must fail when project-management tooling files under `tools/` or `pm-tools/src/main/java/com/upland/connect/pm/tools` are untracked.
+- `enforcePmApplicationRealmSeparation` is mandatory in `qualityGate` and must fail when PM artifacts are written under `preview/` or PM databases are written outside `pm/state/`.
+- `enforceBoilerplateRollupForFrameworkChanges` is mandatory in `qualityGate` and must fail when framework/process/policy/build mutations occur without an accompanying update package under `docs/update-packages/pz-boilerplate-intelliJ/`.
 - `documentationManifest` must include current docs/changelog/plan artifacts.
 - `projectPlanNextStep` must reflect the current immediate plan instruction.
+- `stateInventoryCsv` must export project/boilerplate file inventories from SQLite state.
+- `policyRulesReport` must export SQL-backed policy rules from SQLite state into `pm/reports/policy-rules.json`.
+- `pmWorkflowRun` and related Gradle interface tasks must resolve PM workflow phases from `pm/workflow/workflow-manifest.json` instead of duplicating orchestration logic.
 - `projectPlanWorkbook` updates `docs/project-plan-progress.xlsx` via Apache POI updater by default.
 - `policyGovernanceWorkbook` updates `docs/policy-governance-events.xlsx` from `docs/policy-governance-events.csv` and should be used to track policy/governance execution events.
-- `projectStateDb` is the default project-management state sync path and must populate `preview/state/project-state.sqlite` from:
+- `projectStateDb` is the default project-management state sync path and must populate `pm/state/project-state.sqlite` from:
   - `docs/issues-log.csv`
   - `docs/project-plan-progress.csv`
   - `preview/fidelity-report.json`
-- `boilerplateStateDb` is the default boilerplate-governance state sync path and must populate `preview/state/boilerplate-state.sqlite` from:
+- `boilerplateStateDb` is the default boilerplate-governance state sync path and must populate `pm/state/boilerplate-state.sqlite` from:
   - `docs/update-packages/pz-boilerplate-intelliJ`
 - State separation rule:
   - project execution/reporting state belongs only in `project-state.sqlite`,
   - boilerplate sync/package governance state belongs only in `boilerplate-state.sqlite`.
 - Database-backed tooling rule:
-  - prefer SQLite-backed `afp-tools` tasks over ad-hoc scripts for project/workflow automation outputs.
+  - prefer SQLite-backed `pm-tools` tasks over ad-hoc scripts for project/workflow automation outputs.
 - `projectPlanWorkbook` must be change-driven:
   - run when `docs/project-plan-progress.csv` is newer than workbook or workbook is missing,
   - skip when workbook is newer (to preserve human cosmetic updates),
   - allow explicit override with `AFP_FORCE_WORKBOOK_UPDATE=true`.
-- Set `AFP_WORKBOOK_MODE=excel` for Excel-native scripting path using `preview/project-plan-progress-data.json` + `tools/WorkbookUpdater.bas`.
+- Set `AFP_WORKBOOK_MODE=excel` for Excel-native scripting path using `pm/reports/project-plan-progress-data.json` + `tools/WorkbookUpdater.bas`.
 - For non-Excel/headless environments, set `AFP_WORKBOOK_MODE=xml` to use guarded XML fallback.
 - Workbook updates must remain cell-level on managed sheets and must not rewrite non-managed sheets.
-- Excel-native refresh must be timeout-bounded and must emit `preview/workbook-refresh-status.json`.
+- Excel-native refresh must be timeout-bounded and must emit `pm/reports/workbook-refresh-status.json`.
 - XML fallback writes to `docs/project-plan-progress.xlsx` are **disabled by default** for corruption control; only run XML fallback with explicit human instruction for that specific operation.
 - On any workbook-corruption signal, apply restore-first protocol:
   - restore `docs/project-plan-progress.xlsx` from `docs/project-plan-progress.xlsx.zip`,
@@ -178,14 +203,14 @@ When implementing any meaningful change:
   - log the event in `docs/issues-log.csv`,
   - then continue with Excel-native or POI-managed update paths only.
 - `issuesLogTickle` enforces issue-log hygiene: if files referenced by `docs/issues-log.csv` change, the issues log must be updated in the same change.
-- `governanceAlerts` generates `preview/governance-alerts.json` from SQLite governance state and should be reviewed for active governance-breach visibility.
+- `governanceAlerts` generates `pm/reports/governance-alerts.json` from SQLite governance state and should be reviewed for active governance-breach visibility.
 - `projectPlanProgressJson`, `issuesLogTickle`, and `issuesEffectivenessReport` should execute from SQLite-backed state generated by `projectStateDb`.
 - `boilerplateSyncWorkbook` maintains `docs/boilerplate-sync-candidates.xlsx` from `docs/update-packages/pz-boilerplate-intelliJ` and must preserve manual triage columns (`decision`, `state`, `owner_notes`).
 - `issuesEffectivenessReport` provides mechanized debug reasoning signals from:
-  - issue triggers (`preview/issues-log-tickle.json`)
+  - issue triggers (`pm/reports/issues-log-tickle.json`)
   - task progress (`docs/project-plan-progress.csv`)
   - fidelity metrics (`preview/fidelity-report.json`)
-  and writes `preview/issues-effectiveness.json`.
+  and writes `pm/reports/issues-effectiveness.json`.
 - Pitfall guardrail:
   - Issues-log coupling must guide troubleshooting, not block urgent fixes; apply issue-linked context first, but do not force unrelated updates to closed/stable incidents.
   - Do not suppress "known imperfection" logging due to low severity; low-severity issues still must be captured to prevent repeated rediscovery.
@@ -222,8 +247,8 @@ After a normal cycle, these should be current:
 - `preview/afp-meta.json`
 - `preview/afp-diag.json`
 - `preview/fidelity-report.json`
-- `preview/project-plan-next-step.json`
-- `preview/documentation-manifest.json`
+- `pm/reports/project-plan-next-step.json`
+- `pm/reports/documentation-manifest.json`
 - `preview/ci-artifacts/latest/*`
 
 ## Environment Metadata Change Policy
@@ -236,7 +261,7 @@ If environment/process metadata changes (new task, new file, renamed plan path, 
 ## Agent Handover Prompt (for a fresh AI)
 If you are a new agent on this repo:
 - Read: `AI-POLICY.md`, `docs/project-plan.md`, `docs/project-plan-progress.csv`, `SESSION_CHANGELOG.md`.
-- Continue from `preview/project-plan-next-step.json`.
+- Continue from `pm/reports/project-plan-next-step.json`.
 - Maintain strict native rendering defaults.
 - Keep edits non-destructive, especially workbook/history updates.
 - Run `./gradlew qualityGate` before concluding substantive work.
@@ -245,4 +270,4 @@ If you are a new agent on this repo:
 ## Conversation Resumption Prompt
 Use this prompt verbatim when chat history is missing and you must resume this exact workflow:
 
-`Resume the workbook JSON/VBA flow for project-plan tracking. Treat AI-POLICY.md as the operating contract. Rebuild preview/project-plan-progress-data.json from docs/project-plan-progress.csv, then continue with tools/WorkbookUpdater.bas as the Excel-native update path. Do not use low-level XLSX chart/drawing XML mutation. Preserve user filters/sort and avoid touching non-managed sheets. Before changing implementation, review SESSION_CHANGELOG.md and docs/project-plan.md for the last checkpoint and pending follow-up to review restored workbook content against CSV/JSON sources.`
+`Resume the workbook JSON/VBA flow for project-plan tracking. Treat AI-POLICY.md as the operating contract. Rebuild pm/reports/project-plan-progress-data.json from docs/project-plan-progress.csv, then continue with tools/WorkbookUpdater.bas as the Excel-native update path. Do not use low-level XLSX chart/drawing XML mutation. Preserve user filters/sort and avoid touching non-managed sheets. Before changing implementation, review SESSION_CHANGELOG.md and docs/project-plan.md for the last checkpoint and pending follow-up to review restored workbook content against CSV/JSON sources.`

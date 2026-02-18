@@ -22,6 +22,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -1407,7 +1408,7 @@ public final class FakeEngineOutputGenerator {
             .append("\"byteHistogramTop\": ").append(keyCountJson(summary.byteHistogramTop())).append(", ")
             .append("\"pdfOperatorHistogram\": ").append(keyCountJson(summary.pdfOperatorHistogram())).append(", ")
             .append("\"pdfTextOperandHistogram\": ").append(keyCountJson(summary.pdfTextOperandHistogram())).append(", ")
-            .append("\"crossExam\": ").append(crossExamJson(summary.crossExam()));
+            .append("\"crossExam\": ").append(crossExamJson(summary.crossExam(), summary.eventsPreview()));
         if (verbose) {
             sb.append(", \"events\": ").append(traceEventsJson(summary.eventsPreview()));
         } else {
@@ -1417,14 +1418,119 @@ public final class FakeEngineOutputGenerator {
         return sb.toString();
     }
 
-    private static String crossExamJson(AfpPrintCentricTraceEngine.CrossExam crossExam) {
+    private static String crossExamJson(AfpPrintCentricTraceEngine.CrossExam crossExam,
+                                        List<AfpPrintCentricTraceEngine.TraceEvent> eventsPreview) {
+        List<Map<String, Object>> timeline = buildBimBocTimeline(eventsPreview);
+        List<String> inferredBindings = inferTimelineBindings(timeline);
         return "{"
             + "\"afpTextSignalCount\": " + crossExam.afpTextSignalCount() + ", "
             + "\"pdfTextOperatorCount\": " + crossExam.pdfTextOperatorCount() + ", "
             + "\"afpImageSignalCount\": " + crossExam.afpImageSignalCount() + ", "
             + "\"pdfImageOperatorCount\": " + crossExam.pdfImageOperatorCount() + ", "
-            + "\"inferenceHints\": " + stringPreviewJson(crossExam.inferenceHints(), Integer.MAX_VALUE)
+            + "\"inferenceHints\": " + stringPreviewJson(crossExam.inferenceHints(), Integer.MAX_VALUE) + ", "
+            + "\"bimBocTimeline\": " + timelineJson(timeline) + ", "
+            + "\"inferredBindings\": " + stringPreviewJson(inferredBindings, Integer.MAX_VALUE)
             + "}";
+    }
+
+    private static List<Map<String, Object>> buildBimBocTimeline(List<AfpPrintCentricTraceEngine.TraceEvent> eventsPreview) {
+        List<Map<String, Object>> timeline = new ArrayList<>();
+        if (eventsPreview == null || eventsPreview.isEmpty()) {
+            return timeline;
+        }
+        for (AfpPrintCentricTraceEngine.TraceEvent event : eventsPreview) {
+            if (event == null || !"SF".equals(event.type())) {
+                continue;
+            }
+            String kind = switch (event.token()) {
+                case "D3A8C9" -> "BIM";
+                case "D3A892" -> "BOC";
+                case "D3A992" -> "EOC";
+                case "D3A9C9" -> "EIM";
+                default -> "";
+            };
+            if (kind.isEmpty()) {
+                continue;
+            }
+            Map<String, Object> row = new LinkedHashMap<>();
+            row.put("offset", event.offset());
+            row.put("kind", kind);
+            row.put("token", event.token());
+            row.put("detail", event.detail());
+            timeline.add(row);
+        }
+        return timeline;
+    }
+
+    private static List<String> inferTimelineBindings(List<Map<String, Object>> timeline) {
+        List<String> out = new ArrayList<>();
+        if (timeline == null || timeline.isEmpty()) {
+            return out;
+        }
+        List<Long> bimOffsets = new ArrayList<>();
+        List<Long> bocOffsets = new ArrayList<>();
+        for (Map<String, Object> row : timeline) {
+            String kind = String.valueOf(row.getOrDefault("kind", ""));
+            long offset = asLong(row.get("offset"));
+            if ("BIM".equals(kind)) {
+                bimOffsets.add(offset);
+            } else if ("BOC".equals(kind)) {
+                bocOffsets.add(offset);
+            }
+        }
+        boolean[] used = new boolean[bocOffsets.size()];
+        for (Long bimOffset : bimOffsets) {
+            int best = -1;
+            long bestDistance = Long.MAX_VALUE;
+            for (int i = 0; i < bocOffsets.size(); i++) {
+                if (used[i]) {
+                    continue;
+                }
+                long bocOffset = bocOffsets.get(i);
+                long distance = Math.abs(bocOffset - bimOffset);
+                if (distance < bestDistance) {
+                    bestDistance = distance;
+                    best = i;
+                }
+            }
+            if (best >= 0) {
+                used[best] = true;
+                out.add("BIM@" + bimOffset + "->BOC@" + bocOffsets.get(best) + "(distance=" + bestDistance + ")");
+            } else {
+                out.add("BIM@" + bimOffset + "->unmatched");
+            }
+        }
+        return out;
+    }
+
+    private static long asLong(Object value) {
+        if (value instanceof Number n) {
+            return n.longValue();
+        }
+        try {
+            return Long.parseLong(String.valueOf(value));
+        } catch (Exception ignored) {
+            return -1L;
+        }
+    }
+
+    private static String timelineJson(List<Map<String, Object>> timeline) {
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        for (int i = 0; i < timeline.size(); i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            Map<String, Object> row = timeline.get(i);
+            sb.append("{")
+                .append("\"offset\": ").append(asLong(row.get("offset"))).append(", ")
+                .append("\"kind\": \"").append(safeJson(String.valueOf(row.getOrDefault("kind", "")))).append("\", ")
+                .append("\"token\": \"").append(safeJson(String.valueOf(row.getOrDefault("token", "")))).append("\", ")
+                .append("\"detail\": \"").append(safeJson(String.valueOf(row.getOrDefault("detail", "")))).append("\"")
+                .append("}");
+        }
+        sb.append(']');
+        return sb.toString();
     }
 
     private static String keyCountJson(List<AfpPrintCentricTraceEngine.KeyCount> values) {

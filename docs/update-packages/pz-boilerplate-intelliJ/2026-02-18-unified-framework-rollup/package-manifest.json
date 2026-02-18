@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1",
+  "packageId": "2026-02-18-unified-framework-rollup",
+  "sourceRepo": "afp-converter",
+  "targetRepo": "pz-boilerplate-intelliJ",
+  "createdAt": "2026-02-18T22:33:00Z",
+  "supersedes": [
+    "2026-02-18-consolidated-framework-sync",
+    "2026-02-18-sqlite-state-tooling",
+    "2026-02-18-governance-events-workbook",
+    "2026-02-18-governance-alerts-trust-sot",
+    "2026-02-18-vcs-file-discipline-ledger",
+    "2026-02-18-product-management-boundary-gate",
+    "2026-02-18-managed-tooling-registration-gate"
+  ],
+  "summary": "Single consolidated package for all active review candidates in the current framework/process cycle, including managed-tooling registration enforcement.",
+  "files": [
+    { "path": "AI-POLICY.md", "changeType": "update" },
+    { "path": "README.md", "changeType": "update" },
+    { "path": "build.gradle", "changeType": "update" },
+    { "path": "boilerplate-tools/build.gradle", "changeType": "update" },
+    { "path": "boilerplate-tools/src/main/java/com/example/boilerplate/tools/StateDatabaseTool.java", "changeType": "update" },
+    { "path": "boilerplate-tools/src/main/java/com/example/boilerplate/tools/PolicyGovernanceWorkbookUpdater.java", "changeType": "add" },
+    { "path": "docs/policy-governance-events.csv", "changeType": "add" },
+    { "path": "docs/policy-governance-events.xlsx", "changeType": "add" }
+  ],
+  "validation": [
+    "./gradlew :boilerplate-tools:compileJava",
+    "./gradlew enforceProjectBoundaries",
+    "./gradlew enforceManagedTooling",
+    "./gradlew documentationManifest"
+  ]
+}
