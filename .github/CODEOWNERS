@@ -1,0 +1,13 @@
+# Default ownership
+* @DWetherilt
+
+# Core modules
+/afp-api/ @DWetherilt
+/afp-engine/ @DWetherilt
+/afp-cli/ @DWetherilt
+/afp-tools/ @DWetherilt
+
+# Process and planning docs
+/AI-POLICY.md @DWetherilt
+/docs/ @DWetherilt
+/SESSION_CHANGELOG.md @DWetherilt

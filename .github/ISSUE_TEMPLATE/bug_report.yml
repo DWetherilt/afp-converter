@@ -1,0 +1,46 @@
+name: Bug report
+description: Report a defect or regression
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What is broken?
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps
+      description: Provide exact steps to reproduce.
+      placeholder: |
+        1. Run ...
+        2. Open ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Project version
+      description: Value from VERSION file or release tag
+      placeholder: "0.2.0-beta.1"
+  - type: textarea
+    id: artifacts
+    attributes:
+      label: Relevant artifacts/logs
+      description: Link files from preview/ and docs/issues-log.csv entries where relevant.

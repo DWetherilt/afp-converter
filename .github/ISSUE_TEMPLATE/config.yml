@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Project policy and process
+    url: https://github.com/DWetherilt/afp-converter/blob/main/AI-POLICY.md
+    about: Review repository operating policy before opening a process-related issue.
