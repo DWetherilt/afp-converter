@@ -141,6 +141,46 @@ tasks.register('projectPlanWorkbook', Exec) {
     }
 }
 
+tasks.register('policyGovernanceWorkbook', Exec) {
+    group = 'documentation'
+    description = 'Updates docs/policy-governance-events.xlsx from docs/policy-governance-events.csv.'
+    dependsOn(':afp-tools:classes')
+    onlyIf {
+        File csv = file('docs/policy-governance-events.csv')
+        File xlsx = file('docs/policy-governance-events.xlsx')
+        String forceRaw = (System.getenv('AFP_FORCE_GOVERNANCE_WORKBOOK_UPDATE') ?: '').trim().toLowerCase(Locale.ROOT)
+        boolean force = forceRaw == '1' || forceRaw == 'true' || forceRaw == 'yes'
+        if (force) {
+            logger.lifecycle("policyGovernanceWorkbook: running because AFP_FORCE_GOVERNANCE_WORKBOOK_UPDATE is set")
+            return true
+        }
+        if (!csv.exists()) {
+            logger.lifecycle("policyGovernanceWorkbook: skipping because CSV source is missing")
+            return false
+        }
+        if (!xlsx.exists()) {
+            logger.lifecycle("policyGovernanceWorkbook: running because workbook is missing")
+            return true
+        }
+        boolean shouldRun = csv.lastModified() > xlsx.lastModified()
+        logger.lifecycle(
+            "policyGovernanceWorkbook: " + (shouldRun ? "running" : "skipping")
+                + " (csvLastModified=" + csv.lastModified()
+                + ", xlsxLastModified=" + xlsx.lastModified() + ")"
+        )
+        return shouldRun
+    }
+    doFirst {
+        def sourceSets = project(':afp-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'com.upland.connect.afp.tools.PolicyGovernanceWorkbookUpdater',
+            '--csv', 'docs/policy-governance-events.csv',
+            '--xlsx', 'docs/policy-governance-events.xlsx'
+    }
+}
+
 tasks.register('projectPlanProgressJson', Exec) {
     group = 'documentation'
     description = 'Exports project plan progress from SQLite state into preview/project-plan-progress-data.json for workbook automation'
@@ -173,7 +213,48 @@ tasks.register('projectStateDb', Exec) {
             '--db', 'preview/state/project-state.sqlite',
             '--issues', 'docs/issues-log.csv',
             '--progress', 'docs/project-plan-progress.csv',
-            '--fidelity', 'preview/fidelity-report.json'
+            '--fidelity', 'preview/fidelity-report.json',
+            '--governance-events', 'docs/policy-governance-events.csv'
+    }
+}
+
+tasks.register('governanceAlerts', Exec) {
+    group = 'documentation'
+    description = 'Generates governance/trust alerts from SQLite project state.'
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':afp-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        String enforceRaw = (System.getenv('AFP_ENFORCE_GOVERNANCE_ALERTS') ?: '').trim().toLowerCase(Locale.ROOT)
+        boolean enforce = enforceRaw == '1' || enforceRaw == 'true' || enforceRaw == 'yes'
+        List<String> cmd = [
+            'java',
+            '-cp', cp,
+            'com.upland.connect.afp.tools.StateDatabaseTool',
+            'governance-alerts',
+            '--db', 'preview/state/project-state.sqlite',
+            '--output', 'preview/governance-alerts.json'
+        ]
+        if (enforce) {
+            cmd.add('--enforce')
+        }
+        commandLine cmd
+    }
+}
+
+tasks.register('versionControlLedger', Exec) {
+    group = 'documentation'
+    description = 'Generates preview/version-control-ledger.json from SQLite project state.'
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':afp-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'com.upland.connect.afp.tools.StateDatabaseTool',
+            'version-control-ledger',
+            '--db', 'preview/state/project-state.sqlite',
+            '--output', 'preview/version-control-ledger.json'
     }
 }
 
@@ -301,9 +382,12 @@ tasks.register('documentationManifest') {
     dependsOn(':afp-engine:fidelityReport')
     dependsOn('projectPlanNextStep')
     dependsOn('projectPlanProgressJson')
+    dependsOn('governanceAlerts')
+    dependsOn('versionControlLedger')
     dependsOn('issuesLogTickle')
     dependsOn('issuesEffectivenessReport')
     dependsOn('projectPlanWorkbook')
+    dependsOn('policyGovernanceWorkbook')
     dependsOn('boilerplateSyncWorkbook')
     doLast {
         File output = file('preview/documentation-manifest.json')
@@ -321,6 +405,8 @@ tasks.register('documentationManifest') {
             file('preview/afp-diag.json'),
             file('preview/fidelity-report.json'),
             file('preview/project-plan-progress-data.json'),
+            file('preview/governance-alerts.json'),
+            file('preview/version-control-ledger.json'),
             file('preview/issues-log-tickle.json'),
             file('preview/issues-effectiveness.json'),
             file('preview/project-plan-next-step.json'),
@@ -385,6 +471,8 @@ tasks.register('publishCiArtifacts') {
             file('preview/afp-diag.json'),
             file('preview/fidelity-report.json'),
             file('preview/project-plan-progress-data.json'),
+            file('preview/governance-alerts.json'),
+            file('preview/version-control-ledger.json'),
             file('preview/issues-log-tickle.json'),
             file('preview/issues-effectiveness.json'),
             file('preview/documentation-manifest.json'),
@@ -397,6 +485,8 @@ tasks.register('publishCiArtifacts') {
             file('docs/project-plan.md'),
             file('docs/project-plan-progress.csv'),
             file('docs/project-plan-progress.xlsx'),
+            file('docs/policy-governance-events.csv'),
+            file('docs/policy-governance-events.xlsx'),
             file('docs/boilerplate-sync-candidates.xlsx'),
             file('VERSION'),
             file('SESSION_CHANGELOG.md')
@@ -612,6 +702,64 @@ tasks.named('build') {
     dependsOn('documentationManifest')
 }
 
+tasks.register('enforceProjectBoundaries') {
+    group = 'verification'
+    description = 'Fails when product modules reference project-management tooling/state.'
+    doLast {
+        List<String> violations = []
+        List<Map<String, Object>> sourceRoots = [
+            [module: 'afp-api', dir: file('afp-api/src/main/java')],
+            [module: 'afp-engine', dir: file('afp-engine/src/main/java')],
+            [module: 'afp-cli', dir: file('afp-cli/src/main/java')]
+        ]
+        List<Map<String, Object>> forbidden = [
+            [pattern: ~/com\.upland\.connect\.afp\.tools\./, reason: 'product modules must not reference afp-tools classes'],
+            [pattern: ~/preview\/state\//, reason: 'product modules must not reference project-management state databases'],
+            [pattern: ~/docs\/policy-governance-events/, reason: 'product modules must not reference governance tracker sources'],
+            [pattern: ~/docs\/project-plan-progress/, reason: 'product modules must not reference project-plan tracker sources'],
+            [pattern: ~/docs\/boilerplate-sync-candidates/, reason: 'product modules must not reference boilerplate sync trackers']
+        ]
+
+        sourceRoots.each { scope ->
+            File root = (File) scope.dir
+            if (!root.exists()) {
+                return
+            }
+            fileTree(root) {
+                include '**/*.java'
+            }.files.each { File src ->
+                List<String> lines = src.readLines('UTF-8')
+                int lineNo = 0
+                lines.each { String line ->
+                    lineNo++
+                    forbidden.each { rule ->
+                        if ((line =~ (rule.pattern as java.util.regex.Pattern)).find()) {
+                            String rel = projectDir.toPath().relativize(src.toPath()).toString().replace('\\', '/')
+                            violations.add("${rel}:${lineNo} -> ${rule.reason}")
+                        }
+                    }
+                }
+            }
+        }
+
+        List<String> moduleBuilds = ['afp-api/build.gradle', 'afp-engine/build.gradle', 'afp-cli/build.gradle']
+        moduleBuilds.each { String path ->
+            File f = file(path)
+            if (!f.exists()) {
+                return
+            }
+            String text = f.getText('UTF-8')
+            if (text.contains("project(':afp-tools')")) {
+                violations.add("${path}: disallowed dependency on :afp-tools")
+            }
+        }
+
+        if (!violations.isEmpty()) {
+            throw new GradleException("Project boundary violations detected:\n - " + violations.join('\n - '))
+        }
+    }
+}
+
 tasks.register('prodBuild') {
     group = 'build'
     description = 'Production build path without test compilation/execution; assumes a prepared runtime/resource environment'
@@ -624,6 +772,7 @@ tasks.register('prodBuild') {
 tasks.register('qualityGate') {
     group = 'verification'
     description = 'Runs tests, fidelity gate, and documentation manifest generation as a release readiness gate'
+    dependsOn('enforceProjectBoundaries')
     dependsOn(':afp-engine:test')
     dependsOn(':afp-engine:fidelityGate')
     dependsOn('documentationManifest')

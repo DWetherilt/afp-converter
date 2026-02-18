@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-18T21:54:18Z",
+  "issuesLogPath": "docs/issues-log.csv",
+  "issuesLogTouchedInWorkingTree": true,
+  "changedPathCount": 26,
+  "triggeredIssueCount": 4,
+  "requiresIssuesLogUpdate": false,
+  "triggeredIssues": [
+    {
+      "id": "ISSUE-001",
+      "status": "Open",
+      "title": "Excel automation and workbook update fragility due Office account/licensing context",
+      "matchedComponents": [
+        "build.gradle",
+        "preview/project-plan-progress-data.json"
+      ]
+    },
+    {
+      "id": "ISSUE-003",
+      "status": "Open",
+      "title": "Excel automation unavailable in headless/agent context (Apple event connection invalid), strict Excel-required mode fails as designed",
+      "matchedComponents": [
+        "build.gradle"
+      ]
+    },
+    {
+      "id": "ISSUE-005",
+      "status": "Open",
+      "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
+      "matchedComponents": [
+        "AI-POLICY.md",
+        "README.md",
+        "build.gradle",
+        "docs/boilerplate-sync-candidates.xlsx",
+        "preview/state/boilerplate-state.sqlite",
+        "preview/state/project-state.sqlite"
+      ]
+    },
+    {
+      "id": "ISSUE-006",
+      "status": "Open",
+      "title": "Policy-governance sequence drift when updating constitutional/policy text without full checklist sequencing",
+      "matchedComponents": [
+        "AI-POLICY.md",
+        "SESSION_CHANGELOG.md",
+        "build.gradle",
+        "docs/issues-log.csv",
+        "preview/documentation-manifest.json",
+        "afp-tools/src/main/java/com/upland/connect/afp/tools/PolicyGovernanceWorkbookUpdater.java",
+        "docs/policy-governance-events.csv",
+        "docs/policy-governance-events.xlsx"
+      ]
+    }
+  ],
+  "message": "No issue-log tickle required."
+}

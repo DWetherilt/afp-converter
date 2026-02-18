@@ -10,6 +10,7 @@ import org.apache.commons.csv.CSVRecord;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.security.MessageDigest;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.FileSystems;
 import java.nio.file.FileVisitResult;
@@ -47,13 +48,16 @@ public final class StateDatabaseTool {
     private static final List<String> PROGRESS_COLUMNS = List.of(
         "workstream", "task", "priority", "status", "percent_complete", "last_updated", "notes"
     );
+    private static final List<String> GOVERNANCE_COLUMNS = List.of(
+        "event_id", "event_date", "phase", "status", "checkpoint_id", "issue_id", "summary", "evidence", "updated_by"
+    );
     private static final DateTimeFormatter ISO = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
     private StateDatabaseTool() {}
 
     public static void main(String[] args) throws Exception {
         if (args.length == 0) {
-            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|export-progress-json|issues-tickle|issues-effectiveness");
+            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger");
         }
         String command = args[0];
         Map<String, String> cli = parseArgs(args, 1);
@@ -63,6 +67,8 @@ public final class StateDatabaseTool {
             case "export-progress-json" -> runExportProgressJson(cli);
             case "issues-tickle" -> runIssuesTickle(cli);
             case "issues-effectiveness" -> runIssuesEffectiveness(cli);
+            case "governance-alerts" -> runGovernanceAlerts(cli);
+            case "version-control-ledger" -> runVersionControlLedger(cli);
             default -> throw new IllegalArgumentException("Unsupported command: " + command);
         };
         if (exit != 0) {
@@ -110,12 +116,15 @@ public final class StateDatabaseTool {
         Path issuesPath = requiredPath(cli, "--issues");
         Path progressPath = requiredPath(cli, "--progress");
         Path fidelityPath = optionalPath(cli, "--fidelity");
+        Path governanceEventsPath = optionalPath(cli, "--governance-events");
         ensureParent(dbPath);
         try (Connection conn = connect(dbPath)) {
             initProjectSchema(conn);
             syncIssues(conn, issuesPath);
             syncProgress(conn, progressPath);
             syncFidelity(conn, fidelityPath);
+            syncGovernanceEvents(conn, governanceEventsPath);
+            syncVersionControlState(conn);
         }
         return 0;
     }
@@ -354,6 +363,111 @@ public final class StateDatabaseTool {
         return 0;
     }
 
+    private static int runGovernanceAlerts(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        Path outputPath = requiredPath(cli, "--output");
+        boolean enforce = "true".equalsIgnoreCase(cli.getOrDefault("--enforce", "false"));
+        ensureParent(outputPath);
+
+        List<Map<String, String>> activeBreaches = new ArrayList<>();
+        List<Map<String, String>> trustEntries = new ArrayList<>();
+        try (Connection conn = connect(dbPath)) {
+            try (PreparedStatement ps = conn.prepareStatement(
+                "select event_id, event_date, phase, status, checkpoint_id, issue_id, summary, evidence, updated_by " +
+                    "from governance_events order by event_date desc, event_id desc"
+            ); ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, String> event = new LinkedHashMap<>();
+                    event.put("event_id", text(rs.getString(1)));
+                    event.put("event_date", text(rs.getString(2)));
+                    event.put("phase", text(rs.getString(3)));
+                    event.put("status", text(rs.getString(4)));
+                    event.put("checkpoint_id", text(rs.getString(5)));
+                    event.put("issue_id", text(rs.getString(6)));
+                    event.put("summary", text(rs.getString(7)));
+                    event.put("evidence", text(rs.getString(8)));
+                    event.put("updated_by", text(rs.getString(9)));
+                    String status = event.get("status").toLowerCase(Locale.ROOT);
+                    if (status.equals("open") || status.equals("in_progress") || status.equals("breach")) {
+                        activeBreaches.add(event);
+                    }
+                    String summary = event.get("summary").toLowerCase(Locale.ROOT);
+                    String phase = event.get("phase").toLowerCase(Locale.ROOT);
+                    if (summary.contains("trust") || phase.contains("trust")) {
+                        trustEntries.add(event);
+                    }
+                }
+            }
+        }
+
+        boolean hasBreach = !activeBreaches.isEmpty();
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("schemaVersion", "1");
+        payload.put("generatedAt", nowIso());
+        payload.put("source", "sqlite");
+        payload.put("hasActiveGovernanceBreach", hasBreach);
+        payload.put("activeBreachCount", activeBreaches.size());
+        payload.put("trustEventCount", trustEntries.size());
+        payload.put("activeBreaches", activeBreaches);
+        payload.put("trustEvents", trustEntries);
+        payload.put("message", hasBreach
+            ? "Governance breach/in-progress items require human visibility."
+            : "No active governance breaches.");
+        writeJson(outputPath, payload);
+        return (enforce && hasBreach) ? 2 : 0;
+    }
+
+    private static int runVersionControlLedger(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        Path outputPath = requiredPath(cli, "--output");
+        ensureParent(outputPath);
+
+        Map<String, Object> repo = new LinkedHashMap<>();
+        List<Map<String, Object>> files = new ArrayList<>();
+        try (Connection conn = connect(dbPath)) {
+            try (PreparedStatement ps = conn.prepareStatement(
+                "select git_head, git_branch, is_dirty, tracked_count, modified_count, untracked_count, deleted_count, updated_at " +
+                    "from repo_vcs_snapshot where id = 1"
+            ); ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    repo.put("gitHead", text(rs.getString(1)));
+                    repo.put("gitBranch", text(rs.getString(2)));
+                    repo.put("isDirty", rs.getInt(3) != 0);
+                    repo.put("trackedCount", rs.getInt(4));
+                    repo.put("modifiedCount", rs.getInt(5));
+                    repo.put("untrackedCount", rs.getInt(6));
+                    repo.put("deletedCount", rs.getInt(7));
+                    repo.put("updatedAt", text(rs.getString(8)));
+                }
+            }
+            try (PreparedStatement ps = conn.prepareStatement(
+                "select path, tracked, status_code, exists_on_disk, size_bytes, sha256 from repo_file_state order by path asc"
+            ); ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> row = new LinkedHashMap<>();
+                    row.put("path", text(rs.getString(1)));
+                    row.put("tracked", rs.getInt(2) != 0);
+                    row.put("statusCode", text(rs.getString(3)));
+                    row.put("existsOnDisk", rs.getInt(4) != 0);
+                    row.put("sizeBytes", rs.getLong(5));
+                    row.put("sha256", text(rs.getString(6)));
+                    files.add(row);
+                }
+            }
+        }
+
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("schemaVersion", "1");
+        payload.put("generatedAt", nowIso());
+        payload.put("source", "sqlite");
+        payload.put("repo", repo);
+        payload.put("fileCount", files.size());
+        payload.put("files", files);
+        payload.put("note", "Git is the canonical version-control source; this ledger is an auditable mirror in project state.");
+        writeJson(outputPath, payload);
+        return 0;
+    }
+
     private static Connection connect(Path dbPath) throws SQLException {
         return DriverManager.getConnection("jdbc:sqlite:" + dbPath.toAbsolutePath());
     }
@@ -401,6 +515,45 @@ public final class StateDatabaseTool {
                     updated_at text not null
                 )
                 """);
+            st.execute("""
+                create table if not exists governance_events (
+                    event_id text primary key,
+                    event_date text not null default '',
+                    phase text not null default '',
+                    status text not null default '',
+                    checkpoint_id text not null default '',
+                    issue_id text not null default '',
+                    summary text not null default '',
+                    evidence text not null default '',
+                    updated_by text not null default '',
+                    updated_at text not null
+                )
+                """);
+            st.execute("""
+                create table if not exists repo_vcs_snapshot (
+                    id integer primary key check(id = 1),
+                    git_head text not null default '',
+                    git_branch text not null default '',
+                    is_dirty integer not null default 0,
+                    tracked_count integer not null default 0,
+                    modified_count integer not null default 0,
+                    untracked_count integer not null default 0,
+                    deleted_count integer not null default 0,
+                    updated_at text not null
+                )
+                """);
+            st.execute("""
+                create table if not exists repo_file_state (
+                    path text primary key,
+                    tracked integer not null default 0,
+                    status_code text not null default '',
+                    exists_on_disk integer not null default 0,
+                    size_bytes integer not null default 0,
+                    sha256 text not null default '',
+                    updated_at text not null
+                )
+                """);
+            st.execute("create index if not exists idx_repo_file_status on repo_file_state(status_code)");
         }
     }
 
@@ -516,6 +669,106 @@ public final class StateDatabaseTool {
             ps.setString(6, nowIso());
             ps.executeUpdate();
         }
+    }
+
+    private static void syncGovernanceEvents(Connection conn, Path csvPath) throws Exception {
+        if (csvPath == null || !Files.exists(csvPath)) {
+            return;
+        }
+        List<Map<String, String>> rows = readCsv(csvPath, GOVERNANCE_COLUMNS);
+        String now = nowIso();
+        conn.setAutoCommit(false);
+        try (Statement clear = conn.createStatement()) {
+            clear.execute("delete from governance_events");
+        }
+        try (PreparedStatement ps = conn.prepareStatement(
+            "insert into governance_events(event_id,event_date,phase,status,checkpoint_id,issue_id,summary,evidence,updated_by,updated_at) " +
+                "values(?,?,?,?,?,?,?,?,?,?)"
+        )) {
+            for (Map<String, String> row : rows) {
+                for (int i = 0; i < GOVERNANCE_COLUMNS.size(); i++) {
+                    ps.setString(i + 1, row.get(GOVERNANCE_COLUMNS.get(i)));
+                }
+                ps.setString(10, now);
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        }
+        conn.commit();
+        conn.setAutoCommit(true);
+    }
+
+    private static void syncVersionControlState(Connection conn) throws Exception {
+        List<String> trackedFiles = gitLines("git", "ls-files");
+        Map<String, String> statusByPath = gitStatusByPath();
+        String gitHead = gitSingle("git", "rev-parse", "HEAD");
+        String gitBranch = gitSingle("git", "rev-parse", "--abbrev-ref", "HEAD");
+
+        int modifiedCount = 0;
+        int untrackedCount = 0;
+        int deletedCount = 0;
+        for (String code : statusByPath.values()) {
+            String normalized = text(code);
+            if (normalized.startsWith("??")) {
+                untrackedCount++;
+            }
+            if (normalized.contains("D")) {
+                deletedCount++;
+            }
+            if (!normalized.isBlank() && !normalized.equals("??")) {
+                modifiedCount++;
+            }
+        }
+        boolean isDirty = !statusByPath.isEmpty();
+        Set<String> allPaths = new LinkedHashSet<>(trackedFiles);
+        allPaths.addAll(statusByPath.keySet());
+
+        String now = nowIso();
+        conn.setAutoCommit(false);
+        try (PreparedStatement ps = conn.prepareStatement(
+            "insert into repo_vcs_snapshot(id,git_head,git_branch,is_dirty,tracked_count,modified_count,untracked_count,deleted_count,updated_at) " +
+                "values(1,?,?,?,?,?,?,?,?) " +
+                "on conflict(id) do update set " +
+                "git_head=excluded.git_head, git_branch=excluded.git_branch, is_dirty=excluded.is_dirty, " +
+                "tracked_count=excluded.tracked_count, modified_count=excluded.modified_count, " +
+                "untracked_count=excluded.untracked_count, deleted_count=excluded.deleted_count, updated_at=excluded.updated_at"
+        )) {
+            ps.setString(1, gitHead);
+            ps.setString(2, gitBranch);
+            ps.setInt(3, isDirty ? 1 : 0);
+            ps.setInt(4, trackedFiles.size());
+            ps.setInt(5, modifiedCount);
+            ps.setInt(6, untrackedCount);
+            ps.setInt(7, deletedCount);
+            ps.setString(8, now);
+            ps.executeUpdate();
+        }
+
+        try (Statement clear = conn.createStatement()) {
+            clear.execute("delete from repo_file_state");
+        }
+        try (PreparedStatement ps = conn.prepareStatement(
+            "insert into repo_file_state(path,tracked,status_code,exists_on_disk,size_bytes,sha256,updated_at) values(?,?,?,?,?,?,?)"
+        )) {
+            Set<String> trackedSet = new LinkedHashSet<>(trackedFiles);
+            for (String path : allPaths) {
+                Path p = Path.of(path);
+                boolean exists = Files.exists(p);
+                long sizeBytes = exists ? safeSize(p) : 0L;
+                String sha = exists && Files.isRegularFile(p) ? safeSha256(p) : "";
+                ps.setString(1, path.replace('\\', '/'));
+                ps.setInt(2, trackedSet.contains(path) ? 1 : 0);
+                ps.setString(3, statusByPath.getOrDefault(path, ""));
+                ps.setInt(4, exists ? 1 : 0);
+                ps.setLong(5, sizeBytes);
+                ps.setString(6, sha);
+                ps.setString(7, now);
+                ps.addBatch();
+            }
+            ps.executeBatch();
+        }
+        conn.commit();
+        conn.setAutoCommit(true);
     }
 
     private static void syncBoilerplatePackages(Connection conn, Path packagesDir) throws Exception {
@@ -665,6 +918,64 @@ public final class StateDatabaseTool {
             return paths;
         } catch (Exception e) {
             return List.of();
+        }
+    }
+
+    private static List<String> gitLines(String... command) {
+        ProcessBuilder pb = new ProcessBuilder(command);
+        pb.redirectErrorStream(true);
+        try {
+            Process process = pb.start();
+            List<String> lines = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8).lines()
+                .map(String::trim)
+                .filter(s -> !s.isEmpty())
+                .toList();
+            int exit = process.waitFor();
+            if (exit != 0) {
+                return List.of();
+            }
+            List<String> normalized = new ArrayList<>();
+            for (String line : lines) {
+                normalized.add(line.replace('\\', '/'));
+            }
+            return normalized;
+        } catch (Exception e) {
+            return List.of();
+        }
+    }
+
+    private static String gitSingle(String... command) {
+        List<String> lines = gitLines(command);
+        return lines.isEmpty() ? "" : lines.get(0);
+    }
+
+    private static Map<String, String> gitStatusByPath() {
+        Map<String, String> out = new LinkedHashMap<>();
+        ProcessBuilder pb = new ProcessBuilder("git", "status", "--porcelain");
+        pb.redirectErrorStream(true);
+        try {
+            Process process = pb.start();
+            List<String> lines = new String(process.getInputStream().readAllBytes(), StandardCharsets.UTF_8).lines().toList();
+            int exit = process.waitFor();
+            if (exit != 0) {
+                return out;
+            }
+            for (String line : lines) {
+                if (line == null || line.isBlank() || line.length() < 3) {
+                    continue;
+                }
+                String code = line.substring(0, 2);
+                String raw = line.substring(3).trim();
+                if (raw.contains(" -> ")) {
+                    raw = raw.substring(raw.indexOf(" -> ") + 4).trim();
+                }
+                if (!raw.isBlank()) {
+                    out.put(raw.replace('\\', '/'), code);
+                }
+            }
+            return out;
+        } catch (Exception e) {
+            return out;
         }
     }
 
@@ -820,6 +1131,29 @@ public final class StateDatabaseTool {
 
     private static String nowIso() {
         return OffsetDateTime.now(ZoneOffset.UTC).withNano(0).format(ISO);
+    }
+
+    private static long safeSize(Path path) {
+        try {
+            return Files.size(path);
+        } catch (Exception e) {
+            return 0L;
+        }
+    }
+
+    private static String safeSha256(Path path) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] bytes = Files.readAllBytes(path);
+            byte[] hash = digest.digest(bytes);
+            StringBuilder sb = new StringBuilder(hash.length * 2);
+            for (byte b : hash) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     private static String text(String value) {

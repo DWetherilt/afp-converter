@@ -26,6 +26,11 @@ API documentation:
   - generated/updated by `boilerplateSyncWorkbook`
   - preserves manual triage columns (`decision`, `state`, `owner_notes`) across refreshes
   - set `AFP_FORCE_BOILERPLATE_SYNC_UPDATE=true` to force refresh
+- `docs/policy-governance-events.csv`:
+  - source table for policy/process governance events (checkpoints, sequencing corrections, compliance notes)
+- `docs/policy-governance-events.xlsx`:
+  - spreadsheet tracker generated from `docs/policy-governance-events.csv` by `policyGovernanceWorkbook`
+  - set `AFP_FORCE_GOVERNANCE_WORKBOOK_UPDATE=true` to force refresh
 - `docs/project-plan-progress.xlsx`:
   - updated by `projectPlanWorkbook` using Apache POI by default (managed-sheet cell-level updates)
   - update is change-driven: task runs when CSV is newer than workbook (or workbook missing), and skips when workbook is newer to preserve cosmetic/user edits
@@ -48,6 +53,13 @@ API documentation:
   - SQLite state store for project execution/reporting workflows (issues, plan progress, fidelity signals)
 - `preview/state/boilerplate-state.sqlite`:
   - SQLite state store for boilerplate governance/sync workflows (package candidates and file inventory)
+- `preview/governance-alerts.json`:
+  - generated governance/trust alert report sourced from `preview/state/project-state.sqlite`
+  - includes active governance-breach visibility and trust-event tracking for handoff/status reporting
+- `preview/version-control-ledger.json`:
+  - generated VCS/file-discipline ledger sourced from `preview/state/project-state.sqlite`
+  - mirrors Git `HEAD`/branch/dirty state and per-path tracked/status/hash metadata for audit workflows
+  - Git remains the canonical version-control source
 - `preview/workbook-refresh-status.json`:
   - records whether workbook refresh used Excel-native path or XML fallback, including Excel error details if fallback was required
 - `preview/issues-log-tickle.json`:
@@ -115,6 +127,8 @@ Run the full quality gate (tests + fidelity thresholds + docs/changelog manifest
 ```bash
 ./gradlew qualityGate
 ```
+
+`qualityGate` includes `enforceProjectBoundaries`, which fails if product modules (`afp-api`, `afp-engine`, `afp-cli`) reference project-management tooling/state.
 
 Production build (no test compilation/execution; assumes working runtime/resources):
 

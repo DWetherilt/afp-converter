@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-18T21:30:49Z",
+  "generatedAt": "2026-02-18T22:16:20Z",
   "issuesLogPath": "docs/issues-log.csv",
   "issuesLogTouchedInWorkingTree": true,
-  "changedPathCount": 23,
-  "triggeredIssueCount": 5,
+  "changedPathCount": 35,
+  "triggeredIssueCount": 6,
   "requiresIssuesLogUpdate": false,
   "triggeredIssues": [
     {
@@ -49,12 +49,32 @@
       "matchedComponents": [
         "AI-POLICY.md",
         "README.md",
-        "afp-tools/src/main/java/com/upland/connect/afp/tools/BoilerplateSyncWorkbookUpdater.java",
+        "afp-tools/src/main/java/com/upland/connect/afp/tools/StateDatabaseTool.java",
         "build.gradle",
         "docs/boilerplate-sync-candidates.xlsx",
         "docs/project-plan-progress.xlsx",
+        "preview/state/boilerplate-state.sqlite",
+        "preview/state/project-state.sqlite"
+      ]
+    },
+    {
+      "id": "ISSUE-006",
+      "status": "Open",
+      "title": "Policy-governance sequence drift when updating constitutional/policy text without full checklist sequencing",
+      "matchedComponents": [
+        "AI-POLICY.md",
+        "README.md",
+        "SESSION_CHANGELOG.md",
         "afp-tools/src/main/java/com/upland/connect/afp/tools/StateDatabaseTool.java",
-        "preview/state/"
+        "build.gradle",
+        "docs/issues-log.csv",
+        "preview/documentation-manifest.json",
+        "preview/state/project-state.sqlite",
+        "afp-tools/src/main/java/com/upland/connect/afp/tools/PolicyGovernanceWorkbookUpdater.java",
+        "docs/policy-governance-events.csv",
+        "docs/policy-governance-events.xlsx",
+        "preview/governance-alerts.json",
+        "preview/version-control-ledger.json"
       ]
     }
   ],

@@ -1,0 +1,286 @@
+{
+  "schemaVersion": "1",
+  "id": "20260218T215420Z-0.2.0-beta.1-governance-breach-and-trust-sot",
+  "createdAt": "2026-02-18T21:54:20+00:00",
+  "version": "0.2.0-beta.1",
+  "label": "governance-breach-and-trust-sot",
+  "gitHead": "077cdb0f37cb37262f5d27ccf7ea9060a692b6dc",
+  "fileCount": 55,
+  "files": [
+    {
+      "path": "AI-POLICY.md",
+      "sizeBytes": 15823,
+      "sha256": "becb9be44b31d210c476782eb8dee99a46e123ceed245f7e10fbfe9b8e0faa9b"
+    },
+    {
+      "path": "README.md",
+      "sizeBytes": 12232,
+      "sha256": "8e6cd2598ff619c3eb048cb680b7667d5ad1856a04efb8762ff72014ca12dabf"
+    },
+    {
+      "path": "SESSION_CHANGELOG.md",
+      "sizeBytes": 51304,
+      "sha256": "a9be005b411864dc5e44ccbc9221ca42d76a16148220240b45814bf70203134e"
+    },
+    {
+      "path": "VERSION",
+      "sizeBytes": 13,
+      "sha256": "214374e4ab6ceb79d5fa5ff001fe9bbcbea31c3fd8c6bd42d48e7efaf6b2ce9f"
+    },
+    {
+      "path": "build.gradle",
+      "sizeBytes": 26922,
+      "sha256": "7ba8c151a8c6e0d7baf499cde513b54a925e7c105d8c8b8885356a140bd93bb1"
+    },
+    {
+      "path": "docs/API.md",
+      "sizeBytes": 7604,
+      "sha256": "8a8899762535f469313f1d9310f5a3ace7e1abd4de7da40b70dd6362df37ec71"
+    },
+    {
+      "path": "docs/boilerplate-sync-candidates.xlsx",
+      "sizeBytes": 6260,
+      "sha256": "6f9cf354cfecce81b742c0aaf18326764210ab422c85cb12fd962a41a0cb40f6"
+    },
+    {
+      "path": "docs/issues-log-template.csv",
+      "sizeBytes": 275,
+      "sha256": "344c8e1f896da05226f17ce1ccc16eedb36bd7924c13f7545a3c89f5b3c176ce"
+    },
+    {
+      "path": "docs/issues-log.csv",
+      "sizeBytes": 5358,
+      "sha256": "898552b05ad344375759f3aedb7d5258862be95d29a533d00f132e98434178b2"
+    },
+    {
+      "path": "docs/policy-governance-events.csv",
+      "sizeBytes": 864,
+      "sha256": "8eeb1eaaa3737c79f288135be9aeb059280015025503984de8992b47b082aa50"
+    },
+    {
+      "path": "docs/policy-governance-events.xlsx",
+      "sizeBytes": 3937,
+      "sha256": "27f12e64458d1c944203cc4f594797518de28d2da73eadaecc6cc6a2f067e18d"
+    },
+    {
+      "path": "docs/project-plan-progress.csv",
+      "sizeBytes": 5322,
+      "sha256": "9ac737fa4ab84708a3e533a26083c982a3951e7302ef57880ec193aaa2a47aad"
+    },
+    {
+      "path": "docs/project-plan-progress.xlsx",
+      "sizeBytes": 27821,
+      "sha256": "304f13a6f9bebd685b5332e2f38047516ce1e4ea9bcc2883fb9182a3226af951"
+    },
+    {
+      "path": "docs/project-plan.md",
+      "sizeBytes": 6891,
+      "sha256": "4e7f6e95637a345803f098d4f00ed37560ff4141830230ce2f998fd16e93061e"
+    },
+    {
+      "path": "docs/update-packages/README.md",
+      "sizeBytes": 647,
+      "sha256": "51fbae41fc90328204385b0332d3eb0ba87801a75f347d98fec8bfaa3ec1661c"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-boilerplate-sync-triage-workbook/README.md",
+      "sizeBytes": 715,
+      "sha256": "3c883eb5a5ab2d5790bc4c1e5170afb67406b9b3beb1ae8c568f0b9f2c8d15a4"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-boilerplate-sync-triage-workbook/apply-checklist.md",
+      "sizeBytes": 964,
+      "sha256": "80e4bc1b1d12505e04b8708f2e75b5c899e3aff8787c5f48be5f81a8a29b4e27"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-boilerplate-sync-triage-workbook/fresh-session-prompt.md",
+      "sizeBytes": 341,
+      "sha256": "53c5e3a97385e418b0fcb631b4b72d926967e28c7209405004d80911960d47e4"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-boilerplate-sync-triage-workbook/templates/build-gradle-snippets.md",
+      "sizeBytes": 2644,
+      "sha256": "0be55ecb63d9a9ab4c906f2fcc721090d9be29a7cf6fc748b73a80cdcc96f2c6"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-boilerplate-sync-triage-workbook/templates/policy-readme-snippets.md",
+      "sizeBytes": 544,
+      "sha256": "ed2919736404428a8fec4d5f9d485a6fe3a04499b5ebd8c782c7de43ede8acf9"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-consolidated-framework-sync/README.md",
+      "sizeBytes": 947,
+      "sha256": "1b139f93d20e267115fbc052eff0097dee08d900e7871ff7668c9f1ca4e50b03"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-consolidated-framework-sync/apply-checklist.md",
+      "sizeBytes": 1258,
+      "sha256": "dbe8e14adfd686efce1a4ca0336c9c3e6b96976554f675cd8becbc56a0d73ee7"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-consolidated-framework-sync/fresh-session-prompt.md",
+      "sizeBytes": 498,
+      "sha256": "8c97e855a5a617256d9c6fe637f6c69e6bf4a2077175621677caf5b7b9129f79"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-consolidated-framework-sync/templates/changelog-entry.md",
+      "sizeBytes": 320,
+      "sha256": "03cd0ab4670073728606694553fb8bfd448c74e3a7e1fa5d124e04e7f568ac99"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-governance-events-workbook/README.md",
+      "sizeBytes": 454,
+      "sha256": "0e44bd96549cdd73a0dd9ef4d285e9392e11e466893957c6348bffcffcb11d10"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-governance-events-workbook/apply-checklist.md",
+      "sizeBytes": 116,
+      "sha256": "90e9b9c71fa2f7a93527bb7b8762329e58cc980fe86143fa1bc5e0b4b5340f4c"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-governance-events-workbook/fresh-session-prompt.md",
+      "sizeBytes": 70,
+      "sha256": "ea7d6de41bfeef2fff5f60789d824a4c767d5532e5d4de43969913c3eefb3ad4"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance-log-sync/README.md",
+      "sizeBytes": 832,
+      "sha256": "f509387141904b9c73fd7e4ac77b112ce790f8900ab3453e2b15c22969d1e05b"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance-log-sync/apply-checklist.md",
+      "sizeBytes": 866,
+      "sha256": "ca20cb5d68edaca0713cfd2fac92ae49a810fba48a09308f8685bd4f7a270878"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance-log-sync/fresh-session-prompt.md",
+      "sizeBytes": 508,
+      "sha256": "d6742ca82c20a431486fe11e87b62889896cd9b6ac53e193150ff1b7c9d098fc"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance-log-sync/templates/process-evolution-entry.md",
+      "sizeBytes": 347,
+      "sha256": "0482dccc000409a4ceec06c2b7d906ddcaa187f6919acb0d06c984e22176ea15"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance-log-sync/templates/session-changelog-entry.md",
+      "sizeBytes": 400,
+      "sha256": "d9abe6283afd29a9387b2e34e8059e6128f4bb824cbe998915d280ff61e12ab7"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance/README.md",
+      "sizeBytes": 960,
+      "sha256": "873f815046bb80b32ca8ef159e01b08bc516cfcfbabee8f81c06427b54617dfc"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance/apply-checklist.md",
+      "sizeBytes": 1253,
+      "sha256": "abd11a399b37cecc1dda33507f1bb0a04488ff022806f52163cf48286a467528"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance/fresh-session-prompt.md",
+      "sizeBytes": 635,
+      "sha256": "67e5e1977c95857f3f491ebfd1769cfd4fb55798022d571f0ea056d705f92c5a"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-sqlite-state-tooling/README.md",
+      "sizeBytes": 860,
+      "sha256": "76cbc2f6c8ca4c9de676cd0ec632e08396cd94d841caef2ca2295447c9b26281"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-sqlite-state-tooling/apply-checklist.md",
+      "sizeBytes": 444,
+      "sha256": "fef5d5e33f8d185596fb9d955170b1b5e04eee3d0b692a3be6d49a7f271a1e2a"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-sqlite-state-tooling/fresh-session-prompt.md",
+      "sizeBytes": 575,
+      "sha256": "f8fdb28bc5f77bab09d7ecc9067f44d5f9cc66bc16387b696ace47e31e86197f"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-workbook-change-driven-guard/README.md",
+      "sizeBytes": 763,
+      "sha256": "954309b284dc363469a56533c38a40032379fe07599e6a843fbfd189f393fb1c"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-workbook-change-driven-guard/apply-checklist.md",
+      "sizeBytes": 1138,
+      "sha256": "3d389a818bc39e7217093091ff06c9d8097952ac5ac2d78cff756ea679456375"
+    },
+    {
+      "path": "docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-workbook-change-driven-guard/fresh-session-prompt.md",
+      "sizeBytes": 416,
+      "sha256": "bd46a4e240bfb04f640b3d0a446e36703ce0eca84e98205c67381c69f3237493"
+    },
+    {
+      "path": "preview/afp-diag.json",
+      "sizeBytes": 15099,
+      "sha256": "04209528b5afdc43fc8327bf632a433aa980391321e35118a820bfb9f22f2708"
+    },
+    {
+      "path": "preview/afp-meta.json",
+      "sizeBytes": 58675,
+      "sha256": "360c0e3657b4af2b676c5b6f2e2291a15b9672b0a8a613221366b690fd34b7db"
+    },
+    {
+      "path": "preview/afp-output.html",
+      "sizeBytes": 3461,
+      "sha256": "f9028529313a32541fadf1c16ac3deb8f209a6970046bbe83a2805afa186ef9b"
+    },
+    {
+      "path": "preview/afp-output.pdf",
+      "sizeBytes": 1957,
+      "sha256": "abb7b6b8e50f8031652ba88d993bcd48b013757af29b1e6c7e2c993034a3db31"
+    },
+    {
+      "path": "preview/fidelity-report.json",
+      "sizeBytes": 2013,
+      "sha256": "b51069baeaa915c7472f97405b1339c44a5aa12ba00c64f3483a294b2ebc6171"
+    },
+    {
+      "path": "preview/issues-effectiveness.json",
+      "sizeBytes": 2882,
+      "sha256": "884f22e03a4f42f37f71ae83bb0211806957be60459a4f70d5263b90f1c9e530"
+    },
+    {
+      "path": "preview/issues-log-tickle.json",
+      "sizeBytes": 1866,
+      "sha256": "f8420a92eb03dfc71de05e7d59c3d23538492c6ab6e1f7f9d4137cd047a6c50d"
+    },
+    {
+      "path": "preview/project-plan-next-step.json",
+      "sizeBytes": 3755,
+      "sha256": "014d79e7d05f949ef9399df09a12530a8ad9e054a45ab02a3f8d2c8374c6e26a"
+    },
+    {
+      "path": "preview/project-plan-progress-data.json",
+      "sizeBytes": 9132,
+      "sha256": "e8a9e110b530561bcee622f3e23b1a2601c2a7c0d73c797caa035868667f6ecf"
+    },
+    {
+      "path": "preview/state/boilerplate-state.sqlite",
+      "sizeBytes": 20480,
+      "sha256": "8540bb808f473fcc683772f9417acf5de30087324b2ef4c5213895f3f5b016e2"
+    },
+    {
+      "path": "preview/state/project-state.sqlite",
+      "sizeBytes": 40960,
+      "sha256": "f2f238e1c5afbc876528243ec8f8beb8a738b7d1c1260f8ab9b7ae4f7b8eab19"
+    },
+    {
+      "path": "preview/version.json",
+      "sizeBytes": 103,
+      "sha256": "292f14e53c0e4dc54bc00fb7dc47b5a33009cc999eda975698c991242a72f5c6"
+    },
+    {
+      "path": "preview/workbook-refresh-status.json",
+      "sizeBytes": 96,
+      "sha256": "da893a9d602c4b0508338ba3e4d68b59fdd719129a918860fea05098d8091968"
+    },
+    {
+      "path": "settings.gradle",
+      "sizeBytes": 92,
+      "sha256": "51df8722e091c0915963776389e7409938908ffa7944676c50d8846cde34865c"
+    }
+  ]
+}

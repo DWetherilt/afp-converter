@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-18T21:30:50Z",
+  "generatedAt": "2026-02-18T22:16:21Z",
   "source": "sqlite",
-  "taskCount": 22,
+  "taskCount": 25,
   "tasks": [
     {
       "workstream": "Workstream A",
@@ -201,13 +201,40 @@
       "percent_complete": "100",
       "last_updated": "2026-02-18",
       "notes": "Added dedicated project-state and boilerplate-state SQLite databases with Gradle task integration; workflow JSON/reporting outputs now route through afp-tools database tooling."
+    },
+    {
+      "workstream": "Workstream E",
+      "task": "add governance-breach notification and trust-grant logging to database-backed mechanics",
+      "priority": "High",
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-18",
+      "notes": "Governance alerts now emit from project-state SQLite and constitutional policy requires human-visible breach reporting plus trust-event logging through governance CSV/DB sync."
+    },
+    {
+      "workstream": "Workstream E",
+      "task": "add database-backed file-discipline and mirrored VCS ledger reporting",
+      "priority": "High",
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-18",
+      "notes": "Project-state SQLite now captures Git head/branch/dirty summary and per-path file discipline inventory; build publishes preview/version-control-ledger.json for auditable governance workflows."
+    },
+    {
+      "workstream": "Workstream E",
+      "task": "enforce hard product-management module boundaries in build quality gate",
+      "priority": "High",
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-18",
+      "notes": "Added `enforceProjectBoundaries` and wired it into `qualityGate`; product modules now fail verification if they reference afp-tools classes or project-management state sources."
     }
   ],
   "followUps": [
     {
       "id": "restored-workbook-content-review",
-      "status": "pending",
-      "note": "Circle back and review restored workbook content against JSON/CSV sources."
+      "note": "Circle back and review restored workbook content against JSON/CSV sources.",
+      "status": "pending"
     }
   ]
 }

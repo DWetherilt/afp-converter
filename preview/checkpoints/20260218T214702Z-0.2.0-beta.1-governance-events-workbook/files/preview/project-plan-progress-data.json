@@ -1,0 +1,213 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-18T21:47:02Z",
+  "source": "sqlite",
+  "taskCount": 22,
+  "tasks": [
+    {
+      "workstream": "Workstream A",
+      "task": "formalize page object graph with scope stack (BMO/EMO, resource begin/end scopes)",
+      "priority": "High",
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-18",
+      "notes": "Implemented deterministic object model and scope tracking in native renderer."
+    },
+    {
+      "workstream": "Workstream A",
+      "task": "implement deterministic paint order per AFP semantics",
+      "priority": "High",
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-18",
+      "notes": "Single ordered paint stream and base/overlay pass execution in place."
+    },
+    {
+      "workstream": "Workstream A",
+      "task": "complete graphics object rendering beyond placeholders (rules, boxes, strokes/fills)",
+      "priority": "High",
+      "status": "In Progress",
+      "percent_complete": "70",
+      "last_updated": "2026-02-18",
+      "notes": "Core line/box primitives implemented; additional AFP graphics semantics still pending."
+    },
+    {
+      "workstream": "Workstream A",
+      "task": "finalize image object placement with clipping and orientation transforms",
+      "priority": "High",
+      "status": "In Progress",
+      "percent_complete": "97",
+      "last_updated": "2026-02-18",
+      "notes": "Orientation-aware transforms and clipping implemented; synthetic fallback removed, placeholders gated by image evidence, image-object counting tightened to BIM/EIM, embedded image resolution now requires explicit AFPLib token overlap between BIM and BOC/EOC resources, draw-path prefers resource-resolved images before raw decode, and selection policy now runs through a dedicated ImageResolutionService."
+    },
+    {
+      "workstream": "Workstream B",
+      "task": "coded font resolution from AFP resources (CFI + resource objects)",
+      "priority": "High",
+      "status": "In Progress",
+      "percent_complete": "75",
+      "last_updated": "2026-02-18",
+      "notes": "Scoped CFI resolution implemented; sample path gaps remain due missing SCFL/CFI visibility."
+    },
+    {
+      "workstream": "Workstream B",
+      "task": "code page mapping matrix with SBCS/DBCS mixed-run handling",
+      "priority": "High",
+      "status": "In Progress",
+      "percent_complete": "80",
+      "last_updated": "2026-02-18",
+      "notes": "Mixed run decode and mapping diagnostics implemented; further parity tuning required."
+    },
+    {
+      "workstream": "Workstream B",
+      "task": "metric-compatible substitutions and kerning/advance tuning",
+      "priority": "High",
+      "status": "In Progress",
+      "percent_complete": "65",
+      "last_updated": "2026-02-18",
+      "notes": "Initial metric/spacing tuning added; still significant visual drift vs IBM sample."
+    },
+    {
+      "workstream": "Workstream B",
+      "task": "remove broad semantic replacement and keep low-signal run-level fallback only",
+      "priority": "High",
+      "status": "In Progress",
+      "percent_complete": "90",
+      "last_updated": "2026-02-18",
+      "notes": "Fallback narrowed substantially; some safeguards remain while PTX decode gaps persist."
+    },
+    {
+      "workstream": "Workstream C",
+      "task": "implement IOCA decoding adapters for common AFP image variants",
+      "priority": "Medium",
+      "status": "In Progress",
+      "percent_complete": "80",
+      "last_updated": "2026-02-18",
+      "notes": "Common signature-based and raw fallback paths available; coverage not exhaustive."
+    },
+    {
+      "workstream": "Workstream C",
+      "task": "add validation/fallback pipeline with confidence scoring and diagnostics",
+      "priority": "Medium",
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-18",
+      "notes": "Image decode confidence and fallback diagnostics emitted in meta/diag outputs; raw-candidate classification filters structured UTF-16-like payloads and now reports descriptor payload counts/resource hints."
+    },
+    {
+      "workstream": "Workstream C",
+      "task": "add per-format decode tests from real sample corpus",
+      "priority": "Medium",
+      "status": "In Progress",
+      "percent_complete": "75",
+      "last_updated": "2026-02-18",
+      "notes": "Per-format tests added and image-heavy sample included; corpus expansion remains."
+    },
+    {
+      "workstream": "Workstream D",
+      "task": "API additions for render/fidelity/resource policies",
+      "priority": "Medium",
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-18",
+      "notes": "RenderPolicy and DiagnosticsPolicy added and wired through conversion options."
+    },
+    {
+      "workstream": "Workstream D",
+      "task": "CLI flags and help/docs",
+      "priority": "Medium",
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-18",
+      "notes": "Render and diagnostics flags exposed and documented."
+    },
+    {
+      "workstream": "Workstream D",
+      "task": "richer diag.json and metadata sections for render traceability",
+      "priority": "Medium",
+      "status": "In Progress",
+      "percent_complete": "94",
+      "last_updated": "2026-02-18",
+      "notes": "Font/image/resource/print-centric trace diagnostics added; image binding diagnostics now include per-page BIM/candidate/overlap tokens plus candidate payload size and byte-prefix evidence, with explicit image render-path decisions (embedded/resource/raw/unresolved)."
+    },
+    {
+      "workstream": "Workstream E",
+      "task": "build corpus matrix (forms, statements, mixed-language, heavy overlays)",
+      "priority": "Medium",
+      "status": "In Progress",
+      "percent_complete": "60",
+      "last_updated": "2026-02-18",
+      "notes": "Current corpus has limited coverage and needs broader document diversity."
+    },
+    {
+      "workstream": "Workstream E",
+      "task": "per-feature integration tests",
+      "priority": "Medium",
+      "status": "In Progress",
+      "percent_complete": "70",
+      "last_updated": "2026-02-18",
+      "notes": "Strong test base exists; additional parity-focused regression slices still required."
+    },
+    {
+      "workstream": "Workstream E",
+      "task": "CI gates with artifact publishing (fidelity-report.json, diff images, diagnostics)",
+      "priority": "Medium",
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-18",
+      "notes": "qualityGate and publishCiArtifacts are active and passing."
+    },
+    {
+      "workstream": "Workstream F",
+      "task": "implement dedicated print-centric byte-walk engine separate from native renderer",
+      "priority": "High",
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-18",
+      "notes": "AfpPrintCentricTraceEngine established and integrated."
+    },
+    {
+      "workstream": "Workstream F",
+      "task": "emit sequential token trace (structured fields, PTX control codes, per-byte evidence)",
+      "priority": "High",
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-18",
+      "notes": "Trace events, SF/PTX histograms, and byte histogram are emitted."
+    },
+    {
+      "workstream": "Workstream F",
+      "task": "add AFP-token to output-token cross-examination report",
+      "priority": "High",
+      "status": "In Progress",
+      "percent_complete": "95",
+      "last_updated": "2026-02-18",
+      "notes": "Added operand-level PDF text operator traces, normalized PTX/alias histograms, and cross-exam inference hints."
+    },
+    {
+      "workstream": "Workstream F",
+      "task": "use trace findings to back-port proven control-code handling into native renderer",
+      "priority": "High",
+      "status": "In Progress",
+      "percent_complete": "91",
+      "last_updated": "2026-02-18",
+      "notes": "Extended PTX alias normalization and image evidence diagnostics, filtered non-raster BIM payloads, switched to deterministic matching, surfaced token+payload binding evidence (sample shows JPEG candidate payload with zero BIM token overlap), implemented evidence-driven resource-first image selection, and added a dedicated image-resolution policy service with targeted regression coverage."
+    },
+    {
+      "workstream": "Workstream E",
+      "task": "stand up SQLite-backed workflow state stores for project and boilerplate automation",
+      "priority": "High",
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-18",
+      "notes": "Added dedicated project-state and boilerplate-state SQLite databases with Gradle task integration; workflow JSON/reporting outputs now route through afp-tools database tooling."
+    }
+  ],
+  "followUps": [
+    {
+      "status": "pending",
+      "note": "Circle back and review restored workbook content against JSON/CSV sources.",
+      "id": "restored-workbook-content-review"
+    }
+  ]
+}

@@ -5,6 +5,37 @@ This file defines the operating policy for AI agents working in this repository 
 
 Use this file as the first-read operational contract before making changes.
 
+## First Principles (Constitutional Layer)
+- Constitutional wording lock:
+  - The wording of this First Principles section may only be changed by a human.
+  - AI agents must not edit, rephrase, reinterpret, or relocate these principles without explicit human instruction in the active session.
+- Constitutional conflict handling:
+  - If an AI agent believes progress requires breaking any first principle, it must stop immediately and notify a human before taking the conflicting action.
+  - No silent exceptions are permitted.
+- Governance breach notification duty:
+  - Any governance breach, sequencing violation, or constitutional risk must be surfaced to the human owner in the next status/closure response until explicitly acknowledged by a human.
+  - Do not treat governance breach reporting as optional.
+- Standard procedure invariance:
+  - Policy/constitutional edits must follow the same governance sequence every time: issue-log preflight, checkpoint creation, change application, validation, checkpoint listing, and changelog recording.
+  - If any mandatory step fails or is blocked, the agent must halt, report the blocker, and wait for human direction before continuing.
+- Non-destructive stewardship:
+  - Preserve human-managed artifacts and local edits; do not overwrite or reset unrelated user changes.
+  - Workbook handling must remain cell-level and preserve user filters/sort/layout unless explicitly directed by a human.
+- Traceable and reversible project mutation:
+  - Project file writes must be traceable via version control and/or rollback checkpoints.
+  - High-risk mutations require checkpoint-first discipline and rollback readiness.
+- State separation discipline:
+  - Project execution/reporting state and boilerplate governance state must remain separated and must not be merged into one datastore/workflow.
+- Database single-source discipline:
+  - For project-management and governance mechanics, `preview/state/project-state.sqlite` is the single source of operational truth for this repo.
+  - For boilerplate governance/package mechanics, `preview/state/boilerplate-state.sqlite` is the single source of operational truth.
+  - Any human trust grant or trust boundary instruction must be logged via governance mechanics (`docs/policy-governance-events.csv` -> SQLite sync) before completion handoff.
+  - Version-control truth boundary:
+    - Git remains the canonical source of repository history and rollback lineage.
+    - SQLite must mirror a verifiable VCS snapshot (`HEAD`, branch, dirty state, file-status inventory) for governance/audit workflows.
+- Human authority:
+  - Human instruction is authoritative for prioritization and policy evolution, except where it would directly conflict with higher-priority system safety constraints.
+
 ## Policy Governance
 - Changes to `AI-POLICY.md` require explicit human approval.
 - AI agents must not autonomously redefine, relax, or remove policy requirements in this file.
@@ -50,6 +81,8 @@ Use this file as the first-read operational contract before making changes.
 - Plan progress tracker (editable by humans): `docs/project-plan-progress.xlsx`
 - Progress source table: `docs/project-plan-progress.csv`
 - Boilerplate sync triage workbook: `docs/boilerplate-sync-candidates.xlsx`
+- Policy governance events tracker: `docs/policy-governance-events.csv`
+- Policy governance workbook: `docs/policy-governance-events.xlsx`
 - Issues log: `docs/issues-log.csv`
 - Issues log template: `docs/issues-log-template.csv`
 - Progress JSON intermediary: `preview/project-plan-progress-data.json`
@@ -114,9 +147,11 @@ When implementing any meaningful change:
 - `prodBuild` is the production packaging path and must avoid test compilation/execution.
 - `prodBuild` assumes runtime resources/environment are already correctly provisioned.
 - `qualityGate` is the canonical readiness command.
+- `enforceProjectBoundaries` is mandatory in `qualityGate` and must fail when `afp-api`, `afp-engine`, or `afp-cli` reference project-management tooling/state (`afp-tools`, governance/project tracker sources, or management SQLite paths).
 - `documentationManifest` must include current docs/changelog/plan artifacts.
 - `projectPlanNextStep` must reflect the current immediate plan instruction.
 - `projectPlanWorkbook` updates `docs/project-plan-progress.xlsx` via Apache POI updater by default.
+- `policyGovernanceWorkbook` updates `docs/policy-governance-events.xlsx` from `docs/policy-governance-events.csv` and should be used to track policy/governance execution events.
 - `projectStateDb` is the default project-management state sync path and must populate `preview/state/project-state.sqlite` from:
   - `docs/issues-log.csv`
   - `docs/project-plan-progress.csv`
@@ -143,6 +178,7 @@ When implementing any meaningful change:
   - log the event in `docs/issues-log.csv`,
   - then continue with Excel-native or POI-managed update paths only.
 - `issuesLogTickle` enforces issue-log hygiene: if files referenced by `docs/issues-log.csv` change, the issues log must be updated in the same change.
+- `governanceAlerts` generates `preview/governance-alerts.json` from SQLite governance state and should be reviewed for active governance-breach visibility.
 - `projectPlanProgressJson`, `issuesLogTickle`, and `issuesEffectivenessReport` should execute from SQLite-backed state generated by `projectStateDb`.
 - `boilerplateSyncWorkbook` maintains `docs/boilerplate-sync-candidates.xlsx` from `docs/update-packages/pz-boilerplate-intelliJ` and must preserve manual triage columns (`decision`, `state`, `owner_notes`).
 - `issuesEffectivenessReport` provides mechanized debug reasoning signals from:

@@ -560,3 +560,32 @@ This changelog is reconstructed from repository artifacts and our current thread
   - `projectPlanProgressJson`, `issuesLogTickle`, `issuesEffectivenessReport` now execute from SQLite-backed state.
 - Updated `boilerplateSyncWorkbook` to consume the boilerplate SQLite state store by default.
 - Updated policy/docs/plan metadata to codify SQLite state separation and default usage in the workflow.
+- Added a constitutional first-principles layer to `AI-POLICY.md` with explicit rules that:
+  - constitutional wording may only be changed by a human,
+  - AI must stop and notify a human before any first-principle breach,
+  - no silent exceptions are allowed.
+- Governance correction applied after detecting policy-update sequencing drift:
+  - logged ISSUE-006 for policy/constitutional checklist enforcement drift,
+  - strengthened First Principles in `AI-POLICY.md` with explicit standard-procedure invariance and halt-on-blocker behavior,
+  - resumed checkpoint-first/validation sequence before further policy mutation.
+- Added policy-governance event tracking artifacts:
+  - `docs/policy-governance-events.csv` (source-of-truth event table)
+  - `docs/policy-governance-events.xlsx` (generated workbook)
+- Added `PolicyGovernanceWorkbookUpdater` in `afp-tools` and new Gradle task `policyGovernanceWorkbook` with change-driven execution and optional force override `AFP_FORCE_GOVERNANCE_WORKBOOK_UPDATE=true`.
+- Wired governance workbook generation into `documentationManifest` and CI artifact publishing.
+- Created rollback checkpoint before this mutation set: `20260218T214702Z-0.2.0-beta.1-governance-events-workbook`.
+- Added constitutional policy requirements for governance-breach visibility and trust-grant logging.
+- Extended SQLite project state (`StateDatabaseTool`) with `governance_events` ingestion from `docs/policy-governance-events.csv`.
+- Added `governance-alerts` command and Gradle task `governanceAlerts` to emit `preview/governance-alerts.json` from database state.
+- Wired governance alerts into `documentationManifest` tracked artifacts and CI artifact bundle.
+- Created checkpoint `20260218T215420Z-0.2.0-beta.1-governance-breach-and-trust-sot` before constitutional/governance instrumentation changes.
+- Added `governanceAlerts` build path and `preview/governance-alerts.json` artifact for explicit human-visible governance breach reporting.
+- Logged trust-governance instruction event in `docs/policy-governance-events.csv` and synced into `project-state.sqlite` as operational source of truth.
+- Added database-backed file discipline and mirrored VCS snapshot capture in `StateDatabaseTool`:
+  - new SQLite tables `repo_vcs_snapshot` and `repo_file_state`.
+  - `sync-project` now records Git head/branch/dirty counts and per-path tracked/status/hash metadata.
+- Added `versionControlLedger` task and `preview/version-control-ledger.json` artifact sourced from `project-state.sqlite`.
+- Updated policy/docs to clarify boundary: Git is canonical VCS; SQLite is the auditable project-management mirror.
+- Added hard module-separation verification task `enforceProjectBoundaries` and wired it into `qualityGate`.
+- Boundary gate now fails when `afp-api`, `afp-engine`, or `afp-cli` reference project-management tooling/state sources (`afp-tools` packages or governance/project tracker paths).
+- Updated policy/docs and progress tracking to codify and report this build-time isolation enforcement.
