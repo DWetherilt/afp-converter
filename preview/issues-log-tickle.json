@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-18T18:48:31+00:00",
+  "generatedAt": "2026-02-18T19:19:43+00:00",
   "issuesLogPath": "docs/issues-log.csv",
   "issuesLogTouchedInWorkingTree": true,
-  "changedPathCount": 29,
-  "triggeredIssueCount": 4,
+  "changedPathCount": 8,
+  "triggeredIssueCount": 2,
   "requiresIssuesLogUpdate": false,
   "triggeredIssues": [
     {
@@ -12,19 +12,7 @@
       "status": "Open",
       "title": "Excel automation and workbook update fragility due Office account/licensing context",
       "matchedComponents": [
-        "build.gradle",
-        "docs/",
-        "preview/",
-        "tools/"
-      ]
-    },
-    {
-      "id": "ISSUE-002",
-      "status": "Open",
-      "title": "Workbook repair/corruption when managed sheets are added by XML updater without synchronizing docProps/app.xml sheet metadata",
-      "matchedComponents": [
-        "docs/",
-        "tools/"
+        "build.gradle"
       ]
     },
     {
@@ -32,20 +20,7 @@
       "status": "Open",
       "title": "Excel automation unavailable in headless/agent context (Apple event connection invalid), strict Excel-required mode fails as designed",
       "matchedComponents": [
-        "afp-tools/",
-        "build.gradle",
-        "preview/",
-        "tools/"
-      ]
-    },
-    {
-      "id": "ISSUE-004",
-      "status": "Open",
-      "title": "Progress Graph sheet visual/layout quality needs tuning despite functional correctness",
-      "matchedComponents": [
-        "afp-tools/",
-        "docs/",
-        "preview/"
+        "build.gradle"
       ]
     }
   ],

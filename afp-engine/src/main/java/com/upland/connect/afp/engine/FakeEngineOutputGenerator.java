@@ -1146,12 +1146,15 @@ public final class FakeEngineOutputGenerator {
 
     private static String imageDecodeJson(ImageDecodeSummary summary, boolean verbose) {
         StringBuilder sb = new StringBuilder();
+        int rasterEvidenceCount = summary.decodedDirectCount + summary.decodedBySignatureCount + summary.rawFallbackCandidateCount;
         sb.append("{")
             .append("\"imageObjectCount\": ").append(summary.imageObjectCount).append(", ")
             .append("\"decodedDirectCount\": ").append(summary.decodedDirectCount).append(", ")
             .append("\"decodedBySignatureCount\": ").append(summary.decodedBySignatureCount).append(", ")
             .append("\"rawFallbackCandidateCount\": ").append(summary.rawFallbackCandidateCount).append(", ")
             .append("\"descriptorPayloadCount\": ").append(summary.descriptorPayloadCount).append(", ")
+            .append("\"rasterEvidenceCount\": ").append(rasterEvidenceCount).append(", ")
+            .append("\"rasterEvidencePresent\": ").append(rasterEvidenceCount > 0 ? "true" : "false").append(", ")
             .append("\"undecodedCount\": ").append(summary.undecodedCount).append(", ")
             .append("\"decodeConfidence\": ").append(String.format(Locale.ROOT, "%.6f", summary.decodeConfidence)).append(", ")
             .append("\"warnings\": ").append(stringPreviewJson(summary.warnings, Integer.MAX_VALUE));

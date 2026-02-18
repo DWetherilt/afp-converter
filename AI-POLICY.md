@@ -9,6 +9,7 @@ Use this file as the first-read operational contract before making changes.
 - Changes to `AI-POLICY.md` require explicit human approval.
 - AI agents must not autonomously redefine, relax, or remove policy requirements in this file.
 - If a policy update is needed, propose the change and wait for human confirmation before applying it.
+- If a showstopper blocks progress (auth, permissions, service limits, missing prerequisites), escalate immediately to the human owner with exact blocker details and the smallest unblock action required.
 
 ## Project Context
 - Repository: `afp-converter`
@@ -70,6 +71,8 @@ When implementing any meaningful change:
 - `versionBump` is the standard bump path (`VERSION_PART=major|minor|patch|prerelease`).
 - `releaseSnapshot` is the standard rollback-safe release checkpoint flow (quality gate + checkpoint creation).
 - `rollbackCheckpoint` is dry-run by default and requires explicit `ROLLBACK_APPLY=true` to restore files.
+- `prodBuild` is the production packaging path and must avoid test compilation/execution.
+- `prodBuild` assumes runtime resources/environment are already correctly provisioned.
 - `qualityGate` is the canonical readiness command.
 - `documentationManifest` must include current docs/changelog/plan artifacts.
 - `projectPlanNextStep` must reflect the current immediate plan instruction.

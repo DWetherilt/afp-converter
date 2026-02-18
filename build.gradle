@@ -473,6 +473,15 @@ tasks.named('build') {
     dependsOn('documentationManifest')
 }
 
+tasks.register('prodBuild') {
+    group = 'build'
+    description = 'Production build path without test compilation/execution; assumes a prepared runtime/resource environment'
+    dependsOn(':afp-api:jar')
+    dependsOn(':afp-engine:jar')
+    dependsOn(':afp-cli:installDist')
+    dependsOn(':afp-cli:distZip')
+}
+
 tasks.register('qualityGate') {
     group = 'verification'
     description = 'Runs tests, fidelity gate, and documentation manifest generation as a release readiness gate'

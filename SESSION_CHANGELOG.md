@@ -490,3 +490,16 @@ This changelog is reconstructed from repository artifacts and our current thread
 - Known-imperfection logging rule enforcement:
   - Added `ISSUE-004` (Low) for `Progress Graph` visual/layout tuning while functional behavior remains correct.
   - Updated `AI-POLICY.md` to require logging accepted-but-imperfect outputs (including low-severity visual quality gaps) before handoff.
+- Skeleton project + production build path:
+  - Created local skeleton project `pz-boilerplate-intelliJ/` based on established framework/process model:
+    - multi-module Gradle layout (`boilerplate-api`, `boilerplate-engine`, `boilerplate-cli`, `boilerplate-tools`)
+    - policy/docs scaffolding (`AI-POLICY.md`, plan/progress/issues logs, process evolution log)
+    - versioning/rollback/issues tooling (`tools/versioning.py`, `tools/rollback_manager.py`, `tools/issues_log_tickle.py`, `tools/issues_effectiveness_report.py`)
+    - repository governance templates (`.github/CODEOWNERS`, issue templates)
+    - explicit process-evolution mechanism requiring human approval and backport to skeleton.
+  - Added root `prodBuild` task in `afp-converter` to produce production artifacts without test compilation/execution:
+    - `:afp-api:jar`
+    - `:afp-engine:jar`
+    - `:afp-cli:installDist`
+    - `:afp-cli:distZip`
+  - Updated `README.md` and `AI-POLICY.md` to document `prodBuild` behavior and assumptions.

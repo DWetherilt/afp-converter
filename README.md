@@ -105,6 +105,12 @@ Run the full quality gate (tests + fidelity thresholds + docs/changelog manifest
 ./gradlew qualityGate
 ```
 
+Production build (no test compilation/execution; assumes working runtime/resources):
+
+```bash
+./gradlew prodBuild
+```
+
 Run preview generation only:
 
 ```bash
