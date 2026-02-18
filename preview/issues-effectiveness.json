@@ -1,14 +1,14 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-18T19:19:43+00:00",
+  "generatedAt": "2026-02-18T21:06:56+00:00",
   "summary": {
-    "issueCount": 4,
-    "openIssueCount": 4,
-    "highSeverityOpenCount": 2,
-    "triggeredIssueCount": 2,
+    "issueCount": 5,
+    "openIssueCount": 5,
+    "highSeverityOpenCount": 3,
+    "triggeredIssueCount": 5,
     "requiresIssuesLogUpdate": false,
     "taskCount": 21,
-    "averageTaskPercentComplete": 87.33
+    "averageTaskPercentComplete": 87.71
   },
   "fidelity": {
     "fidelityScore": null,
@@ -25,7 +25,18 @@
       "status": "Open",
       "title": "Excel automation and workbook update fragility due Office account/licensing context",
       "matchedComponents": [
-        "build.gradle"
+        "build.gradle",
+        "docs/project-plan-progress.csv",
+        "docs/project-plan-progress.xlsx",
+        "preview/project-plan-progress-data.json"
+      ]
+    },
+    {
+      "id": "ISSUE-002",
+      "status": "Open",
+      "title": "Workbook repair/corruption when managed sheets are added by XML updater without synchronizing docProps/app.xml sheet metadata",
+      "matchedComponents": [
+        "docs/project-plan-progress.xlsx"
       ]
     },
     {
@@ -34,6 +45,28 @@
       "title": "Excel automation unavailable in headless/agent context (Apple event connection invalid), strict Excel-required mode fails as designed",
       "matchedComponents": [
         "build.gradle"
+      ]
+    },
+    {
+      "id": "ISSUE-004",
+      "status": "Open",
+      "title": "Progress Graph sheet visual/layout quality needs tuning despite functional correctness",
+      "matchedComponents": [
+        "docs/project-plan-progress.xlsx"
+      ]
+    },
+    {
+      "id": "ISSUE-005",
+      "status": "Open",
+      "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
+      "matchedComponents": [
+        "AI-POLICY.md",
+        "README.md",
+        "afp-tools/src/main/java/com/upland/connect/afp/tools/BoilerplateSyncWorkbookUpdater.java",
+        "build.gradle",
+        "docs/boilerplate-sync-candidates.xlsx",
+        "docs/project-plan-progress.xlsx",
+        "docs/update-packages/"
       ]
     }
   ],
@@ -47,6 +80,12 @@
     {
       "id": "ISSUE-003",
       "title": "Excel automation unavailable in headless/agent context (Apple event connection invalid), strict Excel-required mode fails as designed",
+      "owner": "Human+AI",
+      "last_reviewed": "2026-02-18"
+    },
+    {
+      "id": "ISSUE-005",
+      "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
       "owner": "Human+AI",
       "last_reviewed": "2026-02-18"
     }

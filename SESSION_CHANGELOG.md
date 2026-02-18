@@ -503,3 +503,52 @@ This changelog is reconstructed from repository artifacts and our current thread
     - `:afp-cli:installDist`
     - `:afp-cli:distZip`
   - Updated `README.md` and `AI-POLICY.md` to document `prodBuild` behavior and assumptions.
+- Evidence-driven image resolution iteration:
+  - Refactored native renderer image ingestion to per-`BIM` evidence objects and switched draw-path precedence to:
+    - embedded decode
+    - resource-resolved image
+    - raw decode (only when raster evidence exists)
+  - Added stricter raster evidence gating to avoid raw-decoding structured/resource descriptor payloads.
+  - Extended embedded-resource matching to per-image token binding (instead of page-global binding only).
+  - Added image render decision diagnostics in metadata/diag (`embedded`, `resourceReference`, `rawFallback`, `unresolved` + decision preview list).
+  - Re-ran renderer tests and full `documentationManifest` build successfully.
+- Project-level rollback governance hardening:
+  - Updated `AI-POLICY.md` to require issue-linkage + checkpoint + validation + rollback-readiness for high-risk project-level mutations.
+  - Added explicit rollback preflight step to the standard development cycle.
+  - Added README operational flow for process/workbook/build mutations (`createRollbackCheckpoint` -> validate -> `listRollbackCheckpoints`).
+- External package workflow extension:
+  - Added a second transfer package for `pz-boilerplate-intelliJ` log/process sync:
+    - `docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance-log-sync/`
+    - zip: `docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance-log-sync.zip`
+  - Added reusable initializer `tools/init_update_package.sh` to create package folders on-demand when missing.
+  - Added `docs/update-packages/README.md` and policy note documenting that merged package folders may be removed and regenerated later.
+- Targeted image-resolution refactor:
+  - Introduced `ImageResolutionService` to centralize image path selection policy (`embedded-decoded` -> `resource-reference` -> `raw-fallback` -> `unresolved`).
+  - Updated `AfpNativePdfRenderer` to consume the service for image evidence checks and image selection instead of duplicated inline logic.
+  - Added regression coverage in `ImageResolutionServiceTest` to lock precedence behavior and confidence mapping.
+  - Re-ran targeted engine tests (`ImageResolutionServiceTest`, `AfpNativePdfRendererTest`) successfully.
+- Workbook safety hardening for cosmetic edits:
+  - Updated `projectPlanWorkbook` task to be change-driven:
+    - runs only when `docs/project-plan-progress.csv` is newer than workbook (or workbook missing),
+    - skips when workbook is newer (preserves human cosmetic updates),
+    - supports explicit override via `AFP_FORCE_WORKBOOK_UPDATE=true`.
+  - Updated `AI-POLICY.md` and `README.md` to document this guardrail.
+- Boilerplate transfer follow-up for workbook guard:
+  - Added explicit policy requirement to generate/update boilerplate transfer packages in the same turn for shared process/policy/build changes.
+  - Created incremental package:
+    - `docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-workbook-change-driven-guard/`
+    - zip: `docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-workbook-change-driven-guard.zip`
+- Boilerplate merge triage workbook:
+  - Added `BoilerplateSyncWorkbookUpdater` (`afp-tools`) to generate `docs/boilerplate-sync-candidates.xlsx` from `docs/update-packages/pz-boilerplate-intelliJ`.
+  - Workbook includes package-level summary + package-file inventory and preserves manual triage columns (`decision`, `state`, `owner_notes`) on refresh.
+  - Added `boilerplateSyncWorkbook` Gradle task with change-driven execution and force override (`AFP_FORCE_BOILERPLATE_SYNC_UPDATE=true`).
+  - Wired workbook into `documentationManifest` and CI artifact publishing list.
+- Consolidated boilerplate promotion package:
+  - All approved candidates were consolidated into one superseding package:
+    - `docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-consolidated-framework-sync/`
+    - zip: `docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-consolidated-framework-sync.zip`
+  - Consolidated manifest now lists superseded package IDs.
+  - Updated policy/docs so future cycles with multiple approved candidates must produce one consolidated outbound package.
+  - Enhanced boilerplate sync workbook updater to read `supersedes` from package manifests and auto-mark superseded candidates in `recommended_scope`.
+  - Added explicit version-control write mandate and rollback-on-request guarantee to policy/docs, and refreshed the consolidated boilerplate package to include this governance update.
+  - Added response-level rule to include outstanding boilerplate review candidates whenever any remain in `review` state.

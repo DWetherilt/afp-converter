@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-18T19:19:43+00:00",
+  "generatedAt": "2026-02-18T21:06:56+00:00",
   "issuesLogPath": "docs/issues-log.csv",
   "issuesLogTouchedInWorkingTree": true,
-  "changedPathCount": 8,
-  "triggeredIssueCount": 2,
+  "changedPathCount": 29,
+  "triggeredIssueCount": 5,
   "requiresIssuesLogUpdate": false,
   "triggeredIssues": [
     {
@@ -12,7 +12,18 @@
       "status": "Open",
       "title": "Excel automation and workbook update fragility due Office account/licensing context",
       "matchedComponents": [
-        "build.gradle"
+        "build.gradle",
+        "docs/project-plan-progress.csv",
+        "docs/project-plan-progress.xlsx",
+        "preview/project-plan-progress-data.json"
+      ]
+    },
+    {
+      "id": "ISSUE-002",
+      "status": "Open",
+      "title": "Workbook repair/corruption when managed sheets are added by XML updater without synchronizing docProps/app.xml sheet metadata",
+      "matchedComponents": [
+        "docs/project-plan-progress.xlsx"
       ]
     },
     {
@@ -21,6 +32,28 @@
       "title": "Excel automation unavailable in headless/agent context (Apple event connection invalid), strict Excel-required mode fails as designed",
       "matchedComponents": [
         "build.gradle"
+      ]
+    },
+    {
+      "id": "ISSUE-004",
+      "status": "Open",
+      "title": "Progress Graph sheet visual/layout quality needs tuning despite functional correctness",
+      "matchedComponents": [
+        "docs/project-plan-progress.xlsx"
+      ]
+    },
+    {
+      "id": "ISSUE-005",
+      "status": "Open",
+      "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
+      "matchedComponents": [
+        "AI-POLICY.md",
+        "README.md",
+        "afp-tools/src/main/java/com/upland/connect/afp/tools/BoilerplateSyncWorkbookUpdater.java",
+        "build.gradle",
+        "docs/boilerplate-sync-candidates.xlsx",
+        "docs/project-plan-progress.xlsx",
+        "docs/update-packages/"
       ]
     }
   ],

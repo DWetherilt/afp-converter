@@ -21,8 +21,15 @@ API documentation:
 - `docs/API.md`
 - `docs/project-plan.md`
 - `docs/project-plan-progress.csv` (task-level completion tracker)
+- `docs/boilerplate-sync-candidates.xlsx`:
+  - summary workbook for potential boilerplate merges from `docs/update-packages/pz-boilerplate-intelliJ`
+  - generated/updated by `boilerplateSyncWorkbook`
+  - preserves manual triage columns (`decision`, `state`, `owner_notes`) across refreshes
+  - set `AFP_FORCE_BOILERPLATE_SYNC_UPDATE=true` to force refresh
 - `docs/project-plan-progress.xlsx`:
   - updated by `projectPlanWorkbook` using Apache POI by default (managed-sheet cell-level updates)
+  - update is change-driven: task runs when CSV is newer than workbook (or workbook missing), and skips when workbook is newer to preserve cosmetic/user edits
+  - set `AFP_FORCE_WORKBOOK_UPDATE=true` to force a workbook refresh
   - set `AFP_WORKBOOK_MODE=excel` for Excel-native scripting path
   - set `AFP_WORKBOOK_MODE=xml` to use the guarded XML updater fallback
   - XML fallback can use `docs/project-plan-progress.xlsx.zip` to restore filter nodes when missing
@@ -47,7 +54,7 @@ API documentation:
 - `tools/WorkbookUpdater.bas`:
    - VBA module for Excel that refreshes `Current Progress`, appends `Status History`, and rebuilds `Completion Trend` from the JSON intermediary
 - `tools/run_excel_workbook_refresh.py` + `tools/run_excel_workbook_refresh.applescript`:
-  - native Excel runner used by `projectPlanWorkbook` in default mode
+  - native Excel runner used by `projectPlanWorkbook` when `AFP_WORKBOOK_MODE=excel`
   - if required managed sheets are missing after Excel macro execution, auto-falls back to guarded XML updater to keep workbook structure complete
   - set `AFP_EXCEL_REQUIRED=true` to fail instead of fallback when Excel automation does not succeed
 
@@ -167,6 +174,29 @@ One-shot release snapshot (gate + checkpoint):
 
 ```bash
 CHECKPOINT_LABEL="release-candidate" ./gradlew releaseSnapshot
+```
+
+Rollback expectation for project-file writes:
+- All project-file mutations are expected to be reversible via git history and/or rollback checkpoints.
+- For high-risk mutation sets, create checkpoint first.
+- If rollback is requested:
+```bash
+./gradlew listRollbackCheckpoints
+CHECKPOINT_ID=<checkpoint-id> ./gradlew rollbackCheckpoint
+CHECKPOINT_ID=<checkpoint-id> ROLLBACK_APPLY=true ./gradlew rollbackCheckpoint
+```
+
+Project/process mutation safety flow (policy/build/workbook/gates):
+
+```bash
+# 1) pre-change checkpoint
+CHECKPOINT_LABEL="process-change-<short-name>" ./gradlew createRollbackCheckpoint
+
+# 2) apply changes, then validate
+./gradlew documentationManifest
+
+# 3) verify rollback availability
+./gradlew listRollbackCheckpoints
 ```
 
 Generate PDF fidelity comparison report against `sampleOutput/sample.pdf`:

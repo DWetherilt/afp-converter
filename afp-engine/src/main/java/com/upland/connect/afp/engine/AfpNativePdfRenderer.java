@@ -49,6 +49,7 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 final class AfpNativePdfRenderer {
+    private static final ImageResolutionService IMAGE_RESOLUTION = new ImageResolutionService();
     private static final boolean SEMANTIC_LAYOUT_OPT_IN =
         Boolean.parseBoolean(System.getProperty("afp.render.semanticLayout", "false"));
     private static final int PTOCA_CS_INTRODUCER = 0x2B;
@@ -97,12 +98,13 @@ final class AfpNativePdfRenderer {
             resolveCharset(interpretation.semantics().resolvedDbcsCharset(), null),
             "native-pdf"
         );
-        List<List<BufferedImage>> pageDecodedImages = decodePageImages(interpretation.fields());
-        List<List<byte[]>> pageRawImagePayloads = extractPageImagePayloads(interpretation.fields());
-        List<List<String>> pageImageResourceHints = extractPageImageResourceHints(interpretation.fields());
-        List<BufferedImage> pageEmbeddedResourceImages = resolvePageEmbeddedResourceImages(interpretation.rawAfpBytes());
-        List<BufferedImage> pageResolvedResourceImages = resolvePageResourceImages(pageImageResourceHints, resourceContext);
-        List<BufferedImage> pageResolvedImages = mergeResolvedResourceImages(pageEmbeddedResourceImages, pageResolvedResourceImages);
+        List<List<ImageObjectEvidence>> pageImageEvidence = collectPageImageEvidence(interpretation.fields());
+        List<List<BufferedImage>> pageDecodedImages = decodePageImages(pageImageEvidence);
+        List<List<byte[]>> pageRawImagePayloads = extractPageImagePayloads(pageImageEvidence);
+        List<List<String>> pageImageResourceHints = extractPageImageResourceHints(pageImageEvidence);
+        List<List<BufferedImage>> pageEmbeddedResourceImages = resolvePageEmbeddedResourceImages(interpretation.rawAfpBytes(), pageImageEvidence);
+        List<List<BufferedImage>> pageResolvedResourceImages = resolvePageResourceImages(pageImageResourceHints, resourceContext);
+        List<List<BufferedImage>> pageResolvedImages = mergeResolvedResourceImages(pageEmbeddedResourceImages, pageResolvedResourceImages);
 
         try (PDDocument document = new PDDocument()) {
             if (SEMANTIC_LAYOUT_OPT_IN && shouldPreferSemanticLayout(interpretation) && renderSemanticLayout(document, interpretation)) {
@@ -143,8 +145,8 @@ final class AfpNativePdfRenderer {
                     int imageCount = i < pageImageCounts.size() ? pageImageCounts.get(i) : 0;
                     List<BufferedImage> decodedImages = i < pageDecodedImages.size() ? pageDecodedImages.get(i) : List.of();
                     List<byte[]> rawPayloads = i < pageRawImagePayloads.size() ? pageRawImagePayloads.get(i) : List.of();
-                    BufferedImage resolvedResourceImage = i < pageResolvedImages.size() ? pageResolvedImages.get(i) : null;
-                    addFallbackPage(document, pages.get(i), imageCount, decodedImages, rawPayloads, resolvedResourceImage);
+                    List<BufferedImage> resolvedResourceImages = i < pageResolvedImages.size() ? pageResolvedImages.get(i) : List.of();
+                    addFallbackPage(document, pages.get(i), imageCount, decodedImages, rawPayloads, resolvedResourceImages);
                 }
             }
             document.save(outputPath.toFile());
@@ -186,7 +188,7 @@ final class AfpNativePdfRenderer {
                                                      AfpCodePageProfile profile,
                                                      List<List<BufferedImage>> pageDecodedImages,
                                                      List<List<byte[]>> pageRawImagePayloads,
-                                                     List<BufferedImage> pageResolvedResourceImages) {
+                                                     List<List<BufferedImage>> pageResolvedResourceImages) {
         byte[] afp = interpretation.rawAfpBytes();
         if (afp.length == 0) {
             return PtocaRenderResult.empty();
@@ -257,9 +259,9 @@ final class AfpNativePdfRenderer {
                                 List<byte[]> rawPayloads = pageCursor >= 0 && pageCursor < pageRawImagePayloads.size()
                                     ? pageRawImagePayloads.get(pageCursor)
                                     : List.of();
-                                BufferedImage resolvedResourceImage = pageCursor >= 0 && pageCursor < pageResolvedResourceImages.size()
+                                List<BufferedImage> resolvedResourceImages = pageCursor >= 0 && pageCursor < pageResolvedResourceImages.size()
                                     ? pageResolvedResourceImages.get(pageCursor)
-                                    : null;
+                                    : List.of();
                                 renderedTextOps += addPtocaPage(
                                     document,
                                     currentOps,
@@ -269,7 +271,7 @@ final class AfpNativePdfRenderer {
                                     currentGraphicOps,
                                     decodedImages,
                                     rawPayloads,
-                                    resolvedResourceImage,
+                                    resolvedResourceImages,
                                     localFontMap,
                                     currentPageGeometry
                                 );
@@ -471,9 +473,9 @@ final class AfpNativePdfRenderer {
                 List<byte[]> rawPayloads = pageCursor >= 0 && pageCursor < pageRawImagePayloads.size()
                     ? pageRawImagePayloads.get(pageCursor)
                     : List.of();
-                BufferedImage resolvedResourceImage = pageCursor >= 0 && pageCursor < pageResolvedResourceImages.size()
+                List<BufferedImage> resolvedResourceImages = pageCursor >= 0 && pageCursor < pageResolvedResourceImages.size()
                     ? pageResolvedResourceImages.get(pageCursor)
-                    : null;
+                    : List.of();
                 renderedTextOps += addPtocaPage(
                     document,
                     currentOps,
@@ -483,7 +485,7 @@ final class AfpNativePdfRenderer {
                     currentGraphicOps,
                     decodedImages,
                     rawPayloads,
-                    resolvedResourceImage,
+                    resolvedResourceImages,
                     localFontMap,
                     currentPageGeometry
                 );
@@ -824,7 +826,7 @@ final class AfpNativePdfRenderer {
                                     List<GraphicOp> graphicOps,
                                     List<BufferedImage> decodedImages,
                                     List<byte[]> rawImagePayloads,
-                                    BufferedImage resolvedResourceImage,
+                                    List<BufferedImage> resolvedResourceImages,
                                     Map<Integer, PDType1Font> localFontMap,
                                     PageGeometryState geometry) throws IOException {
         PDPage page = new PDPage(PDRectangle.LETTER);
@@ -957,7 +959,7 @@ final class AfpNativePdfRenderer {
                                 paintOp.imageOp,
                                 decodedImages,
                                 rawImagePayloads,
-                                resolvedResourceImage,
+                                resolvedResourceImages,
                                 minInline,
                                 minBaseline,
                                 scaleX,
@@ -971,7 +973,12 @@ final class AfpNativePdfRenderer {
                                 int idx = paintOp.imageOp == null ? -1 : Math.max(0, paintOp.imageOp.imageIndex);
                                 int decodedCount = decodedImages == null ? 0 : decodedImages.size();
                                 int rawCount = rawImagePayloads == null ? 0 : rawImagePayloads.size();
-                                boolean hasImageEvidence = idx >= 0 && (idx < decodedCount || idx < rawCount);
+                                boolean hasImageEvidence = idx >= 0 && IMAGE_RESOLUTION.hasEvidenceAt(
+                                    decodedImages,
+                                    resolvedResourceImages,
+                                    rawImagePayloads,
+                                    idx
+                                );
                                 if (hasImageEvidence) {
                                     drawImageObjectPlaceholders(
                                         content,
@@ -1004,9 +1011,9 @@ final class AfpNativePdfRenderer {
                     }
                 }
             }
-            boolean hasPageImageEvidence = (decodedImages != null && !decodedImages.isEmpty())
-                || (rawImagePayloads != null && !rawImagePayloads.isEmpty())
-                || resolvedResourceImage != null;
+            boolean hasPageImageEvidence = IMAGE_RESOLUTION.hasAnyDecodedImages(decodedImages)
+                || IMAGE_RESOLUTION.hasAnyRawPayloads(rawImagePayloads)
+                || IMAGE_RESOLUTION.hasAnyResolvedImages(resolvedResourceImages);
             if (drawnImages == 0 && imageObjectCount > 0 && (imageOps == null || imageOps.isEmpty()) && hasPageImageEvidence) {
                 drawImageObjectPlaceholders(
                     content,
@@ -1333,7 +1340,7 @@ final class AfpNativePdfRenderer {
                                         int imageObjectCount,
                                         List<BufferedImage> decodedImages,
                                         List<byte[]> rawImagePayloads,
-                                        BufferedImage resolvedResourceImage) throws IOException {
+                                        List<BufferedImage> resolvedResourceImages) throws IOException {
         PDPage page = new PDPage(PDRectangle.LETTER);
         document.addPage(page);
 
@@ -1352,7 +1359,7 @@ final class AfpNativePdfRenderer {
                 page.getMediaBox().getHeight(),
                 decodedImages,
                 rawImagePayloads,
-                resolvedResourceImage
+                resolvedResourceImages
             );
             if (drawnFallbackImages == 0 && imageObjectCount > 0) {
                 drawImageObjectPlaceholders(
@@ -1391,27 +1398,27 @@ final class AfpNativePdfRenderer {
                                                  float pageHeight,
                                                  List<BufferedImage> decodedImages,
                                                  List<byte[]> rawImagePayloads,
-                                                 BufferedImage resolvedResourceImage) throws IOException {
-        boolean hasDecoded = decodedImages != null && !decodedImages.isEmpty();
-        boolean hasRaw = rawImagePayloads != null && !rawImagePayloads.isEmpty();
-        if (!hasDecoded && !hasRaw && resolvedResourceImage == null) {
+                                                 List<BufferedImage> resolvedResourceImages) throws IOException {
+        boolean hasDecoded = IMAGE_RESOLUTION.hasAnyDecodedImages(decodedImages);
+        boolean hasRaw = IMAGE_RESOLUTION.hasAnyRawPayloads(rawImagePayloads);
+        if (!hasDecoded && !hasRaw && !IMAGE_RESOLUTION.hasAnyResolvedImages(resolvedResourceImages)) {
             return 0;
         }
         float x = pageWidth - 160f;
         float y = pageHeight - 140f;
-        int count = Math.max(hasDecoded ? decodedImages.size() : 0, hasRaw ? rawImagePayloads.size() : 0);
-        if (count == 0 && resolvedResourceImage != null) {
-            count = 1;
-        }
+        int count = Math.max(
+            decodedImages == null ? 0 : decodedImages.size(),
+            Math.max(rawImagePayloads == null ? 0 : rawImagePayloads.size(), resolvedResourceImages == null ? 0 : resolvedResourceImages.size())
+        );
         int drawn = 0;
         for (int i = 0; i < count && i < 3; i++) {
-            BufferedImage image = hasDecoded && i < decodedImages.size() ? decodedImages.get(i) : null;
-            if (image == null && hasRaw && i < rawImagePayloads.size()) {
-                image = decodeRawImageCandidate(rawImagePayloads.get(i), 120, 64);
-            }
-            if (image == null && resolvedResourceImage != null) {
-                image = resolvedResourceImage;
-            }
+            ImageResolutionService.SelectedImage selected = IMAGE_RESOLUTION.selectForFallbackTile(
+                decodedImages,
+                resolvedResourceImages,
+                rawImagePayloads,
+                i
+            );
+            BufferedImage image = selected.image();
             if (image == null) {
                 continue;
             }
@@ -1454,7 +1461,7 @@ final class AfpNativePdfRenderer {
                                             ImageOp op,
                                             List<BufferedImage> decodedImages,
                                             List<byte[]> rawImagePayloads,
-                                            BufferedImage resolvedResourceImage,
+                                            List<BufferedImage> resolvedResourceImages,
                                             int minInline,
                                             int minBaseline,
                                             float scaleX,
@@ -1465,15 +1472,15 @@ final class AfpNativePdfRenderer {
             return false;
         }
         int idx = Math.max(0, op.imageIndex);
-        int decodedCount = decodedImages == null ? 0 : decodedImages.size();
-        int rawCount = rawImagePayloads == null ? 0 : rawImagePayloads.size();
-        BufferedImage image = idx < decodedCount ? decodedImages.get(idx) : null;
-        if (image == null && idx < rawCount) {
-            image = decodeRawImageCandidate(rawImagePayloads.get(idx), Math.max(1, op.width), Math.max(1, op.height));
-        }
-        if (image == null && resolvedResourceImage != null) {
-            image = resolvedResourceImage;
-        }
+        ImageResolutionService.SelectedImage selected = IMAGE_RESOLUTION.selectForImageOp(
+            decodedImages,
+            resolvedResourceImages,
+            rawImagePayloads,
+            idx,
+            Math.max(1, op.width),
+            Math.max(1, op.height)
+        );
+        BufferedImage image = selected.image();
         if (image == null) {
             return false;
         }
@@ -1482,6 +1489,7 @@ final class AfpNativePdfRenderer {
         drawImageWithOrientation(content, imageObject, placement, op.orientation);
         return true;
     }
+
 
     private static int drawTextOp(PDPageContentStream content,
                                   float pageWidth,
@@ -1597,12 +1605,15 @@ final class AfpNativePdfRenderer {
             if (op.overlay != overlayOnly) {
                 continue;
             }
-            BufferedImage image = i < decodedCount ? decodedImages.get(i) : null;
-            if (image == null && i < rawCount) {
-                int hintedWidth = Math.max(1, op.width);
-                int hintedHeight = Math.max(1, op.height);
-                image = decodeRawImageCandidate(rawImagePayloads.get(i), hintedWidth, hintedHeight);
-            }
+            ImageResolutionService.SelectedImage selected = IMAGE_RESOLUTION.selectForImageOp(
+                decodedImages,
+                List.of(),
+                rawImagePayloads,
+                i,
+                Math.max(1, op.width),
+                Math.max(1, op.height)
+            );
+            BufferedImage image = selected.image();
             if (image == null) {
                 continue;
             }
@@ -1970,183 +1981,175 @@ final class AfpNativePdfRenderer {
         }
     }
 
-    private static List<List<BufferedImage>> decodePageImages(List<AfpStructuredField> fields) {
+    private static List<List<ImageObjectEvidence>> collectPageImageEvidence(List<AfpStructuredField> fields) {
+        List<List<ImageObjectEvidence>> byPage = new ArrayList<>();
+        List<ImageObjectEvidence> currentPage = null;
+        boolean inImage = false;
+        ByteArrayOutputStream imageBytes = null;
+        for (AfpStructuredField field : fields) {
+            String kind = SF_NAMES.getOrDefault(field.sfIdHex(), "UNKNOWN");
+            switch (kind) {
+                case "BPG" -> {
+                    currentPage = new ArrayList<>();
+                    byPage.add(currentPage);
+                }
+                case "EPG" -> currentPage = null;
+                case "BIM" -> {
+                    if (currentPage == null) {
+                        currentPage = new ArrayList<>();
+                        byPage.add(currentPage);
+                    }
+                    inImage = true;
+                    imageBytes = new ByteArrayOutputStream();
+                }
+                case "EIM" -> {
+                    if (inImage && currentPage != null) {
+                        byte[] payload = imageBytes == null ? new byte[0] : imageBytes.toByteArray();
+                        BufferedImage decoded = decodeImageCandidate(payload);
+                        List<String> hints = extractUtf16ResourceHints(payload, 12);
+                        boolean hasResourceHints = !hints.isEmpty();
+                        boolean hasRasterEvidence = decoded != null || hasKnownImageSignature(payload) || isLikelyRasterPayload(payload, hasResourceHints);
+                        byte[] rawPayload = hasRasterEvidence ? payload : null;
+                        currentPage.add(new ImageObjectEvidence(decoded, rawPayload, hints, hasRasterEvidence));
+                    }
+                    inImage = false;
+                    imageBytes = null;
+                }
+                default -> {
+                    if (inImage && imageBytes != null) {
+                        byte[] payload = field.payload();
+                        if (payload.length > 0) {
+                            imageBytes.write(payload, 0, payload.length);
+                        }
+                    }
+                }
+            }
+        }
+        return byPage;
+    }
+
+    private static List<List<BufferedImage>> decodePageImages(List<List<ImageObjectEvidence>> pageEvidence) {
         List<List<BufferedImage>> byPage = new ArrayList<>();
-        List<BufferedImage> currentPage = null;
-        boolean inImage = false;
-        ByteArrayOutputStream imageBytes = null;
-
-        for (AfpStructuredField field : fields) {
-            String kind = SF_NAMES.getOrDefault(field.sfIdHex(), "UNKNOWN");
-            switch (kind) {
-                case "BPG" -> {
-                    currentPage = new ArrayList<>();
-                    byPage.add(currentPage);
-                }
-                case "EPG" -> currentPage = null;
-                case "BIM" -> {
-                    if (currentPage == null) {
-                        currentPage = new ArrayList<>();
-                        byPage.add(currentPage);
-                    }
-                    inImage = true;
-                    imageBytes = new ByteArrayOutputStream();
-                }
-                case "EIM" -> {
-                    if (inImage && currentPage != null && imageBytes != null) {
-                        BufferedImage decoded = decodeImageCandidate(imageBytes.toByteArray());
-                        if (decoded != null) {
-                            currentPage.add(decoded);
-                        }
-                    }
-                    inImage = false;
-                    imageBytes = null;
-                }
-                default -> {
-                    if (inImage && imageBytes != null) {
-                        byte[] payload = field.payload();
-                        if (payload.length > 0) {
-                            imageBytes.write(payload, 0, payload.length);
-                        }
-                    }
+        if (pageEvidence == null) {
+            return byPage;
+        }
+        for (List<ImageObjectEvidence> page : pageEvidence) {
+            List<BufferedImage> decoded = new ArrayList<>();
+            if (page != null) {
+                for (ImageObjectEvidence evidence : page) {
+                    decoded.add(evidence == null ? null : evidence.decoded);
                 }
             }
+            byPage.add(decoded);
         }
         return byPage;
     }
 
-    private static List<List<byte[]>> extractPageImagePayloads(List<AfpStructuredField> fields) {
+    private static List<List<byte[]>> extractPageImagePayloads(List<List<ImageObjectEvidence>> pageEvidence) {
         List<List<byte[]>> byPage = new ArrayList<>();
-        List<byte[]> currentPage = null;
-        boolean inImage = false;
-        ByteArrayOutputStream imageBytes = null;
-
-        for (AfpStructuredField field : fields) {
-            String kind = SF_NAMES.getOrDefault(field.sfIdHex(), "UNKNOWN");
-            switch (kind) {
-                case "BPG" -> {
-                    currentPage = new ArrayList<>();
-                    byPage.add(currentPage);
-                }
-                case "EPG" -> currentPage = null;
-                case "BIM" -> {
-                    if (currentPage == null) {
-                        currentPage = new ArrayList<>();
-                        byPage.add(currentPage);
-                    }
-                    inImage = true;
-                    imageBytes = new ByteArrayOutputStream();
-                }
-                case "EIM" -> {
-                    if (inImage && currentPage != null && imageBytes != null) {
-                        byte[] payload = imageBytes.toByteArray();
-                        if (decodeImageCandidate(payload) != null || isLikelyRasterPayload(payload)) {
-                            currentPage.add(payload);
-                        }
-                    }
-                    inImage = false;
-                    imageBytes = null;
-                }
-                default -> {
-                    if (inImage && imageBytes != null) {
-                        byte[] payload = field.payload();
-                        if (payload.length > 0) {
-                            imageBytes.write(payload, 0, payload.length);
-                        }
-                    }
+        if (pageEvidence == null) {
+            return byPage;
+        }
+        for (List<ImageObjectEvidence> page : pageEvidence) {
+            List<byte[]> raws = new ArrayList<>();
+            if (page != null) {
+                for (ImageObjectEvidence evidence : page) {
+                    raws.add(evidence == null ? null : evidence.rawRasterPayload);
                 }
             }
+            byPage.add(raws);
         }
         return byPage;
     }
 
-    private static List<List<String>> extractPageImageResourceHints(List<AfpStructuredField> fields) {
+    private static List<List<String>> extractPageImageResourceHints(List<List<ImageObjectEvidence>> pageEvidence) {
         List<List<String>> byPage = new ArrayList<>();
-        List<String> currentPage = null;
-        boolean inImage = false;
-        ByteArrayOutputStream imageBytes = null;
-
-        for (AfpStructuredField field : fields) {
-            String kind = SF_NAMES.getOrDefault(field.sfIdHex(), "UNKNOWN");
-            switch (kind) {
-                case "BPG" -> {
-                    currentPage = new ArrayList<>();
-                    byPage.add(currentPage);
-                }
-                case "EPG" -> currentPage = null;
-                case "BIM" -> {
-                    if (currentPage == null) {
-                        currentPage = new ArrayList<>();
-                        byPage.add(currentPage);
+        if (pageEvidence == null) {
+            return byPage;
+        }
+        for (List<ImageObjectEvidence> page : pageEvidence) {
+            List<String> hints = new ArrayList<>();
+            if (page != null) {
+                for (ImageObjectEvidence evidence : page) {
+                    if (evidence == null || evidence.resourceHints == null) {
+                        continue;
                     }
-                    inImage = true;
-                    imageBytes = new ByteArrayOutputStream();
-                }
-                case "EIM" -> {
-                    if (inImage && currentPage != null && imageBytes != null) {
-                        currentPage.addAll(extractUtf16ResourceHints(imageBytes.toByteArray(), 12));
-                    }
-                    inImage = false;
-                    imageBytes = null;
-                }
-                default -> {
-                    if (inImage && imageBytes != null) {
-                        byte[] payload = field.payload();
-                        if (payload.length > 0) {
-                            imageBytes.write(payload, 0, payload.length);
-                        }
-                    }
+                    hints.addAll(evidence.resourceHints);
                 }
             }
+            byPage.add(hints);
         }
         return byPage;
     }
 
-    private static List<BufferedImage> resolvePageResourceImages(List<List<String>> pageImageResourceHints,
-                                                                 ResourceContext resourceContext) {
+    private static List<List<BufferedImage>> resolvePageResourceImages(List<List<String>> pageImageResourceHints,
+                                                                       ResourceContext resourceContext) {
         if (pageImageResourceHints == null || pageImageResourceHints.isEmpty()) {
             return List.of();
         }
-        List<BufferedImage> resolved = new ArrayList<>(pageImageResourceHints.size());
+        List<List<BufferedImage>> resolved = new ArrayList<>(pageImageResourceHints.size());
         for (List<String> hints : pageImageResourceHints) {
-            resolved.add(resolveImageByHints(hints, resourceContext).orElse(null));
+            List<BufferedImage> pageResolved = new ArrayList<>(1);
+            pageResolved.add(resolveImageByHints(hints, resourceContext).orElse(null));
+            resolved.add(pageResolved);
         }
         return resolved;
     }
 
-    private static List<BufferedImage> mergeResolvedResourceImages(List<BufferedImage> primary,
-                                                                   List<BufferedImage> fallback) {
+    private static List<List<BufferedImage>> mergeResolvedResourceImages(List<List<BufferedImage>> primary,
+                                                                         List<List<BufferedImage>> fallback) {
         int size = Math.max(primary == null ? 0 : primary.size(), fallback == null ? 0 : fallback.size());
         if (size == 0) {
             return List.of();
         }
-        List<BufferedImage> merged = new ArrayList<>(size);
+        List<List<BufferedImage>> merged = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
-            BufferedImage first = primary != null && i < primary.size() ? primary.get(i) : null;
-            BufferedImage second = fallback != null && i < fallback.size() ? fallback.get(i) : null;
-            merged.add(first != null ? first : second);
+            List<BufferedImage> first = primary != null && i < primary.size() ? primary.get(i) : List.of();
+            List<BufferedImage> second = fallback != null && i < fallback.size() ? fallback.get(i) : List.of();
+            int maxInner = Math.max(first == null ? 0 : first.size(), second == null ? 0 : second.size());
+            if (maxInner == 0) {
+                merged.add(List.of());
+                continue;
+            }
+            List<BufferedImage> pageMerged = new ArrayList<>(maxInner);
+            for (int j = 0; j < maxInner; j++) {
+                BufferedImage primaryImage = first != null && j < first.size() ? first.get(j) : null;
+                BufferedImage fallbackImage = second != null && j < second.size() ? second.get(j) : null;
+                pageMerged.add(primaryImage != null ? primaryImage : fallbackImage);
+            }
+            merged.add(pageMerged);
         }
         return merged;
     }
 
-    private static List<BufferedImage> resolvePageEmbeddedResourceImages(byte[] afpBytes) {
-        List<PageImageBindingState> states = collectPageImageBindingState(afpBytes);
+    private static List<List<BufferedImage>> resolvePageEmbeddedResourceImages(byte[] afpBytes,
+                                                                                List<List<ImageObjectEvidence>> pageImageEvidence) {
+        List<PageImageBindingState> states = collectPageImageBindingState(afpBytes, pageImageEvidence);
         if (states.isEmpty()) {
             return List.of();
         }
-        List<BufferedImage> resolved = new ArrayList<>(states.size());
+        List<List<BufferedImage>> resolved = new ArrayList<>(states.size());
         for (PageImageBindingState state : states) {
-            resolved.add(matchEmbeddedResourceImage(state.bimReferenceTokens, state.candidates).orElse(null));
+            List<BufferedImage> pageResolved = new ArrayList<>(state.imageReferences.size());
+            for (ImageReferenceState imageReference : state.imageReferences) {
+                pageResolved.add(matchEmbeddedResourceImage(imageReference.referenceTokens, state.candidates).orElse(null));
+            }
+            resolved.add(pageResolved);
         }
         return resolved;
     }
 
-    private static List<PageImageBindingState> collectPageImageBindingState(byte[] afpBytes) {
-        if (afpBytes == null || afpBytes.length == 0) {
+    private static List<PageImageBindingState> collectPageImageBindingState(byte[] afpBytes,
+                                                                             List<List<ImageObjectEvidence>> pageImageEvidence) {
+        if (pageImageEvidence == null || pageImageEvidence.isEmpty()) {
             return List.of();
         }
-        List<PageImageBindingState> pages = new ArrayList<>();
+        List<PageImageBindingState> pages = initPageImageBindingStates(pageImageEvidence);
+        if (afpBytes == null || afpBytes.length == 0) {
+            return pages;
+        }
         int pageIndex = -1;
+        int imageIndex = -1;
         boolean inContainer = false;
         ByteArrayOutputStream containerBytes = null;
         Set<String> containerTokens = new HashSet<>();
@@ -2161,11 +2164,13 @@ final class AfpNativePdfRenderer {
                 switch (name) {
                     case "BPG" -> {
                         pageIndex++;
-                        ensurePageBindingState(pages, pageIndex);
+                        imageIndex = -1;
                     }
                     case "BIM" -> {
+                        imageIndex++;
                         PageImageBindingState state = ensurePageBindingState(pages, pageIndex);
-                        state.bimReferenceTokens.addAll(extractStructuredFieldReferenceTokens(sf));
+                        ImageReferenceState imageState = ensureImageReferenceState(state, imageIndex);
+                        imageState.referenceTokens.addAll(extractStructuredFieldReferenceTokens(sf));
                     }
                     case "BOC" -> {
                         inContainer = true;
@@ -2203,7 +2208,20 @@ final class AfpNativePdfRenderer {
                 }
             }
         } catch (Exception ignored) {
-            return List.of();
+            return pages;
+        }
+        return pages;
+    }
+
+    private static List<PageImageBindingState> initPageImageBindingStates(List<List<ImageObjectEvidence>> pageImageEvidence) {
+        List<PageImageBindingState> pages = new ArrayList<>(pageImageEvidence.size());
+        for (List<ImageObjectEvidence> pageEvidence : pageImageEvidence) {
+            int count = pageEvidence == null ? 0 : pageEvidence.size();
+            PageImageBindingState state = new PageImageBindingState();
+            for (int i = 0; i < count; i++) {
+                state.imageReferences.add(new ImageReferenceState());
+            }
+            pages.add(state);
         }
         return pages;
     }
@@ -2214,6 +2232,14 @@ final class AfpNativePdfRenderer {
             pages.add(new PageImageBindingState());
         }
         return pages.get(idx);
+    }
+
+    private static ImageReferenceState ensureImageReferenceState(PageImageBindingState page, int imageIndex) {
+        int idx = Math.max(0, imageIndex);
+        while (page.imageReferences.size() <= idx) {
+            page.imageReferences.add(new ImageReferenceState());
+        }
+        return page.imageReferences.get(idx);
     }
 
     private static Optional<BufferedImage> matchEmbeddedResourceImage(Set<String> bimReferenceTokens,
@@ -2277,49 +2303,23 @@ final class AfpNativePdfRenderer {
         return null;
     }
 
-    private static BufferedImage decodeRawImageCandidate(byte[] bytes, int hintedWidth, int hintedHeight) {
-        if (bytes == null || bytes.length == 0 || hintedWidth <= 0 || hintedHeight <= 0) {
-            return null;
+    private static boolean hasKnownImageSignature(byte[] payload) {
+        if (payload == null || payload.length < 4) {
+            return false;
         }
-        int rowPacked = ((hintedWidth + 7) / 8) * hintedHeight;
-        if (bytes.length >= rowPacked && rowPacked > 0) {
-            BufferedImage biLevel = new BufferedImage(hintedWidth, hintedHeight, BufferedImage.TYPE_BYTE_GRAY);
-            int idx = 0;
-            for (int y = 0; y < hintedHeight; y++) {
-                for (int x = 0; x < hintedWidth; x++) {
-                    int bitPos = 7 - (x % 8);
-                    int b = bytes[idx + (x / 8)] & 0xFF;
-                    int on = (b >> bitPos) & 0x01;
-                    int gray = on == 0 ? 255 : 0;
-                    biLevel.getRaster().setSample(x, y, 0, gray);
-                }
-                idx += ((hintedWidth + 7) / 8);
-                if (idx >= bytes.length) {
-                    break;
-                }
-            }
-            return biLevel;
-        }
-        int grayBytes = hintedWidth * hintedHeight;
-        if (bytes.length >= grayBytes && grayBytes > 0) {
-            BufferedImage gray = new BufferedImage(hintedWidth, hintedHeight, BufferedImage.TYPE_BYTE_GRAY);
-            int idx = 0;
-            for (int y = 0; y < hintedHeight; y++) {
-                for (int x = 0; x < hintedWidth; x++) {
-                    gray.getRaster().setSample(x, y, 0, bytes[idx] & 0xFF);
-                    idx++;
-                    if (idx >= bytes.length) {
-                        return gray;
-                    }
-                }
-            }
-            return gray;
-        }
-        return null;
+        return indexOf(payload, new byte[] {(byte) 0x89, 0x50, 0x4E, 0x47}) >= 0
+            || indexOf(payload, new byte[] {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF}) >= 0
+            || indexOf(payload, new byte[] {0x47, 0x49, 0x46, 0x38}) >= 0
+            || indexOf(payload, new byte[] {0x42, 0x4D}) >= 0
+            || indexOf(payload, new byte[] {0x49, 0x49, 0x2A, 0x00}) >= 0
+            || indexOf(payload, new byte[] {0x4D, 0x4D, 0x00, 0x2A}) >= 0;
     }
 
-    private static boolean isLikelyRasterPayload(byte[] payload) {
+    private static boolean isLikelyRasterPayload(byte[] payload, boolean hasResourceHints) {
         if (payload == null || payload.length < 64) {
+            return false;
+        }
+        if (hasResourceHints) {
             return false;
         }
         int zeros = 0;
@@ -2335,6 +2335,10 @@ final class AfpNativePdfRenderer {
         }
         // Reject likely UTF-16/structured text payloads masquerading as image bytes.
         if (zeros >= (payload.length / 5) && printable >= (payload.length / 6)) {
+            return false;
+        }
+        // Reject high-printable payloads that look like structured control streams.
+        if (printable >= (payload.length / 3)) {
             return false;
         }
         return true;
@@ -2591,8 +2595,29 @@ final class AfpNativePdfRenderer {
     }
 
     private static final class PageImageBindingState {
-        private final Set<String> bimReferenceTokens = new HashSet<>();
+        private final List<ImageReferenceState> imageReferences = new ArrayList<>();
         private final List<EmbeddedImageResourceCandidate> candidates = new ArrayList<>();
+    }
+
+    private static final class ImageReferenceState {
+        private final Set<String> referenceTokens = new HashSet<>();
+    }
+
+    private static final class ImageObjectEvidence {
+        private final BufferedImage decoded;
+        private final byte[] rawRasterPayload;
+        private final List<String> resourceHints;
+        private final boolean hasRasterEvidence;
+
+        private ImageObjectEvidence(BufferedImage decoded,
+                                    byte[] rawRasterPayload,
+                                    List<String> resourceHints,
+                                    boolean hasRasterEvidence) {
+            this.decoded = decoded;
+            this.rawRasterPayload = rawRasterPayload == null ? null : rawRasterPayload.clone();
+            this.resourceHints = resourceHints == null ? List.of() : List.copyOf(resourceHints);
+            this.hasRasterEvidence = hasRasterEvidence;
+        }
     }
 
     private static int indexOf(byte[] haystack, byte[] needle) {

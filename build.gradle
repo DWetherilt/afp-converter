@@ -4,6 +4,7 @@ plugins {
 
 import java.security.MessageDigest
 import groovy.json.JsonOutput
+import java.util.Locale
 
 def versionFile = file('VERSION')
 def resolvedVersion = versionFile.exists() ? versionFile.text.trim() : '0.2.0-beta.1'
@@ -68,9 +69,34 @@ tasks.register('versionStamp') {
 
 tasks.register('projectPlanWorkbook', Exec) {
     group = 'documentation'
-    description = 'Updates docs/project-plan-progress.xlsx. Default mode is POI-based updater; set AFP_WORKBOOK_MODE=excel|xml to use legacy paths.'
+    description = 'Updates docs/project-plan-progress.xlsx when CSV source changes. Force with AFP_FORCE_WORKBOOK_UPDATE=true. Default mode is POI-based updater; set AFP_WORKBOOK_MODE=excel|xml to use legacy paths.'
     dependsOn('projectPlanProgressJson')
     dependsOn(':afp-tools:classes')
+    onlyIf {
+        File csv = file('docs/project-plan-progress.csv')
+        File xlsx = file('docs/project-plan-progress.xlsx')
+        String forceRaw = (System.getenv('AFP_FORCE_WORKBOOK_UPDATE') ?: '').trim().toLowerCase(Locale.ROOT)
+        boolean force = forceRaw == '1' || forceRaw == 'true' || forceRaw == 'yes'
+        if (force) {
+            logger.lifecycle("projectPlanWorkbook: running because AFP_FORCE_WORKBOOK_UPDATE is set")
+            return true
+        }
+        if (!xlsx.exists()) {
+            logger.lifecycle("projectPlanWorkbook: running because workbook is missing")
+            return true
+        }
+        if (!csv.exists()) {
+            logger.lifecycle("projectPlanWorkbook: skipping because CSV source is missing")
+            return false
+        }
+        boolean shouldRun = csv.lastModified() > xlsx.lastModified()
+        logger.lifecycle(
+            "projectPlanWorkbook: " + (shouldRun ? "running" : "skipping")
+                + " (csvLastModified=" + csv.lastModified()
+                + ", xlsxLastModified=" + xlsx.lastModified() + ")"
+        )
+        return shouldRun
+    }
     doFirst {
         String mode = ((System.getenv('AFP_WORKBOOK_MODE') ?: 'poi') as String).trim().toLowerCase()
         if (mode == 'poi') {
@@ -124,6 +150,52 @@ tasks.register('projectPlanProgressJson', Exec) {
         '--json', 'preview/project-plan-progress-data.json'
 }
 
+tasks.register('boilerplateSyncWorkbook', Exec) {
+    group = 'documentation'
+    description = 'Builds docs/boilerplate-sync-candidates.xlsx from docs/update-packages/pz-boilerplate-intelliJ while preserving manual decision columns.'
+    dependsOn(':afp-tools:classes')
+    onlyIf {
+        File packagesDir = file('docs/update-packages/pz-boilerplate-intelliJ')
+        File xlsx = file('docs/boilerplate-sync-candidates.xlsx')
+        String forceRaw = (System.getenv('AFP_FORCE_BOILERPLATE_SYNC_UPDATE') ?: '').trim().toLowerCase(Locale.ROOT)
+        boolean force = forceRaw == '1' || forceRaw == 'true' || forceRaw == 'yes'
+        if (force) {
+            logger.lifecycle("boilerplateSyncWorkbook: running because AFP_FORCE_BOILERPLATE_SYNC_UPDATE is set")
+            return true
+        }
+        if (!packagesDir.exists() || !packagesDir.isDirectory()) {
+            logger.lifecycle("boilerplateSyncWorkbook: skipping because packages directory is missing")
+            return false
+        }
+        if (!xlsx.exists()) {
+            logger.lifecycle("boilerplateSyncWorkbook: running because workbook is missing")
+            return true
+        }
+        long newestPackageInput = 0L
+        Set<File> inputs = fileTree(packagesDir) { include '**/*' }.files
+        for (File f : inputs) {
+            newestPackageInput = Math.max(newestPackageInput, f.lastModified())
+        }
+        newestPackageInput = Math.max(newestPackageInput, packagesDir.lastModified())
+        boolean shouldRun = newestPackageInput > xlsx.lastModified()
+        logger.lifecycle(
+            "boilerplateSyncWorkbook: " + (shouldRun ? "running" : "skipping")
+                + " (packagesLastModified=" + newestPackageInput
+                + ", xlsxLastModified=" + xlsx.lastModified() + ")"
+        )
+        return shouldRun
+    }
+    doFirst {
+        def sourceSets = project(':afp-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'com.upland.connect.afp.tools.BoilerplateSyncWorkbookUpdater',
+            '--packages', 'docs/update-packages/pz-boilerplate-intelliJ',
+            '--xlsx', 'docs/boilerplate-sync-candidates.xlsx'
+    }
+}
+
 tasks.register('issuesLogTickle', Exec) {
     group = 'documentation'
     description = 'Checks for changes to issue-referenced components and tickles docs/issues-log.csv expectations'
@@ -172,6 +244,7 @@ tasks.register('documentationManifest') {
     dependsOn('issuesLogTickle')
     dependsOn('issuesEffectivenessReport')
     dependsOn('projectPlanWorkbook')
+    dependsOn('boilerplateSyncWorkbook')
     doLast {
         File output = file('preview/documentation-manifest.json')
         output.parentFile.mkdirs()
@@ -180,6 +253,7 @@ tasks.register('documentationManifest') {
             file('README.md'),
             file('docs/API.md'),
             file('docs/project-plan.md'),
+            file('docs/boilerplate-sync-candidates.xlsx'),
             file('SESSION_CHANGELOG.md'),
             file('preview/afp-output.pdf'),
             file('preview/afp-output.html'),
@@ -259,6 +333,7 @@ tasks.register('publishCiArtifacts') {
             file('docs/project-plan.md'),
             file('docs/project-plan-progress.csv'),
             file('docs/project-plan-progress.xlsx'),
+            file('docs/boilerplate-sync-candidates.xlsx'),
             file('VERSION'),
             file('SESSION_CHANGELOG.md')
         ]

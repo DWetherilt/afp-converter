@@ -734,24 +734,61 @@ public final class FakeEngineOutputGenerator {
         int undecoded = 0;
         int rawFallbackCandidates = 0;
         int descriptorPayloadCount = 0;
+        int embeddedPreferredCount = 0;
+        int resourcePreferredCount = 0;
+        int rawPreferredCount = 0;
+        int unresolvedPreferredCount = 0;
         List<String> signaturesUsed = new ArrayList<>();
         java.util.LinkedHashSet<String> resourceHints = new java.util.LinkedHashSet<>();
+        List<String> renderDecisionPreview = new ArrayList<>();
+        int imageIndex = 0;
         for (byte[] payload : payloads) {
+            imageIndex++;
             DecodeResult result = decodeImagePayload(payload);
             if (!result.resourceHints.isEmpty()) {
                 resourceHints.addAll(result.resourceHints);
             }
             switch (result.status) {
-                case "direct" -> direct++;
+                case "direct" -> {
+                    direct++;
+                    embeddedPreferredCount++;
+                    if (renderDecisionPreview.size() < 20) {
+                        renderDecisionPreview.add("image#" + imageIndex + ":embedded-decoded(direct)");
+                    }
+                }
                 case "signature" -> {
                     signature++;
+                    embeddedPreferredCount++;
                     if (!result.signature.isBlank()) {
                         signaturesUsed.add(result.signature);
                     }
+                    if (renderDecisionPreview.size() < 20) {
+                        String sig = result.signature.isBlank() ? "" : ",signature=" + result.signature;
+                        renderDecisionPreview.add("image#" + imageIndex + ":embedded-decoded(signature" + sig + ")");
+                    }
                 }
-                case "raw-candidate" -> rawFallbackCandidates++;
-                case "descriptor" -> descriptorPayloadCount++;
-                default -> undecoded++;
+                case "raw-candidate" -> {
+                    rawFallbackCandidates++;
+                    rawPreferredCount++;
+                    if (renderDecisionPreview.size() < 20) {
+                        renderDecisionPreview.add("image#" + imageIndex + ":raw-fallback(raster-evidence)");
+                    }
+                }
+                case "descriptor" -> {
+                    descriptorPayloadCount++;
+                    resourcePreferredCount++;
+                    if (renderDecisionPreview.size() < 20) {
+                        int hintCount = result.resourceHints == null ? 0 : result.resourceHints.size();
+                        renderDecisionPreview.add("image#" + imageIndex + ":resource-reference(hints=" + hintCount + ")");
+                    }
+                }
+                default -> {
+                    undecoded++;
+                    unresolvedPreferredCount++;
+                    if (renderDecisionPreview.size() < 20) {
+                        renderDecisionPreview.add("image#" + imageIndex + ":unresolved(no-raster-or-resource-evidence)");
+                    }
+                }
             }
         }
         double confidence = payloads.isEmpty() ? 1.0 : (direct + signature) / (double) payloads.size();
@@ -770,6 +807,11 @@ public final class FakeEngineOutputGenerator {
             confidence,
             signaturesUsed,
             new ArrayList<>(resourceHints),
+            renderDecisionPreview,
+            embeddedPreferredCount,
+            resourcePreferredCount,
+            rawPreferredCount,
+            unresolvedPreferredCount,
             warnings,
             bindingSummary
         );
@@ -1156,15 +1198,23 @@ public final class FakeEngineOutputGenerator {
             .append("\"rasterEvidenceCount\": ").append(rasterEvidenceCount).append(", ")
             .append("\"rasterEvidencePresent\": ").append(rasterEvidenceCount > 0 ? "true" : "false").append(", ")
             .append("\"undecodedCount\": ").append(summary.undecodedCount).append(", ")
+            .append("\"renderPathCounts\": {")
+            .append("\"embedded\": ").append(summary.embeddedPreferredCount).append(", ")
+            .append("\"resourceReference\": ").append(summary.resourcePreferredCount).append(", ")
+            .append("\"rawFallback\": ").append(summary.rawPreferredCount).append(", ")
+            .append("\"unresolved\": ").append(summary.unresolvedPreferredCount)
+            .append("}, ")
             .append("\"decodeConfidence\": ").append(String.format(Locale.ROOT, "%.6f", summary.decodeConfidence)).append(", ")
             .append("\"warnings\": ").append(stringPreviewJson(summary.warnings, Integer.MAX_VALUE));
         if (verbose) {
             sb.append(", \"signatureDetections\": ").append(stringPreviewJson(summary.signatureDetections, Integer.MAX_VALUE));
             sb.append(", \"resourceHints\": ").append(stringPreviewJson(summary.resourceHints, Integer.MAX_VALUE));
+            sb.append(", \"renderDecisionPreview\": ").append(stringPreviewJson(summary.renderDecisionPreview, Integer.MAX_VALUE));
             sb.append(", \"binding\": ").append(imageBindingSummaryJson(summary.binding, true));
         } else {
             sb.append(", \"signatureDetectionsPreview\": ").append(stringPreviewJson(summary.signatureDetections, 12));
             sb.append(", \"resourceHintsPreview\": ").append(stringPreviewJson(summary.resourceHints, 12));
+            sb.append(", \"renderDecisionPreview\": ").append(stringPreviewJson(summary.renderDecisionPreview, 12));
             sb.append(", \"bindingPreview\": ").append(imageBindingSummaryJson(summary.binding, false));
         }
         sb.append("}");
@@ -2453,6 +2503,11 @@ public final class FakeEngineOutputGenerator {
         private final double decodeConfidence;
         private final List<String> signatureDetections;
         private final List<String> resourceHints;
+        private final List<String> renderDecisionPreview;
+        private final int embeddedPreferredCount;
+        private final int resourcePreferredCount;
+        private final int rawPreferredCount;
+        private final int unresolvedPreferredCount;
         private final List<String> warnings;
         private final ImageBindingSummary binding;
 
@@ -2465,6 +2520,11 @@ public final class FakeEngineOutputGenerator {
                                    double decodeConfidence,
                                    List<String> signatureDetections,
                                    List<String> resourceHints,
+                                   List<String> renderDecisionPreview,
+                                   int embeddedPreferredCount,
+                                   int resourcePreferredCount,
+                                   int rawPreferredCount,
+                                   int unresolvedPreferredCount,
                                    List<String> warnings,
                                    ImageBindingSummary binding) {
             this.imageObjectCount = imageObjectCount;
@@ -2476,6 +2536,11 @@ public final class FakeEngineOutputGenerator {
             this.decodeConfidence = decodeConfidence;
             this.signatureDetections = List.copyOf(signatureDetections);
             this.resourceHints = List.copyOf(resourceHints);
+            this.renderDecisionPreview = renderDecisionPreview == null ? List.of() : List.copyOf(renderDecisionPreview);
+            this.embeddedPreferredCount = Math.max(0, embeddedPreferredCount);
+            this.resourcePreferredCount = Math.max(0, resourcePreferredCount);
+            this.rawPreferredCount = Math.max(0, rawPreferredCount);
+            this.unresolvedPreferredCount = Math.max(0, unresolvedPreferredCount);
             this.warnings = List.copyOf(warnings);
             this.binding = binding == null ? ImageBindingSummary.empty() : binding;
         }

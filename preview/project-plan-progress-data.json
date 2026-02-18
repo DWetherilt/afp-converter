@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-18T19:19:43+00:00",
+  "generatedAt": "2026-02-18T21:06:56+00:00",
   "sourceCsv": "docs/project-plan-progress.csv",
   "taskCount": 21,
   "tasks": [
@@ -36,9 +36,9 @@
       "task": "finalize image object placement with clipping and orientation transforms",
       "priority": "High",
       "status": "In Progress",
-      "percent_complete": "94",
+      "percent_complete": "97",
       "last_updated": "2026-02-18",
-      "notes": "Orientation-aware transforms and clipping implemented; synthetic fallback removed, placeholders gated by image evidence, image-object counting tightened to BIM/EIM, and embedded image resolution now requires explicit AFPLib token overlap between BIM and BOC/EOC resources."
+      "notes": "Orientation-aware transforms and clipping implemented; synthetic fallback removed, placeholders gated by image evidence, image-object counting tightened to BIM/EIM, embedded image resolution now requires explicit AFPLib token overlap between BIM and BOC/EOC resources, draw-path prefers resource-resolved images before raw decode, and selection policy now runs through a dedicated ImageResolutionService."
     },
     {
       "workstream": "Workstream B",
@@ -126,9 +126,9 @@
       "task": "richer diag.json and metadata sections for render traceability",
       "priority": "Medium",
       "status": "In Progress",
-      "percent_complete": "92",
+      "percent_complete": "94",
       "last_updated": "2026-02-18",
-      "notes": "Font/image/resource/print-centric trace diagnostics added; image binding diagnostics now include per-page BIM/candidate/overlap tokens plus candidate payload size and byte-prefix evidence."
+      "notes": "Font/image/resource/print-centric trace diagnostics added; image binding diagnostics now include per-page BIM/candidate/overlap tokens plus candidate payload size and byte-prefix evidence, with explicit image render-path decisions (embedded/resource/raw/unresolved)."
     },
     {
       "workstream": "Workstream E",
@@ -189,9 +189,9 @@
       "task": "use trace findings to back-port proven control-code handling into native renderer",
       "priority": "High",
       "status": "In Progress",
-      "percent_complete": "88",
+      "percent_complete": "91",
       "last_updated": "2026-02-18",
-      "notes": "Extended PTX alias normalization and image evidence diagnostics, filtered non-raster BIM payloads, switched to deterministic matching, and now surface token+payload binding evidence (sample shows JPEG candidate payload with zero BIM token overlap)."
+      "notes": "Extended PTX alias normalization and image evidence diagnostics, filtered non-raster BIM payloads, switched to deterministic matching, surfaced token+payload binding evidence (sample shows JPEG candidate payload with zero BIM token overlap), implemented evidence-driven resource-first image selection, and added a dedicated image-resolution policy service with targeted regression coverage."
     }
   ],
   "followUps": [
