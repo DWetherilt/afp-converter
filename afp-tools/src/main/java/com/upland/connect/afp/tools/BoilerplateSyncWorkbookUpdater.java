@@ -30,6 +30,10 @@ import java.util.Set;
 import java.util.HashSet;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 public final class BoilerplateSyncWorkbookUpdater {
 
@@ -41,11 +45,19 @@ public final class BoilerplateSyncWorkbookUpdater {
 
     public static void main(String[] args) throws Exception {
         Map<String, String> cli = parseArgs(args);
-        Path packagesDir = requiredPath(cli, "--packages");
+        Path packagesDir = optionalPath(cli, "--packages");
+        Path dbPath = optionalPath(cli, "--db");
         Path xlsxPath = requiredPath(cli, "--xlsx");
         prepareWorkbookPath(xlsxPath);
 
-        List<Candidate> candidates = scanCandidates(packagesDir);
+        List<Candidate> candidates;
+        if (dbPath != null) {
+            candidates = readCandidatesFromDatabase(dbPath);
+        } else if (packagesDir != null) {
+            candidates = scanCandidates(packagesDir);
+        } else {
+            throw new IllegalArgumentException("Provide either --db or --packages");
+        }
         Map<String, ManualState> manual = readManualState(xlsxPath);
 
         try (Workbook wb = openWorkbook(xlsxPath)) {
@@ -78,6 +90,14 @@ public final class BoilerplateSyncWorkbookUpdater {
         String v = cli.get(key);
         if (v == null || v.isBlank()) {
             throw new IllegalArgumentException("Missing required argument: " + key);
+        }
+        return Path.of(v);
+    }
+
+    private static Path optionalPath(Map<String, String> cli, String key) {
+        String v = cli.get(key);
+        if (v == null || v.isBlank()) {
+            return null;
         }
         return Path.of(v);
     }
@@ -189,6 +209,50 @@ public final class BoilerplateSyncWorkbookUpdater {
         return out;
     }
 
+    private static List<Candidate> readCandidatesFromDatabase(Path dbPath) throws Exception {
+        if (!Files.exists(dbPath)) {
+            return List.of();
+        }
+        Map<String, List<PackageFile>> filesByCandidate = new HashMap<>();
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath.toAbsolutePath());
+             PreparedStatement ps = conn.prepareStatement(
+                 "select candidate_id, file_path, size_bytes from package_files order by candidate_id, file_path"
+             );
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String candidateId = text(rs.getString(1));
+                filesByCandidate.computeIfAbsent(candidateId, ignored -> new ArrayList<>())
+                    .add(new PackageFile(text(rs.getString(2)), Long.toString(rs.getLong(3))));
+            }
+        }
+
+        List<Candidate> out = new ArrayList<>();
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + dbPath.toAbsolutePath());
+             PreparedStatement ps = conn.prepareStatement(
+                 "select candidate_id, package_id, target_repo, source_repo, created_at, summary, package_zip, " +
+                     "patch_count, manifest_file_count, supersedes_json from package_candidates order by candidate_id"
+             );
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String candidateId = text(rs.getString(1));
+                out.add(new Candidate(
+                    candidateId,
+                    text(rs.getString(2)),
+                    text(rs.getString(3)),
+                    text(rs.getString(4)),
+                    text(rs.getString(5)),
+                    text(rs.getString(6)),
+                    text(rs.getString(7)),
+                    rs.getInt(8),
+                    rs.getInt(9),
+                    parseJsonStringArray(text(rs.getString(10))),
+                    filesByCandidate.getOrDefault(candidateId, List.of())
+                ));
+            }
+        }
+        return out;
+    }
+
     private static Candidate scanCandidate(Path dir, Path packagesRoot) throws IOException {
         String candidateId = dir.getFileName().toString();
         String targetRepo = packagesRoot.getFileName().toString();
@@ -264,6 +328,18 @@ public final class BoilerplateSyncWorkbookUpdater {
         }
         String body = m.group(1);
         Matcher valueMatcher = Pattern.compile("\"([^\"]+)\"").matcher(body);
+        List<String> out = new ArrayList<>();
+        while (valueMatcher.find()) {
+            out.add(valueMatcher.group(1).trim());
+        }
+        return out;
+    }
+
+    private static List<String> parseJsonStringArray(String jsonArray) {
+        if (jsonArray == null || jsonArray.isBlank()) {
+            return List.of();
+        }
+        Matcher valueMatcher = Pattern.compile("\"([^\"]+)\"").matcher(jsonArray);
         List<String> out = new ArrayList<>();
         while (valueMatcher.find()) {
             out.add(valueMatcher.group(1).trim());
@@ -383,6 +459,10 @@ public final class BoilerplateSyncWorkbookUpdater {
             rowNo = 2;
         }
         sheet.setAutoFilter(new CellRangeAddress(0, rowNo - 1, 0, headers.length - 1));
+    }
+
+    private static String text(String value) {
+        return value == null ? "" : value.trim();
     }
 
     private record Candidate(String candidateId,

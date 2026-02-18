@@ -1,11 +1,11 @@
 {
     "schemaVersion": "1",
-    "generatedAt": "2026-02-18T21:06:57Z",
+    "generatedAt": "2026-02-18T21:30:50Z",
     "planPath": "docs/project-plan.md",
     "actionCount": 6,
     "nextInstruction": {
         "title": "Immediate Next Step",
-        "task": "strengthen per-image resource binding in `sample.afp`: pair each `BIM` object with candidate embedded resources using token overlap + placement/size heuristics, then only promote page-level fallback when object-level binding confidence is below threshold.",
+        "task": "keep SQLite-backed project/boilerplate state stores current (`projectStateDb`, `boilerplateStateDb`) and route workflow/reporting outputs through them by default.",
         "source": "## Proposed Immediate Next Execution Sequence"
     },
     "actions": [
@@ -62,8 +62,8 @@
         }
     ],
     "immediateSequence": [
+        "keep SQLite-backed project/boilerplate state stores current (`projectStateDb`, `boilerplateStateDb`) and route workflow/reporting outputs through them by default.",
         "strengthen per-image resource binding in `sample.afp`: pair each `BIM` object with candidate embedded resources using token overlap + placement/size heuristics, then only promote page-level fallback when object-level binding confidence is below threshold.",
-        "extend print-centric cross-exam output to include `BIM`/`BOC` token timeline slices and inferred binding decisions so renderer back-ports are directly evidence-linked.",
-        "circle back to review restored `docs/project-plan-progress.xlsx` content against `docs/project-plan-progress.csv` / `preview/project-plan-progress-data.json` once Excel-native updater flow is established."
+        "extend print-centric cross-exam output to include `BIM`/`BOC` token timeline slices and inferred binding decisions so renderer back-ports are directly evidence-linked."
     ]
 }

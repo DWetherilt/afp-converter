@@ -154,6 +154,6 @@ Deliver near-IBM parity rendering for AFP input by implementing true AFP object/
   - `fidelityScore >= 0.95` and `averagePixelDiffRatio <= 0.03` on agreed corpus.
 
 ## Proposed Immediate Next Execution Sequence
-1. strengthen per-image resource binding in `sample.afp`: pair each `BIM` object with candidate embedded resources using token overlap + placement/size heuristics, then only promote page-level fallback when object-level binding confidence is below threshold.
-2. extend print-centric cross-exam output to include `BIM`/`BOC` token timeline slices and inferred binding decisions so renderer back-ports are directly evidence-linked.
-3. circle back to review restored `docs/project-plan-progress.xlsx` content against `docs/project-plan-progress.csv` / `preview/project-plan-progress-data.json` once Excel-native updater flow is established.
+1. keep SQLite-backed project/boilerplate state stores current (`projectStateDb`, `boilerplateStateDb`) and route workflow/reporting outputs through them by default.
+2. strengthen per-image resource binding in `sample.afp`: pair each `BIM` object with candidate embedded resources using token overlap + placement/size heuristics, then only promote page-level fallback when object-level binding confidence is below threshold.
+3. extend print-centric cross-exam output to include `BIM`/`BOC` token timeline slices and inferred binding decisions so renderer back-ports are directly evidence-linked.

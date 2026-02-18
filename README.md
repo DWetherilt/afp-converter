@@ -43,7 +43,11 @@ API documentation:
 - `docs/issues-log-template.csv`:
   - template row for consistently logging new issues and component bindings
 - `preview/project-plan-progress-data.json`:
-  - JSON intermediary exported from CSV for Excel-native automation workflows
+  - JSON intermediary exported from SQLite project state for workbook automation workflows
+- `preview/state/project-state.sqlite`:
+  - SQLite state store for project execution/reporting workflows (issues, plan progress, fidelity signals)
+- `preview/state/boilerplate-state.sqlite`:
+  - SQLite state store for boilerplate governance/sync workflows (package candidates and file inventory)
 - `preview/workbook-refresh-status.json`:
   - records whether workbook refresh used Excel-native path or XML fallback, including Excel error details if fallback was required
 - `preview/issues-log-tickle.json`:
@@ -128,6 +132,12 @@ Run preview generation plus documentation/changelog manifest update:
 
 ```bash
 ./gradlew documentationManifest
+```
+
+Build/refresh SQLite state stores directly:
+
+```bash
+./gradlew projectStateDb boilerplateStateDb
 ```
 
 ## Versioning and Rollback

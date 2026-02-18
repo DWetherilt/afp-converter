@@ -552,3 +552,11 @@ This changelog is reconstructed from repository artifacts and our current thread
   - Enhanced boilerplate sync workbook updater to read `supersedes` from package manifests and auto-mark superseded candidates in `recommended_scope`.
   - Added explicit version-control write mandate and rollback-on-request guarantee to policy/docs, and refreshed the consolidated boilerplate package to include this governance update.
   - Added response-level rule to include outstanding boilerplate review candidates whenever any remain in `review` state.
+- Added SQLite-backed project management tooling in `afp-tools` (`StateDatabaseTool`) and split state stores by concern:
+  - `preview/state/project-state.sqlite` for project execution/reporting signals.
+  - `preview/state/boilerplate-state.sqlite` for boilerplate sync/package governance signals.
+- Rewired build tasks to prefer database-backed tool execution over ad-hoc scripts:
+  - `projectStateDb`, `boilerplateStateDb` (new)
+  - `projectPlanProgressJson`, `issuesLogTickle`, `issuesEffectivenessReport` now execute from SQLite-backed state.
+- Updated `boilerplateSyncWorkbook` to consume the boilerplate SQLite state store by default.
+- Updated policy/docs/plan metadata to codify SQLite state separation and default usage in the workflow.

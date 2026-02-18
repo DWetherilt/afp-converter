@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-18T21:06:56+00:00",
+  "generatedAt": "2026-02-18T21:30:49Z",
   "issuesLogPath": "docs/issues-log.csv",
   "issuesLogTouchedInWorkingTree": true,
-  "changedPathCount": 29,
+  "changedPathCount": 23,
   "triggeredIssueCount": 5,
   "requiresIssuesLogUpdate": false,
   "triggeredIssues": [
@@ -53,7 +53,8 @@
         "build.gradle",
         "docs/boilerplate-sync-candidates.xlsx",
         "docs/project-plan-progress.xlsx",
-        "docs/update-packages/"
+        "afp-tools/src/main/java/com/upland/connect/afp/tools/StateDatabaseTool.java",
+        "preview/state/"
       ]
     }
   ],

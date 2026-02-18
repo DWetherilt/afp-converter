@@ -1,22 +1,24 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-18T21:06:56+00:00",
+  "generatedAt": "2026-02-18T21:30:49Z",
   "summary": {
-    "issueCount": 5,
     "openIssueCount": 5,
     "highSeverityOpenCount": 3,
     "triggeredIssueCount": 5,
+    "taskCount": 22,
     "requiresIssuesLogUpdate": false,
-    "taskCount": 21,
-    "averageTaskPercentComplete": 87.71
+    "issueCount": 5,
+    "averageTaskPercentComplete": 88.27
   },
   "fidelity": {
-    "fidelityScore": null,
-    "averagePixelDiffRatio": null,
-    "tokenRecall": null,
-    "tokenPrecision": null
+    "fidelityScore": 0.952575,
+    "averagePixelDiffRatio": 0.072288,
+    "tokenRecall": 0.959064,
+    "tokenPrecision": 1.0
   },
   "signals": [
+    "Average pixel diff ratio above target (0.03).",
+    "Token recall below target (0.98).",
     "High-severity issues remain open."
   ],
   "triggeredIssues": [
@@ -66,7 +68,8 @@
         "build.gradle",
         "docs/boilerplate-sync-candidates.xlsx",
         "docs/project-plan-progress.xlsx",
-        "docs/update-packages/"
+        "afp-tools/src/main/java/com/upland/connect/afp/tools/StateDatabaseTool.java",
+        "preview/state/"
       ]
     }
   ],
