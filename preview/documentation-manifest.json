@@ -1,0 +1,33 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-18T18:41:38Z",
+  "stages": [
+    "generate preview artifacts",
+    "run fidelity report",
+    "update documentation and changelog checksums",
+    "review project plan, scope next phase, and implement the next logical task"
+  ],
+  "files": [
+    {"path": "AI-POLICY.md", "exists": true, "sizeBytes": 7781, "sha256": "2a12763ab9a41e7dfc1f4f33fa2ad2d1a9cbb21f628303158b9fd5e5763910cc", "lastModified": "2026-02-18T18:37:45Z"},
+    {"path": "README.md", "exists": true, "sizeBytes": 9994, "sha256": "1e8274a31f18c7e1d7015b675a97d9af1952105205c7d356709b819ac3dc2e37", "lastModified": "2026-02-18T18:37:37Z"},
+    {"path": "docs/API.md", "exists": true, "sizeBytes": 7604, "sha256": "8a8899762535f469313f1d9310f5a3ace7e1abd4de7da40b70dd6362df37ec71", "lastModified": "2026-02-17T19:50:43Z"},
+    {"path": "docs/project-plan.md", "exists": true, "sizeBytes": 6800, "sha256": "532e84c9276f9c6a48517b797b13183650c5a800385b4db613f1199e9acd6634", "lastModified": "2026-02-18T16:55:22Z"},
+    {"path": "SESSION_CHANGELOG.md", "exists": true, "sizeBytes": 43063, "sha256": "4be01a948a014bec2d972b345392984855875c2ae992896ddf4d29e58affdb51", "lastModified": "2026-02-18T18:38:04Z"},
+    {"path": "preview/afp-output.pdf", "exists": true, "sizeBytes": 1957, "sha256": "92464ff142321efef03f03e769032812a691aa7346aaf94a6eaf3dfbf6866432", "lastModified": "2026-02-18T18:41:37Z"},
+    {"path": "preview/afp-output.html", "exists": true, "sizeBytes": 3461, "sha256": "f9028529313a32541fadf1c16ac3deb8f209a6970046bbe83a2805afa186ef9b", "lastModified": "2026-02-18T18:41:37Z"},
+    {"path": "preview/afp-meta.json", "exists": true, "sizeBytes": 58455, "sha256": "1fd6fd98bd19bfe7cca64d00056925cf08d949c9db012a6a6553768f21030d6e", "lastModified": "2026-02-18T18:41:37Z"},
+    {"path": "preview/afp-diag.json", "exists": true, "sizeBytes": 14879, "sha256": "3646c33dad1546b12854c076ca1d358c9c7fc3d1edee2819f725d4ef5e77c4b1", "lastModified": "2026-02-18T18:41:37Z"},
+    {"path": "preview/fidelity-report.json", "exists": true, "sizeBytes": 2013, "sha256": "9cbf974dc9596d5db8a3a85ed1580aae384c09b007c03fa024bc12e11a49c06f", "lastModified": "2026-02-18T15:35:54Z"},
+    {"path": "preview/project-plan-progress-data.json", "exists": true, "sizeBytes": 8345, "sha256": "2590ede0bec590bfb6aeeac46cdb3ef3a61e30c428b1e00a4c5d37eb5fc97fde", "lastModified": "2026-02-18T18:41:36Z"},
+    {"path": "preview/issues-log-tickle.json", "exists": true, "sizeBytes": 1209, "sha256": "6e36998481d00d0048cb336b192f4cdde5b309b8760f6d561649df758ac26605", "lastModified": "2026-02-18T18:41:36Z"},
+    {"path": "preview/issues-effectiveness.json", "exists": true, "sizeBytes": 1902, "sha256": "02e98203c64989969b330974e5388ede4308b12c2a7322a4f412d001e14f6f1b", "lastModified": "2026-02-18T18:41:36Z"},
+    {"path": "preview/project-plan-next-step.json", "exists": true, "sizeBytes": 3787, "sha256": "fb95505fe00379b4f3a864aea6ba0d33e48eff414245a23a5640f69a36c2d081", "lastModified": "2026-02-18T18:41:37Z"},
+    {"path": "preview/workbook-refresh-status.json", "exists": true, "sizeBytes": 96, "sha256": "da893a9d602c4b0508338ba3e4d68b59fdd719129a918860fea05098d8091968", "lastModified": "2026-02-18T18:21:25Z"},
+    {"path": "preview/version.json", "exists": true, "sizeBytes": 103, "sha256": "562903b17d0d3fb45ecef14dd4b1e7779d083ac00abeda62e2eb18e7e8f0b885", "lastModified": "2026-02-18T18:41:38Z"},
+    {"path": "VERSION", "exists": true, "sizeBytes": 13, "sha256": "214374e4ab6ceb79d5fa5ff001fe9bbcbea31c3fd8c6bd42d48e7efaf6b2ce9f", "lastModified": "2026-02-18T17:58:04Z"},
+    {"path": "docs/issues-log-template.csv", "exists": true, "sizeBytes": 275, "sha256": "344c8e1f896da05226f17ce1ccc16eedb36bd7924c13f7545a3c89f5b3c176ce", "lastModified": "2026-02-18T17:18:10Z"},
+    {"path": "docs/issues-log.csv", "exists": true, "sizeBytes": 2163, "sha256": "99001ae74e343dfd1602ed2fbb7bcd016cd8e80d73f93eb0b01b04cfe10f7b0c", "lastModified": "2026-02-18T18:37:55Z"},
+    {"path": "docs/project-plan-progress.csv", "exists": true, "sizeBytes": 4665, "sha256": "545c5c3d64c98450887409f99cfab6ad5449a3a36b1e8a59407f14d3aef2fb9e", "lastModified": "2026-02-18T15:54:00Z"},
+    {"path": "docs/project-plan-progress.xlsx", "exists": true, "sizeBytes": 29020, "sha256": "b3bf617d3c00b79bf2429e5a5c49abed289dedc91fd95ee0fcf305de04884ce0", "lastModified": "2026-02-18T18:41:38Z"}
+  ]
+}

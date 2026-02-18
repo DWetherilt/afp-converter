@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1",
+  "checkpoints": [
+    {
+      "id": "20260218T180055Z-0.2.0-beta.1-initial-versioning-rollback",
+      "createdAt": "2026-02-18T18:00:55+00:00",
+      "version": "0.2.0-beta.1",
+      "label": "initial-versioning-rollback",
+      "fileCount": 22,
+      "gitHead": ""
+    }
+  ]
+}

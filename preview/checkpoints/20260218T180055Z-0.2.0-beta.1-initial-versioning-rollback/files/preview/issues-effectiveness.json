@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-18T18:00:43+00:00",
+  "summary": {
+    "issueCount": 2,
+    "openIssueCount": 2,
+    "highSeverityOpenCount": 1,
+    "triggeredIssueCount": 2,
+    "requiresIssuesLogUpdate": false,
+    "taskCount": 21,
+    "averageTaskPercentComplete": 87.33
+  },
+  "fidelity": {
+    "fidelityScore": null,
+    "averagePixelDiffRatio": null,
+    "tokenRecall": null,
+    "tokenPrecision": null
+  },
+  "signals": [
+    "High-severity issues remain open."
+  ],
+  "triggeredIssues": [
+    {
+      "id": "ISSUE-001",
+      "status": "Open",
+      "title": "Excel automation and workbook update fragility due Office account/licensing context",
+      "matchedComponents": [
+        "build.gradle",
+        "docs/",
+        "preview/",
+        "tools/"
+      ]
+    },
+    {
+      "id": "ISSUE-002",
+      "status": "Open",
+      "title": "Workbook repair/corruption when managed sheets are added by XML updater without synchronizing docProps/app.xml sheet metadata",
+      "matchedComponents": [
+        "docs/",
+        "tools/"
+      ]
+    }
+  ],
+  "openHighSeverityIssues": [
+    {
+      "id": "ISSUE-001",
+      "title": "Excel automation and workbook update fragility due Office account/licensing context",
+      "owner": "Human+AI",
+      "last_reviewed": "2026-02-18"
+    }
+  ]
+}

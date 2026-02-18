@@ -1,0 +1,3 @@
+# label|afpPath|expectedPdfPath
+sample|sampleData/sample.afp|sampleOutput/sample.pdf
+image-heavy|sampleData/image-heavy.afp|sampleOutput/image-heavy.pdf
