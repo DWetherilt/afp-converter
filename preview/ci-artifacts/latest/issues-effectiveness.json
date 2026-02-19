@@ -1,14 +1,14 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T19:46:45Z",
+  "generatedAt": "2026-02-19T19:51:09Z",
   "summary": {
-    "issueCount": 6,
-    "averageTaskPercentComplete": 84.5,
     "openIssueCount": 6,
-    "highSeverityOpenCount": 3,
-    "triggeredIssueCount": 6,
+    "averageTaskPercentComplete": 84.5,
+    "issueCount": 6,
+    "requiresIssuesLogUpdate": false,
     "taskCount": 34,
-    "requiresIssuesLogUpdate": false
+    "triggeredIssueCount": 6,
+    "highSeverityOpenCount": 3
   },
   "fidelity": {
     "fidelityScore": 0.952575,
@@ -28,6 +28,7 @@
       "status": "Open",
       "title": "Excel automation and workbook update fragility due Office account/licensing context",
       "matchedComponents": [
+        "build.gradle",
         "docs/project-plan-progress.xlsx",
         "pm/reports/project-plan-progress-data.json",
         "tools/export_project_plan_progress_json.py",
@@ -49,6 +50,7 @@
       "status": "Open",
       "title": "Excel automation unavailable in headless/agent context (Apple event connection invalid), strict Excel-required mode fails as designed",
       "matchedComponents": [
+        "build.gradle",
         "tools/run_excel_workbook_refresh.py"
       ]
     },
@@ -65,6 +67,7 @@
       "status": "Open",
       "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
       "matchedComponents": [
+        "build.gradle",
         "docs/boilerplate-sync-candidates.xlsx",
         "docs/project-plan-progress.xlsx",
         "pm/state/boilerplate-state.sqlite",
@@ -78,7 +81,9 @@
       "status": "Open",
       "title": "Policy-governance sequence drift when updating constitutional/policy text without full checklist sequencing",
       "matchedComponents": [
+        "build.gradle",
         "docs/issues-log.csv",
+        "docs/policy-governance-events.csv",
         "docs/policy-governance-events.xlsx",
         "pm/reports/documentation-manifest.json",
         "pm/reports/governance-alerts.json",
@@ -108,6 +113,7 @@
         "tools/reasoning_sync.py",
         "tools/recovery_doctor.sh",
         "tools/recovery_quick_check.sh",
+        "tools/remanifest_drill.py",
         "tools/restore_binary_artifacts.sh",
         "tools/restore_recovery_checkpoint.sh",
         "tools/rollback_manager.py",

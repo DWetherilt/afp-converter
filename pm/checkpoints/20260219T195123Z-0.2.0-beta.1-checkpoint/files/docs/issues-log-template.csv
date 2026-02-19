@@ -1,0 +1,2 @@
+id,status,severity,title,components,opened_on,last_reviewed,owner,notes
+ISSUE-XXX,Open,Medium,"<short issue title>","path/to/fileA|path/to/fileB|path/pattern/*",YYYY-MM-DD,YYYY-MM-DD,Human+AI,"Describe observed behavior, impact, hypotheses, and explicit follow-up criteria."

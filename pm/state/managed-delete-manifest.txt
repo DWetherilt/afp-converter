@@ -126,6 +126,7 @@ tools/reasoning_sync.py
 tools/recovery_doctor.md
 tools/recovery_doctor.sh
 tools/recovery_quick_check.sh
+tools/remanifest_drill.py
 tools/restore_binary_artifacts.sh
 tools/restore_recovery_checkpoint.sh
 tools/rollback_manager.py

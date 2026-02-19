@@ -1,16 +1,16 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T19:46:44Z",
+  "generatedAt": "2026-02-19T19:51:08Z",
   "source": "sqlite",
   "sourceTable": "identifier_registry",
-  "identifierCount": 96,
+  "identifierCount": 97,
   "byDiscipline": {
-    "policy_management": 53,
+    "policy_management": 54,
     "project_management": 40,
     "version_control": 3
   },
   "byKind": {
-    "governance_event_id": 4,
+    "governance_event_id": 5,
     "policy_rule_id": 49,
     "issue_id": 6,
     "plan_task_key": 34,
@@ -27,7 +27,7 @@
       "sourceTable": "governance_events",
       "humanRef": "Governance Event | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "GOV-2026-02-18-002",
@@ -38,7 +38,7 @@
       "sourceTable": "governance_events",
       "humanRef": "Governance Event | 2026-02-18 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "GOV-2026-02-18-003",
@@ -49,7 +49,7 @@
       "sourceTable": "governance_events",
       "humanRef": "Governance Event | 2026-02-18 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "GOV-2026-02-18-004",
@@ -60,7 +60,18 @@
       "sourceTable": "governance_events",
       "humanRef": "Governance Event | 2026-02-18 | #004",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
+    },
+    {
+      "identifier": "GOV-2026-02-19-001",
+      "discipline": "policy_management",
+      "identifierKind": "governance_event_id",
+      "realm": "pm",
+      "scopeRef": "Policy Governance",
+      "sourceTable": "governance_events",
+      "humanRef": "Governance Event | 2026-02-19 | #001",
+      "createdAt": "2026-02-19T19:50:17Z",
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-ACTION-001",
@@ -71,7 +82,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-ACTION-002",
@@ -82,7 +93,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-ACTION-003",
@@ -93,7 +104,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-BOILER-001",
@@ -104,7 +115,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-CI-001",
@@ -115,7 +126,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-CI-002",
@@ -126,7 +137,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-CI-003",
@@ -137,7 +148,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-COMMS-001",
@@ -148,7 +159,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-CONSOLE-001",
@@ -159,7 +170,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-CONSOLE-002",
@@ -170,7 +181,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-CONSOLE-003",
@@ -181,7 +192,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-DECISION-001",
@@ -192,7 +203,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-DECISION-002",
@@ -203,7 +214,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-DOC-001",
@@ -214,7 +225,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-EXEC-001",
@@ -225,7 +236,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-GATE-001",
@@ -236,7 +247,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-GATE-002",
@@ -247,7 +258,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-GATE-003",
@@ -258,7 +269,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-ID-001",
@@ -269,7 +280,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-ID-002",
@@ -280,7 +291,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-KB-001",
@@ -291,7 +302,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-KB-002",
@@ -302,7 +313,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-KB-003",
@@ -313,7 +324,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-KB-004",
@@ -324,7 +335,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #004",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-NAME-001",
@@ -335,7 +346,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-NAME-002",
@@ -346,7 +357,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-NS-001",
@@ -357,7 +368,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-PROD-001",
@@ -368,7 +379,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-REALM-001",
@@ -379,7 +390,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-REALM-002",
@@ -390,7 +401,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-REALM-003",
@@ -401,7 +412,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-REALM-GOV-001",
@@ -412,7 +423,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-REALM-GOV-002",
@@ -423,7 +434,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-REALM-GOV-003",
@@ -434,7 +445,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-REASON-001",
@@ -445,7 +456,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-REASON-002",
@@ -456,7 +467,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-REC-001",
@@ -467,7 +478,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-REC-002",
@@ -478,7 +489,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-ROLLUP-001",
@@ -489,7 +500,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-SEC-001",
@@ -500,7 +511,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-SEC-002",
@@ -511,7 +522,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-SQLCODE-001",
@@ -522,7 +533,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-SQLCODE-002",
@@ -533,7 +544,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-SQLCODE-003",
@@ -544,7 +555,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-SQLCODE-004",
@@ -555,7 +566,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #004",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-SQLCODE-005",
@@ -566,7 +577,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #005",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-SQLCODE-006",
@@ -577,7 +588,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #006",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-WF-001",
@@ -588,7 +599,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "PM-WF-002",
@@ -599,7 +610,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-19 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "ISSUE-001",
@@ -610,7 +621,7 @@
       "sourceTable": "issues",
       "humanRef": "Issue | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "ISSUE-002",
@@ -621,7 +632,7 @@
       "sourceTable": "issues",
       "humanRef": "Issue | 2026-02-19 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "ISSUE-003",
@@ -632,7 +643,7 @@
       "sourceTable": "issues",
       "humanRef": "Issue | 2026-02-19 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "ISSUE-004",
@@ -643,7 +654,7 @@
       "sourceTable": "issues",
       "humanRef": "Issue | 2026-02-19 | #004",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "ISSUE-005",
@@ -654,7 +665,7 @@
       "sourceTable": "issues",
       "humanRef": "Issue | 2026-02-19 | #005",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "ISSUE-006",
@@ -665,7 +676,7 @@
       "sourceTable": "issues",
       "humanRef": "Issue | 2026-02-19 | #006",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream A|complete graphics object rendering beyond placeholders (rules, boxes, strokes/fills)",
@@ -676,7 +687,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream A|finalize image object placement with clipping and orientation transforms",
@@ -687,7 +698,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream A|formalize page object graph with scope stack (BMO/EMO, resource begin/end scopes)",
@@ -698,7 +709,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream A|implement deterministic paint order per AFP semantics",
@@ -709,7 +720,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream B|code page mapping matrix with SBCS/DBCS mixed-run handling",
@@ -720,7 +731,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream B|coded font resolution from AFP resources (CFI + resource objects)",
@@ -731,7 +742,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream B|metric-compatible substitutions and kerning/advance tuning",
@@ -742,7 +753,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream B|remove broad semantic replacement and keep low-signal run-level fallback only",
@@ -753,7 +764,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream C|add per-format decode tests from real sample corpus",
@@ -764,7 +775,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream C|add validation/fallback pipeline with confidence scoring and diagnostics",
@@ -775,7 +786,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream C|implement IOCA decoding adapters for common AFP image variants",
@@ -786,7 +797,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream D|API additions for render/fidelity/resource policies",
@@ -797,7 +808,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream D|CLI flags and help/docs",
@@ -808,7 +819,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream D|richer diag.json and metadata sections for render traceability",
@@ -819,7 +830,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream E|CI gates with artifact publishing (fidelity-report.json, diff images, diagnostics)",
@@ -830,7 +841,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream E|add database-backed file-discipline and mirrored VCS ledger reporting",
@@ -841,7 +852,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream E|add governance-breach notification and trust-grant logging to database-backed mechanics",
@@ -852,7 +863,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream E|build corpus matrix (forms, statements, mixed-language, heavy overlays)",
@@ -863,7 +874,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream E|enforce hard product-management module boundaries in build quality gate",
@@ -874,7 +885,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream E|enforce managed-tooling registration discipline in build quality gate",
@@ -885,7 +896,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream E|per-feature integration tests",
@@ -896,7 +907,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream E|stand up SQLite-backed workflow state stores for project and boilerplate automation",
@@ -907,7 +918,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream F|add AFP-token to output-token cross-examination report",
@@ -918,7 +929,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream F|emit sequential token trace (structured fields, PTX control codes, per-byte evidence)",
@@ -929,7 +940,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream F|implement dedicated print-centric byte-walk engine separate from native renderer",
@@ -940,7 +951,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream F|use trace findings to back-port proven control-code handling into native renderer",
@@ -951,7 +962,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream G|export cross-realm decision priority queue from SQL impact scoring",
@@ -962,7 +973,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream G|publish knowledge-base report in PM refresh cycle",
@@ -973,7 +984,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream G|refactor PM console to granular refresh and exchange-format report generation",
@@ -984,7 +995,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream G|seed initial decisions for active workstreams with smallest-change-biggest-reward scoring",
@@ -995,7 +1006,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream G|stand up SQL knowledge base for reasoning outcomes and artifact context",
@@ -1006,7 +1017,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream G|stand up dedicated experience/derived reasoning databases and feed default PM cycle",
@@ -1017,7 +1028,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream G|stand up realm-local decision logs with granular scope for reasoning context",
@@ -1028,7 +1039,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "Workstream G|wire decision queue into PM refresh/report cycle and artifact manifests",
@@ -1039,7 +1050,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "chore/ci-prodbuild-boilerplate-kickoff",
@@ -1050,7 +1061,7 @@
       "sourceTable": "repo_vcs_snapshot",
       "humanRef": "Branch | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "994b235317bca52c2a32e6086ba02aec5ebeb4d8",
@@ -1061,7 +1072,7 @@
       "sourceTable": "repo_vcs_snapshot",
       "humanRef": "Commit | 2026-02-19 | #032",
       "createdAt": "2026-02-19T19:43:52Z",
-      "updatedAt": "2026-02-19T19:46:35Z"
+      "updatedAt": "2026-02-19T19:51:00Z"
     },
     {
       "identifier": "34fba7f80fc153ebce0e34efc7597aad37967a7d",
