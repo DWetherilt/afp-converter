@@ -17,5 +17,7 @@ Fresh-instance convergence handoff:
 Package release checklist:
 - Validate package structure and manifest:
   - `tools/validate_boilerplate_package.sh <package-id>`
+  - validator blocks transient SQLite artifacts (`*.sqlite-wal`, `*.sqlite-shm`)
 - Export zip payload and checksum for transfer:
   - `tools/export_boilerplate_package.sh <package-id>`
+  - exporter excludes transient SQLite artifacts from the payload

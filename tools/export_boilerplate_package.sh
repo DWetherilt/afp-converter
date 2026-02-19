@@ -22,7 +22,7 @@ out_zip="$BASE_DIR/${pkg_id}.zip"
 (
   cd "$BASE_DIR"
   rm -f "$out_zip"
-  zip -rq "$out_zip" "$pkg_id"
+  zip -rq "$out_zip" "$pkg_id" -x "*.sqlite-wal" "*.sqlite-shm"
 )
 
 sha=$(/usr/bin/shasum -a 256 "$out_zip" | /usr/bin/awk '{print $1}')

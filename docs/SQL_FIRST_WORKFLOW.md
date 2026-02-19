@@ -193,11 +193,15 @@ Validate a boilerplate package:
 tools/validate_boilerplate_package.sh 2026-02-19-recovery-ci-sql-integrity
 ```
 
+Validation rejects transient SQLite artifacts (`*.sqlite-wal`, `*.sqlite-shm`) inside package directories.
+
 Export a boilerplate package zip + checksum:
 
 ```bash
 tools/export_boilerplate_package.sh 2026-02-19-recovery-ci-sql-integrity
 ```
+
+Export excludes transient SQLite artifacts (`*.sqlite-wal`, `*.sqlite-shm`) from the archive.
 
 ### CI Quick Check
 

@@ -11,6 +11,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Ensure no tracked SQLite transient files
+        run: |
+          if git ls-files | grep -E '\.sqlite-(wal|shm)$' >/dev/null; then
+            echo "Tracked SQLite transient files detected (.sqlite-wal/.sqlite-shm)."
+            git ls-files | grep -E '\.sqlite-(wal|shm)$'
+            exit 1
+          fi
       - name: Set up Java 21
         uses: actions/setup-java@v4
         with:

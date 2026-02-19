@@ -54,4 +54,10 @@ if not isinstance(data["validation"], list) or not data["validation"]:
 print("manifest_ok")
 PY
 
+# Guard against transient SQLite artifacts being bundled into boilerplate payloads.
+if find "$pkg_dir" -type f \( -name "*.sqlite-wal" -o -name "*.sqlite-shm" \) | grep -q .; then
+  echo "forbidden_transient_sqlite_artifacts_in_package:$pkg_dir"
+  exit 1
+fi
+
 echo "boilerplate_package_validation=PASS:$pkg_dir"

@@ -50,6 +50,7 @@ insert into policy_rule_catalog(rule_id, realm, category, rule_text, source_ref,
   ('PM-SQLCODE-006', 'pm', 'sql-code-index', 'Quality gate must verify SQL reconstruction into a clean temp root before release.', 'build.gradle:sqlReconstructionCheck', 'human', 1, current_timestamp),
   ('PM-CI-001', 'pm', 'ci-governance', 'CI must run SQL-first pre-build integrity checks (via tools/recovery_quick_check.sh or equivalent) before Gradle build steps.', '.github/workflows/ci.yml', 'human', 1, current_timestamp),
   ('PM-CI-002', 'pm', 'ci-governance', 'CI should publish recovery/integrity artifacts for troubleshooting and rollback traceability.', '.github/workflows/ci.yml', 'human', 1, current_timestamp),
+  ('PM-CI-003', 'pm', 'ci-governance', 'CI and package workflows must block transient SQLite artifacts (.sqlite-wal/.sqlite-shm) from tracked files and exported payloads.', '.github/workflows/ci.yml;tools/validate_boilerplate_package.sh;tools/export_boilerplate_package.sh', 'human', 1, current_timestamp),
   ('PM-REC-001', 'pm', 'recovery-governance', 'Recovery-doctor local checkpoints must be retained with bounded count to prevent unbounded workspace growth.', 'tools/recovery_doctor.sh#RECOVERY_CHECKPOINT_RETENTION_COUNT', 'human', 1, current_timestamp),
   ('PM-REC-002', 'pm', 'recovery-governance', 'Recovery baseline refresh may be skipped only via explicit environment flag when preserving a prior checksum baseline is required.', 'tools/recovery_doctor.sh#RECOVERY_SKIP_BASELINE_REFRESH', 'human', 1, current_timestamp);
 
