@@ -9,6 +9,7 @@ tools/manifest_from_sql.sh
 tools/manifest_from_sql.py
 pm/workflow/minimal-snapshot-keep.txt
 pm/workflow/binary-artifact-policy.txt
+pm/security/authorized-databases.json
 pm/state/critical-db-sha256.txt
 tools/minimal_snapshot.sh
 tools/minimal_snapshot_guard.sh

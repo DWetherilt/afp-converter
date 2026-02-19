@@ -1,0 +1,42 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-19T00:00:00Z",
+  "notes": "Only aliases in this file are allowed for PM console report federation.",
+  "databases": [
+    {
+      "alias": "project",
+      "path": "pm/state/project-state.sqlite",
+      "enabled": true,
+      "readOnly": true,
+      "description": "Project PM state database"
+    },
+    {
+      "alias": "boilerplate",
+      "path": "pm/state/boilerplate-state.sqlite",
+      "enabled": true,
+      "readOnly": true,
+      "description": "Boilerplate PM state database"
+    },
+    {
+      "alias": "application_realm",
+      "path": "pm/state/application-realm.sqlite",
+      "enabled": true,
+      "readOnly": true,
+      "description": "Application realm SQL authority"
+    },
+    {
+      "alias": "pm_realm",
+      "path": "pm/state/pm-realm.sqlite",
+      "enabled": true,
+      "readOnly": true,
+      "description": "PM realm SQL authority"
+    },
+    {
+      "alias": "boilerplate_realm",
+      "path": "pm/state/boilerplate-realm.sqlite",
+      "enabled": true,
+      "readOnly": true,
+      "description": "Boilerplate realm SQL authority"
+    }
+  ]
+}

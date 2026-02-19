@@ -56,6 +56,9 @@ insert into policy_rule_catalog(rule_id, realm, category, rule_text, source_ref,
   ('PM-DECISION-002', 'boilerplate', 'decision-governance', 'Boilerplate reasoning must support sub-boilerplate granularity using scope_level/scope_ref/sub_scope_ref in decision_log.', 'pm-tools:StateDatabaseTool/decision_log', 'human', 1, current_timestamp),
   ('PM-KB-001', 'pm', 'knowledge-governance', 'Project reasoning outcomes must be captured in the SQL knowledge base with linked evidence artifacts and decision references.', 'pm-tools:StateDatabaseTool/knowledge_entries', 'human', 1, current_timestamp),
   ('PM-KB-002', 'pm', 'knowledge-governance', 'PM refresh pipeline must publish pm/reports/knowledge-base.json from project-state SQLite.', 'build.gradle:knowledgeBaseReport', 'human', 1, current_timestamp),
+  ('PM-CONSOLE-001', 'pm', 'console-governance', 'Console screens must emit standard payload envelopes using exchange format pm-console-screen@1.', 'docs/PM_CONSOLE_EXCHANGE_FORMAT.md', 'human', 1, current_timestamp),
+  ('PM-SEC-001', 'pm', 'security-governance', 'Console database federation must be constrained to aliases in pm/security/authorized-databases.json.', 'pm/security/authorized-databases.json', 'human', 1, current_timestamp),
+  ('PM-SEC-002', 'pm', 'security-governance', 'Mutating authorized database aliases requires explicit human approval token.', 'pm-console:DbCommand --human-approved', 'human', 1, current_timestamp),
   ('PM-REC-001', 'pm', 'recovery-governance', 'Recovery-doctor local checkpoints must be retained with bounded count to prevent unbounded workspace growth.', 'tools/recovery_doctor.sh#RECOVERY_CHECKPOINT_RETENTION_COUNT', 'human', 1, current_timestamp),
   ('PM-REC-002', 'pm', 'recovery-governance', 'Recovery baseline refresh may be skipped only via explicit environment flag when preserving a prior checksum baseline is required.', 'tools/recovery_doctor.sh#RECOVERY_SKIP_BASELINE_REFRESH', 'human', 1, current_timestamp);
 

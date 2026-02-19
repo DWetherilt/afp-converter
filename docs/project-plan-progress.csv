@@ -31,3 +31,4 @@ Workstream G,wire decision queue into PM refresh/report cycle and artifact manif
 Workstream G,seed initial decisions for active workstreams with smallest-change-biggest-reward scoring,High,In Progress,30,2026-02-19,"Pending initial population of decision records for renderer and boilerplate promotion actions."
 Workstream G,stand up SQL knowledge base for reasoning outcomes and artifact context,High,In Progress,70,2026-02-19,"Added project-state knowledge tables and commands for entries/evidence/decision links."
 Workstream G,publish knowledge-base report in PM refresh cycle,High,In Progress,60,2026-02-19,"Added knowledgeBaseReport task and workflow wiring; now needs broader seeding coverage."
+Workstream G,refactor PM console to granular refresh and exchange-format report generation,High,In Progress,65,2026-02-19,"Added intent-style report command, screen payload format, DB allowlist auth, and granular refresh options."

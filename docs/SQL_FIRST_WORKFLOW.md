@@ -293,6 +293,36 @@ Export knowledge base report:
 ./gradlew --no-daemon knowledgeBaseReport
 ```
 
+### PM Console Reporting
+
+Intent-style report output:
+
+```bash
+pm-console/build/install/pmconsole/bin/pmconsole report --request "current workstream status"
+```
+
+JSON payload output (exchange format `pm-console-screen@1`):
+
+```bash
+pm-console/build/install/pmconsole/bin/pmconsole report \
+  --request "current workstream status" \
+  --format json \
+  --output pm/reports/workstream-status-screen.json
+```
+
+Granular refresh examples:
+
+```bash
+pm-console/build/install/pmconsole/bin/pmconsole refresh --phase pm_refresh_and_reports
+pm-console/build/install/pmconsole/bin/pmconsole refresh --tasks projectStateDb,decisionPriorityReport,knowledgeBaseReport
+```
+
+Authorized DB aliases:
+
+```bash
+pm-console/build/install/pmconsole/bin/pmconsole db --list
+```
+
 ### CI Quick Check
 
 Run the CI-equivalent SQL integrity checks locally:

@@ -1,5 +1,8 @@
 package solutions.pointzero.symphony.pm.console;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -20,9 +23,15 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
 @Command(
@@ -31,18 +40,25 @@ import java.util.concurrent.Callable;
     description = "Development PM console for project state/report tooling.",
     subcommands = {
         PmConsoleMain.StatusCommand.class,
-        PmConsoleMain.RefreshCommand.class,
-        PmConsoleMain.ToolsCommand.class,
         PmConsoleMain.DecisionsCommand.class,
+        PmConsoleMain.ReportCommand.class,
+        PmConsoleMain.RefreshCommand.class,
+        PmConsoleMain.DbCommand.class,
+        PmConsoleMain.ToolsCommand.class,
         PmConsoleMain.LiveCommand.class
     }
 )
 public final class PmConsoleMain implements Callable<Integer> {
 
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
+
     private static final Path PROJECT_DB = Path.of("pm/state/project-state.sqlite");
     private static final Path BOILERPLATE_DB = Path.of("pm/state/boilerplate-state.sqlite");
     private static final Path DECISION_QUEUE = Path.of("pm/reports/decision-priority-queue.json");
     private static final Path AI_INBOX = Path.of("pm/state/assistant-inbox.ndjson");
+    private static final Path AUTHORIZED_DBS = Path.of("pm/security/authorized-databases.json");
+
+    private static final String HUMAN_APPROVAL_TOKEN = "I_HAVE_EXPLICIT_HUMAN_APPROVAL";
 
     public static void main(String[] args) {
         int exit = new CommandLine(new PmConsoleMain()).execute(args);
@@ -51,7 +67,7 @@ public final class PmConsoleMain implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        System.out.println("pmconsole: use subcommands status | refresh | tools | decisions | live");
+        System.out.println("pmconsole: use subcommands status | decisions | report | refresh | db | tools | live");
         return 0;
     }
 
@@ -64,28 +80,74 @@ public final class PmConsoleMain implements Callable<Integer> {
                 "  - State DBs: pm/state/project-state.sqlite, pm/state/boilerplate-state.sqlite",
                 "  - Reports: pm/reports/*",
                 "  - Checkpoints: pm/checkpoints/*",
+                "  - Authorized DB catalog: pm/security/authorized-databases.json",
                 "",
-                "Primary Gradle PM tasks:",
-                "  - projectStateDb, boilerplateStateDb",
-                "  - governanceAlerts, versionControlLedger",
-                "  - issuesLogTickle, issuesEffectivenessReport",
-                "  - projectPlanProgressJson, projectPlanWorkbook",
-                "  - policyGovernanceWorkbook, stateInventoryCsv",
-                "  - policyRulesReport",
-                "  - policyRulesLint, dataDictionaryLint",
-                "  - realmCodeDatabases, realmTokenSearch",
-                "  - documentationManifest",
-                "",
-                "Dev helper tasks:",
-                "  - pmConsoleStatus",
-                "  - pmDevAttach",
-                "  - pmWorkflowList",
-                "  - pmWorkflowRun (-PpmPhase=<phaseId>)",
+                "Primary console commands:",
+                "  - pmconsole status",
+                "  - pmconsole decisions --top 10",
+                "  - pmconsole report --request \"current workstream status\"",
+                "  - pmconsole refresh --phase pm_refresh_and_reports",
+                "  - pmconsole refresh --tasks projectStateDb,decisionPriorityReport",
+                "  - pmconsole db --list",
                 "",
                 "Interactive mode:",
                 "  - pmconsole live --interval 15"
             );
             lines.forEach(System.out::println);
+            return 0;
+        }
+    }
+
+    @Command(name = "db", description = "Lists or updates authorized database aliases for report federation.")
+    static final class DbCommand implements Callable<Integer> {
+
+        @Option(names = "--list", description = "List authorized database aliases.")
+        boolean list;
+
+        @Option(names = "--authorize", description = "Add/update an authorized database alias.")
+        boolean authorize;
+
+        @Option(names = "--alias", description = "Alias for database authorization.")
+        String alias;
+
+        @Option(names = "--path", description = "Database file path.")
+        String path;
+
+        @Option(names = "--description", description = "Description for this alias.")
+        String description = "";
+
+        @Option(names = "--enabled", description = "Enable/disable alias (default: ${DEFAULT-VALUE}).")
+        boolean enabled = true;
+
+        @Option(names = "--human-approved", description = "Explicit human approval token required for mutations.")
+        String humanApproved;
+
+        @Override
+        public Integer call() throws Exception {
+            ensureAuthorizedDatabasesFile();
+            List<AuthorizedDb> dbs = loadAuthorizedDatabases();
+            if (!authorize || list) {
+                System.out.println("Authorized databases:");
+                for (AuthorizedDb db : dbs) {
+                    System.out.println("  - " + db.alias + " -> " + db.path + " (enabled=" + db.enabled + ", readOnly=" + db.readOnly + ") " + db.description);
+                }
+            }
+            if (!authorize) {
+                return 0;
+            }
+            if (!HUMAN_APPROVAL_TOKEN.equals(text(humanApproved))) {
+                throw new IllegalArgumentException("Missing/invalid --human-approved token for db authorization update.");
+            }
+            if (text(alias).isBlank() || text(path).isBlank()) {
+                throw new IllegalArgumentException("--alias and --path are required with --authorize.");
+            }
+            Map<String, AuthorizedDb> byAlias = new LinkedHashMap<>();
+            for (AuthorizedDb db : dbs) {
+                byAlias.put(db.alias, db);
+            }
+            byAlias.put(text(alias), new AuthorizedDb(text(alias), text(path), enabled, true, text(description)));
+            saveAuthorizedDatabases(new ArrayList<>(byAlias.values()));
+            System.out.println("authorized_db_updated:" + alias);
             return 0;
         }
     }
@@ -99,6 +161,80 @@ public final class PmConsoleMain implements Callable<Integer> {
         @Override
         public Integer call() {
             return printDecisionQueue(Math.max(1, top));
+        }
+    }
+
+    @Command(name = "report", description = "Generates a screen payload from an intent-like request (text or JSON output).")
+    static final class ReportCommand implements Callable<Integer> {
+
+        @Option(names = "--request", required = true, description = "Request string, e.g. 'current workstream status'.")
+        String request;
+
+        @Option(names = "--dbs", description = "Comma-separated DB aliases from authorized catalog.")
+        String dbs;
+
+        @Option(names = "--format", description = "Output format: text|json (default: ${DEFAULT-VALUE})")
+        String format = "text";
+
+        @Option(names = "--output", description = "Optional output file for JSON payload.")
+        String output;
+
+        @Override
+        public Integer call() throws Exception {
+            ReportPayload payload = generateReportPayload(text(request), resolveAliases(dbs));
+            if ("json".equalsIgnoreCase(text(format))) {
+                String rendered = GSON.toJson(payload.payload);
+                if (!text(output).isBlank()) {
+                    Path out = Path.of(text(output));
+                    ensureParent(out);
+                    Files.writeString(out, rendered + "\n", StandardCharsets.UTF_8);
+                    System.out.println("report_written:" + out);
+                } else {
+                    System.out.println(rendered);
+                }
+                return 0;
+            }
+            printReportText(payload);
+            return 0;
+        }
+    }
+
+    @Command(name = "refresh", description = "Runs PM refresh using granular phase/task controls.")
+    static final class RefreshCommand implements Callable<Integer> {
+
+        @Option(names = "--with-preview", description = "Run execute_application_with_pm_console before refresh.")
+        boolean withPreview;
+
+        @Option(names = "--phase", description = "Workflow phase id (e.g. pm_refresh_and_reports).")
+        String phase;
+
+        @Option(names = "--tasks", description = "Comma-separated Gradle tasks to run directly.")
+        String tasks;
+
+        @Option(names = "--dry-run", description = "Print command(s) without executing.")
+        boolean dryRun;
+
+        @Override
+        public Integer call() throws Exception {
+            if (!text(tasks).isBlank()) {
+                List<String> taskList = splitCsv(tasks);
+                if (taskList.isEmpty()) {
+                    throw new IllegalArgumentException("--tasks provided but no tasks parsed");
+                }
+                return runGradleTasks(taskList, dryRun);
+            }
+
+            String selectedPhase = text(phase);
+            if (selectedPhase.isBlank()) {
+                selectedPhase = "pm_refresh_and_reports";
+            }
+            if (withPreview) {
+                int pre = runWorkflowPhase("execute_application_with_pm_console", dryRun);
+                if (pre != 0) {
+                    return pre;
+                }
+            }
+            return runWorkflowPhase(selectedPhase, dryRun);
         }
     }
 
@@ -129,7 +265,7 @@ public final class PmConsoleMain implements Callable<Integer> {
                     System.out.println();
                     printDecisionQueue(Math.max(1, topDecisions));
                     System.out.println();
-                    System.out.println("Commands: help | status | decisions [n] | refresh | refresh-preview | tools | interval <sec> | prompt <text> | clear | quit");
+                    System.out.println("Commands: help | status | decisions [n] | report <request> | refresh [phase <id>|tasks <csv>|preview] | db list | tools | interval <sec> | prompt <text> | clear | quit");
                     nextRefreshAt = now + intervalMs;
                 }
 
@@ -144,16 +280,16 @@ public final class PmConsoleMain implements Callable<Integer> {
                         continue;
                     }
                     String lower = normalized.toLowerCase(Locale.ROOT);
-                    if (lower.equals("q") || lower.equals("quit") || lower.equals("exit")) {
+                    if (Set.of("q", "quit", "exit").contains(lower)) {
                         System.out.println("Exiting live console.");
                         return 0;
                     }
-                    if (lower.equals("h") || lower.equals("help")) {
+                    if (Set.of("h", "help").contains(lower)) {
                         printLiveHelp();
                         nextRefreshAt = 0L;
                         continue;
                     }
-                    if (lower.equals("status") || lower.equals("s")) {
+                    if (Set.of("status", "s").contains(lower)) {
                         nextRefreshAt = 0L;
                         continue;
                     }
@@ -165,16 +301,47 @@ public final class PmConsoleMain implements Callable<Integer> {
                         nextRefreshAt = 0L;
                         continue;
                     }
+                    if (lower.startsWith("report ")) {
+                        String req = normalized.substring("report ".length()).trim();
+                        if (req.isEmpty()) {
+                            System.out.println("report request is empty");
+                        } else {
+                            printReportText(generateReportPayload(req, resolveAliases("")));
+                        }
+                        nextRefreshAt = 0L;
+                        continue;
+                    }
                     if (lower.equals("refresh") || lower.equals("r")) {
-                        int exit = runWorkflowPhase("pm_refresh_and_reports");
+                        int exit = runWorkflowPhase("pm_refresh_and_reports", false);
                         System.out.println("refresh exit code: " + exit);
                         nextRefreshAt = 0L;
                         continue;
                     }
-                    if (lower.equals("refresh-preview") || lower.equals("rp")) {
-                        int pre = runWorkflowPhase("execute_application_with_pm_console");
-                        int post = pre == 0 ? runWorkflowPhase("pm_refresh_and_reports") : pre;
+                    if (lower.startsWith("refresh phase ")) {
+                        String phase = normalized.substring("refresh phase ".length()).trim();
+                        int exit = runWorkflowPhase(text(phase).isBlank() ? "pm_refresh_and_reports" : phase, false);
+                        System.out.println("refresh phase exit code: " + exit);
+                        nextRefreshAt = 0L;
+                        continue;
+                    }
+                    if (lower.startsWith("refresh tasks ")) {
+                        String t = normalized.substring("refresh tasks ".length()).trim();
+                        int exit = runGradleTasks(splitCsv(t), false);
+                        System.out.println("refresh tasks exit code: " + exit);
+                        nextRefreshAt = 0L;
+                        continue;
+                    }
+                    if (lower.equals("refresh preview") || lower.equals("refresh-preview") || lower.equals("rp")) {
+                        int pre = runWorkflowPhase("execute_application_with_pm_console", false);
+                        int post = pre == 0 ? runWorkflowPhase("pm_refresh_and_reports", false) : pre;
                         System.out.println("refresh-preview exit code: " + post);
+                        nextRefreshAt = 0L;
+                        continue;
+                    }
+                    if (lower.equals("db list")) {
+                        DbCommand db = new DbCommand();
+                        db.list = true;
+                        db.call();
                         nextRefreshAt = 0L;
                         continue;
                     }
@@ -218,34 +385,6 @@ public final class PmConsoleMain implements Callable<Integer> {
         }
     }
 
-    @Command(name = "refresh", description = "Runs PM pipeline tasks. Optionally includes preview generation.")
-    static final class RefreshCommand implements Callable<Integer> {
-
-        @Option(names = "--with-preview", description = "Also run previewManifest before PM refresh tasks.")
-        boolean withPreview;
-
-        @Override
-        public Integer call() throws Exception {
-            int exit = 0;
-            if (withPreview) {
-                exit = runWorkflowPhase("execute_application_with_pm_console");
-                if (exit != 0) {
-                    System.err.println("PM refresh pre-phase failed with exit code " + exit);
-                    return exit;
-                }
-            }
-            exit = runWorkflowPhase("pm_refresh_and_reports");
-            if (exit != 0) {
-                System.err.println("PM refresh failed with exit code " + exit);
-            }
-            return exit;
-        }
-
-        private static int runWorkflowPhase(String phase) throws Exception {
-            return PmConsoleMain.runWorkflowPhase(phase);
-        }
-    }
-
     @Command(name = "status", description = "Shows an aggregated PM status dashboard from SQLite + reports.")
     static final class StatusCommand implements Callable<Integer> {
 
@@ -267,6 +406,7 @@ public final class PmConsoleMain implements Callable<Integer> {
             System.out.println("  - project DB: " + describePath(PROJECT_DB));
             System.out.println("  - boilerplate DB: " + describePath(BOILERPLATE_DB));
             System.out.println("  - renderer preview PDF: " + describePath(Path.of("preview/afp-output.pdf")));
+            System.out.println("  - decision queue: " + describePath(DECISION_QUEUE));
             System.out.println();
         }
 
@@ -331,146 +471,19 @@ public final class PmConsoleMain implements Callable<Integer> {
         }
 
         private void printReportSummary() {
-            Path report = Path.of("pm/reports/issues-effectiveness.json");
+            Path issues = Path.of("pm/reports/issues-effectiveness.json");
             Path alerts = Path.of("pm/reports/governance-alerts.json");
             Path policyRules = Path.of("pm/reports/policy-rules.json");
-            Path policyRulesLint = Path.of("pm/reports/policy-rules-lint.json");
+            Path policyLint = Path.of("pm/reports/policy-rules-lint.json");
+            Path knowledge = Path.of("pm/reports/knowledge-base.json");
+
             System.out.println("Report summary:");
-            System.out.println("  - issues effectiveness: " + describePath(report));
+            System.out.println("  - issues effectiveness: " + describePath(issues));
             System.out.println("  - governance alerts: " + describePath(alerts));
             System.out.println("  - policy rules: " + describePath(policyRules));
-            System.out.println("  - policy rules lint: " + describePath(policyRulesLint));
-
-            JsonObject issues = readJson(report);
-            if (issues != null) {
-                JsonObject summary = obj(issues, "summary");
-                if (summary != null) {
-                    System.out.println("  - effectiveness signals: requiresIssuesLogUpdate=" + str(summary, "requiresIssuesLogUpdate", "false")
-                        + ", open issues=" + str(summary, "openIssueCount", "0"));
-                }
-            }
-
-            JsonObject governance = readJson(alerts);
-            if (governance != null) {
-                System.out.println("  - active governance breach: " + str(governance, "hasActiveGovernanceBreach", "false"));
-            }
-
-            JsonObject lint = readJson(policyRulesLint);
-            if (lint != null) {
-                System.out.println("  - policy lint ok: " + str(lint, "ok", "false")
-                    + ", missingRuleIds=" + str(lint, "missingRuleIds", "[]"));
-            }
+            System.out.println("  - policy rules lint: " + describePath(policyLint));
+            System.out.println("  - knowledge base: " + describePath(knowledge));
         }
-
-        private static Connection connect(Path dbPath) throws SQLException {
-            return DriverManager.getConnection("jdbc:sqlite:" + dbPath.toAbsolutePath());
-        }
-
-        private static int queryInt(Connection conn, String sql, int fallback) {
-            try (PreparedStatement ps = conn.prepareStatement(sql);
-                 ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1);
-                }
-            } catch (Exception ignored) {
-                return fallback;
-            }
-            return fallback;
-        }
-
-        private static double queryDouble(Connection conn, String sql, double fallback) {
-            try (PreparedStatement ps = conn.prepareStatement(sql);
-                 ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getDouble(1);
-                }
-            } catch (Exception ignored) {
-                return fallback;
-            }
-            return fallback;
-        }
-
-        private static String queryString(Connection conn, String sql, String fallback) {
-            try (PreparedStatement ps = conn.prepareStatement(sql);
-                 ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    String val = rs.getString(1);
-                    return val == null ? fallback : val;
-                }
-            } catch (Exception ignored) {
-                return fallback;
-            }
-            return fallback;
-        }
-
-        private static String describePath(Path path) {
-            try {
-                if (!Files.exists(path)) {
-                    return "missing (" + path + ")";
-                }
-                long size = Files.size(path);
-                return "present (" + path + ", " + size + " bytes)";
-            } catch (IOException e) {
-                return "present (" + path + ")";
-            }
-        }
-
-        private static String shorten(String head) {
-            if (head == null || head.isBlank()) {
-                return "<unknown>";
-            }
-            return head.length() <= 12 ? head : head.substring(0, 12);
-        }
-
-        private static JsonObject readJson(Path path) {
-            if (!Files.exists(path)) {
-                return null;
-            }
-            try {
-                String text = Files.readString(path, StandardCharsets.UTF_8);
-                JsonElement parsed = JsonParser.parseString(text);
-                if (parsed != null && parsed.isJsonObject()) {
-                    return parsed.getAsJsonObject();
-                }
-                return null;
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        private static JsonObject obj(JsonObject root, String key) {
-            if (root == null || !root.has(key) || !root.get(key).isJsonObject()) {
-                return null;
-            }
-            return root.getAsJsonObject(key);
-        }
-
-        private static String str(JsonObject root, String key, String fallback) {
-            if (root == null || !root.has(key) || root.get(key).isJsonNull()) {
-                return fallback;
-            }
-            try {
-                return root.get(key).getAsString();
-            } catch (Exception ignored) {
-                return fallback;
-            }
-        }
-    }
-
-    private static int runWorkflowPhase(String phase) throws Exception {
-        List<String> cmd = new ArrayList<>();
-        cmd.add("python3");
-        cmd.add("tools/pm_workflow.py");
-        cmd.add("run");
-        cmd.add("--adapter");
-        cmd.add("gradle");
-        cmd.add("--phase");
-        cmd.add(phase);
-        ProcessBuilder pb = new ProcessBuilder(cmd);
-        pb.directory(Path.of(".").toFile());
-        pb.inheritIO();
-        Process p = pb.start();
-        return p.waitFor();
     }
 
     private static int printDecisionQueue(int top) {
@@ -506,54 +519,397 @@ public final class PmConsoleMain implements Callable<Integer> {
         return 0;
     }
 
-    private static void appendPrompt(String text) throws IOException {
-        Path parent = AI_INBOX.toAbsolutePath().getParent();
-        if (parent != null) {
-            Files.createDirectories(parent);
-        }
-        JsonObject payload = new JsonObject();
-        payload.addProperty("capturedAt", java.time.OffsetDateTime.now(java.time.ZoneOffset.UTC).withNano(0).toString());
-        payload.addProperty("source", "pmconsole-live");
-        payload.addProperty("prompt", text);
-        Files.writeString(
-            AI_INBOX,
-            payload.toString() + "\n",
-            StandardCharsets.UTF_8,
-            StandardOpenOption.CREATE,
-            StandardOpenOption.APPEND
-        );
-    }
+    private static void printReportText(ReportPayload report) {
+        JsonObject payload = report.payload;
+        JsonObject data = payload.getAsJsonObject("data");
+        System.out.println("Screen payload:");
+        System.out.println("  - screenId: " + str(payload, "screenId", ""));
+        System.out.println("  - request: " + str(payload, "request", ""));
+        System.out.println("  - generatedAt: " + str(payload, "generatedAt", ""));
+        System.out.println("  - sources: " + report.sourcesSummary);
 
-    private static void clearScreen() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
-    }
+        String screenId = str(payload, "screenId", "");
+        if ("workstream_status".equals(screenId)) {
+            JsonArray workstreams = data.getAsJsonArray("workstreams");
+            JsonArray inProgress = data.getAsJsonArray("topInProgressTasks");
+            JsonArray decisions = data.getAsJsonArray("decisionSignals");
 
-    private static Integer parseTrailingInt(String raw, String prefix) {
-        String value = raw.substring(prefix.length()).trim();
-        if (value.isEmpty()) {
-            return null;
-        }
-        try {
-            return Integer.parseInt(value);
-        } catch (NumberFormatException ignored) {
-            return null;
-        }
-    }
+            System.out.println();
+            System.out.println("Workstreams:");
+            if (workstreams != null) {
+                for (JsonElement el : workstreams) {
+                    if (!el.isJsonObject()) {
+                        continue;
+                    }
+                    JsonObject row = el.getAsJsonObject();
+                    System.out.println("  - " + str(row, "workstream", "")
+                        + " | tasks=" + str(row, "taskCount", "0")
+                        + " | complete=" + str(row, "completeCount", "0")
+                        + " | inProgress=" + str(row, "inProgressCount", "0")
+                        + " | avg=" + str(row, "avgCompletion", "0") + "%");
+                }
+            }
 
-    private static void printLiveHelp() {
-        System.out.println("pmconsole live commands:");
-        System.out.println("  - help");
-        System.out.println("  - status");
-        System.out.println("  - decisions [n]");
-        System.out.println("  - refresh");
-        System.out.println("  - refresh-preview");
-        System.out.println("  - tools");
-        System.out.println("  - interval <seconds>");
-        System.out.println("  - prompt <text>  (alias: ask <text>)");
-        System.out.println("  - clear");
-        System.out.println("  - quit");
+            System.out.println();
+            System.out.println("Top in-progress tasks:");
+            if (inProgress != null) {
+                for (JsonElement el : inProgress) {
+                    if (!el.isJsonObject()) {
+                        continue;
+                    }
+                    JsonObject row = el.getAsJsonObject();
+                    System.out.println("  - " + str(row, "workstream", "") + " | " + str(row, "task", "")
+                        + " | priority=" + str(row, "priority", "")
+                        + " | completion=" + str(row, "percentComplete", "0") + "%");
+                }
+            }
+
+            System.out.println();
+            System.out.println("Decision signals:");
+            if (decisions != null) {
+                for (JsonElement el : decisions) {
+                    if (!el.isJsonObject()) {
+                        continue;
+                    }
+                    JsonObject row = el.getAsJsonObject();
+                    System.out.println("  - alias=" + str(row, "alias", "")
+                        + " | realm=" + str(row, "realm", "")
+                        + " | total=" + str(row, "decisionCount", "0")
+                        + " | inProgress=" + str(row, "inProgressCount", "0")
+                        + " | topPriority=" + str(row, "topPriorityBucket", "P3"));
+                }
+            }
+            return;
+        }
+
         System.out.println();
+        System.out.println(GSON.toJson(payload));
+    }
+
+    private static ReportPayload generateReportPayload(String request, List<String> aliases) throws Exception {
+        String normalized = text(request).toLowerCase(Locale.ROOT);
+        if (normalized.contains("workstream") && normalized.contains("status")) {
+            return buildWorkstreamStatusPayload(request, aliases);
+        }
+
+        JsonObject data = new JsonObject();
+        JsonArray intents = new JsonArray();
+        intents.add("current workstream status");
+        data.add("supportedRequests", intents);
+        data.addProperty("message", "Request was not recognized. Try: 'current workstream status'.");
+        JsonObject payload = buildScreenPayload("unsupported_request", request, aliases, data);
+        return new ReportPayload(payload, aliases.toString());
+    }
+
+    private static ReportPayload buildWorkstreamStatusPayload(String request, List<String> aliases) throws Exception {
+        Map<String, AuthorizedDb> auth = authorizedDbMap();
+        AuthorizedDb project = requireAlias(auth, aliases, "project");
+
+        JsonArray workstreams = new JsonArray();
+        JsonArray topInProgressTasks = new JsonArray();
+        JsonArray decisionSignals = new JsonArray();
+
+        try (Connection conn = connect(Path.of(project.path))) {
+            try (PreparedStatement ps = conn.prepareStatement(
+                "select workstream, count(*) as task_count, " +
+                    "sum(case when lower(status)='complete' then 1 else 0 end) as complete_count, " +
+                    "sum(case when lower(status) in ('in progress','in_progress') then 1 else 0 end) as in_progress_count, " +
+                    "avg(cast(replace(percent_complete, '%', '') as real)) as avg_completion " +
+                    "from plan_tasks group by workstream order by workstream asc"
+            ); ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    JsonObject row = new JsonObject();
+                    row.addProperty("workstream", text(rs.getString(1)));
+                    row.addProperty("taskCount", rs.getInt(2));
+                    row.addProperty("completeCount", rs.getInt(3));
+                    row.addProperty("inProgressCount", rs.getInt(4));
+                    row.addProperty("avgCompletion", round2(rs.getDouble(5)));
+                    workstreams.add(row);
+                }
+            }
+
+            try (PreparedStatement ps = conn.prepareStatement(
+                "select workstream, task, priority, cast(replace(percent_complete, '%', '') as real) as pct " +
+                    "from plan_tasks where lower(status) in ('in progress','in_progress') " +
+                    "order by case lower(priority) when 'high' then 0 when 'medium' then 1 else 2 end, pct desc, workstream asc limit 10"
+            ); ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    JsonObject row = new JsonObject();
+                    row.addProperty("workstream", text(rs.getString(1)));
+                    row.addProperty("task", text(rs.getString(2)));
+                    row.addProperty("priority", text(rs.getString(3)));
+                    row.addProperty("percentComplete", round2(rs.getDouble(4)));
+                    topInProgressTasks.add(row);
+                }
+            }
+        }
+
+        Set<String> seen = new LinkedHashSet<>(aliases);
+        for (String alias : seen) {
+            AuthorizedDb db = auth.get(alias);
+            if (db == null || !db.enabled) {
+                continue;
+            }
+            Path path = Path.of(db.path);
+            if (!Files.exists(path)) {
+                continue;
+            }
+            try (Connection conn = connect(path)) {
+                if (!tableExists(conn, "decision_log")) {
+                    continue;
+                }
+                try (PreparedStatement ps = conn.prepareStatement(
+                    "select realm, count(*) as total, " +
+                        "sum(case when lower(status)='in_progress' then 1 else 0 end) as in_progress_count, " +
+                        "coalesce(min(priority_bucket), 'P3') as top_priority " +
+                        "from decision_log group by realm order by realm asc"
+                ); ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        JsonObject row = new JsonObject();
+                        row.addProperty("alias", alias);
+                        row.addProperty("realm", text(rs.getString(1)));
+                        row.addProperty("decisionCount", rs.getInt(2));
+                        row.addProperty("inProgressCount", rs.getInt(3));
+                        row.addProperty("topPriorityBucket", text(rs.getString(4)));
+                        decisionSignals.add(row);
+                    }
+                }
+            } catch (Exception ignored) {
+                // External DB may not have expected schema; skip safely.
+            }
+        }
+
+        JsonObject data = new JsonObject();
+        data.add("workstreams", workstreams);
+        data.add("topInProgressTasks", topInProgressTasks);
+        data.add("decisionSignals", decisionSignals);
+
+        JsonObject payload = buildScreenPayload("workstream_status", request, aliases, data);
+        return new ReportPayload(payload, aliases.toString());
+    }
+
+    private static JsonObject buildScreenPayload(String screenId, String request, List<String> aliases, JsonObject data) {
+        JsonObject payload = new JsonObject();
+        payload.addProperty("schemaVersion", "1");
+        payload.addProperty("exchangeFormat", "pm-console-screen@1");
+        payload.addProperty("generatedAt", nowIso());
+        payload.addProperty("screenId", screenId);
+        payload.addProperty("request", request);
+        JsonArray sourceAliases = new JsonArray();
+        for (String a : aliases) {
+            sourceAliases.add(a);
+        }
+        payload.add("sourceAliases", sourceAliases);
+        payload.add("data", data);
+        return payload;
+    }
+
+    private static List<String> resolveAliases(String raw) {
+        List<String> parsed = splitCsv(raw);
+        if (parsed.isEmpty()) {
+            return List.of("project", "pm_realm", "boilerplate_realm");
+        }
+        return parsed;
+    }
+
+    private static Map<String, AuthorizedDb> authorizedDbMap() throws Exception {
+        ensureAuthorizedDatabasesFile();
+        List<AuthorizedDb> list = loadAuthorizedDatabases();
+        Map<String, AuthorizedDb> out = new LinkedHashMap<>();
+        for (AuthorizedDb db : list) {
+            out.put(db.alias, db);
+        }
+        return out;
+    }
+
+    private static AuthorizedDb requireAlias(Map<String, AuthorizedDb> auth, List<String> aliases, String alias) {
+        if (!aliases.contains(alias)) {
+            throw new IllegalArgumentException("Required alias '" + alias + "' missing. Requested aliases=" + aliases);
+        }
+        AuthorizedDb db = auth.get(alias);
+        if (db == null || !db.enabled) {
+            throw new IllegalArgumentException("Alias '" + alias + "' is not authorized/enabled.");
+        }
+        return db;
+    }
+
+    private static void ensureAuthorizedDatabasesFile() throws IOException {
+        if (Files.exists(AUTHORIZED_DBS)) {
+            return;
+        }
+        ensureParent(AUTHORIZED_DBS);
+        JsonObject root = new JsonObject();
+        root.addProperty("schemaVersion", "1");
+        root.addProperty("generatedAt", nowIso());
+        root.addProperty("notes", "Only aliases in this file are allowed for report federation.");
+        JsonArray dbs = new JsonArray();
+        dbs.add(dbAsJson(new AuthorizedDb("project", PROJECT_DB.toString().replace('\\', '/'), true, true, "Project PM state database")));
+        dbs.add(dbAsJson(new AuthorizedDb("boilerplate", BOILERPLATE_DB.toString().replace('\\', '/'), true, true, "Boilerplate PM state database")));
+        dbs.add(dbAsJson(new AuthorizedDb("application_realm", "pm/state/application-realm.sqlite", true, true, "Application realm SQL authority")));
+        dbs.add(dbAsJson(new AuthorizedDb("pm_realm", "pm/state/pm-realm.sqlite", true, true, "PM realm SQL authority")));
+        dbs.add(dbAsJson(new AuthorizedDb("boilerplate_realm", "pm/state/boilerplate-realm.sqlite", true, true, "Boilerplate realm SQL authority")));
+        root.add("databases", dbs);
+        Files.writeString(AUTHORIZED_DBS, GSON.toJson(root) + "\n", StandardCharsets.UTF_8);
+    }
+
+    private static List<AuthorizedDb> loadAuthorizedDatabases() throws IOException {
+        JsonObject root = readJson(AUTHORIZED_DBS);
+        if (root == null) {
+            return List.of();
+        }
+        JsonElement dbs = root.get("databases");
+        if (dbs == null || !dbs.isJsonArray()) {
+            return List.of();
+        }
+        List<AuthorizedDb> out = new ArrayList<>();
+        for (JsonElement el : dbs.getAsJsonArray()) {
+            if (!el.isJsonObject()) {
+                continue;
+            }
+            JsonObject obj = el.getAsJsonObject();
+            out.add(new AuthorizedDb(
+                text(str(obj, "alias", "")),
+                text(str(obj, "path", "")),
+                Boolean.parseBoolean(str(obj, "enabled", "true")),
+                Boolean.parseBoolean(str(obj, "readOnly", "true")),
+                text(str(obj, "description", ""))
+            ));
+        }
+        return out;
+    }
+
+    private static void saveAuthorizedDatabases(List<AuthorizedDb> dbs) throws IOException {
+        JsonObject root = new JsonObject();
+        root.addProperty("schemaVersion", "1");
+        root.addProperty("generatedAt", nowIso());
+        root.addProperty("notes", "Only aliases in this file are allowed for report federation.");
+        JsonArray arr = new JsonArray();
+        for (AuthorizedDb db : dbs) {
+            arr.add(dbAsJson(db));
+        }
+        root.add("databases", arr);
+        ensureParent(AUTHORIZED_DBS);
+        Files.writeString(AUTHORIZED_DBS, GSON.toJson(root) + "\n", StandardCharsets.UTF_8);
+    }
+
+    private static JsonObject dbAsJson(AuthorizedDb db) {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("alias", db.alias);
+        obj.addProperty("path", db.path);
+        obj.addProperty("enabled", db.enabled);
+        obj.addProperty("readOnly", db.readOnly);
+        obj.addProperty("description", db.description);
+        return obj;
+    }
+
+    private static int runWorkflowPhase(String phase, boolean dryRun) throws Exception {
+        List<String> cmd = new ArrayList<>();
+        cmd.add("python3");
+        cmd.add("tools/pm_workflow.py");
+        cmd.add("run");
+        cmd.add("--adapter");
+        cmd.add("gradle");
+        cmd.add("--phase");
+        cmd.add(phase);
+        if (dryRun) {
+            System.out.println("dry-run: " + String.join(" ", cmd));
+            return 0;
+        }
+        ProcessBuilder pb = new ProcessBuilder(cmd);
+        pb.directory(Path.of(".").toFile());
+        pb.inheritIO();
+        Process p = pb.start();
+        return p.waitFor();
+    }
+
+    private static int runGradleTasks(List<String> tasks, boolean dryRun) throws Exception {
+        if (tasks == null || tasks.isEmpty()) {
+            return 0;
+        }
+        List<String> cmd = new ArrayList<>();
+        cmd.add("./gradlew");
+        cmd.add("--no-daemon");
+        cmd.addAll(tasks);
+        if (dryRun) {
+            System.out.println("dry-run: " + String.join(" ", cmd));
+            return 0;
+        }
+        ProcessBuilder pb = new ProcessBuilder(cmd);
+        pb.directory(Path.of(".").toFile());
+        pb.inheritIO();
+        Process p = pb.start();
+        return p.waitFor();
+    }
+
+    private static Connection connect(Path dbPath) throws SQLException {
+        return DriverManager.getConnection("jdbc:sqlite:" + dbPath.toAbsolutePath());
+    }
+
+    private static boolean tableExists(Connection conn, String tableName) {
+        try (PreparedStatement ps = conn.prepareStatement("select name from sqlite_master where type='table' and name = ?")) {
+            ps.setString(1, tableName);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    private static int queryInt(Connection conn, String sql, int fallback) {
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (Exception ignored) {
+            return fallback;
+        }
+        return fallback;
+    }
+
+    private static double queryDouble(Connection conn, String sql, double fallback) {
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getDouble(1);
+            }
+        } catch (Exception ignored) {
+            return fallback;
+        }
+        return fallback;
+    }
+
+    private static String queryString(Connection conn, String sql, String fallback) {
+        try (PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                String val = rs.getString(1);
+                return val == null ? fallback : val;
+            }
+        } catch (Exception ignored) {
+            return fallback;
+        }
+        return fallback;
+    }
+
+    private static String describePath(Path path) {
+        try {
+            if (!Files.exists(path)) {
+                return "missing (" + path + ")";
+            }
+            long size = Files.size(path);
+            return "present (" + path + ", " + size + " bytes)";
+        } catch (IOException e) {
+            return "present (" + path + ")";
+        }
+    }
+
+    private static String shorten(String head) {
+        if (head == null || head.isBlank()) {
+            return "<unknown>";
+        }
+        return head.length() <= 12 ? head : head.substring(0, 12);
     }
 
     private static JsonObject readJson(Path path) {
@@ -582,4 +938,95 @@ public final class PmConsoleMain implements Callable<Integer> {
             return fallback;
         }
     }
+
+    private static String text(String value) {
+        return value == null ? "" : value.trim();
+    }
+
+    private static List<String> splitCsv(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return List.of();
+        }
+        List<String> out = new ArrayList<>();
+        for (String token : raw.split(",")) {
+            String t = text(token);
+            if (!t.isBlank()) {
+                out.add(t);
+            }
+        }
+        return out;
+    }
+
+    private static void appendPrompt(String text) throws IOException {
+        Path parent = AI_INBOX.toAbsolutePath().getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
+        }
+        JsonObject payload = new JsonObject();
+        payload.addProperty("capturedAt", nowIso());
+        payload.addProperty("source", "pmconsole-live");
+        payload.addProperty("prompt", text);
+        Files.writeString(
+            AI_INBOX,
+            payload + "\n",
+            StandardCharsets.UTF_8,
+            StandardOpenOption.CREATE,
+            StandardOpenOption.APPEND
+        );
+    }
+
+    private static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
+    private static Integer parseTrailingInt(String raw, String prefix) {
+        String value = raw.substring(prefix.length()).trim();
+        if (value.isEmpty()) {
+            return null;
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
+    }
+
+    private static void printLiveHelp() {
+        System.out.println("pmconsole live commands:");
+        System.out.println("  - help");
+        System.out.println("  - status");
+        System.out.println("  - decisions [n]");
+        System.out.println("  - report <request>");
+        System.out.println("  - refresh");
+        System.out.println("  - refresh phase <id>");
+        System.out.println("  - refresh tasks <task1,task2>");
+        System.out.println("  - refresh preview");
+        System.out.println("  - db list");
+        System.out.println("  - tools");
+        System.out.println("  - interval <seconds>");
+        System.out.println("  - prompt <text>  (alias: ask <text>)");
+        System.out.println("  - clear");
+        System.out.println("  - quit");
+        System.out.println();
+    }
+
+    private static String nowIso() {
+        return OffsetDateTime.now(ZoneOffset.UTC).withNano(0).toString();
+    }
+
+    private static void ensureParent(Path path) throws IOException {
+        Path parent = path.toAbsolutePath().getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
+        }
+    }
+
+    private static double round2(double value) {
+        return Math.round(value * 100.0d) / 100.0d;
+    }
+
+    private record AuthorizedDb(String alias, String path, boolean enabled, boolean readOnly, String description) {}
+
+    private record ReportPayload(JsonObject payload, String sourcesSummary) {}
 }

@@ -20,6 +20,7 @@
       "database": "pm/state/pm-realm.sqlite",
       "roots": [
         "pm/policy",
+        "pm/security",
         "pm/workflow",
         "pm-tools/src/main/java",
         "pm-tools/src/test/java",
