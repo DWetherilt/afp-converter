@@ -5,6 +5,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 POLICY_FILE="$ROOT_DIR/pm/workflow/binary-artifact-policy.txt"
 RESTORE_REF="${RESTORE_REF:-HEAD~1}"
 STRICT_MODE="${STRICT_MODE:-false}"
+REQUIRE_CONDITIONAL="${REQUIRE_CONDITIONAL:-false}"
 
 if [[ ! -f "$POLICY_FILE" ]]; then
   echo "missing policy file: $POLICY_FILE" >&2
@@ -17,10 +18,21 @@ case "$strict_mode_lc" in
   1|true|yes) strict=1 ;;
 esac
 
+require_conditional=0
+require_conditional_lc="$(printf '%s' "$REQUIRE_CONDITIONAL" | tr '[:upper:]' '[:lower:]')"
+case "$require_conditional_lc" in
+  1|true|yes) require_conditional=1 ;;
+esac
+
 restore_one() {
   local path="$1"
   local source="$2"
   local required="$3"
+  local effective_required="$required"
+
+  if [[ "$required" == "conditional" && $require_conditional -eq 1 ]]; then
+    effective_required="true"
+  fi
 
   local abs="$ROOT_DIR/$path"
   if [[ -f "$abs" ]]; then
@@ -39,8 +51,8 @@ restore_one() {
       ;;
   esac
 
-  echo "unresolved:$path:source=$source:required=$required"
-  if [[ "$required" == "true" && $strict -eq 1 ]]; then
+  echo "unresolved:$path:source=$source:required=$required:effective_required=$effective_required"
+  if [[ "$effective_required" == "true" && $strict -eq 1 ]]; then
     return 1
   fi
   return 0

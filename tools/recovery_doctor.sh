@@ -4,6 +4,8 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
+RECOVERY_STRICT_CONDITIONAL_BINARIES="${RECOVERY_STRICT_CONDITIONAL_BINARIES:-false}"
+
 upsert_pm_text() {
   local path="$1"
   local sha
@@ -29,16 +31,20 @@ checkpoint_reports() {
   echo "checkpoint_created:$cp_dir"
 }
 
-echo "[1/6] Restore binary artifacts from policy"
-tools/restore_binary_artifacts.sh
+echo "[1/7] Restore binary artifacts from policy"
+if [[ "$RECOVERY_STRICT_CONDITIONAL_BINARIES" == "true" || "$RECOVERY_STRICT_CONDITIONAL_BINARIES" == "1" ]]; then
+  STRICT_MODE=true REQUIRE_CONDITIONAL=true tools/restore_binary_artifacts.sh
+else
+  tools/restore_binary_artifacts.sh
+fi
 
-echo "[2/6] Re-materialize filesystem from SQL"
+echo "[2/7] Re-materialize filesystem from SQL"
 tools/manifest_from_sql.sh
 
-echo "[3/6] Verify realm drift"
+echo "[3/7] Verify realm drift"
 tools/realm_drift_verify.sh
 
-echo "[4/6] Verify minimal snapshot keep-set"
+echo "[4/7] Verify minimal snapshot keep-set"
 tools/minimal_snapshot_guard.sh
 
 echo "[5/7] Checkpoint PM core reports before mutation"

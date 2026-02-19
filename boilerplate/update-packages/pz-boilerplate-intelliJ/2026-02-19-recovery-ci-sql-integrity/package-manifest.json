@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1",
+  "packageId": "2026-02-19-recovery-ci-sql-integrity",
+  "sourceRepo": "afp-converter",
+  "targetRepo": "pz-boilerplate-intelliJ",
+  "createdAt": "2026-02-19T11:10:00Z",
+  "summary": "Adds SQL-first recovery doctor tooling, CI pre-build SQL integrity gates, and governance rule updates.",
+  "files": [
+    { "path": ".github/workflows/ci.yml", "changeType": "update" },
+    { "path": "docs/SQL_FIRST_WORKFLOW.md", "changeType": "update" },
+    { "path": "pm/policy/policy-rule-tables.sql", "changeType": "update" },
+    { "path": "pm/workflow/binary-artifact-policy.txt", "changeType": "add_or_update" },
+    { "path": "pm/workflow/minimal-snapshot-keep.txt", "changeType": "add_or_update" },
+    { "path": "tools/recovery_doctor.sh", "changeType": "add" },
+    { "path": "tools/restore_binary_artifacts.sh", "changeType": "add" },
+    { "path": "tools/sql_drift_summary.py", "changeType": "add" },
+    { "path": "tools/sql_upsert_text_files.sh", "changeType": "add" },
+    { "path": "tools/restore_recovery_checkpoint.sh", "changeType": "add" },
+    { "path": "tools/install_git_hooks.sh", "changeType": "add" },
+    { "path": "tools/git-hooks/pre-commit", "changeType": "add" }
+  ],
+  "validation": [
+    "tools/recovery_doctor.sh",
+    "tools/realm_drift_verify.sh",
+    "tools/check_critical_db_hashes.sh check"
+  ]
+}

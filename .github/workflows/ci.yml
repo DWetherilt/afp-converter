@@ -21,14 +21,30 @@ jobs:
         with:
           python-version: "3.x"
       - name: Restore binary artifacts
+        env:
+          STRICT_MODE: "true"
         run: tools/restore_binary_artifacts.sh
       - name: Rehydrate from SQL
         run: tools/manifest_from_sql.sh
       - name: SQL drift verification
         run: tools/realm_drift_verify.sh
+      - name: SQL drift summary
+        run: python3 tools/sql_drift_summary.py --output pm/reports/sql-drift-summary.json --enforce
       - name: Critical DB hash verification
         run: tools/check_critical_db_hashes.sh check
       - name: Production build
         run: ./gradlew --no-daemon prodBuild
       - name: Documentation manifest
         run: ./gradlew --no-daemon documentationManifest
+      - name: Upload recovery artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: recovery-artifacts
+          path: |
+            pm/reports/sql-drift-summary.json
+            pm/reports/project-plan-progress-data.json
+            pm/reports/issues-log-tickle.json
+            pm/reports/issues-effectiveness.json
+            pm/reports/recovery-status.json
+            pm/state/critical-db-sha256.txt

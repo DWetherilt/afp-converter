@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T11:05:04.550901Z",
+  "generatedAt": "2026-02-19T12:58:29.405928Z",
   "status": "PASS",
   "realms": [
     {
@@ -15,7 +15,7 @@
     {
       "realm": "pm",
       "database": "pm/state/pm-realm.sqlite",
-      "total": 356,
+      "total": 359,
       "missingCount": 0,
       "mismatchCount": 0,
       "missingPreview": [],
@@ -24,7 +24,7 @@
     {
       "realm": "boilerplate",
       "database": "pm/state/boilerplate-realm.sqlite",
-      "total": 74,
+      "total": 78,
       "missingCount": 0,
       "mismatchCount": 0,
       "missingPreview": [],

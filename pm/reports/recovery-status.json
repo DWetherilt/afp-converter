@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T11:03:57Z",
+  "generatedAt": "2026-02-19T12:55:24Z",
   "recovery": {
     "rehydratedFromSql": true,
     "gradleWrapperJarRestoredFromGit": true,
@@ -39,6 +39,9 @@
     "criticalDbHashScript": "tools/check_critical_db_hashes.sh",
     "binaryRestoreScript": "tools/restore_binary_artifacts.sh",
     "recoveryDoctor": "tools/recovery_doctor.sh",
+    "checkpointRestoreScript": "tools/restore_recovery_checkpoint.sh",
+    "sqlUpsertHelper": "tools/sql_upsert_text_files.sh",
+    "gitHookInstaller": "tools/install_git_hooks.sh",
     "minimalKeepManifest": "pm/workflow/minimal-snapshot-keep.txt",
     "binaryPolicy": "pm/workflow/binary-artifact-policy.txt"
   }
