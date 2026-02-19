@@ -40,6 +40,22 @@
       "label": "tooling-registration-first-principle",
       "fileCount": 69,
       "gitHead": "1be0f03fc402fabaec12c733304b9e72e1f9152f"
+    },
+    {
+      "id": "20260219T012907Z-0.2.0-beta.1-pre-sql-materialization",
+      "createdAt": "2026-02-19T01:29:07+00:00",
+      "version": "0.2.0-beta.1",
+      "label": "pre-sql-materialization",
+      "fileCount": 41,
+      "gitHead": "242ad0f388bb569e2d9b734fe6dd1415b4c69ed2"
+    },
+    {
+      "id": "20260219T014536Z-0.2.0-beta.1-pre-sql-materialization",
+      "createdAt": "2026-02-19T01:45:36+00:00",
+      "version": "0.2.0-beta.1",
+      "label": "pre-sql-materialization",
+      "fileCount": 52,
+      "gitHead": "334fa72c3d0cc7455b1ca9aa8751b7bc6a6dc5c2"
     }
   ]
 }

@@ -1,0 +1,15 @@
+# Minimal keep-set required to re-manifest the project from SQL state.
+.git/
+pm/state/application-realm.sqlite
+pm/state/pm-realm.sqlite
+pm/state/boilerplate-realm.sqlite
+pm/state/project-state.sqlite
+pm/state/boilerplate-state.sqlite
+tools/manifest_from_sql.sh
+pm/workflow/minimal-snapshot-keep.txt
+pm/workflow/binary-artifact-policy.txt
+pm/state/critical-db-sha256.txt
+tools/minimal_snapshot.sh
+tools/minimal_snapshot_guard.sh
+tools/realm_drift_verify.sh
+tools/check_critical_db_hashes.sh

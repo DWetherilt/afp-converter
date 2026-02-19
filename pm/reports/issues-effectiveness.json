@@ -1,33 +1,31 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T01:37:52Z",
+  "generatedAt": "2026-02-19T02:06:51+00:00",
   "summary": {
+    "issueCount": 6,
+    "openIssueCount": 6,
     "highSeverityOpenCount": 3,
     "triggeredIssueCount": 4,
-    "taskCount": 26,
     "requiresIssuesLogUpdate": false,
-    "issueCount": 6,
-    "averageTaskPercentComplete": 90.27,
-    "openIssueCount": 6
+    "taskCount": 26,
+    "averageTaskPercentComplete": 90.27
   },
   "fidelity": {
-    "fidelityScore": 0.952575,
-    "averagePixelDiffRatio": 0.072288,
-    "tokenRecall": 0.959064,
-    "tokenPrecision": 1.0
+    "fidelityScore": null,
+    "averagePixelDiffRatio": null,
+    "tokenRecall": null,
+    "tokenPrecision": null
   },
   "signals": [
-    "Average pixel diff ratio above target (0.03).",
-    "Token recall below target (0.98).",
     "High-severity issues remain open."
   ],
   "triggeredIssues": [
     {
-      "id": "ISSUE-001",
+      "id": "ISSUE-002",
       "status": "Open",
-      "title": "Excel automation and workbook update fragility due Office account/licensing context",
+      "title": "Workbook repair/corruption when managed sheets are added by XML updater without synchronizing docProps/app.xml sheet metadata",
       "matchedComponents": [
-        "build.gradle"
+        "tools/run_excel_workbook_refresh.py"
       ]
     },
     {
@@ -35,7 +33,7 @@
       "status": "Open",
       "title": "Excel automation unavailable in headless/agent context (Apple event connection invalid), strict Excel-required mode fails as designed",
       "matchedComponents": [
-        "build.gradle"
+        "tools/run_excel_workbook_refresh.py"
       ]
     },
     {
@@ -43,10 +41,10 @@
       "status": "Open",
       "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
       "matchedComponents": [
-        "build.gradle",
-        "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/StateDatabaseTool.java",
+        "docs/boilerplate-sync-candidates.xlsx",
         "pm/state/boilerplate-state.sqlite",
-        "pm/state/project-state.sqlite"
+        "pm/state/project-state.sqlite",
+        "tools/run_excel_workbook_refresh.py"
       ]
     },
     {
@@ -54,12 +52,16 @@
       "status": "Open",
       "title": "Policy-governance sequence drift when updating constitutional/policy text without full checklist sequencing",
       "matchedComponents": [
-        "build.gradle",
         "docs/issues-log.csv",
-        "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/StateDatabaseTool.java",
         "pm/reports/governance-alerts.json",
         "pm/state/project-state.sqlite",
-        "tools/sql_code_workflow.sh"
+        "tools/fake-afp-engine.sh",
+        "tools/init_update_package.sh",
+        "tools/pm_workflow.py",
+        "tools/rollback_manager.py",
+        "tools/run_excel_workbook_refresh.py",
+        "tools/sql_code_workflow.sh",
+        "tools/versioning.py"
       ]
     }
   ],

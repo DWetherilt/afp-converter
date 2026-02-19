@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T01:37:54Z",
-  "source": "sqlite",
+  "generatedAt": "2026-02-19T02:07:42+00:00",
+  "sourceCsv": "docs/project-plan-progress.csv",
   "taskCount": 26,
   "tasks": [
     {
@@ -241,9 +241,9 @@
   ],
   "followUps": [
     {
-      "note": "Circle back and review restored workbook content against JSON/CSV sources.",
       "id": "restored-workbook-content-review",
-      "status": "pending"
+      "status": "pending",
+      "note": "Circle back and review restored workbook content against JSON/CSV sources."
     }
   ]
 }

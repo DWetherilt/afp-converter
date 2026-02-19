@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-19T02:07:06Z",
+  "recovery": {
+    "rehydratedFromSql": true,
+    "gradleWrapperJarRestoredFromGit": true,
+    "gradlewExecutable": true,
+    "realmDriftVerification": "PASS",
+    "criticalDbChecksums": "PASS"
+  },
+  "rebuild": {
+    "pmReportsRegeneratedByPython": [
+      "pm/reports/project-plan-progress-data.json",
+      "pm/reports/issues-log-tickle.json",
+      "pm/reports/issues-effectiveness.json"
+    ],
+    "projectPlanWorkbookRegenerated": "docs/project-plan-progress.xlsx",
+    "gradleTasks": {
+      "status": "BLOCKED",
+      "reason": "Network restriction in sandbox: cannot resolve services.gradle.org for Gradle distribution download"
+    }
+  },
+  "artifacts": {
+    "minimalSnapshotScript": "tools/minimal_snapshot.sh",
+    "rehydrationScript": "tools/manifest_from_sql.sh",
+    "driftVerifyScript": "tools/realm_drift_verify.sh",
+    "criticalDbHashScript": "tools/check_critical_db_hashes.sh",
+    "minimalKeepManifest": "pm/workflow/minimal-snapshot-keep.txt",
+    "binaryPolicy": "pm/workflow/binary-artifact-policy.txt"
+  }
+}

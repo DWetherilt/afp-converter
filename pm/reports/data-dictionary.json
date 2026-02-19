@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T01:37:49Z",
+  "generatedAt": "2026-02-19T01:45:28Z",
   "source": "sqlite",
   "sourceTable": "pm_data_dictionary",
   "entryCount": 16,
@@ -12,7 +12,7 @@
       "definition": "Boilerplate update package candidate registry synced from boilerplate/update-packages.",
       "sourceRef": "pm-tools:StateDatabaseTool/initBoilerplateSchema",
       "namingPattern": "snake_case",
-      "updatedAt": "2026-02-19 01:37:48"
+      "updatedAt": "2026-02-19 01:45:26"
     },
     {
       "objectName": "package_files",
@@ -21,7 +21,7 @@
       "definition": "Per-package file inventory for boilerplate payload audit/reporting.",
       "sourceRef": "pm-tools:StateDatabaseTool/initBoilerplateSchema",
       "namingPattern": "snake_case",
-      "updatedAt": "2026-02-19 01:37:48"
+      "updatedAt": "2026-02-19 01:45:26"
     },
     {
       "objectName": "pm_workflow_defaults",
@@ -30,7 +30,7 @@
       "definition": "Default workflow phase selection for normalized PM execution.",
       "sourceRef": "pm/workflow/workflow-manifest.json#defaults",
       "namingPattern": "snake_case",
-      "updatedAt": "2026-02-19 01:37:48"
+      "updatedAt": "2026-02-19 01:45:26"
     },
     {
       "objectName": "pm_workflow_phase_task_map",
@@ -39,7 +39,7 @@
       "definition": "Gradle adapter phaseTaskMap binding phase IDs to executable task lists.",
       "sourceRef": "pm/workflow/workflow-manifest.json#adapters.gradle.phaseTaskMap",
       "namingPattern": "snake_case",
-      "updatedAt": "2026-02-19 01:37:48"
+      "updatedAt": "2026-02-19 01:45:26"
     },
     {
       "objectName": "pm_workflow_manifest",
@@ -48,7 +48,7 @@
       "definition": "Normalized PM workflow phase/adapter mapping manifest.",
       "sourceRef": "pm/workflow/workflow-manifest.json",
       "namingPattern": "snake_case",
-      "updatedAt": "2026-02-19 01:37:48"
+      "updatedAt": "2026-02-19 01:45:26"
     },
     {
       "objectName": "code_file_content",
@@ -57,7 +57,7 @@
       "definition": "Canonical realm-managed source content for SQL-first materialization to filesystem endpoints.",
       "sourceRef": "pm-tools:StateDatabaseTool/initCodeIndexSchema",
       "namingPattern": "snake_case",
-      "updatedAt": "2026-02-19 01:37:48"
+      "updatedAt": "2026-02-19 01:45:26"
     },
     {
       "objectName": "code_files",
@@ -66,7 +66,7 @@
       "definition": "Realm-scoped file index for SQL-managed code search and traceability.",
       "sourceRef": "pm-tools:StateDatabaseTool/initCodeIndexSchema",
       "namingPattern": "snake_case",
-      "updatedAt": "2026-02-19 01:37:48"
+      "updatedAt": "2026-02-19 01:45:26"
     },
     {
       "objectName": "code_tokens",
@@ -75,7 +75,7 @@
       "definition": "Token postings list mapping indexed tokens to files and occurrence counts.",
       "sourceRef": "pm-tools:StateDatabaseTool/initCodeIndexSchema",
       "namingPattern": "snake_case",
-      "updatedAt": "2026-02-19 01:37:48"
+      "updatedAt": "2026-02-19 01:45:26"
     },
     {
       "objectName": "governance_events",
@@ -84,7 +84,7 @@
       "definition": "Policy/governance event history loaded from docs/policy-governance-events.csv.",
       "sourceRef": "pm-tools:StateDatabaseTool/initProjectSchema",
       "namingPattern": "snake_case",
-      "updatedAt": "2026-02-19 01:37:48"
+      "updatedAt": "2026-02-19 01:45:26"
     },
     {
       "objectName": "issues",
@@ -93,7 +93,7 @@
       "definition": "Issue log records loaded from docs/issues-log.csv for governance tickle/effectiveness workflows.",
       "sourceRef": "pm-tools:StateDatabaseTool/initProjectSchema",
       "namingPattern": "snake_case",
-      "updatedAt": "2026-02-19 01:37:48"
+      "updatedAt": "2026-02-19 01:45:26"
     },
     {
       "objectName": "plan_tasks",
@@ -102,7 +102,7 @@
       "definition": "Project plan task rows loaded from docs/project-plan-progress.csv.",
       "sourceRef": "pm-tools:StateDatabaseTool/initProjectSchema",
       "namingPattern": "snake_case",
-      "updatedAt": "2026-02-19 01:37:48"
+      "updatedAt": "2026-02-19 01:45:26"
     },
     {
       "objectName": "pm_data_dictionary",
@@ -111,7 +111,7 @@
       "definition": "Data dictionary of PM governance/state objects and naming conventions.",
       "sourceRef": "pm/policy/policy-rule-tables.sql",
       "namingPattern": "snake_case",
-      "updatedAt": "2026-02-19 01:37:48"
+      "updatedAt": "2026-02-19 01:45:26"
     },
     {
       "objectName": "policy_rule_catalog",
@@ -120,7 +120,7 @@
       "definition": "SQL-backed mutable policy rule catalog exported to pm/reports/policy-rules.json.",
       "sourceRef": "pm/policy/policy-rule-tables.sql",
       "namingPattern": "snake_case",
-      "updatedAt": "2026-02-19 01:37:48"
+      "updatedAt": "2026-02-19 01:45:26"
     },
     {
       "objectName": "repo_file_state",
@@ -129,7 +129,7 @@
       "definition": "Per-path repository state mirror used for file-discipline reporting.",
       "sourceRef": "pm-tools:StateDatabaseTool/initProjectSchema",
       "namingPattern": "snake_case",
-      "updatedAt": "2026-02-19 01:37:48"
+      "updatedAt": "2026-02-19 01:45:26"
     },
     {
       "objectName": "repo_vcs_snapshot",
@@ -138,7 +138,7 @@
       "definition": "Repository-level VCS state mirror (head/branch/dirty counts).",
       "sourceRef": "pm-tools:StateDatabaseTool/initProjectSchema",
       "namingPattern": "snake_case",
-      "updatedAt": "2026-02-19 01:37:48"
+      "updatedAt": "2026-02-19 01:45:26"
     },
     {
       "objectName": "token_dictionary",
@@ -147,7 +147,7 @@
       "definition": "Realm-scoped token dictionary derived from indexed source files for keyword swatch search.",
       "sourceRef": "pm-tools:StateDatabaseTool/initCodeIndexSchema",
       "namingPattern": "snake_case",
-      "updatedAt": "2026-02-19 01:37:48"
+      "updatedAt": "2026-02-19 01:45:26"
     }
   ]
 }

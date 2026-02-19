@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T01:37:52Z",
+  "generatedAt": "2026-02-19T02:06:51+00:00",
   "issuesLogPath": "docs/issues-log.csv",
   "issuesLogTouchedInWorkingTree": true,
-  "changedPathCount": 32,
-  "triggeredIssueCount": 4,
+  "changedPathCount": 106,
+  "triggeredIssueCount": 5,
   "requiresIssuesLogUpdate": false,
   "triggeredIssues": [
     {
@@ -12,15 +12,29 @@
       "status": "Open",
       "title": "Excel automation and workbook update fragility due Office account/licensing context",
       "matchedComponents": [
-        "build.gradle"
+        "docs/project-plan-progress.xlsx",
+        "pm/reports/project-plan-progress-data.json",
+        "tools/export_project_plan_progress_json.py",
+        "tools/update_project_plan_workbook.py"
       ]
     },
     {
-      "id": "ISSUE-003",
+      "id": "ISSUE-002",
       "status": "Open",
-      "title": "Excel automation unavailable in headless/agent context (Apple event connection invalid), strict Excel-required mode fails as designed",
+      "title": "Workbook repair/corruption when managed sheets are added by XML updater without synchronizing docProps/app.xml sheet metadata",
       "matchedComponents": [
-        "build.gradle"
+        "docs/project-plan-progress.xlsx",
+        "docs/project-plan-progress.xlsx.zip",
+        "tools/update_project_plan_workbook.py"
+      ]
+    },
+    {
+      "id": "ISSUE-004",
+      "status": "Open",
+      "title": "Progress Graph sheet visual/layout quality needs tuning despite functional correctness",
+      "matchedComponents": [
+        "docs/project-plan-progress.xlsx",
+        "preview/project-plan-progress-poi-scratch.xlsx"
       ]
     },
     {
@@ -28,10 +42,12 @@
       "status": "Open",
       "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
       "matchedComponents": [
-        "build.gradle",
-        "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/StateDatabaseTool.java",
+        "docs/boilerplate-sync-candidates.xlsx",
+        "docs/project-plan-progress.xlsx",
+        "docs/project-plan-progress.xlsx.zip",
         "pm/state/boilerplate-state.sqlite",
-        "pm/state/project-state.sqlite"
+        "pm/state/project-state.sqlite",
+        "tools/update_project_plan_workbook.py"
       ]
     },
     {
@@ -39,12 +55,21 @@
       "status": "Open",
       "title": "Policy-governance sequence drift when updating constitutional/policy text without full checklist sequencing",
       "matchedComponents": [
-        "build.gradle",
         "docs/issues-log.csv",
-        "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/StateDatabaseTool.java",
+        "docs/policy-governance-events.xlsx",
+        "pm/reports/documentation-manifest.json",
         "pm/reports/governance-alerts.json",
+        "pm/reports/version-control-ledger.json",
         "pm/state/project-state.sqlite",
-        "tools/sql_code_workflow.sh"
+        "tools/check_critical_db_hashes.sh",
+        "tools/export_project_plan_progress_json.py",
+        "tools/issues_effectiveness_report.py",
+        "tools/issues_log_tickle.py",
+        "tools/manifest_from_sql.py",
+        "tools/manifest_from_sql.sh",
+        "tools/minimal_snapshot.sh",
+        "tools/realm_drift_verify.sh",
+        "tools/update_project_plan_workbook.py"
       ]
     }
   ],
