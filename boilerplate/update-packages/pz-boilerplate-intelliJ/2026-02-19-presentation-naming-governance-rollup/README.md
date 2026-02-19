@@ -13,3 +13,7 @@ Standardize human-friendly presentation references for governance/decision/actio
 ## Validation
 - Run `./gradlew --no-daemon qualityGate`
 - Confirm `pm/reports/presentation-ref-lint.json` is PASS
+
+## Additional governance extension
+- Persist all created identifiers across PM/policy/code/version-control workflows into SQL `identifier_registry`.
+- Publish `pm/reports/identifier-registry.json` for audit visibility.

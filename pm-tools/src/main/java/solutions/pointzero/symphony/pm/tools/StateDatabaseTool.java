@@ -63,6 +63,7 @@ public final class StateDatabaseTool {
         "repo_vcs_snapshot",
         "repo_file_state",
         "policy_rule_catalog",
+        "identifier_registry",
         "pm_data_dictionary",
         "code_files",
         "code_file_content",
@@ -77,6 +78,8 @@ public final class StateDatabaseTool {
     );
     private static final List<String> REQUIRED_POLICY_RULE_IDS = List.of(
         "PM-COMMS-001",
+        "PM-ID-001",
+        "PM-ID-002",
         "PM-SQLCODE-001",
         "PM-SQLCODE-002",
         "PM-SQLCODE-003",
@@ -102,7 +105,7 @@ public final class StateDatabaseTool {
 
     static int execute(String[] args) throws Exception {
         if (args.length == 0) {
-            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-boilerplate-promotion-report|upsert-decision|link-decision|export-decision-priority|upsert-knowledge|add-knowledge-evidence|link-knowledge-decision|export-knowledge-base|upsert-action-item|link-action-item-decision|ingest-action-inbox|export-action-items|search-action-token-multi|upsert-realm-policy|export-realm-policy|export-policy-rules|export-data-dictionary|lint-data-dictionary|lint-policy-rules|sync-code-index|search-code-token|search-code-token-multi|materialize-code-realm|upsert-code-file|upsert-code-files-manifest|verify-code-realm|report-code-realm-coverage");
+            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-identifier-registry|export-project-file-inventory|export-boilerplate-package-inventory|export-boilerplate-promotion-report|upsert-decision|link-decision|export-decision-priority|upsert-knowledge|add-knowledge-evidence|link-knowledge-decision|export-knowledge-base|upsert-action-item|link-action-item-decision|ingest-action-inbox|export-action-items|search-action-token-multi|upsert-realm-policy|export-realm-policy|export-policy-rules|export-data-dictionary|lint-data-dictionary|lint-policy-rules|sync-code-index|search-code-token|search-code-token-multi|materialize-code-realm|upsert-code-file|upsert-code-files-manifest|verify-code-realm|report-code-realm-coverage");
         }
         String command = args[0];
         Map<String, String> cli = parseArgs(args, 1);
@@ -115,6 +118,7 @@ public final class StateDatabaseTool {
             case "issues-effectiveness" -> runIssuesEffectiveness(cli);
             case "governance-alerts" -> runGovernanceAlerts(cli);
             case "version-control-ledger" -> runVersionControlLedger(cli);
+            case "export-identifier-registry" -> runExportIdentifierRegistry(cli);
             case "export-project-file-inventory" -> runExportProjectFileInventory(cli);
             case "export-boilerplate-package-inventory" -> runExportBoilerplatePackageInventory(cli);
             case "export-boilerplate-promotion-report" -> runExportBoilerplatePromotionReport(cli);
@@ -605,6 +609,52 @@ public final class StateDatabaseTool {
         return 0;
     }
 
+    private static int runExportIdentifierRegistry(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        Path outputPath = requiredPath(cli, "--json");
+        ensureParent(outputPath);
+
+        List<Map<String, Object>> identifiers = new ArrayList<>();
+        Map<String, Integer> byDiscipline = new LinkedHashMap<>();
+        Map<String, Integer> byKind = new LinkedHashMap<>();
+        try (Connection conn = connect(dbPath);
+             PreparedStatement ps = conn.prepareStatement(
+                 "select identifier, discipline, identifier_kind, realm, scope_ref, source_table, human_ref, created_at, updated_at " +
+                     "from identifier_registry order by updated_at desc, discipline asc, identifier_kind asc, identifier asc"
+             );
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String discipline = text(rs.getString(2));
+                String kind = text(rs.getString(3));
+                byDiscipline.put(discipline, byDiscipline.getOrDefault(discipline, 0) + 1);
+                byKind.put(kind, byKind.getOrDefault(kind, 0) + 1);
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("identifier", text(rs.getString(1)));
+                row.put("discipline", discipline);
+                row.put("identifierKind", kind);
+                row.put("realm", text(rs.getString(4)));
+                row.put("scopeRef", text(rs.getString(5)));
+                row.put("sourceTable", text(rs.getString(6)));
+                row.put("humanRef", text(rs.getString(7)));
+                row.put("createdAt", text(rs.getString(8)));
+                row.put("updatedAt", text(rs.getString(9)));
+                identifiers.add(row);
+            }
+        }
+
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("schemaVersion", "1");
+        payload.put("generatedAt", nowIso());
+        payload.put("source", "sqlite");
+        payload.put("sourceTable", "identifier_registry");
+        payload.put("identifierCount", identifiers.size());
+        payload.put("byDiscipline", byDiscipline);
+        payload.put("byKind", byKind);
+        payload.put("identifiers", identifiers);
+        writeJson(outputPath, payload);
+        return 0;
+    }
+
     private static int runExportProjectFileInventory(Map<String, String> cli) throws Exception {
         Path dbPath = requiredPath(cli, "--db");
         Path csvPath = requiredPath(cli, "--csv");
@@ -808,6 +858,16 @@ public final class StateDatabaseTool {
                 ps.setString(21, now);
                 ps.executeUpdate();
             }
+            registerIdentifier(
+                conn,
+                decisionId,
+                "code",
+                "decision_id",
+                realm,
+                text(cli.get("--scope-ref")),
+                "decision_log",
+                humanReadableRef("Decision", decisionId, firstNonBlank(dateFromIdentifier(decisionId), isoDateOnly(now)), -1)
+            );
         }
         return 0;
     }
@@ -931,6 +991,16 @@ public final class StateDatabaseTool {
                 ps.setString(14, now);
                 ps.executeUpdate();
             }
+            registerIdentifier(
+                conn,
+                knowledgeId,
+                "project_management",
+                "knowledge_id",
+                text(cli.get("--realm")),
+                text(cli.get("--scope-ref")),
+                "knowledge_entries",
+                humanReadableRef("Knowledge", knowledgeId, firstNonBlank(dateFromIdentifier(knowledgeId), isoDateOnly(now)), -1)
+            );
         }
         return 0;
     }
@@ -1102,6 +1172,16 @@ public final class StateDatabaseTool {
                 ps.setString(14, now);
                 ps.executeUpdate();
             }
+            registerIdentifier(
+                conn,
+                actionId,
+                "project_management",
+                "action_id",
+                text(cli.get("--realm")),
+                text(cli.get("--source")),
+                "action_items",
+                humanReadableRef("Action", actionId, firstNonBlank(dateFromIdentifier(actionId), isoDateOnly(nowIso())), -1)
+            );
         }
         return 0;
     }
@@ -1205,6 +1285,26 @@ public final class StateDatabaseTool {
                     inboxPs.setString(6, actionId);
                     inboxPs.executeUpdate();
                 }
+                registerIdentifier(
+                    conn,
+                    actionId,
+                    "project_management",
+                    "action_id",
+                    "pm",
+                    source,
+                    "action_items",
+                    humanReadableRef("Action", actionId, firstNonBlank(dateFromIdentifier(actionId), isoDateOnly(nowIso())), -1)
+                );
+                registerIdentifier(
+                    conn,
+                    eventSha,
+                    "project_management",
+                    "action_inbox_event_sha",
+                    "pm",
+                    source,
+                    "action_inbox_events",
+                    humanReadableRef("Inbox Event", eventSha, isoDateOnly(nowIso()), -1)
+                );
             }
         }
         return 0;
@@ -1373,6 +1473,16 @@ public final class StateDatabaseTool {
                 ps.setString(8, nowIso());
                 ps.executeUpdate();
             }
+            registerIdentifier(
+                conn,
+                ruleId,
+                "policy_management",
+                "realm_policy_rule_id",
+                realm,
+                text(cli.get("--category")),
+                "realm_policy_catalog",
+                humanReadableRef("Policy Rule", ruleId, isoDateOnly(nowIso()), -1)
+            );
         }
         return 0;
     }
@@ -2084,6 +2194,21 @@ public final class StateDatabaseTool {
                 )
                 """);
             st.execute("create index if not exists idx_realm_policy_catalog_realm_category on realm_policy_catalog(realm, category)");
+            st.execute("""
+                create table if not exists identifier_registry (
+                    identifier text not null,
+                    discipline text not null default '',
+                    identifier_kind text not null default '',
+                    realm text not null default '',
+                    scope_ref text not null default '',
+                    source_table text not null default '',
+                    human_ref text not null default '',
+                    created_at text not null,
+                    updated_at text not null,
+                    primary key(identifier, discipline, identifier_kind, realm)
+                )
+                """);
+            st.execute("create index if not exists idx_identifier_registry_discipline on identifier_registry(discipline, identifier_kind)");
         }
         ensureColumnExists(conn, "decision_log", "sub_scope_ref", "text not null default ''");
         ensureColumnExists(conn, "decision_log", "value_density", "real not null default 0.0");
@@ -2489,6 +2614,21 @@ public final class StateDatabaseTool {
                 """);
             st.execute("create index if not exists idx_policy_rule_realm_category on policy_rule_catalog(realm, category)");
             st.execute("""
+                create table if not exists identifier_registry (
+                    identifier text not null,
+                    discipline text not null default '',
+                    identifier_kind text not null default '',
+                    realm text not null default '',
+                    scope_ref text not null default '',
+                    source_table text not null default '',
+                    human_ref text not null default '',
+                    created_at text not null,
+                    updated_at text not null,
+                    primary key(identifier, discipline, identifier_kind, realm)
+                )
+                """);
+            st.execute("create index if not exists idx_identifier_registry_discipline on identifier_registry(discipline, identifier_kind)");
+            st.execute("""
                 create table if not exists action_items (
                     action_id text primary key,
                     realm text not null default '',
@@ -2614,6 +2754,21 @@ public final class StateDatabaseTool {
                     primary key(candidate_id, file_path)
                 )
                 """);
+            st.execute("""
+                create table if not exists identifier_registry (
+                    identifier text not null,
+                    discipline text not null default '',
+                    identifier_kind text not null default '',
+                    realm text not null default '',
+                    scope_ref text not null default '',
+                    source_table text not null default '',
+                    human_ref text not null default '',
+                    created_at text not null,
+                    updated_at text not null,
+                    primary key(identifier, discipline, identifier_kind, realm)
+                )
+                """);
+            st.execute("create index if not exists idx_identifier_registry_discipline on identifier_registry(discipline, identifier_kind)");
         }
         ensureColumnExists(conn, "package_candidates", "realm", "text not null default 'boilerplate'");
         ensureColumnExists(conn, "package_candidates", "promotion_status", "text not null default 'pending_review'");
@@ -2638,11 +2793,22 @@ public final class StateDatabaseTool {
                 "values(?,?,?,?,?,?,?,?,?,?)"
         )) {
             for (Map<String, String> row : rows) {
+                String issueId = text(row.get("id"));
                 for (int i = 0; i < ISSUE_COLUMNS.size(); i++) {
                     ps.setString(i + 1, row.get(ISSUE_COLUMNS.get(i)));
                 }
                 ps.setString(10, now);
                 ps.addBatch();
+                registerIdentifier(
+                    conn,
+                    issueId,
+                    "project_management",
+                    "issue_id",
+                    "pm",
+                    "docs/issues-log.csv",
+                    "issues",
+                    humanReadableRef("Issue", issueId, firstNonBlank(dateFromIdentifier(issueId), isoDateOnly(now)), -1)
+                );
             }
             ps.executeBatch();
         }
@@ -2675,6 +2841,16 @@ public final class StateDatabaseTool {
                 ps.setString(9, row.get("notes"));
                 ps.setString(10, now);
                 ps.addBatch();
+                registerIdentifier(
+                    conn,
+                    taskKey,
+                    "project_management",
+                    "plan_task_key",
+                    "pm",
+                    row.get("workstream"),
+                    "plan_tasks",
+                    humanReadableRef("Plan Task", taskKey, firstNonBlank(row.get("last_updated"), isoDateOnly(now)), -1)
+                );
             }
             ps.executeBatch();
         }
@@ -2725,11 +2901,23 @@ public final class StateDatabaseTool {
                 "values(?,?,?,?,?,?,?,?,?,?)"
         )) {
             for (Map<String, String> row : rows) {
+                String eventId = text(row.get("event_id"));
+                String eventDate = text(row.get("event_date"));
                 for (int i = 0; i < GOVERNANCE_COLUMNS.size(); i++) {
                     ps.setString(i + 1, row.get(GOVERNANCE_COLUMNS.get(i)));
                 }
                 ps.setString(10, now);
                 ps.addBatch();
+                registerIdentifier(
+                    conn,
+                    eventId,
+                    "policy_management",
+                    "governance_event_id",
+                    "pm",
+                    text(row.get("phase")),
+                    "governance_events",
+                    humanReadableRef("Governance Event", eventId, firstNonBlank(eventDate, isoDateOnly(now)), -1)
+                );
             }
             ps.executeBatch();
         }
@@ -2754,6 +2942,24 @@ public final class StateDatabaseTool {
             }
         }
         conn.commit();
+        try (PreparedStatement ps = conn.prepareStatement(
+            "select rule_id, realm from policy_rule_catalog"
+        ); ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String ruleId = text(rs.getString(1));
+                String realm = text(rs.getString(2));
+                registerIdentifier(
+                    conn,
+                    ruleId,
+                    "policy_management",
+                    "policy_rule_id",
+                    firstNonBlank(realm, "pm"),
+                    "pm/policy/policy-rule-tables.sql",
+                    "policy_rule_catalog",
+                    humanReadableRef("Policy Rule", ruleId, isoDateOnly(nowIso()), -1)
+                );
+            }
+        }
         conn.setAutoCommit(true);
     }
 
@@ -2832,6 +3038,34 @@ public final class StateDatabaseTool {
             ps.setString(8, now);
             ps.executeUpdate();
         }
+        String snapshotDate = isoDateOnly(now);
+        String commitOrdinalRaw = text(gitSingle("git", "rev-list", "--count", "--since=" + snapshotDate + "T00:00:00Z", "HEAD"));
+        int commitOrdinal = 1;
+        try {
+            commitOrdinal = Math.max(1, Integer.parseInt(commitOrdinalRaw));
+        } catch (Exception ignored) {
+            commitOrdinal = 1;
+        }
+        registerIdentifier(
+            conn,
+            gitHead,
+            "version_control",
+            "git_commit_sha",
+            "pm",
+            gitBranch,
+            "repo_vcs_snapshot",
+            humanReadableRef("Commit", gitHead, snapshotDate, commitOrdinal)
+        );
+        registerIdentifier(
+            conn,
+            gitBranch,
+            "version_control",
+            "git_branch",
+            "pm",
+            "",
+            "repo_vcs_snapshot",
+            humanReadableRef("Branch", gitBranch, snapshotDate, -1)
+        );
 
         try (Statement clear = conn.createStatement()) {
             clear.execute("delete from repo_file_state");
@@ -2890,6 +3124,26 @@ public final class StateDatabaseTool {
                 ps.setString(14, GSON.toJson(row.supersedes()));
                 ps.setString(15, now);
                 ps.addBatch();
+                registerIdentifier(
+                    conn,
+                    row.candidateId(),
+                    "project_management",
+                    "boilerplate_candidate_id",
+                    row.realm(),
+                    row.targetRepo(),
+                    "package_candidates",
+                    humanReadableRef("Boilerplate Candidate", row.candidateId(), firstNonBlank(isoDateOnly(row.createdAt()), isoDateOnly(now)), -1)
+                );
+                registerIdentifier(
+                    conn,
+                    row.packageId(),
+                    "project_management",
+                    "boilerplate_package_id",
+                    row.realm(),
+                    row.targetRepo(),
+                    "package_candidates",
+                    humanReadableRef("Boilerplate Package", row.packageId(), firstNonBlank(isoDateOnly(row.createdAt()), isoDateOnly(now)), -1)
+                );
             }
             ps.executeBatch();
         }
@@ -2911,6 +3165,38 @@ public final class StateDatabaseTool {
         }
         conn.commit();
         conn.setAutoCommit(true);
+    }
+
+    private static void registerIdentifier(Connection conn,
+                                           String identifier,
+                                           String discipline,
+                                           String kind,
+                                           String realm,
+                                           String scopeRef,
+                                           String sourceTable,
+                                           String humanRef) throws SQLException {
+        String id = text(identifier);
+        if (id.isBlank()) {
+            return;
+        }
+        String now = nowIso();
+        try (PreparedStatement ps = conn.prepareStatement(
+            "insert into identifier_registry(identifier,discipline,identifier_kind,realm,scope_ref,source_table,human_ref,created_at,updated_at) " +
+                "values(?,?,?,?,?,?,?,?,?) " +
+                "on conflict(identifier,discipline,identifier_kind,realm) do update set " +
+                "scope_ref=excluded.scope_ref, source_table=excluded.source_table, human_ref=excluded.human_ref, updated_at=excluded.updated_at"
+        )) {
+            ps.setString(1, id);
+            ps.setString(2, text(discipline));
+            ps.setString(3, text(kind));
+            ps.setString(4, text(realm));
+            ps.setString(5, text(scopeRef));
+            ps.setString(6, text(sourceTable));
+            ps.setString(7, text(humanRef));
+            ps.setString(8, now);
+            ps.setString(9, now);
+            ps.executeUpdate();
+        }
     }
 
     private static List<CandidateRow> scanCandidates(Path packagesDir) throws Exception {

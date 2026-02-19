@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T19:25:02Z",
+  "generatedAt": "2026-02-19T19:39:47Z",
   "issuesLogPath": "docs/issues-log.csv",
   "issuesLogTouchedInWorkingTree": true,
-  "changedPathCount": 123,
+  "changedPathCount": 25,
   "triggeredIssueCount": 4,
   "requiresIssuesLogUpdate": false,
   "triggeredIssues": [
@@ -12,8 +12,7 @@
       "status": "Open",
       "title": "Excel automation and workbook update fragility due Office account/licensing context",
       "matchedComponents": [
-        "build.gradle",
-        "pm/reports/project-plan-progress-data.json"
+        "build.gradle"
       ]
     },
     {
@@ -46,13 +45,8 @@
         "build.gradle",
         "docs/issues-log.csv",
         "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/StateDatabaseTool.java",
-        "pm/reports/documentation-manifest.json",
         "pm/reports/governance-alerts.json",
-        "pm/reports/version-control-ledger.json",
-        "pm/state/project-state.sqlite",
-        "tools/action_decision_suggestions.py",
-        "tools/presentation_ref_lint.py",
-        "tools/tests/test_presentation_ref_lint.py"
+        "pm/state/project-state.sqlite"
       ]
     }
   ],

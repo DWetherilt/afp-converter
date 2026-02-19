@@ -1,13 +1,15 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T19:25:03Z",
+  "generatedAt": "2026-02-19T19:39:47Z",
   "source": "sqlite",
   "sourceTable": "policy_rule_catalog",
-  "requiredCount": 7,
-  "enabledCount": 47,
+  "requiredCount": 9,
+  "enabledCount": 49,
   "missingCount": 0,
   "requiredRuleIds": [
     "PM-COMMS-001",
+    "PM-ID-001",
+    "PM-ID-002",
     "PM-SQLCODE-001",
     "PM-SQLCODE-002",
     "PM-SQLCODE-003",

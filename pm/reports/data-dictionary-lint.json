@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T19:24:54Z",
+  "generatedAt": "2026-02-19T19:39:39Z",
   "source": "sqlite",
   "sourceTable": "pm_data_dictionary",
-  "requiredCount": 20,
-  "presentCount": 35,
+  "requiredCount": 21,
+  "presentCount": 37,
   "missingCount": 0,
   "requiredObjects": [
     "issues",
@@ -16,6 +16,7 @@
     "repo_vcs_snapshot",
     "repo_file_state",
     "policy_rule_catalog",
+    "identifier_registry",
     "pm_data_dictionary",
     "code_files",
     "code_file_content",

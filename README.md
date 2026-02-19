@@ -74,6 +74,9 @@ API documentation:
   - enforced by `presentationRefLint` and included in `qualityGate`
 - `pm/reports/version-control-ledger.json`:
   - generated VCS/file-discipline ledger sourced from `pm/state/project-state.sqlite`
+- `pm/reports/identifier-registry.json`:
+  - generated cross-discipline identifier ledger sourced from `identifier_registry` in `pm/state/project-state.sqlite`
+  - persists identifiers from project-management, policy-management, code, and version-control workflows
 - `pm/reports/repo-file-inventory-with-context.csv`:
   - generated project file inventory with DB provenance/maintenance context sourced from `pm/state/project-state.sqlite`
 - `pm/reports/boilerplate-package-files-with-context.csv`:

@@ -1,22 +1,22 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T19:25:07Z",
+  "generatedAt": "2026-02-19T19:39:52Z",
   "source": "pm/state/project-state.sqlite",
   "targets": [
     {
       "realm": "application",
       "db": "pm/state/application-realm.sqlite",
-      "ruleCount": 43
+      "ruleCount": 45
     },
     {
       "realm": "pm",
       "db": "pm/state/pm-realm.sqlite",
-      "ruleCount": 41
+      "ruleCount": 43
     },
     {
       "realm": "boilerplate",
       "db": "pm/state/boilerplate-realm.sqlite",
-      "ruleCount": 45
+      "ruleCount": 47
     }
   ]
 }

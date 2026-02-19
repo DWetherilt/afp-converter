@@ -360,6 +360,7 @@ Generated outputs:
 - `pm/reports/application-realm-policy.json`
 - `pm/reports/pm-realm-policy.json`
 - `pm/reports/boilerplate-realm-policy.json`
+- `pm/reports/identifier-registry.json`
 
 Presentation naming convention in report payloads:
 

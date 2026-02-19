@@ -984,6 +984,22 @@ tasks.register('versionControlLedger', Exec) {
     }
 }
 
+tasks.register('identifierRegistryReport', Exec) {
+    group = 'documentation'
+    description = 'Generates pm/reports/identifier-registry.json from SQLite project state.'
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-identifier-registry',
+            '--db', 'pm/state/project-state.sqlite',
+            '--json', 'pm/reports/identifier-registry.json'
+    }
+}
+
 tasks.register('boilerplateStateDb', Exec) {
     group = 'documentation'
     description = 'Builds pm/state/boilerplate-state.sqlite from update packages'
@@ -1445,6 +1461,7 @@ tasks.register('documentationManifest') {
     dependsOn('crossRealmTokenSearch')
     dependsOn('crossRealmActionTokenSearch')
     dependsOn('stateInventoryCsv')
+    dependsOn('identifierRegistryReport')
     dependsOn('projectPlanWorkbook')
     dependsOn('policyGovernanceWorkbook')
     dependsOn('boilerplateSyncWorkbook')
@@ -1467,6 +1484,7 @@ tasks.register('documentationManifest') {
             file('pm/reports/project-plan-progress-data.json'),
             file('pm/reports/governance-alerts.json'),
             file('pm/reports/version-control-ledger.json'),
+            file('pm/reports/identifier-registry.json'),
             file('pm/reports/issues-log-tickle.json'),
             file('pm/reports/issues-effectiveness.json'),
             file('pm/reports/policy-rules.json'),
@@ -1577,6 +1595,7 @@ tasks.register('publishCiArtifacts') {
             file('pm/reports/project-plan-progress-data.json'),
             file('pm/reports/governance-alerts.json'),
             file('pm/reports/version-control-ledger.json'),
+            file('pm/reports/identifier-registry.json'),
             file('pm/reports/issues-log-tickle.json'),
             file('pm/reports/issues-effectiveness.json'),
             file('pm/reports/policy-rules.json'),

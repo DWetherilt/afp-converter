@@ -492,4 +492,32 @@ class StateDatabaseToolTest {
         assertTrue(payload.contains("\"decisionId\": \"PM-DEC-20260219-007\""));
         assertTrue(payload.contains("\"decisionRef\": \"Decision | 2026-02-19 | #007\""));
     }
+
+    @Test
+    void exportIdentifierRegistryIncludesPersistedActionIdentifier(@TempDir Path tempDir) throws Exception {
+        Path db = tempDir.resolve("project-state.sqlite");
+        Path out = tempDir.resolve("identifier-registry.json");
+
+        int upsert = StateDatabaseTool.execute(new String[] {
+            "upsert-action-item",
+            "--db", db.toString(),
+            "--action-id", "ACT-ID-20260219-001",
+            "--realm", "pm",
+            "--title", "Persist identifier registry rows",
+            "--status", "open",
+            "--priority", "high"
+        });
+        assertEquals(0, upsert);
+
+        int export = StateDatabaseTool.execute(new String[] {
+            "export-identifier-registry",
+            "--db", db.toString(),
+            "--json", out.toString()
+        });
+        assertEquals(0, export);
+
+        String payload = Files.readString(out, StandardCharsets.UTF_8);
+        assertTrue(payload.contains("\"identifier\": \"ACT-ID-20260219-001\""));
+        assertTrue(payload.contains("\"identifierKind\": \"action_id\""));
+    }
 }
