@@ -154,4 +154,6 @@ Deliver near-IBM parity rendering for AFP input by implementing true AFP object/
   - `fidelityScore >= 0.95` and `averagePixelDiffRatio <= 0.03` on agreed corpus.
 
 ## Proposed Immediate Next Execution Sequence
-1. implement evidence-driven image object resolution for `sample.afp`: distinguish raster payloads from structured/resource payloads inside `BIM` blocks, resolve referenced image resources where present, and only raw-decode when raster evidence exists; then re-run fidelity tuning and cross-exam.
+1. keep SQLite-backed project/boilerplate state stores current (`projectStateDb`, `boilerplateStateDb`) and route workflow/reporting outputs through them by default.
+2. strengthen per-image resource binding in `sample.afp`: pair each `BIM` object with candidate embedded resources using token overlap + placement/size heuristics, then only promote page-level fallback when object-level binding confidence is below threshold.
+3. extend print-centric cross-exam output to include `BIM`/`BOC` token timeline slices and inferred binding decisions so renderer back-ports are directly evidence-linked.

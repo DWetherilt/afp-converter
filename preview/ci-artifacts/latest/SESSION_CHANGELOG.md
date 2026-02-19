@@ -402,3 +402,255 @@ This changelog is reconstructed from repository artifacts and our current thread
   - This confirms the remaining gap is descriptor/reference interpretation, not absence of decodable embedded image bytes.
 - Plan progression:
   - Updated Workstream D/F progress notes to include token+payload binding evidence reporting.
+- Progress workbook extension:
+  - Added `priority` to `docs/project-plan-progress.csv` and workbook update flow.
+  - Extended workbook updater to maintain `priority` in `Current Progress` and `Status History` (`previous_priority`/`new_priority`).
+  - Added managed `Completion Trend` sheet generation with per-task per-iteration completion history and ASCII line-trend column.
+  - Kept guarded in-place update strategy for `Current Progress`/`Status History` metadata preservation and left non-managed sheets untouched.
+- Progress workbook embedded chart enhancement:
+  - Added real Excel chart wiring for `Completion Trend` (`sheet3.xml.rels` -> drawing -> chart parts).
+  - Added chart-source matrix columns on `Completion Trend` and generated multi-series line chart (one series per task, x-axis iteration, y-axis percent complete).
+  - Preserved existing non-managed sheets and kept update flow idempotent across repeated runs.
+- Workbook stability fix for trend graph:
+  - Removed embedded drawing/chart OOXML generation path and cleanup of any chart/drawing parts during workbook refresh.
+  - Restored workbook from backup template and regenerated with formula-driven graph column (`REPT/ROUND`) in `Completion Trend`.
+  - Kept metadata-preserving updates for `Current Progress` and `Status History` and retained user filter/sort settings.
+- Excel-native automation workstream bootstrap:
+  - Added JSON intermediary exporter `tools/export_project_plan_progress_json.py` producing `preview/project-plan-progress-data.json` from `docs/project-plan-progress.csv`.
+  - Added VBA module `tools/WorkbookUpdater.bas` with `RefreshProgressFromJson` to update:
+    - `Current Progress`
+    - append-only `Status History` snapshots
+    - `Completion Trend` with formula-based graph column
+  - Added Gradle task `projectPlanProgressJson` and wired it into documentation/build artifacts.
+  - Recorded follow-up to circle back and review restored workbook content against CSV/JSON sources.
+- Issues log + tickle enforcement:
+  - Added `docs/issues-log.csv` and recorded workbook/Excel-account incident as `ISSUE-001`.
+  - Added `tools/issues_log_tickle.py` to detect when changed files overlap issue-referenced components.
+  - Added Gradle task `issuesLogTickle` and wired it into `documentationManifest` with enforcement.
+  - Added `preview/issues-log-tickle.json` artifact so issue-log triggers are visible in outputs/CI artifacts.
+- Excel-native workbook refresh default:
+  - Added native runner `tools/run_excel_workbook_refresh.py` + `tools/run_excel_workbook_refresh.applescript`.
+  - Updated `tools/WorkbookUpdater.bas` with path-based entrypoint `RefreshProgressFromJsonForWorkbookPath(workbookPath, jsonPath)` so automation targets the correct workbook.
+  - Switched `projectPlanWorkbook` default mode to Excel-native update path using `preview/project-plan-progress-data.json`.
+  - Added explicit fallback mode `AFP_WORKBOOK_MODE=xml` for non-Excel/headless environments.
+- Progress graph sheet implementation:
+  - Extended workbook automation to manage a dedicated `Progress Graph` sheet.
+  - Updated `tools/WorkbookUpdater.bas` to rebuild trend data from `Status History` and generate a line-chart-capable graph sheet.
+  - Extended guarded XML updater (`tools/update_project_plan_workbook.py`) to ensure `Progress Graph` exists and populate per-iteration graph data + ASCII trend summary.
+  - Added resilience in `tools/run_excel_workbook_refresh.py`: if required managed sheets are still missing after Excel macro execution, auto-fallback to guarded XML updater.
+- Workbook corruption hardening + issues-log routine formalization:
+  - Logged `ISSUE-002` (Critical) in `docs/issues-log.csv` for workbook repair/corruption tied to sheet metadata mismatch.
+  - Fixed guarded updater to synchronize `docProps/app.xml` (`HeadingPairs` and `TitlesOfParts`) with actual workbook sheets whenever managed sheets are added/updated.
+  - Repaired `docs/project-plan-progress.xlsx` so workbook sheet list and extended properties now both report 4 sheets (`Current Progress`, `Status History`, `Completion Trend`, `Progress Graph`).
+  - Updated `AI-POLICY.md` to make issues-log preflight mandatory for applicable changes and to require issue-ID-aware changelog notes.
+- Project-wide versioning and rollback process:
+  - Added canonical `VERSION` file and switched Gradle module version resolution to read from it.
+  - Added `tools/versioning.py` for semantic version operations (`current`, `validate`, `set`, `bump`).
+  - Added `tools/rollback_manager.py` for checkpoint create/list/restore with dry-run default restore behavior.
+  - Added Gradle release tasks:
+    - `versionInfo`
+    - `versionBump`
+    - `createRollbackCheckpoint`
+    - `listRollbackCheckpoints`
+    - `rollbackCheckpoint`
+    - `releaseSnapshot`
+  - Added `versionStamp` (`preview/version.json`) and wired it into documentation manifest/artifact publishing.
+  - Updated `README.md` and `AI-POLICY.md` to codify the version/rollback workflow.
+- Excel automation stabilization pass:
+  - Removed modal UI dependency from automation by making VBA refresh message optional (`interactive` flag default false).
+  - Reworked AppleScript workbook open flow and added step-specific error reporting for Excel automation troubleshooting.
+  - Hardened `tools/run_excel_workbook_refresh.py` with bounded Excel timeout and deterministic fallback behavior.
+  - Added `AFP_EXCEL_REQUIRED=true` option to force hard-fail when Excel path fails (otherwise XML fallback applies).
+  - Added `preview/workbook-refresh-status.json` artifact and wired it into documentation manifest + CI artifact publishing.
+- Excel-required mode validation:
+  - Ran `AFP_EXCEL_REQUIRED=true python3 tools/run_excel_workbook_refresh.py --xlsx docs/project-plan-progress.xlsx --json preview/project-plan-progress-data.json`.
+  - Result: expected hard-fail in this agent context (no fallback), confirming strict mode behavior is enforced.
+  - Captured environment-specific failure signal: Apple event connection invalid (`com.apple.hiservices-xpcservice`) and Excel AppleScript parse failure when dictionary is unavailable.
+  - Ran default mode refresh and confirmed resilient fallback path with status artifact output:
+    - `preview/workbook-refresh-status.json` reported `modeUsed: "xml-fallback"` and included the Excel error details.
+  - Logged this as `ISSUE-003` in `docs/issues-log.csv`.
+- Apache POI workbook updater pivot:
+  - Added new module `afp-tools` with dependencies:
+    - `org.apache.poi:poi-ooxml`
+    - `org.apache.commons:commons-csv`
+  - Added `com.upland.connect.afp.tools.ProjectPlanWorkbookUpdater` to update managed workbook sheets without low-level OOXML mutation:
+    - `Current Progress`
+    - `Status History`
+    - `Completion Trend`
+    - `Progress Graph`
+  - Switched `projectPlanWorkbook` default mode to `AFP_WORKBOOK_MODE=poi`.
+  - Retained legacy modes:
+    - `AFP_WORKBOOK_MODE=excel`
+    - `AFP_WORKBOOK_MODE=xml`
+  - Updated `README.md`, `AI-POLICY.md`, and `docs/issues-log.csv` to reflect POI-first workflow.
+  - Added extended-properties synchronization in POI updater so `docProps/app.xml` (`HeadingPairs`/`TitlesOfParts`) always matches workbook sheet list.
+  - Validated against scratch output `preview/project-plan-progress-poi-scratch.xlsx`:
+    - workbook sheets: 4
+    - app metadata sheet count/titles: 4 and aligned.
+- Known-imperfection logging rule enforcement:
+  - Added `ISSUE-004` (Low) for `Progress Graph` visual/layout tuning while functional behavior remains correct.
+  - Updated `AI-POLICY.md` to require logging accepted-but-imperfect outputs (including low-severity visual quality gaps) before handoff.
+- Skeleton project + production build path:
+  - Created local skeleton project `pz-boilerplate-intelliJ/` based on established framework/process model:
+    - multi-module Gradle layout (`boilerplate-api`, `boilerplate-engine`, `boilerplate-cli`, `boilerplate-tools`)
+    - policy/docs scaffolding (`AI-POLICY.md`, plan/progress/issues logs, process evolution log)
+    - versioning/rollback/issues tooling (`tools/versioning.py`, `tools/rollback_manager.py`, `tools/issues_log_tickle.py`, `tools/issues_effectiveness_report.py`)
+    - repository governance templates (`.github/CODEOWNERS`, issue templates)
+    - explicit process-evolution mechanism requiring human approval and backport to skeleton.
+  - Added root `prodBuild` task in `afp-converter` to produce production artifacts without test compilation/execution:
+    - `:afp-api:jar`
+    - `:afp-engine:jar`
+    - `:afp-cli:installDist`
+    - `:afp-cli:distZip`
+  - Updated `README.md` and `AI-POLICY.md` to document `prodBuild` behavior and assumptions.
+- Evidence-driven image resolution iteration:
+  - Refactored native renderer image ingestion to per-`BIM` evidence objects and switched draw-path precedence to:
+    - embedded decode
+    - resource-resolved image
+    - raw decode (only when raster evidence exists)
+  - Added stricter raster evidence gating to avoid raw-decoding structured/resource descriptor payloads.
+  - Extended embedded-resource matching to per-image token binding (instead of page-global binding only).
+  - Added image render decision diagnostics in metadata/diag (`embedded`, `resourceReference`, `rawFallback`, `unresolved` + decision preview list).
+  - Re-ran renderer tests and full `documentationManifest` build successfully.
+- Project-level rollback governance hardening:
+  - Updated `AI-POLICY.md` to require issue-linkage + checkpoint + validation + rollback-readiness for high-risk project-level mutations.
+  - Added explicit rollback preflight step to the standard development cycle.
+  - Added README operational flow for process/workbook/build mutations (`createRollbackCheckpoint` -> validate -> `listRollbackCheckpoints`).
+- External package workflow extension:
+  - Added a second transfer package for `pz-boilerplate-intelliJ` log/process sync:
+    - `docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance-log-sync/`
+    - zip: `docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance-log-sync.zip`
+  - Added reusable initializer `tools/init_update_package.sh` to create package folders on-demand when missing.
+  - Added `docs/update-packages/README.md` and policy note documenting that merged package folders may be removed and regenerated later.
+- Targeted image-resolution refactor:
+  - Introduced `ImageResolutionService` to centralize image path selection policy (`embedded-decoded` -> `resource-reference` -> `raw-fallback` -> `unresolved`).
+  - Updated `AfpNativePdfRenderer` to consume the service for image evidence checks and image selection instead of duplicated inline logic.
+  - Added regression coverage in `ImageResolutionServiceTest` to lock precedence behavior and confidence mapping.
+  - Re-ran targeted engine tests (`ImageResolutionServiceTest`, `AfpNativePdfRendererTest`) successfully.
+- Workbook safety hardening for cosmetic edits:
+  - Updated `projectPlanWorkbook` task to be change-driven:
+    - runs only when `docs/project-plan-progress.csv` is newer than workbook (or workbook missing),
+    - skips when workbook is newer (preserves human cosmetic updates),
+    - supports explicit override via `AFP_FORCE_WORKBOOK_UPDATE=true`.
+  - Updated `AI-POLICY.md` and `README.md` to document this guardrail.
+- Boilerplate transfer follow-up for workbook guard:
+  - Added explicit policy requirement to generate/update boilerplate transfer packages in the same turn for shared process/policy/build changes.
+  - Created incremental package:
+    - `docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-workbook-change-driven-guard/`
+    - zip: `docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-workbook-change-driven-guard.zip`
+- Boilerplate merge triage workbook:
+  - Added `BoilerplateSyncWorkbookUpdater` (`afp-tools`) to generate `docs/boilerplate-sync-candidates.xlsx` from `docs/update-packages/pz-boilerplate-intelliJ`.
+  - Workbook includes package-level summary + package-file inventory and preserves manual triage columns (`decision`, `state`, `owner_notes`) on refresh.
+  - Added `boilerplateSyncWorkbook` Gradle task with change-driven execution and force override (`AFP_FORCE_BOILERPLATE_SYNC_UPDATE=true`).
+  - Wired workbook into `documentationManifest` and CI artifact publishing list.
+- Consolidated boilerplate promotion package:
+  - All approved candidates were consolidated into one superseding package:
+    - `docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-consolidated-framework-sync/`
+    - zip: `docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-consolidated-framework-sync.zip`
+  - Consolidated manifest now lists superseded package IDs.
+  - Updated policy/docs so future cycles with multiple approved candidates must produce one consolidated outbound package.
+  - Enhanced boilerplate sync workbook updater to read `supersedes` from package manifests and auto-mark superseded candidates in `recommended_scope`.
+  - Added explicit version-control write mandate and rollback-on-request guarantee to policy/docs, and refreshed the consolidated boilerplate package to include this governance update.
+  - Added response-level rule to include outstanding boilerplate review candidates whenever any remain in `review` state.
+- Added SQLite-backed project management tooling in `afp-tools` (`StateDatabaseTool`) and split state stores by concern:
+  - `preview/state/project-state.sqlite` for project execution/reporting signals.
+  - `preview/state/boilerplate-state.sqlite` for boilerplate sync/package governance signals.
+- Rewired build tasks to prefer database-backed tool execution over ad-hoc scripts:
+  - `projectStateDb`, `boilerplateStateDb` (new)
+  - `projectPlanProgressJson`, `issuesLogTickle`, `issuesEffectivenessReport` now execute from SQLite-backed state.
+- Updated `boilerplateSyncWorkbook` to consume the boilerplate SQLite state store by default.
+- Updated policy/docs/plan metadata to codify SQLite state separation and default usage in the workflow.
+- Added a constitutional first-principles layer to `AI-POLICY.md` with explicit rules that:
+  - constitutional wording may only be changed by a human,
+  - AI must stop and notify a human before any first-principle breach,
+  - no silent exceptions are allowed.
+- Governance correction applied after detecting policy-update sequencing drift:
+  - logged ISSUE-006 for policy/constitutional checklist enforcement drift,
+  - strengthened First Principles in `AI-POLICY.md` with explicit standard-procedure invariance and halt-on-blocker behavior,
+  - resumed checkpoint-first/validation sequence before further policy mutation.
+- Added policy-governance event tracking artifacts:
+  - `docs/policy-governance-events.csv` (source-of-truth event table)
+  - `docs/policy-governance-events.xlsx` (generated workbook)
+- Added `PolicyGovernanceWorkbookUpdater` in `afp-tools` and new Gradle task `policyGovernanceWorkbook` with change-driven execution and optional force override `AFP_FORCE_GOVERNANCE_WORKBOOK_UPDATE=true`.
+- Wired governance workbook generation into `documentationManifest` and CI artifact publishing.
+- Created rollback checkpoint before this mutation set: `20260218T214702Z-0.2.0-beta.1-governance-events-workbook`.
+- Added constitutional policy requirements for governance-breach visibility and trust-grant logging.
+- Extended SQLite project state (`StateDatabaseTool`) with `governance_events` ingestion from `docs/policy-governance-events.csv`.
+- Added `governance-alerts` command and Gradle task `governanceAlerts` to emit `preview/governance-alerts.json` from database state.
+- Wired governance alerts into `documentationManifest` tracked artifacts and CI artifact bundle.
+- Created checkpoint `20260218T215420Z-0.2.0-beta.1-governance-breach-and-trust-sot` before constitutional/governance instrumentation changes.
+- Added `governanceAlerts` build path and `preview/governance-alerts.json` artifact for explicit human-visible governance breach reporting.
+- Logged trust-governance instruction event in `docs/policy-governance-events.csv` and synced into `project-state.sqlite` as operational source of truth.
+- Added database-backed file discipline and mirrored VCS snapshot capture in `StateDatabaseTool`:
+  - new SQLite tables `repo_vcs_snapshot` and `repo_file_state`.
+  - `sync-project` now records Git head/branch/dirty counts and per-path tracked/status/hash metadata.
+- Added `versionControlLedger` task and `preview/version-control-ledger.json` artifact sourced from `project-state.sqlite`.
+- Updated policy/docs to clarify boundary: Git is canonical VCS; SQLite is the auditable project-management mirror.
+- Added hard module-separation verification task `enforceProjectBoundaries` and wired it into `qualityGate`.
+- Boundary gate now fails when `afp-api`, `afp-engine`, or `afp-cli` reference project-management tooling/state sources (`afp-tools` packages or governance/project tracker paths).
+- Updated policy/docs and progress tracking to codify and report this build-time isolation enforcement.
+- Continued execution of top rendering tasks (object/image fidelity + print-centric cross-exam):
+  - tightened per-object image selection in `ImageResolutionService` so render-time binding no longer falls back to non-indexed resource images.
+  - strengthened embedded `BIM`->resource matching in `AfpNativePdfRenderer` with confidence-aware scoring (token overlap + sequence proximity + size similarity) and conservative low-confidence rejection.
+  - extended print-centric cross-exam output in `FakeEngineOutputGenerator` with `BIM`/`BOC`/`EOC` timeline slices and inferred binding-pair summaries.
+  - added regression coverage in `ImageResolutionServiceTest` for strict index binding behavior.
+- Actioned boilerplate review candidates by creating consolidated package `2026-02-18-unified-framework-rollup` under `docs/update-packages/pz-boilerplate-intelliJ/`.
+- Marked active candidates as superseded via rollup manifest `supersedes` list so only one review candidate remains active for this cycle.
+- Added new constitutional first principle for managed-tooling discipline:
+  - project-management tooling must be version-controlled, policy/build-registered, and represented in the project-state audit workflow before handoff.
+- Added hard verification task `enforceManagedTooling` and wired it into `qualityGate`.
+- `enforceManagedTooling` fails when untracked files exist under `tools/` or `afp-tools/src/main/java/com/upland/connect/afp/tools`.
+- Created checkpoint before this high-risk policy/build mutation: `20260218T223616Z-0.2.0-beta.1-tooling-registration-first-principle`.
+- Separated project-management Java tooling from AFP product namespace:
+  - introduced dedicated module `pm-tools` (replacing `afp-tools`) in Gradle settings/build wiring,
+  - moved tooling classes to package `com.upland.connect.pm.tools`,
+  - updated all Gradle task invocations and boundary checks to reference `pm-tools`,
+  - updated policy/readme/governance CSV references from `afp-tools` paths to `pm-tools` paths.
+- Moved SQLite state locations out of renderer preview space:
+  - project state moved to `project/state/project-state.sqlite`,
+  - boilerplate state moved to `boilerplate/state/boilerplate-state.sqlite`,
+  - updated build/policy/docs references accordingly.
+- Added DB-native inventory exports in `StateDatabaseTool`:
+  - `export-project-file-inventory` -> `preview/repo-file-inventory-with-context.csv`
+  - `export-boilerplate-package-inventory` -> `preview/boilerplate-package-files-with-context.csv`
+  - new Gradle task `stateInventoryCsv` wired into `documentationManifest` so inventories refresh each documentation/build cycle.
+- Enforced PM vs application realm separation:
+  - moved PM state and report artifacts out of `preview/` and into:
+    - `pm/state/*` for SQLite state
+    - `pm/reports/*` for PM-generated manifests/reports/inventories
+    - `pm/checkpoints/*` for rollback checkpoints
+  - updated build/docs/policy paths accordingly.
+  - added `enforcePmApplicationRealmSeparation` quality-gate task to fail builds when PM artifacts leak into `preview/` or PM databases are written outside `pm/state/`.
+- Added a unified dev-only PM console module:
+  - new module `pm-console` with `pmconsole` command hub (`status`, `refresh`, `tools`),
+  - reads from `pm/state/*.sqlite` and `pm/reports/*` to present aggregate PM status in one place,
+  - added Gradle tasks `pmConsoleStatus` and `pmDevAttach` for development attach workflow,
+  - kept out of production packaging path (`prodBuild` remains application-only).
+- Added installable PM console launcher helper:
+  - new root task `pmConsoleInstallPath` runs `:pm-console:installDist` and prints the local launcher path.
+- Added default execution policy coupling:
+  - application execution now defaults to launching PM console status in the same flow unless a human explicitly overrides.
+  - documented `pmDevAttach` as the default development execution entrypoint.
+- Added SQL-backed operational rule tables to reduce AI-POLICY churn:
+  - new source file `pm/policy/policy-rule-tables.sql`,
+  - `projectStateDb` now syncs policy SQL into `policy_rule_catalog` in `pm/state/project-state.sqlite`,
+  - new report task `policyRulesReport` exports `pm/reports/policy-rules.json`,
+  - PM console status now surfaces enabled SQL policy-rule count and policy-rules report presence.
+- Hardened boilerplate roll-up as enforceable process:
+  - added SQL rule `PM-ROLLUP-001` in `pm/policy/policy-rule-tables.sql`,
+  - added build gate `enforceBoilerplateRollupForFrameworkChanges` and wired it into `qualityGate`,
+  - gate fails when framework/process/policy/build files change without a same-change update package under `docs/update-packages/pz-boilerplate-intelliJ/`.
+- Normalized PM orchestration into an environment-agnostic contract:
+  - added `pm/workflow/workflow-manifest.json` defining PM phases and adapter mappings,
+  - added toolchain-neutral runner `tools/pm_workflow.py` (`list` / `run`),
+  - added Gradle adapter interface tasks `pmWorkflowList`, `pmWorkflowRun`, `pmWorkflowExecuteApplication` that resolve phase mappings from the manifest,
+  - updated docs/policy to position workflow manifest as the canonical PM sequencing contract with Gradle as one adapter.
+- Added a dedicated fresh-instance convergence evaluation package under `docs/update-packages/pz-boilerplate-intelliJ/2026-02-19-fresh-instance-convergence-eval`:
+  - includes master `package-manifest.json`, `apply-checklist.md`, `fresh-session-prompt.md`, and `comparison-checklist.md`,
+  - formalizes reproducible handoff for a new AI instance to apply the latest roll-up and report convergence deltas.
+- Implemented dedicated boilerplate third realm for transfer packages and SQL tracking:
+  - moved package tree from `docs/update-packages/pz-boilerplate-intelliJ` to `boilerplate/update-packages/pz-boilerplate-intelliJ`,
+  - updated build/tooling/policy gates to consume `boilerplate/update-packages/...` as canonical path,
+  - updated `tools/init_update_package.sh` default package root to `boilerplate/update-packages/`,
+  - extended boilerplate SQLite schema with explicit `realm` column (`package_candidates.realm`, `package_files.realm`) and updated exports accordingly.
+- Added policy SQL rule `PM-REALM-003` to codify boilerplate as a dedicated third realm.

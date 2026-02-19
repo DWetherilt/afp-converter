@@ -10,7 +10,7 @@ Add the boilerplate-sync triage framework to `pz-boilerplate-intelliJ` so update
 - Update policy/docs for the new workbook.
 
 ## Target Files
-- `afp-tools/src/main/java/com/upland/connect/afp/tools/BoilerplateSyncWorkbookUpdater.java`
+- `afp-tools/src/main/java/solutions/pointzero/symphony/afp/tools/BoilerplateSyncWorkbookUpdater.java`
 - `build.gradle`
 - `AI-POLICY.md`
 - `README.md`

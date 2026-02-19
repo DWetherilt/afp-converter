@@ -11,7 +11,7 @@ dependencies {
 
 application {
     applicationName = 'afp2pdf'
-    mainClass = 'com.upland.connect.afp.cli.Afp2PdfMain'
+    mainClass = 'solutions.pointzero.symphony.afp.cli.Afp2PdfMain'
 }
 
 tasks.named('run') {

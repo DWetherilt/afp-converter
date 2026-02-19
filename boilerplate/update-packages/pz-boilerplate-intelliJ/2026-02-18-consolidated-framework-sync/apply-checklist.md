@@ -15,7 +15,7 @@ git apply --index /path/to/patches/0001-consolidated-framework-sync.patch
 - `AI-POLICY.md`
 - `README.md`
 - `build.gradle`
-- `afp-tools/src/main/java/com/upland/connect/afp/tools/BoilerplateSyncWorkbookUpdater.java`
+- `afp-tools/src/main/java/solutions/pointzero/symphony/afp/tools/BoilerplateSyncWorkbookUpdater.java`
 - `tools/init_update_package.sh` (if target includes tools workflow)
 - `boilerplate/update-packages/README.md` (if target includes external package workflow docs)
 

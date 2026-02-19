@@ -1,0 +1,19 @@
+{
+  "schemaVersion": "1",
+  "packageId": "2026-02-19-namespace-root-solutions-pointzero-symphony",
+  "sourceRepo": "afp-converter",
+  "targetRepo": "pz-boilerplate-intelliJ",
+  "createdAt": "2026-02-19T00:00:00Z",
+  "summary": "Mandates root Java namespace stubs under solutions.pointzero.symphony and adds build enforcement for legacy namespace rejection.",
+  "files": [
+    { "path": "build.gradle", "changeType": "update" },
+    { "path": "AI-POLICY.md", "changeType": "update" },
+    { "path": "README.md", "changeType": "update" },
+    { "path": "pm/policy/policy-rule-tables.sql", "changeType": "update" },
+    { "path": "src/main/java/**", "changeType": "update_or_move" }
+  ],
+  "validation": [
+    "./gradlew enforceNamespaceRoot",
+    "./gradlew qualityGate"
+  ]
+}

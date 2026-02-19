@@ -1,11 +1,11 @@
 # AFP Converter API
 
-Reference for the public Java API in module `afp-api` (`com.upland.connect.afp.api`).
+Reference for the public Java API in module `afp-api` (`solutions.pointzero.symphony.afp.api`).
 
 ## Module and Package
 
 - Gradle module: `afp-api`
-- Java package: `com.upland.connect.afp.api`
+- Java package: `solutions.pointzero.symphony.afp.api`
 
 ## Core Entry Points
 
@@ -34,7 +34,7 @@ AfpConverterConfig load(Path configFile)
 ## Minimal Usage
 
 ```java
-import com.upland.connect.afp.api.*;
+import solutions.pointzero.symphony.afp.api.*;
 
 import java.io.InputStream;
 import java.nio.file.Files;

@@ -167,9 +167,12 @@ When implementing any meaningful change:
 - `prodBuild` must remain application-only (`afp-api`, `afp-engine`, `afp-cli`) and must not package PM modules (`pm-tools`, `pm-console`).
 - `qualityGate` is the canonical readiness command.
 - `enforceProjectBoundaries` is mandatory in `qualityGate` and must fail when `afp-api`, `afp-engine`, or `afp-cli` reference project-management tooling/state (`pm-tools`, governance/project tracker sources, or management SQLite paths).
-- `enforceManagedTooling` is mandatory in `qualityGate` and must fail when project-management tooling files under `tools/` or `pm-tools/src/main/java/com/upland/connect/pm/tools` are untracked.
+- `enforceManagedTooling` is mandatory in `qualityGate` and must fail when project-management tooling files under `tools/` or `pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools` are untracked.
 - `enforcePmApplicationRealmSeparation` is mandatory in `qualityGate` and must fail when PM artifacts are written under `preview/` or PM databases are written outside `pm/state/`.
 - `enforceBoilerplateRollupForFrameworkChanges` is mandatory in `qualityGate` and must fail when framework/process/policy/build mutations occur without an accompanying update package under `boilerplate/update-packages/pz-boilerplate-intelliJ/`.
+- `enforceNamespaceRoot` is mandatory in `qualityGate` and must fail when active source/build/policy scope includes legacy root namespaces (`com.upland.connect`).
+- Root namespace standard:
+  - All first-party Java package stubs must start with `solutions.pointzero.symphony`.
 - `documentationManifest` must include current docs/changelog/plan artifacts.
 - `projectPlanNextStep` must reflect the current immediate plan instruction.
 - `stateInventoryCsv` must export project/boilerplate file inventories from SQLite state.

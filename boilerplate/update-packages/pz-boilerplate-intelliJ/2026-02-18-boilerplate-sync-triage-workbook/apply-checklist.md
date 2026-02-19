@@ -12,7 +12,7 @@ git apply --index /path/to/patches/0001-boilerplate-sync-triage-framework.patch
 
 3. If patch context differs, apply using templates:
 - Add Java file from `templates/BoilerplateSyncWorkbookUpdater.java`
-  - target path: `afp-tools/src/main/java/com/upland/connect/afp/tools/BoilerplateSyncWorkbookUpdater.java`
+  - target path: `afp-tools/src/main/java/solutions/pointzero/symphony/afp/tools/BoilerplateSyncWorkbookUpdater.java`
 - Apply `templates/build-gradle-snippets.md` changes to `build.gradle`
 - Apply `templates/policy-readme-snippets.md` changes to `AI-POLICY.md` and `README.md`
 

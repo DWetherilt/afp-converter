@@ -8,11 +8,12 @@ Proof-of-concept Java 21 Gradle multi-module project for:
 
 ## Modules
 
-- `afp-api`: stable public API (`com.upland.connect.afp.api`)
-- `afp-engine`: converter implementation + adapter SPI (`com.upland.connect.afp.engine`)
-- `afp-cli`: thin Picocli wrapper command `afp2pdf` (`com.upland.connect.afp.cli`)
-- `pm-tools`: utility tooling including Apache POI workbook updater (`com.upland.connect.pm.tools`)
-- `pm-console`: dev-only PM dashboard/command hub (`com.upland.connect.pm.console`)
+- `afp-api`: stable public API (`solutions.pointzero.symphony.afp.api`)
+- `afp-engine`: converter implementation + adapter SPI (`solutions.pointzero.symphony.afp.engine`)
+- `afp-cli`: thin Picocli wrapper command `afp2pdf` (`solutions.pointzero.symphony.afp.cli`)
+- `pm-tools`: utility tooling including Apache POI workbook updater (`solutions.pointzero.symphony.pm.tools`)
+- `pm-console`: dev-only PM dashboard/command hub (`solutions.pointzero.symphony.pm.console`)
+- Root namespace standard for first-party Java code: `solutions.pointzero.symphony.*`
 
 API documentation:
 
@@ -144,6 +145,7 @@ Run the full quality gate (tests + fidelity thresholds + docs/changelog manifest
 `qualityGate` also includes `enforceManagedTooling`, which fails if project-management tooling files under `tools/` or `pm-tools/.../tools` are untracked.
 `qualityGate` includes `enforcePmApplicationRealmSeparation`, which fails if PM artifacts appear under `preview/` or PM databases appear outside `pm/state/`.
 `qualityGate` includes `enforceBoilerplateRollupForFrameworkChanges`, which fails if framework/process files change without a same-change update under `boilerplate/update-packages/pz-boilerplate-intelliJ/`.
+`qualityGate` includes `enforceNamespaceRoot`, which fails if active source/build/policy scope still references legacy namespace roots (`com.upland.connect`).
 `documentationManifest` now runs `stateInventoryCsv`, which rebuilds the two inventory CSVs above from SQLite state on each run.
 `documentationManifest` also runs `policyRulesReport`, which exports SQL-backed PM rule tables into `pm/reports/policy-rules.json`.
 

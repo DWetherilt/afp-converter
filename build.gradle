@@ -41,7 +41,7 @@ def resolvePmWorkflowTasks = { String phaseId ->
 }
 
 allprojects {
-    group = 'com.upland.connect'
+    group = 'solutions.pointzero.symphony'
     version = resolvedVersion
 
     repositories {
@@ -63,7 +63,7 @@ tasks.register('pmConsoleStatus', JavaExec) {
     dependsOn('issuesEffectivenessReport')
     dependsOn('governanceAlerts')
     classpath = project(':pm-console').sourceSets.main.runtimeClasspath
-    mainClass = 'com.upland.connect.pm.console.PmConsoleMain'
+    mainClass = 'solutions.pointzero.symphony.pm.console.PmConsoleMain'
     workingDir = rootProject.projectDir
     args 'status'
 }
@@ -200,7 +200,7 @@ tasks.register('projectPlanWorkbook', Exec) {
             List<String> cmd = [
                 'java',
                 '-cp', cp,
-                'com.upland.connect.pm.tools.ProjectPlanWorkbookUpdater',
+                'solutions.pointzero.symphony.pm.tools.ProjectPlanWorkbookUpdater',
                 '--csv', 'docs/project-plan-progress.csv',
                 '--xlsx', 'docs/project-plan-progress.xlsx'
             ]
@@ -270,7 +270,7 @@ tasks.register('policyGovernanceWorkbook', Exec) {
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.pm.tools.PolicyGovernanceWorkbookUpdater',
+            'solutions.pointzero.symphony.pm.tools.PolicyGovernanceWorkbookUpdater',
             '--csv', 'docs/policy-governance-events.csv',
             '--xlsx', 'docs/policy-governance-events.xlsx'
     }
@@ -285,7 +285,7 @@ tasks.register('projectPlanProgressJson', Exec) {
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.pm.tools.StateDatabaseTool',
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
             'export-progress-json',
             '--db', 'pm/state/project-state.sqlite',
             '--json', 'pm/reports/project-plan-progress-data.json'
@@ -303,7 +303,7 @@ tasks.register('projectStateDb', Exec) {
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.pm.tools.StateDatabaseTool',
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
             'sync-project',
             '--db', 'pm/state/project-state.sqlite',
             '--issues', 'docs/issues-log.csv',
@@ -323,7 +323,7 @@ tasks.register('policyRulesReport', Exec) {
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.pm.tools.StateDatabaseTool',
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
             'export-policy-rules',
             '--db', 'pm/state/project-state.sqlite',
             '--json', 'pm/reports/policy-rules.json'
@@ -342,7 +342,7 @@ tasks.register('governanceAlerts', Exec) {
         List<String> cmd = [
             'java',
             '-cp', cp,
-            'com.upland.connect.pm.tools.StateDatabaseTool',
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
             'governance-alerts',
             '--db', 'pm/state/project-state.sqlite',
             '--output', 'pm/reports/governance-alerts.json'
@@ -363,7 +363,7 @@ tasks.register('versionControlLedger', Exec) {
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.pm.tools.StateDatabaseTool',
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
             'version-control-ledger',
             '--db', 'pm/state/project-state.sqlite',
             '--output', 'pm/reports/version-control-ledger.json'
@@ -384,7 +384,7 @@ tasks.register('boilerplateStateDb', Exec) {
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.pm.tools.StateDatabaseTool',
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
             'sync-boilerplate',
             '--db', 'pm/state/boilerplate-state.sqlite',
             '--packages', 'boilerplate/update-packages/pz-boilerplate-intelliJ'
@@ -401,7 +401,7 @@ tasks.register('projectFileInventoryCsv', Exec) {
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.pm.tools.StateDatabaseTool',
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
             'export-project-file-inventory',
             '--db', 'pm/state/project-state.sqlite',
             '--csv', 'pm/reports/repo-file-inventory-with-context.csv'
@@ -418,7 +418,7 @@ tasks.register('boilerplatePackageInventoryCsv', Exec) {
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.pm.tools.StateDatabaseTool',
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
             'export-boilerplate-package-inventory',
             '--db', 'pm/state/boilerplate-state.sqlite',
             '--csv', 'pm/reports/boilerplate-package-files-with-context.csv'
@@ -473,7 +473,7 @@ tasks.register('boilerplateSyncWorkbook', Exec) {
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.pm.tools.BoilerplateSyncWorkbookUpdater',
+            'solutions.pointzero.symphony.pm.tools.BoilerplateSyncWorkbookUpdater',
             '--db', 'pm/state/boilerplate-state.sqlite',
             '--xlsx', 'docs/boilerplate-sync-candidates.xlsx'
     }
@@ -488,7 +488,7 @@ tasks.register('issuesLogTickle', Exec) {
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.pm.tools.StateDatabaseTool',
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
             'issues-tickle',
             '--db', 'pm/state/project-state.sqlite',
             '--issues', 'docs/issues-log.csv',
@@ -507,7 +507,7 @@ tasks.register('issuesEffectivenessReport', Exec) {
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.pm.tools.StateDatabaseTool',
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
             'issues-effectiveness',
             '--db', 'pm/state/project-state.sqlite',
             '--tickle', 'pm/reports/issues-log-tickle.json',
@@ -876,7 +876,7 @@ tasks.register('enforceProjectBoundaries') {
             [module: 'afp-cli', dir: file('afp-cli/src/main/java')]
         ]
         List<Map<String, Object>> forbidden = [
-            [pattern: ~/com\.upland\.connect\.pm\.tools\./, reason: 'product modules must not reference pm-tools classes'],
+            [pattern: ~/solutions\.pointzero\.symphony\.pm\.tools\./, reason: 'product modules must not reference pm-tools classes'],
             [pattern: ~/preview\/state\//, reason: 'product modules must not reference project-management state databases'],
             [pattern: ~/docs\/policy-governance-events/, reason: 'product modules must not reference governance tracker sources'],
             [pattern: ~/docs\/project-plan-progress/, reason: 'product modules must not reference project-plan tracker sources'],
@@ -929,7 +929,7 @@ tasks.register('enforceManagedTooling') {
     doLast {
         List<String> roots = [
             'tools',
-            'pm-tools/src/main/java/com/upland/connect/pm/tools'
+            'pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools'
         ]
         List<String> unmanaged = []
         roots.each { String root ->
@@ -1070,6 +1070,52 @@ tasks.register('enforceBoilerplateRollupForFrameworkChanges') {
     }
 }
 
+tasks.register('enforceNamespaceRoot') {
+    group = 'verification'
+    description = 'Fails when active source/build/docs reference legacy namespace roots.'
+    doLast {
+        List<String> scopeRoots = [
+            'afp-api/src/main/java',
+            'afp-engine/src/main/java',
+            'afp-engine/src/test/java',
+            'afp-cli/src/main/java',
+            'pm-tools/src/main/java',
+            'pm-console/src/main/java',
+            'afp-cli/build.gradle',
+            'pm-console/build.gradle'
+        ]
+        List<String> violations = []
+        scopeRoots.each { String root ->
+            File target = file(root)
+            if (!target.exists()) {
+                return
+            }
+            if (target.isFile()) {
+                String text = target.getText('UTF-8')
+                if (text.contains('com.upland.connect') || text.contains('com/upland/connect')) {
+                    violations.add("${root}: contains legacy namespace root")
+                }
+                return
+            }
+            fileTree(target) {
+                include '**/*.java', '**/*.gradle'
+            }.files.each { File src ->
+                String text = src.getText('UTF-8')
+                if (text.contains('com.upland.connect') || text.contains('com/upland/connect')) {
+                    String rel = projectDir.toPath().relativize(src.toPath()).toString().replace('\\', '/')
+                    violations.add("${rel}: contains legacy namespace root")
+                }
+            }
+        }
+        if (!violations.isEmpty()) {
+            throw new GradleException(
+                "Namespace-root violations detected:\n - " + violations.join('\n - ') +
+                    "\nRequired root namespace: solutions.pointzero.symphony"
+            )
+        }
+    }
+}
+
 tasks.register('prodBuild') {
     group = 'build'
     description = 'Production build path without test compilation/execution; assumes a prepared runtime/resource environment'
@@ -1086,6 +1132,7 @@ tasks.register('qualityGate') {
     dependsOn('enforceManagedTooling')
     dependsOn('enforcePmApplicationRealmSeparation')
     dependsOn('enforceBoilerplateRollupForFrameworkChanges')
+    dependsOn('enforceNamespaceRoot')
     dependsOn(':afp-engine:test')
     dependsOn(':afp-engine:fidelityGate')
     dependsOn('documentationManifest')

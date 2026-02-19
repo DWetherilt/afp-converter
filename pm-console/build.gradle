@@ -11,7 +11,7 @@ dependencies {
 
 application {
     applicationName = 'pmconsole'
-    mainClass = 'com.upland.connect.pm.console.PmConsoleMain'
+    mainClass = 'solutions.pointzero.symphony.pm.console.PmConsoleMain'
 }
 
 tasks.named('run') {

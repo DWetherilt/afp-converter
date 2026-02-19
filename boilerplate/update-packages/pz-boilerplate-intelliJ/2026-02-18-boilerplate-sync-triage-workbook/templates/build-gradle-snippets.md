@@ -47,7 +47,7 @@ tasks.register('boilerplateSyncWorkbook', Exec) {
         String cp = sourceSets.main.runtimeClasspath.asPath
         commandLine 'java',
             '-cp', cp,
-            'com.upland.connect.afp.tools.BoilerplateSyncWorkbookUpdater',
+            'solutions.pointzero.symphony.afp.tools.BoilerplateSyncWorkbookUpdater',
             '--packages', 'boilerplate/update-packages/pz-boilerplate-intelliJ',
             '--xlsx', 'docs/boilerplate-sync-candidates.xlsx'
     }
