@@ -314,4 +314,63 @@ class StateDatabaseToolTest {
         assertTrue(payload.contains("\"promoted\": 1"));
         assertTrue(payload.contains("\"recommendedAction\""));
     }
+
+    @Test
+    void upsertDecisionAndExportCrossRealmPriorityQueue(@TempDir Path tempDir) throws Exception {
+        Path appDb = tempDir.resolve("application.sqlite");
+        Path pmDb = tempDir.resolve("pm.sqlite");
+        Path boilerDb = tempDir.resolve("boilerplate.sqlite");
+        Path out = tempDir.resolve("decision-priority.json");
+
+        int appUpsert = StateDatabaseTool.execute(new String[] {
+            "upsert-decision",
+            "--db", appDb.toString(),
+            "--realm", "application",
+            "--decision-id", "APP-1",
+            "--title", "Close graphics parity gap",
+            "--scope-level", "component",
+            "--scope-ref", "afp-engine",
+            "--status", "in_progress",
+            "--risk-score", "3.5",
+            "--blast-radius", "4.5",
+            "--unblock-factor", "3.5",
+            "--confidence", "4.0",
+            "--value-density", "4.5"
+        });
+        assertEquals(0, appUpsert);
+
+        int boilerUpsert = StateDatabaseTool.execute(new String[] {
+            "upsert-decision",
+            "--db", boilerDb.toString(),
+            "--realm", "boilerplate",
+            "--decision-id", "BP-1",
+            "--title", "Promote package checksum guard",
+            "--scope-level", "sub_boilerplate",
+            "--scope-ref", "pz-boilerplate-intelliJ",
+            "--sub-scope-ref", ".github/workflows/ci.yml",
+            "--status", "proposed",
+            "--risk-score", "4.0",
+            "--blast-radius", "3.0",
+            "--unblock-factor", "4.0",
+            "--confidence", "4.0",
+            "--value-density", "4.0"
+        });
+        assertEquals(0, boilerUpsert);
+
+        int export = StateDatabaseTool.execute(new String[] {
+            "export-decision-priority",
+            "--application-db", appDb.toString(),
+            "--pm-db", pmDb.toString(),
+            "--boilerplate-db", boilerDb.toString(),
+            "--json", out.toString()
+        });
+        assertEquals(0, export);
+
+        String payload = Files.readString(out, StandardCharsets.UTF_8);
+        assertTrue(payload.contains("\"candidateCount\": 2"));
+        assertTrue(payload.contains("\"decisionId\": \"APP-1\""));
+        assertTrue(payload.contains("\"decisionId\": \"BP-1\""));
+        assertTrue(payload.contains("\"scopeLevel\": \"sub_boilerplate\""));
+        assertTrue(payload.contains("\"byRealm\""));
+    }
 }

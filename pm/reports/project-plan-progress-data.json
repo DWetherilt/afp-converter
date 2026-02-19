@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T13:13:43+00:00",
-  "sourceCsv": "docs/project-plan-progress.csv",
-  "taskCount": 26,
+  "generatedAt": "2026-02-19T15:43:36Z",
+  "source": "sqlite",
+  "taskCount": 30,
   "tasks": [
     {
       "workstream": "Workstream A",
@@ -237,6 +237,42 @@
       "percent_complete": "100",
       "last_updated": "2026-02-18",
       "notes": "Added constitutional managed-tooling rule and `enforceManagedTooling` gate; untracked workflow tooling under `tools/` or `pm-tools/.../tools` now fails quality verification."
+    },
+    {
+      "workstream": "Workstream G",
+      "task": "stand up realm-local decision logs with granular scope for reasoning context",
+      "priority": "High",
+      "status": "In Progress",
+      "percent_complete": "75",
+      "last_updated": "2026-02-19",
+      "notes": "Added SQL schema and upsert/link commands for decision_log and decision_dependency in realm DBs."
+    },
+    {
+      "workstream": "Workstream G",
+      "task": "export cross-realm decision priority queue from SQL impact scoring",
+      "priority": "High",
+      "status": "In Progress",
+      "percent_complete": "70",
+      "last_updated": "2026-02-19",
+      "notes": "Added export command and Gradle decisionPriorityReport task for pm/reports/decision-priority-queue.json."
+    },
+    {
+      "workstream": "Workstream G",
+      "task": "wire decision queue into PM refresh/report cycle and artifact manifests",
+      "priority": "High",
+      "status": "In Progress",
+      "percent_complete": "65",
+      "last_updated": "2026-02-19",
+      "notes": "Workflow and manifest wiring in progress to make decision state a first-class execution driver."
+    },
+    {
+      "workstream": "Workstream G",
+      "task": "seed initial decisions for active workstreams with smallest-change-biggest-reward scoring",
+      "priority": "High",
+      "status": "In Progress",
+      "percent_complete": "30",
+      "last_updated": "2026-02-19",
+      "notes": "Pending initial population of decision records for renderer and boilerplate promotion actions."
     }
   ],
   "followUps": [

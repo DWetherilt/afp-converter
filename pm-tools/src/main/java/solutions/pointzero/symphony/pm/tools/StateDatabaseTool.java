@@ -96,7 +96,7 @@ public final class StateDatabaseTool {
 
     static int execute(String[] args) throws Exception {
         if (args.length == 0) {
-            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-boilerplate-promotion-report|export-policy-rules|export-data-dictionary|lint-data-dictionary|lint-policy-rules|sync-code-index|search-code-token|search-code-token-multi|materialize-code-realm|upsert-code-file|upsert-code-files-manifest|verify-code-realm|report-code-realm-coverage");
+            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-boilerplate-promotion-report|upsert-decision|link-decision|export-decision-priority|export-policy-rules|export-data-dictionary|lint-data-dictionary|lint-policy-rules|sync-code-index|search-code-token|search-code-token-multi|materialize-code-realm|upsert-code-file|upsert-code-files-manifest|verify-code-realm|report-code-realm-coverage");
         }
         String command = args[0];
         Map<String, String> cli = parseArgs(args, 1);
@@ -112,6 +112,9 @@ public final class StateDatabaseTool {
             case "export-project-file-inventory" -> runExportProjectFileInventory(cli);
             case "export-boilerplate-package-inventory" -> runExportBoilerplatePackageInventory(cli);
             case "export-boilerplate-promotion-report" -> runExportBoilerplatePromotionReport(cli);
+            case "upsert-decision" -> runUpsertDecision(cli);
+            case "link-decision" -> runLinkDecision(cli);
+            case "export-decision-priority" -> runExportDecisionPriority(cli);
             case "export-policy-rules" -> runExportPolicyRules(cli);
             case "export-data-dictionary" -> runExportDataDictionary(cli);
             case "lint-data-dictionary" -> runLintDataDictionary(cli);
@@ -717,6 +720,151 @@ public final class StateDatabaseTool {
         payload.put("statusCounts", statusCounts);
         payload.put("candidates", rows);
         writeJson(jsonPath, payload);
+        return 0;
+    }
+
+    private static int runUpsertDecision(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        String realm = text(cli.get("--realm"));
+        String decisionId = text(cli.get("--decision-id"));
+        String title = text(cli.get("--title"));
+        if (realm.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --realm");
+        }
+        if (decisionId.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --decision-id");
+        }
+        if (title.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --title");
+        }
+        ensureParent(dbPath);
+        String now = nowIso();
+        String status = normalizeDecisionStatus(text(cli.get("--status")));
+        double risk = scoreArg(cli, "--risk-score");
+        double blast = scoreArg(cli, "--blast-radius");
+        double unblock = scoreArg(cli, "--unblock-factor");
+        double confidence = scoreArg(cli, "--confidence");
+        double valueDensity = scoreArg(cli, "--value-density");
+        double impact = computeImpactScore(risk, blast, unblock, confidence, valueDensity);
+        String priorityBucket = priorityBucketFor(impact);
+
+        try (Connection conn = connect(dbPath)) {
+            initCodeIndexSchema(conn);
+            try (PreparedStatement ps = conn.prepareStatement(
+                "insert into decision_log(" +
+                    "decision_id, realm, scope_level, scope_ref, sub_scope_ref, title, rationale, options_json, constraints_json, " +
+                    "risk_score, blast_radius, unblock_factor, confidence, value_density, impact_score, priority_bucket, " +
+                    "status, driver, change_ref, created_at, updated_at" +
+                ") values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) " +
+                "on conflict(decision_id) do update set " +
+                    "realm=excluded.realm, scope_level=excluded.scope_level, scope_ref=excluded.scope_ref, sub_scope_ref=excluded.sub_scope_ref, " +
+                    "title=excluded.title, rationale=excluded.rationale, options_json=excluded.options_json, constraints_json=excluded.constraints_json, " +
+                    "risk_score=excluded.risk_score, blast_radius=excluded.blast_radius, unblock_factor=excluded.unblock_factor, " +
+                    "confidence=excluded.confidence, value_density=excluded.value_density, impact_score=excluded.impact_score, " +
+                    "priority_bucket=excluded.priority_bucket, status=excluded.status, driver=excluded.driver, change_ref=excluded.change_ref, " +
+                    "updated_at=excluded.updated_at"
+            )) {
+                ps.setString(1, decisionId);
+                ps.setString(2, realm);
+                ps.setString(3, normalizeScopeLevel(text(cli.get("--scope-level"))));
+                ps.setString(4, text(cli.get("--scope-ref")));
+                ps.setString(5, text(cli.get("--sub-scope-ref")));
+                ps.setString(6, title);
+                ps.setString(7, text(cli.get("--rationale")));
+                ps.setString(8, normalizeJsonArray(text(cli.get("--options-json"))));
+                ps.setString(9, normalizeJsonArray(text(cli.get("--constraints-json"))));
+                ps.setDouble(10, risk);
+                ps.setDouble(11, blast);
+                ps.setDouble(12, unblock);
+                ps.setDouble(13, confidence);
+                ps.setDouble(14, valueDensity);
+                ps.setDouble(15, impact);
+                ps.setString(16, priorityBucket);
+                ps.setString(17, status);
+                ps.setString(18, text(cli.get("--driver")));
+                ps.setString(19, text(cli.get("--change-ref")));
+                ps.setString(20, now);
+                ps.setString(21, now);
+                ps.executeUpdate();
+            }
+        }
+        return 0;
+    }
+
+    private static int runLinkDecision(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        String decisionId = text(cli.get("--decision-id"));
+        String dependsOn = text(cli.get("--depends-on"));
+        if (decisionId.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --decision-id");
+        }
+        if (dependsOn.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --depends-on");
+        }
+        ensureParent(dbPath);
+        try (Connection conn = connect(dbPath)) {
+            initCodeIndexSchema(conn);
+            try (PreparedStatement ps = conn.prepareStatement(
+                "insert or replace into decision_dependency(decision_id, depends_on_decision_id, relation, updated_at) values(?,?,?,?)"
+            )) {
+                ps.setString(1, decisionId);
+                ps.setString(2, dependsOn);
+                ps.setString(3, text(cli.getOrDefault("--relation", "blocks")));
+                ps.setString(4, nowIso());
+                ps.executeUpdate();
+            }
+        }
+        return 0;
+    }
+
+    private static int runExportDecisionPriority(Map<String, String> cli) throws Exception {
+        Path outputPath = requiredPath(cli, "--json");
+        Path applicationDb = optionalPath(cli, "--application-db");
+        Path pmDb = optionalPath(cli, "--pm-db");
+        Path boilerplateDb = optionalPath(cli, "--boilerplate-db");
+        ensureParent(outputPath);
+
+        List<Map<String, Object>> items = new ArrayList<>();
+        if (applicationDb != null) {
+            collectDecisionRows(items, applicationDb, "application");
+        }
+        if (pmDb != null) {
+            collectDecisionRows(items, pmDb, "pm");
+        }
+        if (boilerplateDb != null) {
+            collectDecisionRows(items, boilerplateDb, "boilerplate");
+        }
+
+        List<Map<String, Object>> sorted = items.stream()
+            .sorted(Comparator
+                .comparingInt((Map<String, Object> row) -> decisionStatusRank(text((String) row.get("status"))))
+                .thenComparing((Map<String, Object> row) -> priorityRank(text((String) row.get("priorityBucket"))))
+                .thenComparing((Map<String, Object> row) -> -toDouble(row.get("impactScore")))
+                .thenComparing(row -> text((String) row.get("decisionId"))))
+            .toList();
+
+        Map<String, Integer> byRealm = new LinkedHashMap<>();
+        Map<String, Integer> byPriority = new LinkedHashMap<>();
+        Map<String, Integer> byStatus = new LinkedHashMap<>();
+        for (Map<String, Object> row : sorted) {
+            String realm = text((String) row.get("realm"));
+            String priority = text((String) row.get("priorityBucket"));
+            String status = text((String) row.get("status"));
+            byRealm.put(realm, byRealm.getOrDefault(realm, 0) + 1);
+            byPriority.put(priority, byPriority.getOrDefault(priority, 0) + 1);
+            byStatus.put(status, byStatus.getOrDefault(status, 0) + 1);
+        }
+
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("schemaVersion", "1");
+        payload.put("generatedAt", nowIso());
+        payload.put("source", "sqlite");
+        payload.put("candidateCount", sorted.size());
+        payload.put("byRealm", byRealm);
+        payload.put("byPriorityBucket", byPriority);
+        payload.put("byStatus", byStatus);
+        payload.put("decisions", sorted);
+        writeJson(outputPath, payload);
         return 0;
     }
 
@@ -1341,7 +1489,51 @@ public final class StateDatabaseTool {
                 )
                 """);
             st.execute("create index if not exists idx_token_dictionary_realm on token_dictionary(realm)");
+            st.execute("""
+                create table if not exists decision_log (
+                    decision_id text primary key,
+                    realm text not null default '',
+                    scope_level text not null default 'realm',
+                    scope_ref text not null default '',
+                    sub_scope_ref text not null default '',
+                    title text not null default '',
+                    rationale text not null default '',
+                    options_json text not null default '[]',
+                    constraints_json text not null default '[]',
+                    risk_score real not null default 0.0,
+                    blast_radius real not null default 0.0,
+                    unblock_factor real not null default 0.0,
+                    confidence real not null default 0.0,
+                    value_density real not null default 0.0,
+                    impact_score real not null default 0.0,
+                    priority_bucket text not null default 'P3',
+                    status text not null default 'proposed',
+                    driver text not null default '',
+                    change_ref text not null default '',
+                    created_at text not null,
+                    updated_at text not null
+                )
+                """);
+            st.execute("create index if not exists idx_decision_log_realm on decision_log(realm)");
+            st.execute("create index if not exists idx_decision_log_priority on decision_log(priority_bucket, impact_score desc)");
+            st.execute("create index if not exists idx_decision_log_scope on decision_log(scope_level, scope_ref, sub_scope_ref)");
+            st.execute("""
+                create table if not exists decision_dependency (
+                    decision_id text not null,
+                    depends_on_decision_id text not null,
+                    relation text not null default 'blocks',
+                    updated_at text not null,
+                    primary key(decision_id, depends_on_decision_id)
+                )
+                """);
         }
+        ensureColumnExists(conn, "decision_log", "sub_scope_ref", "text not null default ''");
+        ensureColumnExists(conn, "decision_log", "value_density", "real not null default 0.0");
+        ensureColumnExists(conn, "decision_log", "impact_score", "real not null default 0.0");
+        ensureColumnExists(conn, "decision_log", "priority_bucket", "text not null default 'P3'");
+        ensureColumnExists(conn, "decision_log", "status", "text not null default 'proposed'");
+        ensureColumnExists(conn, "decision_log", "driver", "text not null default ''");
+        ensureColumnExists(conn, "decision_log", "change_ref", "text not null default ''");
     }
 
     private static void clearCodeIndex(Connection conn, String realm) throws SQLException {
@@ -2331,6 +2523,191 @@ public final class StateDatabaseTool {
         try {
             return Double.parseDouble(text);
         } catch (NumberFormatException ignored) {
+            return 0.0d;
+        }
+    }
+
+    private static double scoreArg(Map<String, String> cli, String key) {
+        String raw = text(cli.get(key));
+        if (raw.isBlank()) {
+            return 0.0d;
+        }
+        try {
+            double parsed = Double.parseDouble(raw);
+            if (parsed < 0.0d) {
+                return 0.0d;
+            }
+            if (parsed > 5.0d) {
+                return 5.0d;
+            }
+            return round6(parsed);
+        } catch (NumberFormatException ignored) {
+            return 0.0d;
+        }
+    }
+
+    private static double computeImpactScore(double risk, double blast, double unblock, double confidence, double valueDensity) {
+        double weighted = (risk * 0.20d) + (blast * 0.35d) + (unblock * 0.30d) + (valueDensity * 0.15d);
+        double confidenceMultiplier = 0.50d + (confidence / 10.0d);
+        return round6(weighted * confidenceMultiplier * 20.0d);
+    }
+
+    private static String priorityBucketFor(double impact) {
+        if (impact >= 80.0d) {
+            return "P0";
+        }
+        if (impact >= 60.0d) {
+            return "P1";
+        }
+        if (impact >= 40.0d) {
+            return "P2";
+        }
+        return "P3";
+    }
+
+    private static int priorityRank(String bucket) {
+        return switch (text(bucket).toUpperCase(Locale.ROOT)) {
+            case "P0" -> 0;
+            case "P1" -> 1;
+            case "P2" -> 2;
+            default -> 3;
+        };
+    }
+
+    private static int decisionStatusRank(String status) {
+        String normalized = normalizeDecisionStatus(status);
+        return switch (normalized) {
+            case "in_progress" -> 0;
+            case "proposed" -> 1;
+            case "blocked" -> 2;
+            case "done" -> 3;
+            case "cancelled" -> 4;
+            default -> 5;
+        };
+    }
+
+    private static String normalizeDecisionStatus(String status) {
+        String normalized = text(status).toLowerCase(Locale.ROOT).replace('-', '_').replace(' ', '_');
+        if (normalized.isBlank()) {
+            return "proposed";
+        }
+        return switch (normalized) {
+            case "proposed", "queued", "planned" -> "proposed";
+            case "in_progress", "active", "working" -> "in_progress";
+            case "blocked" -> "blocked";
+            case "done", "complete", "completed" -> "done";
+            case "cancelled", "canceled", "dropped" -> "cancelled";
+            default -> "proposed";
+        };
+    }
+
+    private static String normalizeScopeLevel(String level) {
+        String normalized = text(level).toLowerCase(Locale.ROOT).replace('-', '_').replace(' ', '_');
+        if (normalized.isBlank()) {
+            return "realm";
+        }
+        return switch (normalized) {
+            case "realm", "workstream", "component", "subcomponent", "module", "file", "token", "package", "sub_boilerplate", "subboilerplate" -> normalized.equals("subboilerplate") ? "sub_boilerplate" : normalized;
+            default -> "component";
+        };
+    }
+
+    private static String normalizeJsonArray(String value) {
+        if (value == null || value.isBlank()) {
+            return "[]";
+        }
+        try {
+            JsonElement parsed = GSON.fromJson(value, JsonElement.class);
+            if (parsed != null && parsed.isJsonArray()) {
+                return GSON.toJson(parsed);
+            }
+            return "[]";
+        } catch (Exception ignored) {
+            return "[]";
+        }
+    }
+
+    private static void collectDecisionRows(List<Map<String, Object>> items, Path dbPath, String fallbackRealm) throws Exception {
+        if (dbPath == null || !Files.exists(dbPath)) {
+            return;
+        }
+        try (Connection conn = connect(dbPath);
+             PreparedStatement ps = conn.prepareStatement(
+                 "select decision_id, realm, scope_level, scope_ref, sub_scope_ref, title, rationale, options_json, constraints_json, " +
+                     "risk_score, blast_radius, unblock_factor, confidence, value_density, impact_score, priority_bucket, status, driver, change_ref, updated_at " +
+                     "from decision_log order by priority_bucket asc, impact_score desc, updated_at desc"
+             );
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String impactRealm = text(rs.getString(2));
+                if (impactRealm.isBlank()) {
+                    impactRealm = fallbackRealm;
+                }
+                String status = normalizeDecisionStatus(text(rs.getString(17)));
+                double impact = rs.getDouble(15);
+                if (rs.wasNull()) {
+                    double recomputed = computeImpactScore(
+                        rs.getDouble(10),
+                        rs.getDouble(11),
+                        rs.getDouble(12),
+                        rs.getDouble(13),
+                        rs.getDouble(14)
+                    );
+                    impact = recomputed;
+                }
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("decisionId", text(rs.getString(1)));
+                row.put("realm", impactRealm);
+                row.put("scopeLevel", text(rs.getString(3)));
+                row.put("scopeRef", text(rs.getString(4)));
+                row.put("subScopeRef", text(rs.getString(5)));
+                row.put("title", text(rs.getString(6)));
+                row.put("rationale", text(rs.getString(7)));
+                row.put("options", parseJsonStringArray(text(rs.getString(8))));
+                row.put("constraints", parseJsonStringArray(text(rs.getString(9))));
+                row.put("riskScore", round6(rs.getDouble(10)));
+                row.put("blastRadius", round6(rs.getDouble(11)));
+                row.put("unblockFactor", round6(rs.getDouble(12)));
+                row.put("confidence", round6(rs.getDouble(13)));
+                row.put("valueDensity", round6(rs.getDouble(14)));
+                row.put("impactScore", round6(impact));
+                row.put("priorityBucket", text(rs.getString(16)).isBlank() ? priorityBucketFor(impact) : text(rs.getString(16)));
+                row.put("status", status);
+                row.put("driver", text(rs.getString(18)));
+                row.put("changeRef", text(rs.getString(19)));
+                row.put("updatedAt", text(rs.getString(20)));
+                row.put("recommendation", recommendationForDecision(status, impact));
+                items.add(row);
+            }
+        } catch (SQLException ignored) {
+            // Realm DB may predate decision tables; skip gracefully.
+        }
+    }
+
+    private static String recommendationForDecision(String status, double impact) {
+        String normalized = normalizeDecisionStatus(status);
+        if ("blocked".equals(normalized) && impact >= 60.0d) {
+            return "Escalate unblock action; high impact is currently blocked.";
+        }
+        if ("proposed".equals(normalized) && impact >= 60.0d) {
+            return "Promote to in_progress for maximum near-term return.";
+        }
+        if ("in_progress".equals(normalized)) {
+            return "Continue execution and record measurable outcome.";
+        }
+        if ("done".equals(normalized)) {
+            return "Retain for traceability; no action required.";
+        }
+        return "Review and re-score if context changed.";
+    }
+
+    private static double toDouble(Object value) {
+        if (value instanceof Number n) {
+            return n.doubleValue();
+        }
+        try {
+            return Double.parseDouble(String.valueOf(value));
+        } catch (Exception ignored) {
             return 0.0d;
         }
     }

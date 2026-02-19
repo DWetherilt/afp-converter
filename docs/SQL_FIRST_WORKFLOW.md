@@ -209,6 +209,35 @@ Generate boilerplate promotion status report:
 ./gradlew --no-daemon boilerplatePromotionReport
 ```
 
+### Decision Queue (Cross-Realm)
+
+Record a decision in a realm database (granular scope including sub-boilerplate):
+
+```bash
+java -cp "$(./gradlew -q :pm-tools:printRuntimeClasspath)" \
+  solutions.pointzero.symphony.pm.tools.StateDatabaseTool \
+  upsert-decision \
+  --db pm/state/boilerplate-realm.sqlite \
+  --realm boilerplate \
+  --decision-id BP-DEC-001 \
+  --title "Promote checksum guard into boilerplate CI" \
+  --scope-level sub_boilerplate \
+  --scope-ref pz-boilerplate-intelliJ \
+  --sub-scope-ref .github/workflows/ci.yml \
+  --status in_progress \
+  --risk-score 4.0 \
+  --blast-radius 3.0 \
+  --unblock-factor 4.5 \
+  --confidence 4.0 \
+  --value-density 4.5
+```
+
+Export the cross-realm decision priority queue:
+
+```bash
+./gradlew --no-daemon decisionPriorityReport
+```
+
 ### CI Quick Check
 
 Run the CI-equivalent SQL integrity checks locally:
