@@ -48,6 +48,15 @@ if missing:
 if not isinstance(data["files"], list) or not data["files"]:
     print("manifest_invalid_files")
     raise SystemExit(1)
+for item in data["files"]:
+    if not isinstance(item, dict):
+        print("manifest_invalid_file_item")
+        raise SystemExit(1)
+    path = str(item.get("path", ""))
+    lower = path.lower()
+    if lower.endswith(".sqlite-wal") or lower.endswith(".sqlite-shm"):
+        print("manifest_forbidden_transient_file:" + path)
+        raise SystemExit(1)
 if not isinstance(data["validation"], list) or not data["validation"]:
     print("manifest_invalid_validation")
     raise SystemExit(1)

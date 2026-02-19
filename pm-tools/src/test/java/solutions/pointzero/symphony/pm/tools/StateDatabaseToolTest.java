@@ -286,4 +286,32 @@ class StateDatabaseToolTest {
         assertTrue(payload.contains("\"ok\": false"));
         assertTrue(payload.contains("\"mismatchCount\": 1"));
     }
+
+    @Test
+    void exportBoilerplatePromotionReportSummarizesStatuses(@TempDir Path tempDir) throws Exception {
+        Path db = tempDir.resolve("boilerplate-state.sqlite");
+        Path out = tempDir.resolve("promotion-report.json");
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:" + db.toAbsolutePath());
+             Statement st = conn.createStatement()) {
+            st.execute("create table package_candidates(" +
+                "candidate_id text primary key, realm text, package_id text, target_repo text, source_repo text, " +
+                "created_at text, summary text, package_zip text, patch_count integer, manifest_file_count integer, " +
+                "promotion_status text, promoted_at text, promotion_notes text, supersedes_json text, updated_at text)");
+            st.execute("insert into package_candidates(candidate_id, realm, package_id, target_repo, source_repo, created_at, summary, package_zip, patch_count, manifest_file_count, promotion_status, promoted_at, promotion_notes, supersedes_json, updated_at) values " +
+                "('pkg-a', 'boilerplate', 'pkg-a', 'pz-boilerplate-intelliJ', 'afp-converter', '2026-02-19T00:00:00Z', 'A', 'pkg-a.zip', 1, 3, 'approved', '', '', '[]', '2026-02-19T00:00:00Z')," +
+                "('pkg-b', 'boilerplate', 'pkg-b', 'pz-boilerplate-intelliJ', 'afp-converter', '2026-02-19T00:00:00Z', 'B', '', 0, 2, 'promoted', '2026-02-19T12:00:00Z', 'merged', '[\"pkg-a\"]', '2026-02-19T00:00:00Z')");
+        }
+
+        int exit = StateDatabaseTool.execute(new String[] {
+            "export-boilerplate-promotion-report",
+            "--db", db.toString(),
+            "--json", out.toString()
+        });
+        assertEquals(0, exit);
+        String payload = Files.readString(out, StandardCharsets.UTF_8);
+        assertTrue(payload.contains("\"statusCounts\""));
+        assertTrue(payload.contains("\"approved\": 1"));
+        assertTrue(payload.contains("\"promoted\": 1"));
+        assertTrue(payload.contains("\"recommendedAction\""));
+    }
 }

@@ -977,11 +977,29 @@ tasks.register('boilerplatePackageInventoryCsv', Exec) {
     }
 }
 
+tasks.register('boilerplatePromotionReport', Exec) {
+    group = 'documentation'
+    description = 'Exports boilerplate package promotion readiness/status report from SQLite state.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('boilerplateStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-boilerplate-promotion-report',
+            '--db', 'pm/state/boilerplate-state.sqlite',
+            '--json', 'pm/reports/boilerplate-promotion-status.json'
+    }
+}
+
 tasks.register('stateInventoryCsv') {
     group = 'documentation'
     description = 'Exports DB-backed project/boilerplate file inventories with maintenance context.'
     dependsOn('projectFileInventoryCsv')
     dependsOn('boilerplatePackageInventoryCsv')
+    dependsOn('boilerplatePromotionReport')
 }
 
 tasks.register('boilerplateSyncWorkbook', Exec) {
@@ -1141,6 +1159,7 @@ tasks.register('documentationManifest') {
             file('pm/policy/policy-rule-tables.sql'),
             file('pm/reports/repo-file-inventory-with-context.csv'),
             file('pm/reports/boilerplate-package-files-with-context.csv'),
+            file('pm/reports/boilerplate-promotion-status.json'),
             file('pm/state/project-state.sqlite'),
             file('pm/state/boilerplate-state.sqlite'),
             file('pm/state/application-realm.sqlite'),
@@ -1225,6 +1244,7 @@ tasks.register('publishCiArtifacts') {
             file('pm/policy/policy-rule-tables.sql'),
             file('pm/reports/repo-file-inventory-with-context.csv'),
             file('pm/reports/boilerplate-package-files-with-context.csv'),
+            file('pm/reports/boilerplate-promotion-status.json'),
             file('pm/reports/documentation-manifest.json'),
             file('pm/reports/project-plan-next-step.json'),
             file('pm/reports/workbook-refresh-status.json'),

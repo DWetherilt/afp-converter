@@ -33,6 +33,13 @@ jobs:
             [ -d "$dir" ] || continue
             tools/validate_boilerplate_package.sh "$dir"
           done
+      - name: Validate boilerplate package checksums
+        run: |
+          base="boilerplate/update-packages/pz-boilerplate-intelliJ"
+          for sumfile in "$base"/*.zip.sha256; do
+            [ -f "$sumfile" ] || continue
+            (cd "$base" && sha256sum -c "$(basename "$sumfile")")
+          done
       - name: Recovery quick check
         run: tools/recovery_quick_check.sh
       - name: Production build

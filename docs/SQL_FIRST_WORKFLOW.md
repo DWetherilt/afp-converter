@@ -203,6 +203,12 @@ tools/export_boilerplate_package.sh 2026-02-19-recovery-ci-sql-integrity
 
 Export excludes transient SQLite artifacts (`*.sqlite-wal`, `*.sqlite-shm`) from the archive.
 
+Generate boilerplate promotion status report:
+
+```bash
+./gradlew --no-daemon boilerplatePromotionReport
+```
+
 ### CI Quick Check
 
 Run the CI-equivalent SQL integrity checks locally:

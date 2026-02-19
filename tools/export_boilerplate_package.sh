@@ -26,7 +26,10 @@ out_zip="$BASE_DIR/${pkg_id}.zip"
 )
 
 sha=$(/usr/bin/shasum -a 256 "$out_zip" | /usr/bin/awk '{print $1}')
-echo "$sha  $out_zip" > "${out_zip}.sha256"
+(
+  cd "$BASE_DIR"
+  echo "$sha  ${pkg_id}.zip" > "${pkg_id}.zip.sha256"
+)
 
 echo "exported:$out_zip"
 echo "checksum:${out_zip}.sha256"

@@ -96,7 +96,7 @@ public final class StateDatabaseTool {
 
     static int execute(String[] args) throws Exception {
         if (args.length == 0) {
-            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-policy-rules|export-data-dictionary|lint-data-dictionary|lint-policy-rules|sync-code-index|search-code-token|search-code-token-multi|materialize-code-realm|upsert-code-file|upsert-code-files-manifest|verify-code-realm|report-code-realm-coverage");
+            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-boilerplate-promotion-report|export-policy-rules|export-data-dictionary|lint-data-dictionary|lint-policy-rules|sync-code-index|search-code-token|search-code-token-multi|materialize-code-realm|upsert-code-file|upsert-code-files-manifest|verify-code-realm|report-code-realm-coverage");
         }
         String command = args[0];
         Map<String, String> cli = parseArgs(args, 1);
@@ -111,6 +111,7 @@ public final class StateDatabaseTool {
             case "version-control-ledger" -> runVersionControlLedger(cli);
             case "export-project-file-inventory" -> runExportProjectFileInventory(cli);
             case "export-boilerplate-package-inventory" -> runExportBoilerplatePackageInventory(cli);
+            case "export-boilerplate-promotion-report" -> runExportBoilerplatePromotionReport(cli);
             case "export-policy-rules" -> runExportPolicyRules(cli);
             case "export-data-dictionary" -> runExportDataDictionary(cli);
             case "lint-data-dictionary" -> runLintDataDictionary(cli);
@@ -633,6 +634,8 @@ public final class StateDatabaseTool {
             "candidate_id",
             "package_id",
             "target_repo",
+            "promotion_status",
+            "promoted_at",
             "file_path",
             "size_bytes",
             "source_table",
@@ -643,7 +646,7 @@ public final class StateDatabaseTool {
         List<String[]> rows = new ArrayList<>();
         try (Connection conn = connect(dbPath);
              PreparedStatement ps = conn.prepareStatement(
-                 "select pc.realm, pf.candidate_id, pc.package_id, pc.target_repo, pf.file_path, pf.size_bytes " +
+                 "select pc.realm, pf.candidate_id, pc.package_id, pc.target_repo, pc.promotion_status, pc.promoted_at, pf.file_path, pf.size_bytes " +
                      "from package_files pf " +
                      "join package_candidates pc on pc.candidate_id = pf.candidate_id " +
                      "order by pf.candidate_id asc, pf.file_path asc"
@@ -656,7 +659,9 @@ public final class StateDatabaseTool {
                     text(rs.getString(3)),
                     text(rs.getString(4)),
                     text(rs.getString(5)),
-                    Long.toString(rs.getLong(6)),
+                    text(rs.getString(6)),
+                    text(rs.getString(7)),
+                    Long.toString(rs.getLong(8)),
                     "package_files",
                     "boilerplateStateDb (sync-boilerplate)",
                     "boilerplateSyncWorkbook",
@@ -665,6 +670,53 @@ public final class StateDatabaseTool {
             }
         }
         writeCsv(csvPath, header, rows);
+        return 0;
+    }
+
+    private static int runExportBoilerplatePromotionReport(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        Path jsonPath = requiredPath(cli, "--json");
+        ensureParent(jsonPath);
+
+        Map<String, Integer> statusCounts = new LinkedHashMap<>();
+        List<Map<String, Object>> rows = new ArrayList<>();
+        try (Connection conn = connect(dbPath);
+             PreparedStatement ps = conn.prepareStatement(
+                 "select candidate_id, package_id, target_repo, source_repo, created_at, package_zip, patch_count, manifest_file_count, " +
+                     "promotion_status, promoted_at, promotion_notes, supersedes_json " +
+                     "from package_candidates order by candidate_id asc"
+             );
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String status = normalizePromotionStatus(text(rs.getString(9)));
+                statusCounts.put(status, statusCounts.getOrDefault(status, 0) + 1);
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("candidateId", text(rs.getString(1)));
+                row.put("packageId", text(rs.getString(2)));
+                row.put("targetRepo", text(rs.getString(3)));
+                row.put("sourceRepo", text(rs.getString(4)));
+                row.put("createdAt", text(rs.getString(5)));
+                row.put("packageZip", text(rs.getString(6)));
+                row.put("patchCount", rs.getInt(7));
+                row.put("manifestFileCount", rs.getInt(8));
+                row.put("promotionStatus", status);
+                row.put("promotedAt", text(rs.getString(10)));
+                row.put("promotionNotes", text(rs.getString(11)));
+                row.put("supersedes", parseJsonStringArray(text(rs.getString(12))));
+                row.put("recommendedAction", recommendedActionForStatus(status));
+                rows.add(row);
+            }
+        }
+
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("schemaVersion", "1");
+        payload.put("generatedAt", nowIso());
+        payload.put("source", "sqlite");
+        payload.put("sourceTable", "package_candidates");
+        payload.put("candidateCount", rows.size());
+        payload.put("statusCounts", statusCounts);
+        payload.put("candidates", rows);
+        writeJson(jsonPath, payload);
         return 0;
     }
 
@@ -1703,6 +1755,9 @@ public final class StateDatabaseTool {
                     package_zip text not null default '',
                     patch_count integer not null default 0,
                     manifest_file_count integer not null default 0,
+                    promotion_status text not null default 'pending_review',
+                    promoted_at text not null default '',
+                    promotion_notes text not null default '',
                     supersedes_json text not null default '[]',
                     updated_at text not null
                 )
@@ -1719,9 +1774,13 @@ public final class StateDatabaseTool {
                 """);
         }
         ensureColumnExists(conn, "package_candidates", "realm", "text not null default 'boilerplate'");
+        ensureColumnExists(conn, "package_candidates", "promotion_status", "text not null default 'pending_review'");
+        ensureColumnExists(conn, "package_candidates", "promoted_at", "text not null default ''");
+        ensureColumnExists(conn, "package_candidates", "promotion_notes", "text not null default ''");
         ensureColumnExists(conn, "package_files", "realm", "text not null default 'boilerplate'");
         try (Statement st = conn.createStatement()) {
             st.execute("create index if not exists idx_package_candidates_realm on package_candidates(realm)");
+            st.execute("create index if not exists idx_package_candidates_status on package_candidates(promotion_status)");
         }
     }
 
@@ -1969,8 +2028,8 @@ public final class StateDatabaseTool {
             clear.execute("delete from package_candidates");
         }
         try (PreparedStatement ps = conn.prepareStatement(
-            "insert into package_candidates(candidate_id,realm,package_id,target_repo,source_repo,created_at,summary,package_zip,patch_count,manifest_file_count,supersedes_json,updated_at) " +
-                "values(?,?,?,?,?,?,?,?,?,?,?,?)"
+            "insert into package_candidates(candidate_id,realm,package_id,target_repo,source_repo,created_at,summary,package_zip,patch_count,manifest_file_count,promotion_status,promoted_at,promotion_notes,supersedes_json,updated_at) " +
+                "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
         )) {
             for (CandidateRow row : candidates) {
                 ps.setString(1, row.candidateId());
@@ -1983,8 +2042,11 @@ public final class StateDatabaseTool {
                 ps.setString(8, row.packageZip());
                 ps.setInt(9, row.patchCount());
                 ps.setInt(10, row.manifestFileCount());
-                ps.setString(11, GSON.toJson(row.supersedes()));
-                ps.setString(12, now);
+                ps.setString(11, row.promotionStatus());
+                ps.setString(12, row.promotedAt());
+                ps.setString(13, row.promotionNotes());
+                ps.setString(14, GSON.toJson(row.supersedes()));
+                ps.setString(15, now);
                 ps.addBatch();
             }
             ps.executeBatch();
@@ -2032,11 +2094,19 @@ public final class StateDatabaseTool {
             String sourceRepo = readManifestString(manifest, "sourceRepo");
             String targetFromManifest = readManifestString(manifest, "targetRepo");
             List<String> supersedes = readManifestArray(manifest, "supersedes");
+            String promotionStatus = normalizePromotionStatus(readManifestString(manifest, "promotionStatus"));
+            String promotedAt = readManifestString(manifest, "promotedAt");
+            String promotionNotes = readManifestString(manifest, "promotionNotes");
             int patchCount = countFiles(dir.resolve("patches"), ".patch");
             int manifestFileCount = countManifestFiles(manifest);
             List<PackageFileRow> files = listFiles(dir);
             Path zipPath = packagesDir.resolve(candidateId + ".zip");
             String zipRel = Files.exists(zipPath) ? packagesDir.relativize(zipPath).toString().replace('\\', '/') : "";
+            if ("pending_review".equals(promotionStatus)) {
+                if (!zipRel.isBlank()) {
+                    promotionStatus = "approved";
+                }
+            }
             out.add(new CandidateRow(
                 candidateId,
                 realm,
@@ -2048,11 +2118,45 @@ public final class StateDatabaseTool {
                 zipRel,
                 patchCount,
                 manifestFileCount,
+                promotionStatus,
+                promotedAt,
+                promotionNotes,
                 supersedes,
                 files
             ));
         }
-        return out;
+        Set<String> supersededByOtherCandidates = new LinkedHashSet<>();
+        for (CandidateRow row : out) {
+            supersededByOtherCandidates.addAll(row.supersedes());
+        }
+        if (supersededByOtherCandidates.isEmpty()) {
+            return out;
+        }
+        List<CandidateRow> adjusted = new ArrayList<>(out.size());
+        for (CandidateRow row : out) {
+            String status = row.promotionStatus();
+            if (supersededByOtherCandidates.contains(row.candidateId()) && !"promoted".equals(status)) {
+                status = "superseded";
+            }
+            adjusted.add(new CandidateRow(
+                row.candidateId(),
+                row.realm(),
+                row.packageId(),
+                row.targetRepo(),
+                row.sourceRepo(),
+                row.createdAt(),
+                row.summary(),
+                row.packageZip(),
+                row.patchCount(),
+                row.manifestFileCount(),
+                status,
+                row.promotedAt(),
+                row.promotionNotes(),
+                row.supersedes(),
+                row.files()
+            ));
+        }
+        return adjusted;
     }
 
     private static List<Map<String, String>> readCsv(Path csvPath, List<String> requiredColumns) throws Exception {
@@ -2460,6 +2564,23 @@ public final class StateDatabaseTool {
         return out;
     }
 
+    private static List<String> parseJsonStringArray(String value) {
+        if (value == null || value.isBlank()) {
+            return List.of();
+        }
+        JsonElement parsed = GSON.fromJson(value, JsonElement.class);
+        if (parsed == null || !parsed.isJsonArray()) {
+            return List.of();
+        }
+        List<String> out = new ArrayList<>();
+        for (JsonElement el : parsed.getAsJsonArray()) {
+            if (el != null && el.isJsonPrimitive()) {
+                out.add(el.getAsString().trim());
+            }
+        }
+        return out;
+    }
+
     private static int countManifestFiles(Path manifest) throws IOException {
         JsonObject object = readJsonObject(manifest);
         if (!object.has("files") || !object.get("files").isJsonArray()) {
@@ -2493,6 +2614,29 @@ public final class StateDatabaseTool {
         return out;
     }
 
+    private static String normalizePromotionStatus(String status) {
+        String normalized = text(status).toLowerCase(Locale.ROOT).replace('-', '_').replace(' ', '_');
+        if (normalized.isBlank()) {
+            return "pending_review";
+        }
+        return switch (normalized) {
+            case "pending", "pending_review", "review" -> "pending_review";
+            case "approved", "ready", "ready_for_promotion" -> "approved";
+            case "promoted", "merged" -> "promoted";
+            case "superseded" -> "superseded";
+            default -> "pending_review";
+        };
+    }
+
+    private static String recommendedActionForStatus(String status) {
+        return switch (normalizePromotionStatus(status)) {
+            case "approved" -> "Promote package in target boilerplate repository.";
+            case "promoted" -> "No action required; keep for audit trail.";
+            case "superseded" -> "Archive or remove after confirming successor package is merged.";
+            default -> "Review package content and decide approve/supersede.";
+        };
+    }
+
     private record CandidateRow(String candidateId,
                                 String realm,
                                 String packageId,
@@ -2503,6 +2647,9 @@ public final class StateDatabaseTool {
                                 String packageZip,
                                 int patchCount,
                                 int manifestFileCount,
+                                String promotionStatus,
+                                String promotedAt,
+                                String promotionNotes,
                                 List<String> supersedes,
                                 List<PackageFileRow> files) {}
 
