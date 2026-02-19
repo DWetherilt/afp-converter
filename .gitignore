@@ -52,3 +52,5 @@ Screenshot *.png
 
 ### PM console local inbox ###
 pm/state/assistant-inbox.ndjson
+pm/state/pmconsole-live.pid
+pm/state/pmconsole-live.log

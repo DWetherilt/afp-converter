@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T17:42:40Z",
+  "generatedAt": "2026-02-19T17:54:53Z",
   "source": "sqlite",
   "sourceTable": "action_items",
   "itemCount": 1,
@@ -25,6 +25,9 @@
       "notes": "auto-ingested from assistant inbox",
       "createdAt": "2026-02-19T17:40:29Z",
       "updatedAt": "2026-02-19T17:40:29Z",
+      "ageDays": 0,
+      "staleAfterDays": 3,
+      "isStale": false,
       "decisionLinks": []
     }
   ]

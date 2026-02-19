@@ -38,6 +38,7 @@
       "phaseTaskMap": {
         "execute_application_with_pm_console": [
           "previewManifest",
+          "pmConsoleEnsureLive",
           "pmConsoleStatus"
         ],
         "pm_refresh_and_reports": [
@@ -47,10 +48,13 @@
           "decisionPriorityReport",
           "knowledgeBaseReport",
           "actionItemsReport",
+          "actionDecisionSuggestionReport",
+          "actionIngestStrictGate",
           "realmPolicySync",
           "applicationRealmPolicyReport",
           "pmRealmPolicyReport",
           "boilerplateRealmPolicyReport",
+          "realmPolicyDiffReport",
           "reasoningDatabases",
           "stateInventoryCsv",
           "documentationManifest"

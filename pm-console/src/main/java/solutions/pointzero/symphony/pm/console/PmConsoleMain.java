@@ -41,6 +41,7 @@ import java.util.concurrent.Callable;
     subcommands = {
         PmConsoleMain.StatusCommand.class,
         PmConsoleMain.DecisionsCommand.class,
+        PmConsoleMain.ActionsCommand.class,
         PmConsoleMain.ReportCommand.class,
         PmConsoleMain.RefreshCommand.class,
         PmConsoleMain.DbCommand.class,
@@ -55,6 +56,7 @@ public final class PmConsoleMain implements Callable<Integer> {
     private static final Path PROJECT_DB = Path.of("pm/state/project-state.sqlite");
     private static final Path BOILERPLATE_DB = Path.of("pm/state/boilerplate-state.sqlite");
     private static final Path DECISION_QUEUE = Path.of("pm/reports/decision-priority-queue.json");
+    private static final Path ACTION_ITEMS = Path.of("pm/reports/action-items.json");
     private static final Path AI_INBOX = Path.of("pm/state/assistant-inbox.ndjson");
     private static final Path AUTHORIZED_DBS = Path.of("pm/security/authorized-databases.json");
 
@@ -67,7 +69,7 @@ public final class PmConsoleMain implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        System.out.println("pmconsole: use subcommands status | decisions | report | refresh | db | tools | live");
+        System.out.println("pmconsole: use subcommands status | decisions | actions | report | refresh | db | tools | live");
         return 0;
     }
 
@@ -85,6 +87,7 @@ public final class PmConsoleMain implements Callable<Integer> {
                 "Primary console commands:",
                 "  - pmconsole status",
                 "  - pmconsole decisions --top 10",
+                "  - pmconsole actions --top 10",
                 "  - pmconsole report --request \"current workstream status\"",
                 "  - pmconsole report --request \"reasoning drive\"",
                 "  - pmconsole refresh --phase pm_refresh_and_reports",
@@ -162,6 +165,18 @@ public final class PmConsoleMain implements Callable<Integer> {
         @Override
         public Integer call() {
             return printDecisionQueue(Math.max(1, top));
+        }
+    }
+
+    @Command(name = "actions", description = "Shows actionable items from pm/reports/action-items.json")
+    static final class ActionsCommand implements Callable<Integer> {
+
+        @Option(names = "--top", description = "How many rows to print (default: ${DEFAULT-VALUE})")
+        int top = 10;
+
+        @Override
+        public Integer call() {
+            return printActionItems(Math.max(1, top));
         }
     }
 
@@ -266,7 +281,7 @@ public final class PmConsoleMain implements Callable<Integer> {
                     System.out.println();
                     printDecisionQueue(Math.max(1, topDecisions));
                     System.out.println();
-                    System.out.println("Commands: help | status | decisions [n] | report <request> | refresh [phase <id>|tasks <csv>|preview] | db list | tools | interval <sec> | prompt <text> | clear | quit");
+                    System.out.println("Commands: help | status | decisions [n] | actions [n] | report <request> | refresh [phase <id>|tasks <csv>|preview] | db list | tools | interval <sec> | prompt <text> | clear | quit");
                     nextRefreshAt = now + intervalMs;
                 }
 
@@ -299,6 +314,12 @@ public final class PmConsoleMain implements Callable<Integer> {
                         if (n != null) {
                             topDecisions = Math.max(1, n);
                         }
+                        nextRefreshAt = 0L;
+                        continue;
+                    }
+                    if (lower.startsWith("actions")) {
+                        Integer n = parseTrailingInt(normalized, "actions");
+                        printActionItems(n == null ? 10 : Math.max(1, n));
                         nextRefreshAt = 0L;
                         continue;
                     }
@@ -478,6 +499,7 @@ public final class PmConsoleMain implements Callable<Integer> {
             Path policyLint = Path.of("pm/reports/policy-rules-lint.json");
             Path knowledge = Path.of("pm/reports/knowledge-base.json");
             Path reasoning = Path.of("pm/reports/reasoning-drive.json");
+            Path actions = Path.of("pm/reports/action-items.json");
 
             System.out.println("Report summary:");
             System.out.println("  - issues effectiveness: " + describePath(issues));
@@ -486,6 +508,7 @@ public final class PmConsoleMain implements Callable<Integer> {
             System.out.println("  - policy rules lint: " + describePath(policyLint));
             System.out.println("  - knowledge base: " + describePath(knowledge));
             System.out.println("  - reasoning drive: " + describePath(reasoning));
+            System.out.println("  - action items: " + describePath(actions));
         }
     }
 
@@ -517,6 +540,38 @@ public final class PmConsoleMain implements Callable<Integer> {
                 + str(row, "status", "<status>") + " | impact="
                 + str(row, "impactScore", "0")
                 + " | " + str(row, "title", ""));
+            printed++;
+        }
+        return 0;
+    }
+
+    private static int printActionItems(int top) {
+        System.out.println("Action items:");
+        JsonObject root = readJson(ACTION_ITEMS);
+        if (root == null) {
+            System.out.println("  - missing (" + ACTION_ITEMS + ")");
+            return 1;
+        }
+        String count = str(root, "itemCount", "0");
+        System.out.println("  - total: " + count);
+        JsonElement rows = root.get("actions");
+        if (rows == null || !rows.isJsonArray()) {
+            return 0;
+        }
+        int printed = 0;
+        for (JsonElement el : rows.getAsJsonArray()) {
+            if (printed >= top) {
+                break;
+            }
+            if (el == null || !el.isJsonObject()) {
+                continue;
+            }
+            JsonObject row = el.getAsJsonObject();
+            System.out.println("  - [" + str(row, "priority", "medium") + "] "
+                + str(row, "actionId", "<id>") + " | "
+                + str(row, "realm", "<realm>") + " | "
+                + str(row, "status", "<status>") + " | "
+                + str(row, "title", ""));
             printed++;
         }
         return 0;

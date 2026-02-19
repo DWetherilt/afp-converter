@@ -293,13 +293,22 @@ def export_report(exp_conn: sqlite3.Connection, drv_conn: sqlite3.Connection, pa
             }
         )
 
+    event_count = int(exp_conn.execute("select count(*) from experience_events").fetchone()[0])
+    linked_events = int(
+        exp_conn.execute(
+            "select count(*) from experience_events where coalesce(decision_link_count, 0) > 0"
+        ).fetchone()[0]
+    )
+    decision_link_coverage = 0.0 if event_count == 0 else round((linked_events / event_count) * 100.0, 3)
+
     payload = {
         "schemaVersion": "1",
         "generatedAt": now_iso(),
         "source": "reasoning-sync",
         "experience": {
             "db": str(exp_conn.execute("pragma database_list").fetchone()[2]),
-            "eventCount": int(exp_conn.execute("select count(*) from experience_events").fetchone()[0]),
+            "eventCount": event_count,
+            "decisionLinkCoveragePct": decision_link_coverage,
             "heuristicCount": int(exp_conn.execute("select count(*) from heuristic_scores").fetchone()[0]),
             "topHeuristics": top_heuristics,
         },

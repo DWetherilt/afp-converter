@@ -338,12 +338,41 @@ Export per-realm policy governance reports:
 Generated outputs:
 
 - `pm/reports/action-items.json`
+- `pm/reports/action-decision-suggestions.json`
+- `pm/reports/action-ingest-strict.json`
 - `pm/reports/realm-policy-sync.json`
+- `pm/reports/realm-policy-diff.json`
 - `pm/reports/application-realm-policy.json`
 - `pm/reports/pm-realm-policy.json`
 - `pm/reports/boilerplate-realm-policy.json`
 
+Cross-realm action token search from SQL:
+
+```bash
+./gradlew --no-daemon crossRealmActionTokenSearch -Pkeyword=governance
+```
+
 ### PM Console Reporting
+
+Persistent live dashboard daemon (default check in execute-application phase):
+
+```bash
+tools/pm_console_live_daemon.sh start
+tools/pm_console_live_daemon.sh status
+```
+
+Stop/restart daemon:
+
+```bash
+tools/pm_console_live_daemon.sh stop
+tools/pm_console_live_daemon.sh restart
+```
+
+Default normalized execution now ensures live daemon is running before status:
+
+- `previewManifest`
+- `pmConsoleEnsureLive`
+- `pmConsoleStatus`
 
 Intent-style report output:
 

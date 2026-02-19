@@ -90,6 +90,19 @@ tasks.register('pmConsoleStatus', JavaExec) {
     args 'status'
 }
 
+tasks.register('pmConsoleEnsureLive', Exec) {
+    group = 'documentation'
+    description = 'Ensures pmconsole live dashboard is running in persistent background mode.'
+    dependsOn(':pm-console:installDist')
+    commandLine 'bash', 'tools/pm_console_live_daemon.sh', 'start'
+}
+
+tasks.register('pmConsoleLiveStatus', Exec) {
+    group = 'documentation'
+    description = 'Reports current persistent pmconsole live daemon status.'
+    commandLine 'bash', 'tools/pm_console_live_daemon.sh', 'status'
+}
+
 tasks.register('pmDevAttach') {
     group = 'documentation'
     description = 'Development attach workflow: regenerate preview and show PM console status'
@@ -848,6 +861,27 @@ tasks.register('crossRealmTokenSearch', Exec) {
     }
 }
 
+tasks.register('crossRealmActionTokenSearch', Exec) {
+    group = 'documentation'
+    description = 'Searches action_items across all realm databases (set -Pkeyword=<token>).'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmCodeDatabases')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        String keyword = (project.findProperty('keyword') ?: 'render').toString().trim().toLowerCase(Locale.ROOT)
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'search-action-token-multi',
+            '--application-db', 'pm/state/application-realm.sqlite',
+            '--pm-db', 'pm/state/pm-realm.sqlite',
+            '--boilerplate-db', 'pm/state/boilerplate-realm.sqlite',
+            '--keyword', keyword,
+            '--json', 'pm/reports/cross-realm-action-token-search.json'
+    }
+}
+
 tasks.register('dataDictionaryReport', Exec) {
     group = 'documentation'
     description = 'Exports SQL-backed PM data dictionary from SQLite state into pm/reports/data-dictionary.json'
@@ -1064,6 +1098,30 @@ tasks.register('actionItemsReport', Exec) {
     }
 }
 
+tasks.register('actionDecisionSuggestionReport', Exec) {
+    group = 'documentation'
+    description = 'Builds suggestions linking open action items to candidate decisions.'
+    dependsOn('actionItemsReport')
+    dependsOn('decisionPriorityReport')
+    commandLine 'python3',
+        'tools/action_decision_suggestions.py',
+        '--actions', 'pm/reports/action-items.json',
+        '--decisions', 'pm/reports/decision-priority-queue.json',
+        '--output', 'pm/reports/action-decision-suggestions.json'
+}
+
+tasks.register('actionIngestStrictGate', Exec) {
+    group = 'verification'
+    description = 'Fails when actionable prompts in assistant inbox have not been ingested into project-state.'
+    dependsOn('actionInboxIngest')
+    commandLine 'python3',
+        'tools/check_action_ingest_strict.py',
+        '--db', 'pm/state/project-state.sqlite',
+        '--inbox', 'pm/state/assistant-inbox.ndjson',
+        '--source', 'pmconsole-live',
+        '--output', 'pm/reports/action-ingest-strict.json'
+}
+
 tasks.register('applicationRealmPolicyReport', Exec) {
     group = 'documentation'
     description = 'Exports realm governance policy catalog for application realm DB.'
@@ -1129,6 +1187,21 @@ tasks.register('realmPolicySync', Exec) {
         '--report', 'pm/reports/realm-policy-sync.json'
 }
 
+tasks.register('realmPolicyDiffReport', Exec) {
+    group = 'documentation'
+    description = 'Builds per-realm governance policy diff report against prior snapshot.'
+    dependsOn('applicationRealmPolicyReport')
+    dependsOn('pmRealmPolicyReport')
+    dependsOn('boilerplateRealmPolicyReport')
+    commandLine 'python3',
+        'tools/realm_policy_diff.py',
+        '--application', 'pm/reports/application-realm-policy.json',
+        '--pm', 'pm/reports/pm-realm-policy.json',
+        '--boilerplate', 'pm/reports/boilerplate-realm-policy.json',
+        '--snapshot', 'pm/state/realm-policy-snapshot.json',
+        '--output', 'pm/reports/realm-policy-diff.json'
+}
+
 tasks.register('reasoningDatabases', Exec) {
     group = 'documentation'
     description = 'Builds reasoning experience/derived SQLite databases and exports reasoning-drive report.'
@@ -1150,9 +1223,13 @@ tasks.register('stateInventoryCsv') {
     dependsOn('decisionPriorityReport')
     dependsOn('knowledgeBaseReport')
     dependsOn('actionItemsReport')
+    dependsOn('actionDecisionSuggestionReport')
+    dependsOn('actionIngestStrictGate')
     dependsOn('applicationRealmPolicyReport')
     dependsOn('pmRealmPolicyReport')
     dependsOn('boilerplateRealmPolicyReport')
+    dependsOn('realmPolicyDiffReport')
+    dependsOn('crossRealmActionTokenSearch')
     dependsOn('reasoningDatabases')
 }
 
@@ -1270,6 +1347,7 @@ tasks.register('documentationManifest') {
     dependsOn('realmCodeDatabases')
     dependsOn('sqlCoverageReport')
     dependsOn('crossRealmTokenSearch')
+    dependsOn('crossRealmActionTokenSearch')
     dependsOn('stateInventoryCsv')
     dependsOn('projectPlanWorkbook')
     dependsOn('policyGovernanceWorkbook')
@@ -1306,6 +1384,7 @@ tasks.register('documentationManifest') {
             file('pm/reports/sql-reconstruction-pm.json'),
             file('pm/reports/sql-reconstruction-boilerplate.json'),
             file('pm/reports/cross-realm-token-search.json'),
+            file('pm/reports/cross-realm-action-token-search.json'),
             file('pm/reports/data-dictionary.json'),
             file('pm/reports/data-dictionary-lint.json'),
             file('pm/reports/project-plan-next-step.json'),
@@ -1317,7 +1396,10 @@ tasks.register('documentationManifest') {
             file('pm/reports/decision-priority-queue.json'),
             file('pm/reports/knowledge-base.json'),
             file('pm/reports/action-items.json'),
+            file('pm/reports/action-decision-suggestions.json'),
+            file('pm/reports/action-ingest-strict.json'),
             file('pm/reports/realm-policy-sync.json'),
+            file('pm/reports/realm-policy-diff.json'),
             file('pm/reports/application-realm-policy.json'),
             file('pm/reports/pm-realm-policy.json'),
             file('pm/reports/boilerplate-realm-policy.json'),
@@ -1329,6 +1411,7 @@ tasks.register('documentationManifest') {
             file('pm/state/application-realm.sqlite'),
             file('pm/state/pm-realm.sqlite'),
             file('pm/state/boilerplate-realm.sqlite'),
+            file('pm/state/realm-policy-snapshot.json'),
             file('pm/reports/version.json'),
             file('VERSION')
         ]
@@ -1403,6 +1486,7 @@ tasks.register('publishCiArtifacts') {
             file('pm/reports/sql-reconstruction-pm.json'),
             file('pm/reports/sql-reconstruction-boilerplate.json'),
             file('pm/reports/cross-realm-token-search.json'),
+            file('pm/reports/cross-realm-action-token-search.json'),
             file('pm/reports/data-dictionary.json'),
             file('pm/reports/data-dictionary-lint.json'),
             file('pm/policy/policy-rule-tables.sql'),
@@ -1412,7 +1496,10 @@ tasks.register('publishCiArtifacts') {
             file('pm/reports/decision-priority-queue.json'),
             file('pm/reports/knowledge-base.json'),
             file('pm/reports/action-items.json'),
+            file('pm/reports/action-decision-suggestions.json'),
+            file('pm/reports/action-ingest-strict.json'),
             file('pm/reports/realm-policy-sync.json'),
+            file('pm/reports/realm-policy-diff.json'),
             file('pm/reports/application-realm-policy.json'),
             file('pm/reports/pm-realm-policy.json'),
             file('pm/reports/boilerplate-realm-policy.json'),
@@ -1427,6 +1514,7 @@ tasks.register('publishCiArtifacts') {
             file('pm/state/application-realm.sqlite'),
             file('pm/state/pm-realm.sqlite'),
             file('pm/state/boilerplate-realm.sqlite'),
+            file('pm/state/realm-policy-snapshot.json'),
             file('pm/reports/version.json'),
             file('docs/fidelity-corpus.txt'),
             file('docs/project-plan.md'),
@@ -1932,6 +2020,12 @@ tasks.register('prodBuild') {
     dependsOn(':afp-cli:distZip')
 }
 
+tasks.register('realmPolicySyncPyTests', Exec) {
+    group = 'verification'
+    description = 'Runs Python unit tests for realm policy sync tooling.'
+    commandLine 'python3', '-m', 'unittest', 'discover', '-s', 'tools/tests', '-p', 'test_*.py'
+}
+
 tasks.register('qualityGate') {
     group = 'verification'
     description = 'Runs tests, fidelity gate, and documentation manifest generation as a release readiness gate'
@@ -1940,6 +2034,7 @@ tasks.register('qualityGate') {
     dependsOn('enforcePmApplicationRealmSeparation')
     dependsOn('enforceBoilerplateRollupForFrameworkChanges')
     dependsOn('enforceNamespaceRoot')
+    dependsOn('realmPolicySyncPyTests')
     dependsOn('policyRulesLint')
     dependsOn('dataDictionaryLint')
     dependsOn('sqlReconstructionCheck')

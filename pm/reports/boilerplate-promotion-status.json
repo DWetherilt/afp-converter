@@ -1,12 +1,12 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T15:29:09Z",
+  "generatedAt": "2026-02-19T17:56:43Z",
   "source": "sqlite",
   "sourceTable": "package_candidates",
-  "candidateCount": 16,
+  "candidateCount": 17,
   "statusCounts": {
     "superseded": 12,
-    "pending_review": 3,
+    "pending_review": 4,
     "approved": 1
   },
   "candidates": [
@@ -244,6 +244,21 @@
       "packageZip": "",
       "patchCount": 0,
       "manifestFileCount": 5,
+      "promotionStatus": "pending_review",
+      "promotedAt": "",
+      "promotionNotes": "",
+      "supersedes": [],
+      "recommendedAction": "Review package content and decide approve/supersede."
+    },
+    {
+      "candidateId": "2026-02-19-pm-live-actions-governance-automation",
+      "packageId": "2026-02-19-pm-live-actions-governance-automation",
+      "targetRepo": "pz-boilerplate-intelliJ",
+      "sourceRepo": "afp-converter",
+      "createdAt": "2026-02-19T17:56:30.000196582Z",
+      "packageZip": "",
+      "patchCount": 0,
+      "manifestFileCount": 14,
       "promotionStatus": "pending_review",
       "promotedAt": "",
       "promotionNotes": "",

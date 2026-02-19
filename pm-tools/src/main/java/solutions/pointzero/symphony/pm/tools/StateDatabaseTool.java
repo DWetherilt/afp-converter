@@ -100,7 +100,7 @@ public final class StateDatabaseTool {
 
     static int execute(String[] args) throws Exception {
         if (args.length == 0) {
-            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-boilerplate-promotion-report|upsert-decision|link-decision|export-decision-priority|upsert-knowledge|add-knowledge-evidence|link-knowledge-decision|export-knowledge-base|upsert-action-item|link-action-item-decision|ingest-action-inbox|export-action-items|upsert-realm-policy|export-realm-policy|export-policy-rules|export-data-dictionary|lint-data-dictionary|lint-policy-rules|sync-code-index|search-code-token|search-code-token-multi|materialize-code-realm|upsert-code-file|upsert-code-files-manifest|verify-code-realm|report-code-realm-coverage");
+            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-boilerplate-promotion-report|upsert-decision|link-decision|export-decision-priority|upsert-knowledge|add-knowledge-evidence|link-knowledge-decision|export-knowledge-base|upsert-action-item|link-action-item-decision|ingest-action-inbox|export-action-items|search-action-token-multi|upsert-realm-policy|export-realm-policy|export-policy-rules|export-data-dictionary|lint-data-dictionary|lint-policy-rules|sync-code-index|search-code-token|search-code-token-multi|materialize-code-realm|upsert-code-file|upsert-code-files-manifest|verify-code-realm|report-code-realm-coverage");
         }
         String command = args[0];
         Map<String, String> cli = parseArgs(args, 1);
@@ -127,6 +127,7 @@ public final class StateDatabaseTool {
             case "link-action-item-decision" -> runLinkActionItemDecision(cli);
             case "ingest-action-inbox" -> runIngestActionInbox(cli);
             case "export-action-items" -> runExportActionItems(cli);
+            case "search-action-token-multi" -> runSearchActionTokenMulti(cli);
             case "upsert-realm-policy" -> runUpsertRealmPolicy(cli);
             case "export-realm-policy" -> runExportRealmPolicy(cli);
             case "export-policy-rules" -> runExportPolicyRules(cli);
@@ -1228,8 +1229,15 @@ public final class StateDatabaseTool {
                 row.put("decisionId", text(rs.getString(9)));
                 row.put("knowledgeId", text(rs.getString(10)));
                 row.put("notes", text(rs.getString(11)));
-                row.put("createdAt", text(rs.getString(12)));
-                row.put("updatedAt", text(rs.getString(13)));
+                String createdAt = text(rs.getString(12));
+                String updatedAt = text(rs.getString(13));
+                row.put("createdAt", createdAt);
+                row.put("updatedAt", updatedAt);
+                int staleAfterDays = staleAfterDaysForPriority(priority);
+                int ageDays = ageDaysSince(updatedAt.isBlank() ? createdAt : updatedAt);
+                row.put("ageDays", ageDays);
+                row.put("staleAfterDays", staleAfterDays);
+                row.put("isStale", ageDays >= staleAfterDays);
                 row.put("decisionLinks", fetchActionDecisionLinks(conn, text(rs.getString(1))));
                 items.add(row);
             }
@@ -1243,6 +1251,69 @@ public final class StateDatabaseTool {
         payload.put("byStatus", byStatus);
         payload.put("byPriority", byPriority);
         payload.put("actions", items);
+        writeJson(outputPath, payload);
+        return 0;
+    }
+
+    private static int runSearchActionTokenMulti(Map<String, String> cli) throws Exception {
+        String keyword = text(cli.get("--keyword")).toLowerCase(Locale.ROOT);
+        if (keyword.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --keyword");
+        }
+        Path outputPath = requiredPath(cli, "--json");
+        ensureParent(outputPath);
+
+        record RealmDb(String realm, Path dbPath) {}
+        List<RealmDb> realms = List.of(
+            new RealmDb("application", requiredPath(cli, "--application-db")),
+            new RealmDb("pm", requiredPath(cli, "--pm-db")),
+            new RealmDb("boilerplate", requiredPath(cli, "--boilerplate-db"))
+        );
+
+        List<Map<String, Object>> hits = new ArrayList<>();
+        for (RealmDb realmDb : realms) {
+            if (!Files.exists(realmDb.dbPath())) {
+                continue;
+            }
+            try (Connection conn = connect(realmDb.dbPath())) {
+                if (!hasTable(conn, "action_items")) {
+                    continue;
+                }
+                try (PreparedStatement ps = conn.prepareStatement(
+                    "select action_id, realm, source, title, status, priority, prompt_text, updated_at " +
+                        "from action_items where lower(title) like ? or lower(prompt_text) like ? " +
+                        "order by updated_at desc, action_id asc"
+                )) {
+                    String like = "%" + keyword + "%";
+                    ps.setString(1, like);
+                    ps.setString(2, like);
+                    try (ResultSet rs = ps.executeQuery()) {
+                        while (rs.next()) {
+                            Map<String, Object> row = new LinkedHashMap<>();
+                            row.put("searchRealm", realmDb.realm());
+                            row.put("actionId", text(rs.getString(1)));
+                            row.put("realm", text(rs.getString(2)));
+                            row.put("source", text(rs.getString(3)));
+                            row.put("title", text(rs.getString(4)));
+                            row.put("status", normalizeActionStatus(text(rs.getString(5))));
+                            row.put("priority", normalizeActionPriority(text(rs.getString(6))));
+                            row.put("promptText", text(rs.getString(7)));
+                            row.put("updatedAt", text(rs.getString(8)));
+                            hits.add(row);
+                        }
+                    }
+                }
+            } catch (SQLException ignored) {
+                // Realm DB may predate action schema; skip gracefully.
+            }
+        }
+
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("schemaVersion", "1");
+        payload.put("generatedAt", nowIso());
+        payload.put("keyword", keyword);
+        payload.put("hitCount", hits.size());
+        payload.put("hits", hits);
         writeJson(outputPath, payload);
         return 0;
     }
@@ -3344,6 +3415,36 @@ public final class StateDatabaseTool {
         };
     }
 
+    private static int staleAfterDaysForPriority(String priority) {
+        String normalized = normalizeActionPriority(priority);
+        return switch (normalized) {
+            case "high" -> 3;
+            case "medium" -> 7;
+            case "low" -> 14;
+            default -> 7;
+        };
+    }
+
+    private static int ageDaysSince(String iso) {
+        String value = text(iso);
+        if (value.isBlank()) {
+            return 0;
+        }
+        try {
+            OffsetDateTime then = OffsetDateTime.parse(value);
+            long days = java.time.Duration.between(then.toInstant(), OffsetDateTime.now(ZoneOffset.UTC).toInstant()).toDays();
+            if (days < 0L) {
+                return 0;
+            }
+            if (days > Integer.MAX_VALUE) {
+                return Integer.MAX_VALUE;
+            }
+            return (int) days;
+        } catch (Exception ignored) {
+            return 0;
+        }
+    }
+
     private static List<Map<String, Object>> fetchKnowledgeEvidence(Connection conn, String knowledgeId) throws SQLException {
         List<Map<String, Object>> out = new ArrayList<>();
         try (PreparedStatement ps = conn.prepareStatement(
@@ -3520,6 +3621,17 @@ public final class StateDatabaseTool {
             st.execute("alter table " + table + " add column " + column + " " + columnDef);
         } catch (SQLException ignored) {
             // SQLite does not support IF NOT EXISTS for ADD COLUMN; ignore duplicate-column failures.
+        }
+    }
+
+    private static boolean hasTable(Connection conn, String tableName) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(
+            "select count(*) from sqlite_master where type='table' and lower(name)=lower(?)"
+        )) {
+            ps.setString(1, tableName);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() && rs.getInt(1) > 0;
+            }
         }
     }
 

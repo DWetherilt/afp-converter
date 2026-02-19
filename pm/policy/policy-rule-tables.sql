@@ -26,7 +26,7 @@ delete from policy_rule_catalog;
 delete from pm_data_dictionary;
 
 insert into policy_rule_catalog(rule_id, realm, category, rule_text, source_ref, mutable_by, enabled, updated_at) values
-  ('PM-EXEC-001', 'pm', 'execution-defaults', 'Execute app flow first, then PM console status by default unless human overrides.', 'AI-POLICY.md#Default execution coupling', 'human', 1, current_timestamp),
+  ('PM-EXEC-001', 'pm', 'execution-defaults', 'Execute app flow first, ensure persistent PM console live daemon is running, then PM console status unless human overrides.', 'build.gradle:pmConsoleEnsureLive;AI-POLICY.md#Default execution coupling', 'human', 1, current_timestamp),
   ('PM-REALM-001', 'pm', 'realm-separation', 'PM state databases must be under pm/state only.', 'build.gradle:enforcePmApplicationRealmSeparation', 'human', 1, current_timestamp),
   ('PM-REALM-002', 'pm', 'realm-separation', 'PM reports must be under pm/reports and must not be emitted into preview/.', 'build.gradle:enforcePmApplicationRealmSeparation', 'human', 1, current_timestamp),
   ('PM-GATE-001', 'pm', 'quality-gates', 'qualityGate must include enforceProjectBoundaries.', 'build.gradle:qualityGate', 'human', 1, current_timestamp),
