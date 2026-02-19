@@ -7,10 +7,13 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -19,6 +22,7 @@ import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 @Command(
@@ -28,13 +32,17 @@ import java.util.concurrent.Callable;
     subcommands = {
         PmConsoleMain.StatusCommand.class,
         PmConsoleMain.RefreshCommand.class,
-        PmConsoleMain.ToolsCommand.class
+        PmConsoleMain.ToolsCommand.class,
+        PmConsoleMain.DecisionsCommand.class,
+        PmConsoleMain.LiveCommand.class
     }
 )
 public final class PmConsoleMain implements Callable<Integer> {
 
     private static final Path PROJECT_DB = Path.of("pm/state/project-state.sqlite");
     private static final Path BOILERPLATE_DB = Path.of("pm/state/boilerplate-state.sqlite");
+    private static final Path DECISION_QUEUE = Path.of("pm/reports/decision-priority-queue.json");
+    private static final Path AI_INBOX = Path.of("pm/state/assistant-inbox.ndjson");
 
     public static void main(String[] args) {
         int exit = new CommandLine(new PmConsoleMain()).execute(args);
@@ -43,7 +51,7 @@ public final class PmConsoleMain implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        System.out.println("pmconsole: use subcommands status | refresh | tools");
+        System.out.println("pmconsole: use subcommands status | refresh | tools | decisions | live");
         return 0;
     }
 
@@ -72,10 +80,141 @@ public final class PmConsoleMain implements Callable<Integer> {
                 "  - pmConsoleStatus",
                 "  - pmDevAttach",
                 "  - pmWorkflowList",
-                "  - pmWorkflowRun (-PpmPhase=<phaseId>)"
+                "  - pmWorkflowRun (-PpmPhase=<phaseId>)",
+                "",
+                "Interactive mode:",
+                "  - pmconsole live --interval 15"
             );
             lines.forEach(System.out::println);
             return 0;
+        }
+    }
+
+    @Command(name = "decisions", description = "Shows top ranked entries from pm/reports/decision-priority-queue.json")
+    static final class DecisionsCommand implements Callable<Integer> {
+
+        @Option(names = "--top", description = "How many rows to print (default: ${DEFAULT-VALUE})")
+        int top = 10;
+
+        @Override
+        public Integer call() {
+            return printDecisionQueue(Math.max(1, top));
+        }
+    }
+
+    @Command(name = "live", description = "Top-style live PM dashboard with interactive commands.")
+    static final class LiveCommand implements Callable<Integer> {
+
+        @Option(names = "--interval", description = "Refresh interval in seconds (default: ${DEFAULT-VALUE})")
+        int intervalSeconds = 15;
+
+        @Option(names = "--top", description = "Number of decisions shown in live view (default: ${DEFAULT-VALUE})")
+        int topDecisions = 5;
+
+        @Override
+        public Integer call() throws Exception {
+            long intervalMs = Math.max(1, intervalSeconds) * 1000L;
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
+            printLiveHelp();
+            long nextRefreshAt = 0L;
+            while (true) {
+                long now = System.currentTimeMillis();
+                if (now >= nextRefreshAt) {
+                    clearScreen();
+                    System.out.println("PM Console Live");
+                    System.out.println("===============");
+                    System.out.println("refresh interval: " + (intervalMs / 1000L) + "s");
+                    System.out.println();
+                    new StatusCommand().call();
+                    System.out.println();
+                    printDecisionQueue(Math.max(1, topDecisions));
+                    System.out.println();
+                    System.out.println("Commands: help | status | decisions [n] | refresh | refresh-preview | tools | interval <sec> | prompt <text> | clear | quit");
+                    nextRefreshAt = now + intervalMs;
+                }
+
+                if (reader.ready()) {
+                    String line = reader.readLine();
+                    if (line == null) {
+                        return 0;
+                    }
+                    String normalized = line.trim();
+                    if (normalized.isEmpty()) {
+                        nextRefreshAt = 0L;
+                        continue;
+                    }
+                    String lower = normalized.toLowerCase(Locale.ROOT);
+                    if (lower.equals("q") || lower.equals("quit") || lower.equals("exit")) {
+                        System.out.println("Exiting live console.");
+                        return 0;
+                    }
+                    if (lower.equals("h") || lower.equals("help")) {
+                        printLiveHelp();
+                        nextRefreshAt = 0L;
+                        continue;
+                    }
+                    if (lower.equals("status") || lower.equals("s")) {
+                        nextRefreshAt = 0L;
+                        continue;
+                    }
+                    if (lower.startsWith("decisions")) {
+                        Integer n = parseTrailingInt(normalized, "decisions");
+                        if (n != null) {
+                            topDecisions = Math.max(1, n);
+                        }
+                        nextRefreshAt = 0L;
+                        continue;
+                    }
+                    if (lower.equals("refresh") || lower.equals("r")) {
+                        int exit = runWorkflowPhase("pm_refresh_and_reports");
+                        System.out.println("refresh exit code: " + exit);
+                        nextRefreshAt = 0L;
+                        continue;
+                    }
+                    if (lower.equals("refresh-preview") || lower.equals("rp")) {
+                        int pre = runWorkflowPhase("execute_application_with_pm_console");
+                        int post = pre == 0 ? runWorkflowPhase("pm_refresh_and_reports") : pre;
+                        System.out.println("refresh-preview exit code: " + post);
+                        nextRefreshAt = 0L;
+                        continue;
+                    }
+                    if (lower.equals("tools")) {
+                        new ToolsCommand().call();
+                        nextRefreshAt = 0L;
+                        continue;
+                    }
+                    if (lower.startsWith("interval ")) {
+                        Integer parsed = parseTrailingInt(normalized, "interval");
+                        if (parsed != null && parsed > 0) {
+                            intervalMs = parsed * 1000L;
+                            System.out.println("interval updated to " + parsed + "s");
+                        } else {
+                            System.out.println("invalid interval; use interval <seconds>");
+                        }
+                        nextRefreshAt = 0L;
+                        continue;
+                    }
+                    if (lower.startsWith("prompt ") || lower.startsWith("ask ")) {
+                        String text = normalized.substring(normalized.indexOf(' ') + 1).trim();
+                        if (text.isEmpty()) {
+                            System.out.println("prompt text is empty.");
+                        } else {
+                            appendPrompt(text);
+                            System.out.println("prompt captured in " + AI_INBOX);
+                        }
+                        nextRefreshAt = 0L;
+                        continue;
+                    }
+                    if (lower.equals("clear")) {
+                        clearScreen();
+                        nextRefreshAt = 0L;
+                        continue;
+                    }
+                    System.out.println("unknown command: " + normalized + " (use 'help')");
+                    nextRefreshAt = 0L;
+                }
+                Thread.sleep(200L);
+            }
         }
     }
 
@@ -103,19 +242,7 @@ public final class PmConsoleMain implements Callable<Integer> {
         }
 
         private static int runWorkflowPhase(String phase) throws Exception {
-            List<String> cmd = new ArrayList<>();
-            cmd.add("python3");
-            cmd.add("tools/pm_workflow.py");
-            cmd.add("run");
-            cmd.add("--adapter");
-            cmd.add("gradle");
-            cmd.add("--phase");
-            cmd.add(phase);
-            ProcessBuilder pb = new ProcessBuilder(cmd);
-            pb.directory(Path.of(".").toFile());
-            pb.inheritIO();
-            Process p = pb.start();
-            return p.waitFor();
+            return PmConsoleMain.runWorkflowPhase(phase);
         }
     }
 
@@ -327,6 +454,132 @@ public final class PmConsoleMain implements Callable<Integer> {
             } catch (Exception ignored) {
                 return fallback;
             }
+        }
+    }
+
+    private static int runWorkflowPhase(String phase) throws Exception {
+        List<String> cmd = new ArrayList<>();
+        cmd.add("python3");
+        cmd.add("tools/pm_workflow.py");
+        cmd.add("run");
+        cmd.add("--adapter");
+        cmd.add("gradle");
+        cmd.add("--phase");
+        cmd.add(phase);
+        ProcessBuilder pb = new ProcessBuilder(cmd);
+        pb.directory(Path.of(".").toFile());
+        pb.inheritIO();
+        Process p = pb.start();
+        return p.waitFor();
+    }
+
+    private static int printDecisionQueue(int top) {
+        System.out.println("Decision queue:");
+        JsonObject queue = readJson(DECISION_QUEUE);
+        if (queue == null) {
+            System.out.println("  - missing (" + DECISION_QUEUE + ")");
+            return 1;
+        }
+        String count = str(queue, "candidateCount", "0");
+        System.out.println("  - candidates: " + count);
+        JsonElement rows = queue.get("decisions");
+        if (rows == null || !rows.isJsonArray()) {
+            return 0;
+        }
+        int printed = 0;
+        for (JsonElement el : rows.getAsJsonArray()) {
+            if (printed >= top) {
+                break;
+            }
+            if (el == null || !el.isJsonObject()) {
+                continue;
+            }
+            JsonObject row = el.getAsJsonObject();
+            System.out.println("  - [" + str(row, "priorityBucket", "P3") + "] "
+                + str(row, "decisionId", "<id>") + " | "
+                + str(row, "realm", "<realm>") + " | "
+                + str(row, "status", "<status>") + " | impact="
+                + str(row, "impactScore", "0")
+                + " | " + str(row, "title", ""));
+            printed++;
+        }
+        return 0;
+    }
+
+    private static void appendPrompt(String text) throws IOException {
+        Path parent = AI_INBOX.toAbsolutePath().getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
+        }
+        JsonObject payload = new JsonObject();
+        payload.addProperty("capturedAt", java.time.OffsetDateTime.now(java.time.ZoneOffset.UTC).withNano(0).toString());
+        payload.addProperty("source", "pmconsole-live");
+        payload.addProperty("prompt", text);
+        Files.writeString(
+            AI_INBOX,
+            payload.toString() + "\n",
+            StandardCharsets.UTF_8,
+            StandardOpenOption.CREATE,
+            StandardOpenOption.APPEND
+        );
+    }
+
+    private static void clearScreen() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+
+    private static Integer parseTrailingInt(String raw, String prefix) {
+        String value = raw.substring(prefix.length()).trim();
+        if (value.isEmpty()) {
+            return null;
+        }
+        try {
+            return Integer.parseInt(value);
+        } catch (NumberFormatException ignored) {
+            return null;
+        }
+    }
+
+    private static void printLiveHelp() {
+        System.out.println("pmconsole live commands:");
+        System.out.println("  - help");
+        System.out.println("  - status");
+        System.out.println("  - decisions [n]");
+        System.out.println("  - refresh");
+        System.out.println("  - refresh-preview");
+        System.out.println("  - tools");
+        System.out.println("  - interval <seconds>");
+        System.out.println("  - prompt <text>  (alias: ask <text>)");
+        System.out.println("  - clear");
+        System.out.println("  - quit");
+        System.out.println();
+    }
+
+    private static JsonObject readJson(Path path) {
+        if (!Files.exists(path)) {
+            return null;
+        }
+        try {
+            String text = Files.readString(path, StandardCharsets.UTF_8);
+            JsonElement parsed = JsonParser.parseString(text);
+            if (parsed != null && parsed.isJsonObject()) {
+                return parsed.getAsJsonObject();
+            }
+            return null;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private static String str(JsonObject root, String key, String fallback) {
+        if (root == null || !root.has(key) || root.get(key).isJsonNull()) {
+            return fallback;
+        }
+        try {
+            return root.get(key).getAsString();
+        } catch (Exception ignored) {
+            return fallback;
         }
     }
 }

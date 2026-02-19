@@ -49,3 +49,6 @@ Screenshot *.png
 ### SQLite transient files ###
 *.sqlite-wal
 *.sqlite-shm
+
+### PM console local inbox ###
+pm/state/assistant-inbox.ndjson

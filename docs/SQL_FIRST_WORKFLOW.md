@@ -238,6 +238,61 @@ Export the cross-realm decision priority queue:
 ./gradlew --no-daemon decisionPriorityReport
 ```
 
+### Knowledge Base
+
+Create/update a knowledge entry in project-state:
+
+```bash
+java -cp "$(./gradlew -q :pm-tools:printRuntimeClasspath)" \
+  solutions.pointzero.symphony.pm.tools.StateDatabaseTool \
+  upsert-knowledge \
+  --db pm/state/project-state.sqlite \
+  --knowledge-id KB-2026-02-19-001 \
+  --realm application \
+  --scope-level component \
+  --scope-ref afp-engine \
+  --title "Graphics parity observations" \
+  --reasoning "Residual visual drift clusters around graphics object semantics." \
+  --context-snapshot "Compared preview/afp-output.pdf with sampleOutput/sample.pdf after strict mode pass." \
+  --outcome-status open \
+  --outcome-summary "Needs targeted renderer update." \
+  --confidence 4.0 \
+  --impact-score 4.5 \
+  --change-ref docs/project-plan-progress.csv
+```
+
+Attach evidence artifact:
+
+```bash
+java -cp "$(./gradlew -q :pm-tools:printRuntimeClasspath)" \
+  solutions.pointzero.symphony.pm.tools.StateDatabaseTool \
+  add-knowledge-evidence \
+  --db pm/state/project-state.sqlite \
+  --knowledge-id KB-2026-02-19-001 \
+  --artifact-path preview/fidelity-report.json \
+  --type report \
+  --notes "Baseline fidelity metrics used for this reasoning snapshot."
+```
+
+Link knowledge entry to a decision:
+
+```bash
+java -cp "$(./gradlew -q :pm-tools:printRuntimeClasspath)" \
+  solutions.pointzero.symphony.pm.tools.StateDatabaseTool \
+  link-knowledge-decision \
+  --db pm/state/project-state.sqlite \
+  --knowledge-id KB-2026-02-19-001 \
+  --realm application \
+  --decision-id APP-RENDER-001 \
+  --relation supports
+```
+
+Export knowledge base report:
+
+```bash
+./gradlew --no-daemon knowledgeBaseReport
+```
+
 ### CI Quick Check
 
 Run the CI-equivalent SQL integrity checks locally:

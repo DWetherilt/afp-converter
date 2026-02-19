@@ -96,7 +96,7 @@ public final class StateDatabaseTool {
 
     static int execute(String[] args) throws Exception {
         if (args.length == 0) {
-            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-boilerplate-promotion-report|upsert-decision|link-decision|export-decision-priority|export-policy-rules|export-data-dictionary|lint-data-dictionary|lint-policy-rules|sync-code-index|search-code-token|search-code-token-multi|materialize-code-realm|upsert-code-file|upsert-code-files-manifest|verify-code-realm|report-code-realm-coverage");
+            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-boilerplate-promotion-report|upsert-decision|link-decision|export-decision-priority|upsert-knowledge|add-knowledge-evidence|link-knowledge-decision|export-knowledge-base|export-policy-rules|export-data-dictionary|lint-data-dictionary|lint-policy-rules|sync-code-index|search-code-token|search-code-token-multi|materialize-code-realm|upsert-code-file|upsert-code-files-manifest|verify-code-realm|report-code-realm-coverage");
         }
         String command = args[0];
         Map<String, String> cli = parseArgs(args, 1);
@@ -115,6 +115,10 @@ public final class StateDatabaseTool {
             case "upsert-decision" -> runUpsertDecision(cli);
             case "link-decision" -> runLinkDecision(cli);
             case "export-decision-priority" -> runExportDecisionPriority(cli);
+            case "upsert-knowledge" -> runUpsertKnowledge(cli);
+            case "add-knowledge-evidence" -> runAddKnowledgeEvidence(cli);
+            case "link-knowledge-decision" -> runLinkKnowledgeDecision(cli);
+            case "export-knowledge-base" -> runExportKnowledgeBase(cli);
             case "export-policy-rules" -> runExportPolicyRules(cli);
             case "export-data-dictionary" -> runExportDataDictionary(cli);
             case "lint-data-dictionary" -> runLintDataDictionary(cli);
@@ -864,6 +868,174 @@ public final class StateDatabaseTool {
         payload.put("byPriorityBucket", byPriority);
         payload.put("byStatus", byStatus);
         payload.put("decisions", sorted);
+        writeJson(outputPath, payload);
+        return 0;
+    }
+
+    private static int runUpsertKnowledge(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        String knowledgeId = text(cli.get("--knowledge-id"));
+        String title = text(cli.get("--title"));
+        if (knowledgeId.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --knowledge-id");
+        }
+        if (title.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --title");
+        }
+        ensureParent(dbPath);
+        String now = nowIso();
+        try (Connection conn = connect(dbPath)) {
+            initProjectSchema(conn);
+            try (PreparedStatement ps = conn.prepareStatement(
+                "insert into knowledge_entries(" +
+                    "knowledge_id, realm, scope_level, scope_ref, title, reasoning, context_snapshot, " +
+                    "outcome_status, outcome_summary, confidence, impact_score, change_ref, created_at, updated_at" +
+                ") values(?,?,?,?,?,?,?,?,?,?,?,?,?,?) " +
+                "on conflict(knowledge_id) do update set " +
+                    "realm=excluded.realm, scope_level=excluded.scope_level, scope_ref=excluded.scope_ref, " +
+                    "title=excluded.title, reasoning=excluded.reasoning, context_snapshot=excluded.context_snapshot, " +
+                    "outcome_status=excluded.outcome_status, outcome_summary=excluded.outcome_summary, " +
+                    "confidence=excluded.confidence, impact_score=excluded.impact_score, change_ref=excluded.change_ref, " +
+                    "updated_at=excluded.updated_at"
+            )) {
+                ps.setString(1, knowledgeId);
+                ps.setString(2, text(cli.get("--realm")));
+                ps.setString(3, normalizeScopeLevel(text(cli.get("--scope-level"))));
+                ps.setString(4, text(cli.get("--scope-ref")));
+                ps.setString(5, title);
+                ps.setString(6, text(cli.get("--reasoning")));
+                ps.setString(7, text(cli.get("--context-snapshot")));
+                ps.setString(8, normalizeKnowledgeOutcome(text(cli.get("--outcome-status"))));
+                ps.setString(9, text(cli.get("--outcome-summary")));
+                ps.setDouble(10, scoreArg(cli, "--confidence"));
+                ps.setDouble(11, scoreArg(cli, "--impact-score"));
+                ps.setString(12, text(cli.get("--change-ref")));
+                ps.setString(13, now);
+                ps.setString(14, now);
+                ps.executeUpdate();
+            }
+        }
+        return 0;
+    }
+
+    private static int runAddKnowledgeEvidence(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        String knowledgeId = text(cli.get("--knowledge-id"));
+        String artifactPath = text(cli.get("--artifact-path"));
+        if (knowledgeId.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --knowledge-id");
+        }
+        if (artifactPath.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --artifact-path");
+        }
+        Path artifact = Path.of(artifactPath);
+        String sha = "";
+        long size = 0L;
+        if (Files.exists(artifact) && Files.isRegularFile(artifact)) {
+            sha = safeSha256(artifact);
+            size = safeSize(artifact);
+        }
+        ensureParent(dbPath);
+        try (Connection conn = connect(dbPath)) {
+            initProjectSchema(conn);
+            try (PreparedStatement ps = conn.prepareStatement(
+                "insert or replace into knowledge_evidence(" +
+                    "knowledge_id, artifact_path, artifact_sha256, artifact_size_bytes, evidence_type, notes, captured_at" +
+                ") values(?,?,?,?,?,?,?)"
+            )) {
+                ps.setString(1, knowledgeId);
+                ps.setString(2, artifact.toString().replace('\\', '/'));
+                ps.setString(3, sha);
+                ps.setLong(4, size);
+                ps.setString(5, text(cli.getOrDefault("--type", "artifact")));
+                ps.setString(6, text(cli.get("--notes")));
+                ps.setString(7, nowIso());
+                ps.executeUpdate();
+            }
+        }
+        return 0;
+    }
+
+    private static int runLinkKnowledgeDecision(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        String knowledgeId = text(cli.get("--knowledge-id"));
+        String decisionId = text(cli.get("--decision-id"));
+        if (knowledgeId.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --knowledge-id");
+        }
+        if (decisionId.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --decision-id");
+        }
+        ensureParent(dbPath);
+        try (Connection conn = connect(dbPath)) {
+            initProjectSchema(conn);
+            try (PreparedStatement ps = conn.prepareStatement(
+                "insert or replace into knowledge_decision_links(knowledge_id, realm, decision_id, relation, linked_at) values(?,?,?,?,?)"
+            )) {
+                ps.setString(1, knowledgeId);
+                ps.setString(2, text(cli.get("--realm")));
+                ps.setString(3, decisionId);
+                ps.setString(4, text(cli.getOrDefault("--relation", "supports")));
+                ps.setString(5, nowIso());
+                ps.executeUpdate();
+            }
+        }
+        return 0;
+    }
+
+    private static int runExportKnowledgeBase(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        Path outputPath = requiredPath(cli, "--json");
+        ensureParent(outputPath);
+
+        List<Map<String, Object>> entries = new ArrayList<>();
+        Map<String, Integer> byOutcome = new LinkedHashMap<>();
+        Map<String, Integer> byRealm = new LinkedHashMap<>();
+
+        try (Connection conn = connect(dbPath);
+             PreparedStatement entryPs = conn.prepareStatement(
+                 "select knowledge_id, realm, scope_level, scope_ref, title, reasoning, context_snapshot, outcome_status, " +
+                     "outcome_summary, confidence, impact_score, change_ref, created_at, updated_at " +
+                     "from knowledge_entries order by updated_at desc, knowledge_id asc"
+             );
+             ResultSet entryRs = entryPs.executeQuery()) {
+            while (entryRs.next()) {
+                String knowledgeId = text(entryRs.getString(1));
+                String realm = text(entryRs.getString(2));
+                String outcome = normalizeKnowledgeOutcome(text(entryRs.getString(8)));
+                byRealm.put(realm, byRealm.getOrDefault(realm, 0) + 1);
+                byOutcome.put(outcome, byOutcome.getOrDefault(outcome, 0) + 1);
+
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("knowledgeId", knowledgeId);
+                row.put("realm", realm);
+                row.put("scopeLevel", text(entryRs.getString(3)));
+                row.put("scopeRef", text(entryRs.getString(4)));
+                row.put("title", text(entryRs.getString(5)));
+                row.put("reasoning", text(entryRs.getString(6)));
+                row.put("contextSnapshot", text(entryRs.getString(7)));
+                row.put("outcomeStatus", outcome);
+                row.put("outcomeSummary", text(entryRs.getString(9)));
+                row.put("confidence", round6(entryRs.getDouble(10)));
+                row.put("impactScore", round6(entryRs.getDouble(11)));
+                row.put("changeRef", text(entryRs.getString(12)));
+                row.put("createdAt", text(entryRs.getString(13)));
+                row.put("updatedAt", text(entryRs.getString(14)));
+                row.put("evidence", fetchKnowledgeEvidence(conn, knowledgeId));
+                row.put("decisionLinks", fetchKnowledgeDecisionLinks(conn, knowledgeId));
+                entries.add(row);
+            }
+        }
+
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("schemaVersion", "1");
+        payload.put("generatedAt", nowIso());
+        payload.put("source", "sqlite");
+        payload.put("sourceTable", "knowledge_entries");
+        payload.put("entryCount", entries.size());
+        payload.put("byRealm", byRealm);
+        payload.put("byOutcomeStatus", byOutcome);
+        payload.put("knowledge", entries);
         writeJson(outputPath, payload);
         return 0;
     }
@@ -1929,7 +2101,57 @@ public final class StateDatabaseTool {
                 )
                 """);
             st.execute("create index if not exists idx_policy_rule_realm_category on policy_rule_catalog(realm, category)");
+            st.execute("""
+                create table if not exists knowledge_entries (
+                    knowledge_id text primary key,
+                    realm text not null default '',
+                    scope_level text not null default 'realm',
+                    scope_ref text not null default '',
+                    title text not null default '',
+                    reasoning text not null default '',
+                    context_snapshot text not null default '',
+                    outcome_status text not null default 'open',
+                    outcome_summary text not null default '',
+                    confidence real not null default 0.0,
+                    impact_score real not null default 0.0,
+                    change_ref text not null default '',
+                    created_at text not null,
+                    updated_at text not null
+                )
+                """);
+            st.execute("create index if not exists idx_knowledge_entries_realm on knowledge_entries(realm)");
+            st.execute("create index if not exists idx_knowledge_entries_outcome on knowledge_entries(outcome_status)");
+            st.execute("""
+                create table if not exists knowledge_evidence (
+                    knowledge_id text not null,
+                    artifact_path text not null,
+                    artifact_sha256 text not null default '',
+                    artifact_size_bytes integer not null default 0,
+                    evidence_type text not null default 'artifact',
+                    notes text not null default '',
+                    captured_at text not null,
+                    primary key(knowledge_id, artifact_path)
+                )
+                """);
+            st.execute("create index if not exists idx_knowledge_evidence_id on knowledge_evidence(knowledge_id)");
+            st.execute("""
+                create table if not exists knowledge_decision_links (
+                    knowledge_id text not null,
+                    realm text not null default '',
+                    decision_id text not null,
+                    relation text not null default 'supports',
+                    linked_at text not null,
+                    primary key(knowledge_id, realm, decision_id)
+                )
+                """);
+            st.execute("create index if not exists idx_knowledge_decision_links_id on knowledge_decision_links(knowledge_id)");
         }
+        ensureColumnExists(conn, "knowledge_entries", "scope_level", "text not null default 'realm'");
+        ensureColumnExists(conn, "knowledge_entries", "scope_ref", "text not null default ''");
+        ensureColumnExists(conn, "knowledge_entries", "outcome_status", "text not null default 'open'");
+        ensureColumnExists(conn, "knowledge_entries", "confidence", "real not null default 0.0");
+        ensureColumnExists(conn, "knowledge_entries", "impact_score", "real not null default 0.0");
+        ensureColumnExists(conn, "knowledge_entries", "change_ref", "text not null default ''");
     }
 
     private static void initBoilerplateSchema(Connection conn) throws SQLException {
@@ -2699,6 +2921,64 @@ public final class StateDatabaseTool {
             return "Retain for traceability; no action required.";
         }
         return "Review and re-score if context changed.";
+    }
+
+    private static String normalizeKnowledgeOutcome(String value) {
+        String normalized = text(value).toLowerCase(Locale.ROOT).replace('-', '_').replace(' ', '_');
+        if (normalized.isBlank()) {
+            return "open";
+        }
+        return switch (normalized) {
+            case "open", "active", "observed" -> "open";
+            case "validated", "proven", "confirmed" -> "validated";
+            case "applied", "implemented", "closed" -> "applied";
+            case "rejected", "invalid", "discarded" -> "rejected";
+            default -> "open";
+        };
+    }
+
+    private static List<Map<String, Object>> fetchKnowledgeEvidence(Connection conn, String knowledgeId) throws SQLException {
+        List<Map<String, Object>> out = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement(
+            "select artifact_path, artifact_sha256, artifact_size_bytes, evidence_type, notes, captured_at " +
+                "from knowledge_evidence where knowledge_id = ? order by captured_at desc, artifact_path asc"
+        )) {
+            ps.setString(1, knowledgeId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> row = new LinkedHashMap<>();
+                    row.put("artifactPath", text(rs.getString(1)));
+                    row.put("artifactSha256", text(rs.getString(2)));
+                    row.put("artifactSizeBytes", rs.getLong(3));
+                    row.put("type", text(rs.getString(4)));
+                    row.put("notes", text(rs.getString(5)));
+                    row.put("capturedAt", text(rs.getString(6)));
+                    out.add(row);
+                }
+            }
+        }
+        return out;
+    }
+
+    private static List<Map<String, Object>> fetchKnowledgeDecisionLinks(Connection conn, String knowledgeId) throws SQLException {
+        List<Map<String, Object>> out = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement(
+            "select realm, decision_id, relation, linked_at from knowledge_decision_links " +
+                "where knowledge_id = ? order by linked_at desc, realm asc, decision_id asc"
+        )) {
+            ps.setString(1, knowledgeId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> row = new LinkedHashMap<>();
+                    row.put("realm", text(rs.getString(1)));
+                    row.put("decisionId", text(rs.getString(2)));
+                    row.put("relation", text(rs.getString(3)));
+                    row.put("linkedAt", text(rs.getString(4)));
+                    out.add(row);
+                }
+            }
+        }
+        return out;
     }
 
     private static double toDouble(Object value) {

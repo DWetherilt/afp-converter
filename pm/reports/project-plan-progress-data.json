@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T15:43:36Z",
+  "generatedAt": "2026-02-19T16:59:07Z",
   "source": "sqlite",
-  "taskCount": 30,
+  "taskCount": 32,
   "tasks": [
     {
       "workstream": "Workstream A",
@@ -273,13 +273,31 @@
       "percent_complete": "30",
       "last_updated": "2026-02-19",
       "notes": "Pending initial population of decision records for renderer and boilerplate promotion actions."
+    },
+    {
+      "workstream": "Workstream G",
+      "task": "stand up SQL knowledge base for reasoning outcomes and artifact context",
+      "priority": "High",
+      "status": "In Progress",
+      "percent_complete": "70",
+      "last_updated": "2026-02-19",
+      "notes": "Added project-state knowledge tables and commands for entries/evidence/decision links."
+    },
+    {
+      "workstream": "Workstream G",
+      "task": "publish knowledge-base report in PM refresh cycle",
+      "priority": "High",
+      "status": "In Progress",
+      "percent_complete": "60",
+      "last_updated": "2026-02-19",
+      "notes": "Added knowledgeBaseReport task and workflow wiring; now needs broader seeding coverage."
     }
   ],
   "followUps": [
     {
       "id": "restored-workbook-content-review",
-      "status": "pending",
-      "note": "Circle back and review restored workbook content against JSON/CSV sources."
+      "note": "Circle back and review restored workbook content against JSON/CSV sources.",
+      "status": "pending"
     }
   ]
 }

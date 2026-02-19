@@ -134,10 +134,11 @@ Deliver near-IBM parity rendering for AFP input by implementing true AFP object/
   - add `decision_log` and `decision_dependency` tables to each realm database.
   - add commands to upsert/link decisions and export a cross-realm decision priority queue.
   - wire decision-priority reporting into PM refresh/report pipeline and artifacts.
+  - add project-state SQL knowledge base (`knowledge_entries`, `knowledge_evidence`, `knowledge_decision_links`) to preserve reasoning context against artifacts and decision links.
   - seed active workstream decisions with smallest-change/biggest-reward impact scoring.
 - Exit criteria:
   - each realm has live decision records with scope granularity.
-  - PM reports include ranked cross-realm decision queue that explains current execution drive.
+  - PM reports include ranked cross-realm decision queue and knowledge base output that explain current execution drive and evidence context.
 
 ## Milestones
 ### Milestone 1: Composition Correctness

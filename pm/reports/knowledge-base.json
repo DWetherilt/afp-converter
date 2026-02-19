@@ -1,0 +1,101 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-19T16:59:07Z",
+  "source": "sqlite",
+  "sourceTable": "knowledge_entries",
+  "entryCount": 2,
+  "byRealm": {
+    "boilerplate": 1,
+    "application": 1
+  },
+  "byOutcomeStatus": {
+    "validated": 1,
+    "open": 1
+  },
+  "knowledge": [
+    {
+      "knowledgeId": "KB-2026-02-19-BOILERPLATE-PROMO",
+      "realm": "boilerplate",
+      "scopeLevel": "sub_boilerplate",
+      "scopeRef": "pz-boilerplate-intelliJ/2026-02-19-recovery-ci-sql-integrity",
+      "title": "Recovery/CI package is promotion-ready",
+      "reasoning": "Package validates, exports with checksum, and enforces transient sqlite guards in CI.",
+      "contextSnapshot": "Artifacts: boilerplate package zip+sha256 + pm/reports/boilerplate-promotion-status.json",
+      "outcomeStatus": "validated",
+      "outcomeSummary": "Can be promoted with low risk and high process payoff.",
+      "confidence": 4.5,
+      "impactScore": 4.0,
+      "changeRef": "272dff2",
+      "createdAt": "2026-02-19T16:58:02Z",
+      "updatedAt": "2026-02-19T16:58:02Z",
+      "evidence": [
+        {
+          "artifactPath": "boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-recovery-ci-sql-integrity.zip.sha256",
+          "artifactSha256": "aae3184695910adf104af44052f0e74ed3598dacc763d7b00c2b1f3a2a7277e3",
+          "artifactSizeBytes": 107,
+          "type": "checksum",
+          "notes": "Transfer integrity evidence",
+          "capturedAt": "2026-02-19T16:58:03Z"
+        },
+        {
+          "artifactPath": "pm/reports/boilerplate-promotion-status.json",
+          "artifactSha256": "f80f8ce1ee315368ba58e11a9abb69314627de06dae73b23fb89081b8f52b7ab",
+          "artifactSizeBytes": 10048,
+          "type": "report",
+          "notes": "Promotion status evidence",
+          "capturedAt": "2026-02-19T16:58:03Z"
+        }
+      ],
+      "decisionLinks": [
+        {
+          "realm": "boilerplate",
+          "decisionId": "BP-DEC-SUB-001",
+          "relation": "supports",
+          "linkedAt": "2026-02-19T16:58:03Z"
+        }
+      ]
+    },
+    {
+      "knowledgeId": "KB-2026-02-19-RENDER-GAP",
+      "realm": "application",
+      "scopeLevel": "component",
+      "scopeRef": "afp-engine",
+      "title": "Graphics semantics remain a primary parity limiter",
+      "reasoning": "Render comparison and plan status show unfinished graphics primitives are still high-impact for visual parity.",
+      "contextSnapshot": "Artifacts: preview/fidelity-report.json + docs/project-plan-progress.csv + pm/reports/decision-priority-queue.json",
+      "outcomeStatus": "open",
+      "outcomeSummary": "Prioritize APP-RENDER-001 before lower-impact work.",
+      "confidence": 4.0,
+      "impactScore": 4.5,
+      "changeRef": "a9297a9",
+      "createdAt": "2026-02-19T16:58:00Z",
+      "updatedAt": "2026-02-19T16:58:00Z",
+      "evidence": [
+        {
+          "artifactPath": "docs/project-plan-progress.csv",
+          "artifactSha256": "2e79364d11f16540e87985f3dd6c036fc46871193707e5de668d8ba70d01205a",
+          "artifactSizeBytes": 8012,
+          "type": "plan",
+          "notes": "Task completion context",
+          "capturedAt": "2026-02-19T16:58:01Z"
+        },
+        {
+          "artifactPath": "preview/fidelity-report.json",
+          "artifactSha256": "408e68ed8adca82fda648483ba98e1a3cdb51a83c5fc9f4eb96637b1d18bb52b",
+          "artifactSizeBytes": 2384,
+          "type": "report",
+          "notes": "Current fidelity baseline",
+          "capturedAt": "2026-02-19T16:58:01Z"
+        }
+      ],
+      "decisionLinks": [
+        {
+          "realm": "application",
+          "decisionId": "APP-RENDER-001",
+          "relation": "supports",
+          "linkedAt": "2026-02-19T16:58:02Z"
+        }
+      ]
+    }
+  ]
+}

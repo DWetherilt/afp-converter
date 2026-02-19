@@ -29,3 +29,5 @@ Workstream G,stand up realm-local decision logs with granular scope for reasonin
 Workstream G,export cross-realm decision priority queue from SQL impact scoring,High,In Progress,70,2026-02-19,"Added export command and Gradle decisionPriorityReport task for pm/reports/decision-priority-queue.json."
 Workstream G,wire decision queue into PM refresh/report cycle and artifact manifests,High,In Progress,65,2026-02-19,"Workflow and manifest wiring in progress to make decision state a first-class execution driver."
 Workstream G,seed initial decisions for active workstreams with smallest-change-biggest-reward scoring,High,In Progress,30,2026-02-19,"Pending initial population of decision records for renderer and boilerplate promotion actions."
+Workstream G,stand up SQL knowledge base for reasoning outcomes and artifact context,High,In Progress,70,2026-02-19,"Added project-state knowledge tables and commands for entries/evidence/decision links."
+Workstream G,publish knowledge-base report in PM refresh cycle,High,In Progress,60,2026-02-19,"Added knowledgeBaseReport task and workflow wiring; now needs broader seeding coverage."

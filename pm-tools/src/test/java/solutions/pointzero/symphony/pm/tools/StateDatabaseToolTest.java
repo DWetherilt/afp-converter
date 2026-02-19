@@ -373,4 +373,63 @@ class StateDatabaseToolTest {
         assertTrue(payload.contains("\"scopeLevel\": \"sub_boilerplate\""));
         assertTrue(payload.contains("\"byRealm\""));
     }
+
+    @Test
+    void upsertKnowledgeWithEvidenceAndDecisionLinkExports(@TempDir Path tempDir) throws Exception {
+        Path db = tempDir.resolve("project-state.sqlite");
+        Path artifact = tempDir.resolve("artifact.json");
+        Path out = tempDir.resolve("knowledge-base.json");
+        Files.writeString(artifact, "{\"ok\":true}\n", StandardCharsets.UTF_8);
+
+        int upsert = StateDatabaseTool.execute(new String[] {
+            "upsert-knowledge",
+            "--db", db.toString(),
+            "--knowledge-id", "KB-1",
+            "--realm", "application",
+            "--scope-level", "component",
+            "--scope-ref", "afp-engine",
+            "--title", "Renderer drift insight",
+            "--reasoning", "Observed graphics drift in strict mode.",
+            "--context-snapshot", "Compared output against IBM sample.",
+            "--outcome-status", "open",
+            "--outcome-summary", "Needs follow-up",
+            "--confidence", "4.0",
+            "--impact-score", "4.5",
+            "--change-ref", "docs/project-plan-progress.csv"
+        });
+        assertEquals(0, upsert);
+
+        int evidence = StateDatabaseTool.execute(new String[] {
+            "add-knowledge-evidence",
+            "--db", db.toString(),
+            "--knowledge-id", "KB-1",
+            "--artifact-path", artifact.toString(),
+            "--type", "report",
+            "--notes", "fidelity evidence"
+        });
+        assertEquals(0, evidence);
+
+        int link = StateDatabaseTool.execute(new String[] {
+            "link-knowledge-decision",
+            "--db", db.toString(),
+            "--knowledge-id", "KB-1",
+            "--realm", "application",
+            "--decision-id", "APP-RENDER-001",
+            "--relation", "supports"
+        });
+        assertEquals(0, link);
+
+        int export = StateDatabaseTool.execute(new String[] {
+            "export-knowledge-base",
+            "--db", db.toString(),
+            "--json", out.toString()
+        });
+        assertEquals(0, export);
+
+        String payload = Files.readString(out, StandardCharsets.UTF_8);
+        assertTrue(payload.contains("\"entryCount\": 1"));
+        assertTrue(payload.contains("\"knowledgeId\": \"KB-1\""));
+        assertTrue(payload.contains("\"artifactPath\""));
+        assertTrue(payload.contains("\"decisionId\": \"APP-RENDER-001\""));
+    }
 }
