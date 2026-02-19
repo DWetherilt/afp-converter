@@ -27,6 +27,15 @@ def row_changed(a: dict, b: dict) -> bool:
     keys = ['realm','category','ruleText','sourceRef','mutableBy','enabled']
     return any(a.get(k) != b.get(k) for k in keys)
 
+def severity_for(added: list[str], removed: list[str], changed: list[str]) -> str:
+    if removed:
+        return 'critical'
+    if changed:
+        return 'warning'
+    if added:
+        return 'info'
+    return 'none'
+
 def main() -> int:
     ap = argparse.ArgumentParser(description='Generate realm policy diff against previous snapshot.')
     ap.add_argument('--application', required=True)
@@ -46,24 +55,34 @@ def main() -> int:
     prev_realms = previous.get('realms', {}) if isinstance(previous, dict) else {}
 
     realms = {}
+    overall = 'none'
     for realm, payload in current.items():
       cur_map = to_map(payload)
       prev_map = to_map(prev_realms.get(realm, {}))
       added = sorted([rid for rid in cur_map if rid not in prev_map])
       removed = sorted([rid for rid in prev_map if rid not in cur_map])
       changed = sorted([rid for rid in cur_map if rid in prev_map and row_changed(cur_map[rid], prev_map[rid])])
+      severity = severity_for(added, removed, changed)
+      if severity == 'critical':
+          overall = 'critical'
+      elif severity == 'warning' and overall not in {'critical'}:
+          overall = 'warning'
+      elif severity == 'info' and overall not in {'critical', 'warning'}:
+          overall = 'info'
       realms[realm] = {
         'currentCount': len(cur_map),
         'previousCount': len(prev_map),
         'added': added,
         'removed': removed,
         'changed': changed,
+        'severity': severity,
       }
 
     report = {
       'schemaVersion':'1',
       'generatedAt': now_iso(),
       'snapshot': str(snapshot_path),
+      'overallSeverity': overall,
       'realms': realms,
     }
 

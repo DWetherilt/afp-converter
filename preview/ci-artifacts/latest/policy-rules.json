@@ -1,10 +1,23 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T01:37:53Z",
+  "generatedAt": "2026-02-19T18:22:30Z",
   "source": "sqlite",
   "sourceTable": "policy_rule_catalog",
-  "ruleCount": 20,
+  "ruleCount": 42,
   "rules": [
+    {
+      "ruleId": "PM-REALM-GOV-001",
+      "realm": "application",
+      "category": "realm-governance",
+      "ruleText": "Each realm database should publish governance policy exports using realm_policy_catalog report outputs.",
+      "sourceRef": "build.gradle:applicationRealmPolicyReport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": [
+        "realm_policy_catalog"
+      ]
+    },
     {
       "ruleId": "PM-PROD-001",
       "realm": "application",
@@ -13,8 +26,45 @@
       "sourceRef": "build.gradle:prodBuild",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-DECISION-002",
+      "realm": "boilerplate",
+      "category": "decision-governance",
+      "ruleText": "Boilerplate reasoning must support sub-boilerplate granularity using scope_level/scope_ref/sub_scope_ref in decision_log.",
+      "sourceRef": "pm-tools:StateDatabaseTool/decision_log",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": [
+        "decision_log"
+      ]
+    },
+    {
+      "ruleId": "PM-BOILER-001",
+      "realm": "boilerplate",
+      "category": "promotion-governance",
+      "ruleText": "Boilerplate package promotion state must be exported from SQL to pm/reports/boilerplate-promotion-status.json for review sequencing.",
+      "sourceRef": "build.gradle:boilerplatePromotionReport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-REALM-GOV-003",
+      "realm": "boilerplate",
+      "category": "realm-governance",
+      "ruleText": "Each realm database should publish governance policy exports using realm_policy_catalog report outputs.",
+      "sourceRef": "build.gradle:boilerplateRealmPolicyReport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": [
+        "realm_policy_catalog"
+      ]
     },
     {
       "ruleId": "PM-REALM-003",
@@ -24,10 +74,47 @@
       "sourceRef": "pm-tools:StateDatabaseTool/package_candidates.realm",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": [
         "package_candidates"
       ]
+    },
+    {
+      "ruleId": "PM-ACTION-001",
+      "realm": "pm",
+      "category": "action-governance",
+      "ruleText": "Human prompts that imply actionable work must be ingested into action_items and reported via pm/reports/action-items.json.",
+      "sourceRef": "build.gradle:actionInboxIngest;build.gradle:actionItemsReport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": [
+        "action_items"
+      ]
+    },
+    {
+      "ruleId": "PM-ACTION-002",
+      "realm": "pm",
+      "category": "action-governance",
+      "ruleText": "Action items should link to decision IDs for traceable execution sequencing.",
+      "sourceRef": "pm-tools:StateDatabaseTool/action_item_decision_links",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": [
+        "action_item_decision_links"
+      ]
+    },
+    {
+      "ruleId": "PM-ACTION-003",
+      "realm": "pm",
+      "category": "action-governance",
+      "ruleText": "PM refresh must publish action owner summary and SLA trend reports for prioritization and drift visibility.",
+      "sourceRef": "build.gradle:actionOwnerSummaryReport;build.gradle:actionSlaTrendReport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": []
     },
     {
       "ruleId": "PM-ROLLUP-001",
@@ -37,7 +124,40 @@
       "sourceRef": "build.gradle:enforceBoilerplateRollupForFrameworkChanges",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-CI-001",
+      "realm": "pm",
+      "category": "ci-governance",
+      "ruleText": "CI must run SQL-first pre-build integrity checks (via tools/recovery_quick_check.sh or equivalent) before Gradle build steps.",
+      "sourceRef": ".github/workflows/ci.yml",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-CI-002",
+      "realm": "pm",
+      "category": "ci-governance",
+      "ruleText": "CI should publish recovery/integrity artifacts for troubleshooting and rollback traceability.",
+      "sourceRef": ".github/workflows/ci.yml",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-CI-003",
+      "realm": "pm",
+      "category": "ci-governance",
+      "ruleText": "CI and package workflows must block transient SQLite artifacts (.sqlite-wal/.sqlite-shm) from tracked files and exported payloads.",
+      "sourceRef": ".github/workflows/ci.yml;tools/validate_boilerplate_package.sh;tools/export_boilerplate_package.sh",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": []
     },
     {
@@ -48,11 +168,44 @@
       "sourceRef": "pm/policy/policy-rule-tables.sql",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": [
         "policy_rule_catalog",
         "pm_data_dictionary"
       ]
+    },
+    {
+      "ruleId": "PM-CONSOLE-001",
+      "realm": "pm",
+      "category": "console-governance",
+      "ruleText": "Console screens must emit standard payload envelopes using exchange format pm-console-screen@1.",
+      "sourceRef": "docs/PM_CONSOLE_EXCHANGE_FORMAT.md",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-CONSOLE-002",
+      "realm": "pm",
+      "category": "console-governance",
+      "ruleText": "pmconsole live must be command-driven (REPL style) and should not auto-refresh without explicit command invocation.",
+      "sourceRef": "pm-console:PmConsoleMain.LiveCommand",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-DECISION-001",
+      "realm": "pm",
+      "category": "decision-governance",
+      "ruleText": "Cross-realm prioritization must be derived from SQL-backed decision logs in each realm database and exported to pm/reports/decision-priority-queue.json.",
+      "sourceRef": "build.gradle:decisionPriorityReport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": []
     },
     {
       "ruleId": "PM-DOC-001",
@@ -62,18 +215,42 @@
       "sourceRef": "build.gradle:documentationManifest",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": []
     },
     {
       "ruleId": "PM-EXEC-001",
       "realm": "pm",
       "category": "execution-defaults",
-      "ruleText": "Execute app flow first, then PM console status by default unless human overrides.",
-      "sourceRef": "AI-POLICY.md#Default execution coupling",
+      "ruleText": "Execute app flow first, ensure persistent PM console live daemon is running, then PM console status unless human overrides.",
+      "sourceRef": "build.gradle:pmConsoleEnsureLive;AI-POLICY.md#Default execution coupling",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-KB-001",
+      "realm": "pm",
+      "category": "knowledge-governance",
+      "ruleText": "Project reasoning outcomes must be captured in the SQL knowledge base with linked evidence artifacts and decision references.",
+      "sourceRef": "pm-tools:StateDatabaseTool/knowledge_entries",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": [
+        "knowledge_entries"
+      ]
+    },
+    {
+      "ruleId": "PM-KB-002",
+      "realm": "pm",
+      "category": "knowledge-governance",
+      "ruleText": "PM refresh pipeline must publish pm/reports/knowledge-base.json from project-state SQLite.",
+      "sourceRef": "build.gradle:knowledgeBaseReport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": []
     },
     {
@@ -84,7 +261,7 @@
       "sourceRef": "build.gradle:enforceNamespaceRoot",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": []
     },
     {
@@ -95,7 +272,7 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": []
     },
     {
@@ -106,7 +283,7 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": []
     },
     {
@@ -117,8 +294,21 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-REALM-GOV-002",
+      "realm": "pm",
+      "category": "realm-governance",
+      "ruleText": "Each realm database should publish governance policy exports using realm_policy_catalog report outputs.",
+      "sourceRef": "build.gradle:pmRealmPolicyReport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": [
+        "realm_policy_catalog"
+      ]
     },
     {
       "ruleId": "PM-REALM-001",
@@ -128,7 +318,7 @@
       "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": []
     },
     {
@@ -139,7 +329,78 @@
       "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-REASON-001",
+      "realm": "pm",
+      "category": "reasoning-governance",
+      "ruleText": "Reasoning experience and derived-knowledge databases must be rebuilt from project-state knowledge during PM refresh.",
+      "sourceRef": "build.gradle:reasoningDatabases",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-REASON-002",
+      "realm": "pm",
+      "category": "reasoning-governance",
+      "ruleText": "PM refresh pipeline must publish pm/reports/reasoning-drive.json as current reasoning signal output.",
+      "sourceRef": "tools/reasoning_sync.py",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": [
+        "experience_events",
+        "heuristic_scores",
+        "derived_insights",
+        "insight_edges"
+      ]
+    },
+    {
+      "ruleId": "PM-REC-001",
+      "realm": "pm",
+      "category": "recovery-governance",
+      "ruleText": "Recovery-doctor local checkpoints must be retained with bounded count to prevent unbounded workspace growth.",
+      "sourceRef": "tools/recovery_doctor.sh#RECOVERY_CHECKPOINT_RETENTION_COUNT",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-REC-002",
+      "realm": "pm",
+      "category": "recovery-governance",
+      "ruleText": "Recovery baseline refresh may be skipped only via explicit environment flag when preserving a prior checksum baseline is required.",
+      "sourceRef": "tools/recovery_doctor.sh#RECOVERY_SKIP_BASELINE_REFRESH",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-SEC-001",
+      "realm": "pm",
+      "category": "security-governance",
+      "ruleText": "Console database federation must be constrained to aliases in pm/security/authorized-databases.json.",
+      "sourceRef": "pm/security/authorized-databases.json",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-SEC-002",
+      "realm": "pm",
+      "category": "security-governance",
+      "ruleText": "Mutating authorized database aliases requires explicit human approval token.",
+      "sourceRef": "pm-console:DbCommand --human-approved",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": []
     },
     {
@@ -150,7 +411,7 @@
       "sourceRef": "build.gradle:realmCodeDatabases",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": []
     },
     {
@@ -161,7 +422,7 @@
       "sourceRef": "build.gradle:realmTokenSearch",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": []
     },
     {
@@ -172,7 +433,7 @@
       "sourceRef": "build.gradle:realmSourcesExport",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": []
     },
     {
@@ -183,7 +444,7 @@
       "sourceRef": "build.gradle:sqlAuthorityDriftCheck",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": []
     },
     {
@@ -194,7 +455,7 @@
       "sourceRef": "build.gradle:sqlCoverageReport",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": []
     },
     {
@@ -205,7 +466,7 @@
       "sourceRef": "build.gradle:sqlReconstructionCheck",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": []
     },
     {
@@ -216,7 +477,7 @@
       "sourceRef": "pm/workflow/workflow-manifest.json",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": [
         "pm_workflow_manifest"
       ]
@@ -229,7 +490,7 @@
       "sourceRef": "build.gradle:pmWorkflowRun",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:37:48",
+      "updatedAt": "2026-02-19 18:22:25",
       "dictionaryRefs": []
     }
   ]

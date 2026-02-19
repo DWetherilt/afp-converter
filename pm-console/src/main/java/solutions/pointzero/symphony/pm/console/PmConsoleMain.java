@@ -57,6 +57,10 @@ public final class PmConsoleMain implements Callable<Integer> {
     private static final Path BOILERPLATE_DB = Path.of("pm/state/boilerplate-state.sqlite");
     private static final Path DECISION_QUEUE = Path.of("pm/reports/decision-priority-queue.json");
     private static final Path ACTION_ITEMS = Path.of("pm/reports/action-items.json");
+    private static final Path ACTION_OWNER_SUMMARY = Path.of("pm/reports/action-owner-summary.json");
+    private static final Path ACTION_SLA_TREND = Path.of("pm/reports/action-sla-trend.json");
+    private static final Path ACTION_INGEST_STRICT = Path.of("pm/reports/action-ingest-strict.json");
+    private static final Path ACTION_SUGGESTIONS = Path.of("pm/reports/action-decision-suggestions.json");
     private static final Path AI_INBOX = Path.of("pm/state/assistant-inbox.ndjson");
     private static final Path AUTHORIZED_DBS = Path.of("pm/security/authorized-databases.json");
 
@@ -174,9 +178,15 @@ public final class PmConsoleMain implements Callable<Integer> {
         @Option(names = "--top", description = "How many rows to print (default: ${DEFAULT-VALUE})")
         int top = 10;
 
+        @Option(names = "--priority", description = "Optional priority filter: high|medium|low")
+        String priority;
+
+        @Option(names = "--stale-only", description = "Show only stale action rows.")
+        boolean staleOnly;
+
         @Override
         public Integer call() {
-            return printActionItems(Math.max(1, top));
+            return printActionItems(Math.max(1, top), priority, staleOnly);
         }
     }
 
@@ -265,144 +275,129 @@ public final class PmConsoleMain implements Callable<Integer> {
 
         @Override
         public Integer call() throws Exception {
-            long intervalMs = Math.max(1, intervalSeconds) * 1000L;
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
+            System.out.println("PM Console Interactive");
+            System.out.println("======================");
+            System.out.println("Type a command and press Enter.");
+            System.out.println();
             printLiveHelp();
-            long nextRefreshAt = 0L;
             while (true) {
-                long now = System.currentTimeMillis();
-                if (now >= nextRefreshAt) {
-                    clearScreen();
-                    System.out.println("PM Console Live");
-                    System.out.println("===============");
-                    System.out.println("refresh interval: " + (intervalMs / 1000L) + "s");
-                    System.out.println();
+                System.out.print("pm> ");
+                System.out.flush();
+                String line = reader.readLine();
+                if (line == null) {
+                    return 0;
+                }
+                String normalized = line.trim();
+                if (normalized.isEmpty()) {
+                    continue;
+                }
+                String lower = normalized.toLowerCase(Locale.ROOT);
+                if (Set.of("q", "quit", "exit").contains(lower)) {
+                    System.out.println("Exiting live console.");
+                    return 0;
+                }
+                if (Set.of("h", "help").contains(lower)) {
+                    printLiveHelp();
+                    continue;
+                }
+                if (Set.of("status", "s").contains(lower)) {
                     new StatusCommand().call();
                     System.out.println();
+                    continue;
+                }
+                if (lower.startsWith("decisions")) {
+                    Integer n = parseTrailingInt(normalized, "decisions");
+                    if (n != null) {
+                        topDecisions = Math.max(1, n);
+                    }
                     printDecisionQueue(Math.max(1, topDecisions));
                     System.out.println();
-                    System.out.println("Commands: help | status | decisions [n] | actions [n] | report <request> | refresh [phase <id>|tasks <csv>|preview] | db list | tools | interval <sec> | prompt <text> | clear | quit");
-                    nextRefreshAt = now + intervalMs;
+                    continue;
                 }
-
-                if (reader.ready()) {
-                    String line = reader.readLine();
-                    if (line == null) {
-                        return 0;
-                    }
-                    String normalized = line.trim();
-                    if (normalized.isEmpty()) {
-                        nextRefreshAt = 0L;
-                        continue;
-                    }
-                    String lower = normalized.toLowerCase(Locale.ROOT);
-                    if (Set.of("q", "quit", "exit").contains(lower)) {
-                        System.out.println("Exiting live console.");
-                        return 0;
-                    }
-                    if (Set.of("h", "help").contains(lower)) {
-                        printLiveHelp();
-                        nextRefreshAt = 0L;
-                        continue;
-                    }
-                    if (Set.of("status", "s").contains(lower)) {
-                        nextRefreshAt = 0L;
-                        continue;
-                    }
-                    if (lower.startsWith("decisions")) {
-                        Integer n = parseTrailingInt(normalized, "decisions");
-                        if (n != null) {
-                            topDecisions = Math.max(1, n);
-                        }
-                        nextRefreshAt = 0L;
-                        continue;
-                    }
-                    if (lower.startsWith("actions")) {
-                        Integer n = parseTrailingInt(normalized, "actions");
-                        printActionItems(n == null ? 10 : Math.max(1, n));
-                        nextRefreshAt = 0L;
-                        continue;
-                    }
-                    if (lower.startsWith("report ")) {
-                        String req = normalized.substring("report ".length()).trim();
-                        if (req.isEmpty()) {
-                            System.out.println("report request is empty");
-                        } else {
-                            printReportText(generateReportPayload(req, resolveAliases("")));
-                        }
-                        nextRefreshAt = 0L;
-                        continue;
-                    }
-                    if (lower.equals("refresh") || lower.equals("r")) {
-                        int exit = runWorkflowPhase("pm_refresh_and_reports", false);
-                        System.out.println("refresh exit code: " + exit);
-                        nextRefreshAt = 0L;
-                        continue;
-                    }
-                    if (lower.startsWith("refresh phase ")) {
-                        String phase = normalized.substring("refresh phase ".length()).trim();
-                        int exit = runWorkflowPhase(text(phase).isBlank() ? "pm_refresh_and_reports" : phase, false);
-                        System.out.println("refresh phase exit code: " + exit);
-                        nextRefreshAt = 0L;
-                        continue;
-                    }
-                    if (lower.startsWith("refresh tasks ")) {
-                        String t = normalized.substring("refresh tasks ".length()).trim();
-                        int exit = runGradleTasks(splitCsv(t), false);
-                        System.out.println("refresh tasks exit code: " + exit);
-                        nextRefreshAt = 0L;
-                        continue;
-                    }
-                    if (lower.equals("refresh preview") || lower.equals("refresh-preview") || lower.equals("rp")) {
-                        int pre = runWorkflowPhase("execute_application_with_pm_console", false);
-                        int post = pre == 0 ? runWorkflowPhase("pm_refresh_and_reports", false) : pre;
-                        System.out.println("refresh-preview exit code: " + post);
-                        nextRefreshAt = 0L;
-                        continue;
-                    }
-                    if (lower.equals("db list")) {
-                        DbCommand db = new DbCommand();
-                        db.list = true;
-                        db.call();
-                        nextRefreshAt = 0L;
-                        continue;
-                    }
-                    if (lower.equals("tools")) {
-                        new ToolsCommand().call();
-                        nextRefreshAt = 0L;
-                        continue;
-                    }
-                    if (lower.startsWith("interval ")) {
-                        Integer parsed = parseTrailingInt(normalized, "interval");
-                        if (parsed != null && parsed > 0) {
-                            intervalMs = parsed * 1000L;
-                            System.out.println("interval updated to " + parsed + "s");
-                        } else {
-                            System.out.println("invalid interval; use interval <seconds>");
-                        }
-                        nextRefreshAt = 0L;
-                        continue;
-                    }
-                    if (lower.startsWith("prompt ") || lower.startsWith("ask ")) {
-                        String text = normalized.substring(normalized.indexOf(' ') + 1).trim();
-                        if (text.isEmpty()) {
-                            System.out.println("prompt text is empty.");
-                        } else {
-                            appendPrompt(text);
-                            System.out.println("prompt captured in " + AI_INBOX);
-                        }
-                        nextRefreshAt = 0L;
-                        continue;
-                    }
-                    if (lower.equals("clear")) {
-                        clearScreen();
-                        nextRefreshAt = 0L;
-                        continue;
-                    }
-                    System.out.println("unknown command: " + normalized + " (use 'help')");
-                    nextRefreshAt = 0L;
+                if (lower.startsWith("actions")) {
+                    LiveActionSelection parsed = parseLiveActionsSelection(normalized);
+                    printActionItems(parsed.top, parsed.priority, parsed.staleOnly);
+                    System.out.println();
+                    continue;
                 }
-                Thread.sleep(200L);
+                if (lower.startsWith("report ")) {
+                    String req = normalized.substring("report ".length()).trim();
+                    if (req.isEmpty()) {
+                        System.out.println("report request is empty");
+                    } else {
+                        printReportText(generateReportPayload(req, resolveAliases("")));
+                    }
+                    System.out.println();
+                    continue;
+                }
+                if (lower.equals("refresh") || lower.equals("r")) {
+                    int exit = runWorkflowPhase("pm_refresh_and_reports", false);
+                    System.out.println("refresh exit code: " + exit);
+                    System.out.println();
+                    continue;
+                }
+                if (lower.startsWith("refresh phase ")) {
+                    String phase = normalized.substring("refresh phase ".length()).trim();
+                    int exit = runWorkflowPhase(text(phase).isBlank() ? "pm_refresh_and_reports" : phase, false);
+                    System.out.println("refresh phase exit code: " + exit);
+                    System.out.println();
+                    continue;
+                }
+                if (lower.startsWith("refresh tasks ")) {
+                    String t = normalized.substring("refresh tasks ".length()).trim();
+                    int exit = runGradleTasks(splitCsv(t), false);
+                    System.out.println("refresh tasks exit code: " + exit);
+                    System.out.println();
+                    continue;
+                }
+                if (lower.equals("refresh preview") || lower.equals("refresh-preview") || lower.equals("rp")) {
+                    int pre = runWorkflowPhase("execute_application_with_pm_console", false);
+                    int post = pre == 0 ? runWorkflowPhase("pm_refresh_and_reports", false) : pre;
+                    System.out.println("refresh-preview exit code: " + post);
+                    System.out.println();
+                    continue;
+                }
+                if (lower.equals("db list")) {
+                    DbCommand db = new DbCommand();
+                    db.list = true;
+                    db.call();
+                    System.out.println();
+                    continue;
+                }
+                if (lower.equals("tools")) {
+                    new ToolsCommand().call();
+                    System.out.println();
+                    continue;
+                }
+                if (lower.startsWith("interval ")) {
+                    Integer parsed = parseTrailingInt(normalized, "interval");
+                    if (parsed != null && parsed > 0) {
+                        intervalSeconds = parsed;
+                        System.out.println("interval set to " + parsed + "s (used only by external watcher wrappers)");
+                    } else {
+                        System.out.println("invalid interval; use interval <seconds>");
+                    }
+                    System.out.println();
+                    continue;
+                }
+                if (lower.startsWith("prompt ") || lower.startsWith("ask ")) {
+                    String text = normalized.substring(normalized.indexOf(' ') + 1).trim();
+                    if (text.isEmpty()) {
+                        System.out.println("prompt text is empty.");
+                    } else {
+                        appendPrompt(text);
+                        System.out.println("prompt captured in " + AI_INBOX);
+                    }
+                    System.out.println();
+                    continue;
+                }
+                if (lower.equals("clear")) {
+                    clearScreen();
+                    continue;
+                }
+                System.out.println("unknown command: " + normalized + " (use 'help')");
+                System.out.println();
             }
         }
     }
@@ -509,6 +504,8 @@ public final class PmConsoleMain implements Callable<Integer> {
             System.out.println("  - knowledge base: " + describePath(knowledge));
             System.out.println("  - reasoning drive: " + describePath(reasoning));
             System.out.println("  - action items: " + describePath(actions));
+            System.out.println("  - action owner summary: " + describePath(ACTION_OWNER_SUMMARY));
+            System.out.println("  - action SLA trend: " + describePath(ACTION_SLA_TREND));
         }
     }
 
@@ -545,7 +542,7 @@ public final class PmConsoleMain implements Callable<Integer> {
         return 0;
     }
 
-    private static int printActionItems(int top) {
+    private static int printActionItems(int top, String priorityFilter, boolean staleOnly) {
         System.out.println("Action items:");
         JsonObject root = readJson(ACTION_ITEMS);
         if (root == null) {
@@ -553,7 +550,10 @@ public final class PmConsoleMain implements Callable<Integer> {
             return 1;
         }
         String count = str(root, "itemCount", "0");
-        System.out.println("  - total: " + count);
+        String normalizedPriority = normalizePriority(priorityFilter);
+        System.out.println("  - total: " + count
+            + (normalizedPriority.isBlank() ? "" : " | priority=" + normalizedPriority)
+            + (staleOnly ? " | staleOnly=true" : ""));
         JsonElement rows = root.get("actions");
         if (rows == null || !rows.isJsonArray()) {
             return 0;
@@ -567,11 +567,20 @@ public final class PmConsoleMain implements Callable<Integer> {
                 continue;
             }
             JsonObject row = el.getAsJsonObject();
+            String priority = text(str(row, "priority", "medium")).toLowerCase(Locale.ROOT);
+            if (!normalizedPriority.isBlank() && !normalizedPriority.equals(priority)) {
+                continue;
+            }
+            boolean stale = Boolean.parseBoolean(str(row, "isStale", "false"));
+            if (staleOnly && !stale) {
+                continue;
+            }
             System.out.println("  - [" + str(row, "priority", "medium") + "] "
                 + str(row, "actionId", "<id>") + " | "
                 + str(row, "realm", "<realm>") + " | "
                 + str(row, "status", "<status>") + " | "
-                + str(row, "title", ""));
+                + str(row, "title", "")
+                + " | stale=" + stale);
             printed++;
         }
         return 0;
@@ -673,6 +682,54 @@ public final class PmConsoleMain implements Callable<Integer> {
             }
             return;
         }
+        if ("action_status".equals(screenId)) {
+            JsonObject summary = data.getAsJsonObject("summary");
+            JsonArray owners = data.getAsJsonArray("owners");
+            JsonArray suggestions = data.getAsJsonArray("topSuggestions");
+            JsonObject strict = data.getAsJsonObject("ingestStrict");
+
+            System.out.println();
+            System.out.println("Action summary:");
+            if (summary != null) {
+                System.out.println("  - total=" + str(summary, "total", "0")
+                    + " | open=" + str(summary, "open", "0")
+                    + " | stale=" + str(summary, "stale", "0"));
+            }
+            if (strict != null) {
+                System.out.println("  - ingestStrict=" + str(strict, "status", "UNKNOWN")
+                    + " | missing=" + str(strict, "missingCount", "0"));
+            }
+
+            System.out.println();
+            System.out.println("Owners:");
+            if (owners != null) {
+                for (JsonElement el : owners) {
+                    if (!el.isJsonObject()) {
+                        continue;
+                    }
+                    JsonObject row = el.getAsJsonObject();
+                    System.out.println("  - " + str(row, "owner", "unassigned")
+                        + " | total=" + str(row, "total", "0")
+                        + " | open=" + str(row, "open", "0")
+                        + " | stale=" + str(row, "stale", "0"));
+                }
+            }
+
+            System.out.println();
+            System.out.println("Top suggestions:");
+            if (suggestions != null) {
+                for (JsonElement el : suggestions) {
+                    if (!el.isJsonObject()) {
+                        continue;
+                    }
+                    JsonObject row = el.getAsJsonObject();
+                    System.out.println("  - " + str(row, "actionId", "")
+                        + " -> " + str(row, "decisionId", "")
+                        + " | score=" + str(row, "score", "0"));
+                }
+            }
+            return;
+        }
 
         System.out.println();
         System.out.println(GSON.toJson(payload));
@@ -686,13 +743,17 @@ public final class PmConsoleMain implements Callable<Integer> {
         if (normalized.contains("reasoning") && (normalized.contains("drive") || normalized.contains("status") || normalized.contains("signal"))) {
             return buildReasoningDrivePayload(request, aliases);
         }
+        if (normalized.contains("action") && (normalized.contains("status") || normalized.contains("summary"))) {
+            return buildActionStatusPayload(request, aliases);
+        }
 
         JsonObject data = new JsonObject();
         JsonArray intents = new JsonArray();
         intents.add("current workstream status");
         intents.add("reasoning drive");
+        intents.add("action status");
         data.add("supportedRequests", intents);
-        data.addProperty("message", "Request was not recognized. Try: 'current workstream status' or 'reasoning drive'.");
+        data.addProperty("message", "Request was not recognized. Try: 'current workstream status', 'reasoning drive', or 'action status'.");
         JsonObject payload = buildScreenPayload("unsupported_request", request, aliases, data);
         return new ReportPayload(payload, aliases.toString());
     }
@@ -833,6 +894,88 @@ public final class PmConsoleMain implements Callable<Integer> {
         data.add("topInsights", topInsights);
 
         JsonObject payload = buildScreenPayload("reasoning_drive", request, aliases, data);
+        return new ReportPayload(payload, aliases.toString());
+    }
+
+    private static ReportPayload buildActionStatusPayload(String request, List<String> aliases) {
+        JsonObject data = new JsonObject();
+        JsonObject summary = new JsonObject();
+        JsonArray owners = new JsonArray();
+        JsonArray topSuggestions = new JsonArray();
+        JsonObject ingestStrict = new JsonObject();
+
+        JsonObject actions = readJson(ACTION_ITEMS);
+        if (actions != null) {
+            summary.addProperty("total", str(actions, "itemCount", "0"));
+            JsonObject byStatus = actions.getAsJsonObject("byStatus");
+            summary.addProperty("open", byStatus == null ? "0" : str(byStatus, "open", "0"));
+            int stale = 0;
+            JsonElement rows = actions.get("actions");
+            if (rows != null && rows.isJsonArray()) {
+                for (JsonElement el : rows.getAsJsonArray()) {
+                    if (!el.isJsonObject()) {
+                        continue;
+                    }
+                    JsonObject row = el.getAsJsonObject();
+                    if (Boolean.parseBoolean(str(row, "isStale", "false"))) {
+                        stale++;
+                    }
+                }
+            }
+            summary.addProperty("stale", stale);
+        } else {
+            summary.addProperty("total", "0");
+            summary.addProperty("open", "0");
+            summary.addProperty("stale", "0");
+        }
+
+        JsonObject ownerSummary = readJson(ACTION_OWNER_SUMMARY);
+        if (ownerSummary != null) {
+            JsonElement rows = ownerSummary.get("owners");
+            if (rows != null && rows.isJsonArray()) {
+                owners = rows.getAsJsonArray();
+            }
+        }
+
+        JsonObject suggestions = readJson(ACTION_SUGGESTIONS);
+        if (suggestions != null) {
+            JsonElement rows = suggestions.get("suggestions");
+            int count = 0;
+            if (rows != null && rows.isJsonArray()) {
+                for (JsonElement el : rows.getAsJsonArray()) {
+                    if (count >= 10 || !el.isJsonObject()) {
+                        break;
+                    }
+                    JsonObject row = el.getAsJsonObject();
+                    JsonElement suggestionRows = row.get("suggestions");
+                    if (suggestionRows == null || !suggestionRows.isJsonArray() || suggestionRows.getAsJsonArray().isEmpty()) {
+                        continue;
+                    }
+                    JsonObject first = suggestionRows.getAsJsonArray().get(0).getAsJsonObject();
+                    JsonObject out = new JsonObject();
+                    out.addProperty("actionId", str(row, "actionId", ""));
+                    out.addProperty("decisionId", str(first, "decisionId", ""));
+                    out.addProperty("score", str(first, "score", "0"));
+                    topSuggestions.add(out);
+                    count++;
+                }
+            }
+        }
+
+        JsonObject strict = readJson(ACTION_INGEST_STRICT);
+        if (strict != null) {
+            ingestStrict.addProperty("status", str(strict, "status", "UNKNOWN"));
+            ingestStrict.addProperty("missingCount", str(strict, "missingCount", "0"));
+        } else {
+            ingestStrict.addProperty("status", "UNKNOWN");
+            ingestStrict.addProperty("missingCount", "0");
+        }
+
+        data.add("summary", summary);
+        data.add("owners", owners);
+        data.add("topSuggestions", topSuggestions);
+        data.add("ingestStrict", ingestStrict);
+        JsonObject payload = buildScreenPayload("action_status", request, aliases, data);
         return new ReportPayload(payload, aliases.toString());
     }
 
@@ -1107,6 +1250,14 @@ public final class PmConsoleMain implements Callable<Integer> {
         return out;
     }
 
+    private static String normalizePriority(String value) {
+        String normalized = text(value).toLowerCase(Locale.ROOT);
+        return switch (normalized) {
+            case "high", "medium", "low" -> normalized;
+            default -> "";
+        };
+    }
+
     private static void appendPrompt(String text) throws IOException {
         Path parent = AI_INBOX.toAbsolutePath().getParent();
         if (parent != null) {
@@ -1142,19 +1293,47 @@ public final class PmConsoleMain implements Callable<Integer> {
         }
     }
 
+    static LiveActionSelection parseLiveActionsSelection(String command) {
+        int top = 10;
+        String priority = "";
+        boolean staleOnly = false;
+        String[] tokens = text(command).split("\\s+");
+        for (int i = 1; i < tokens.length; i++) {
+            String token = text(tokens[i]).toLowerCase(Locale.ROOT);
+            if (token.isBlank()) {
+                continue;
+            }
+            if ("stale".equals(token) || "stale-only".equals(token)) {
+                staleOnly = true;
+                continue;
+            }
+            if ("high".equals(token) || "medium".equals(token) || "low".equals(token)) {
+                priority = token;
+                continue;
+            }
+            try {
+                top = Math.max(1, Integer.parseInt(token));
+            } catch (NumberFormatException ignored) {
+                // ignore non-numeric tokens.
+            }
+        }
+        return new LiveActionSelection(top, priority, staleOnly);
+    }
+
     private static void printLiveHelp() {
         System.out.println("pmconsole live commands:");
         System.out.println("  - help");
         System.out.println("  - status");
         System.out.println("  - decisions [n]");
-        System.out.println("  - report <request>");
+        System.out.println("  - actions [n] [high|medium|low] [stale]");
+        System.out.println("  - report <request>  (e.g., action status)");
         System.out.println("  - refresh");
         System.out.println("  - refresh phase <id>");
         System.out.println("  - refresh tasks <task1,task2>");
         System.out.println("  - refresh preview");
         System.out.println("  - db list");
         System.out.println("  - tools");
-        System.out.println("  - interval <seconds>");
+        System.out.println("  - interval <seconds> (stored for wrapper use)");
         System.out.println("  - prompt <text>  (alias: ask <text>)");
         System.out.println("  - clear");
         System.out.println("  - quit");
@@ -1179,4 +1358,6 @@ public final class PmConsoleMain implements Callable<Integer> {
     private record AuthorizedDb(String alias, String path, boolean enabled, boolean readOnly, String description) {}
 
     private record ReportPayload(JsonObject payload, String sourcesSummary) {}
+
+    static record LiveActionSelection(int top, String priority, boolean staleOnly) {}
 }

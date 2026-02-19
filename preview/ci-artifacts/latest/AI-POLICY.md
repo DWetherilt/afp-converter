@@ -134,7 +134,7 @@ Use this file as the first-read operational contract before making changes.
 - Diagnostics and metadata are first-class outputs and must be kept in sync with renderer behavior.
 - Default execution coupling:
   - Unless a human explicitly defines otherwise, any request to execute/run the application must include PM console launch in the same flow.
-  - Standard default sequence is: application execution first, then PM console status (`pmConsoleStatus` / `pmconsole status`).
+  - Standard default sequence is: application execution first, ensure persistent PM console live daemon (`pmConsoleEnsureLive` / `tools/pm_console_live_daemon.sh start`), then PM console status (`pmConsoleStatus` / `pmconsole status`).
 
 ## Standard Development Cycle
 When implementing any meaningful change:

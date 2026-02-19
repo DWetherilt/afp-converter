@@ -1110,6 +1110,27 @@ tasks.register('actionDecisionSuggestionReport', Exec) {
         '--output', 'pm/reports/action-decision-suggestions.json'
 }
 
+tasks.register('actionOwnerSummaryReport', Exec) {
+    group = 'documentation'
+    description = 'Builds action owner summary report from action ledger.'
+    dependsOn('actionItemsReport')
+    commandLine 'python3',
+        'tools/action_owner_summary.py',
+        '--actions', 'pm/reports/action-items.json',
+        '--output', 'pm/reports/action-owner-summary.json'
+}
+
+tasks.register('actionSlaTrendReport', Exec) {
+    group = 'documentation'
+    description = 'Builds action SLA trend report and persists rolling history snapshot.'
+    dependsOn('actionItemsReport')
+    commandLine 'python3',
+        'tools/action_sla_trend.py',
+        '--actions', 'pm/reports/action-items.json',
+        '--history', 'pm/state/action-sla-history.json',
+        '--output', 'pm/reports/action-sla-trend.json'
+}
+
 tasks.register('actionIngestStrictGate', Exec) {
     group = 'verification'
     description = 'Fails when actionable prompts in assistant inbox have not been ingested into project-state.'
@@ -1224,6 +1245,8 @@ tasks.register('stateInventoryCsv') {
     dependsOn('knowledgeBaseReport')
     dependsOn('actionItemsReport')
     dependsOn('actionDecisionSuggestionReport')
+    dependsOn('actionOwnerSummaryReport')
+    dependsOn('actionSlaTrendReport')
     dependsOn('actionIngestStrictGate')
     dependsOn('applicationRealmPolicyReport')
     dependsOn('pmRealmPolicyReport')
@@ -1397,6 +1420,8 @@ tasks.register('documentationManifest') {
             file('pm/reports/knowledge-base.json'),
             file('pm/reports/action-items.json'),
             file('pm/reports/action-decision-suggestions.json'),
+            file('pm/reports/action-owner-summary.json'),
+            file('pm/reports/action-sla-trend.json'),
             file('pm/reports/action-ingest-strict.json'),
             file('pm/reports/realm-policy-sync.json'),
             file('pm/reports/realm-policy-diff.json'),
@@ -1412,6 +1437,7 @@ tasks.register('documentationManifest') {
             file('pm/state/pm-realm.sqlite'),
             file('pm/state/boilerplate-realm.sqlite'),
             file('pm/state/realm-policy-snapshot.json'),
+            file('pm/state/action-sla-history.json'),
             file('pm/reports/version.json'),
             file('VERSION')
         ]
@@ -1497,6 +1523,8 @@ tasks.register('publishCiArtifacts') {
             file('pm/reports/knowledge-base.json'),
             file('pm/reports/action-items.json'),
             file('pm/reports/action-decision-suggestions.json'),
+            file('pm/reports/action-owner-summary.json'),
+            file('pm/reports/action-sla-trend.json'),
             file('pm/reports/action-ingest-strict.json'),
             file('pm/reports/realm-policy-sync.json'),
             file('pm/reports/realm-policy-diff.json'),
@@ -1515,6 +1543,7 @@ tasks.register('publishCiArtifacts') {
             file('pm/state/pm-realm.sqlite'),
             file('pm/state/boilerplate-realm.sqlite'),
             file('pm/state/realm-policy-snapshot.json'),
+            file('pm/state/action-sla-history.json'),
             file('pm/reports/version.json'),
             file('docs/fidelity-corpus.txt'),
             file('docs/project-plan.md'),

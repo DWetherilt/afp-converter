@@ -49,6 +49,8 @@
           "knowledgeBaseReport",
           "actionItemsReport",
           "actionDecisionSuggestionReport",
+          "actionOwnerSummaryReport",
+          "actionSlaTrendReport",
           "actionIngestStrictGate",
           "realmPolicySync",
           "applicationRealmPolicyReport",

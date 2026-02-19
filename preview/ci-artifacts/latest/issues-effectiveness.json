@@ -1,13 +1,13 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T01:37:52Z",
+  "generatedAt": "2026-02-19T18:22:28Z",
   "summary": {
-    "highSeverityOpenCount": 3,
-    "triggeredIssueCount": 4,
-    "taskCount": 26,
-    "requiresIssuesLogUpdate": false,
+    "averageTaskPercentComplete": 83.88,
     "issueCount": 6,
-    "averageTaskPercentComplete": 90.27,
+    "requiresIssuesLogUpdate": false,
+    "taskCount": 34,
+    "triggeredIssueCount": 4,
+    "highSeverityOpenCount": 3,
     "openIssueCount": 6
   },
   "fidelity": {
@@ -19,6 +19,7 @@
   "signals": [
     "Average pixel diff ratio above target (0.03).",
     "Token recall below target (0.98).",
+    "Average plan task completion below 85%.",
     "High-severity issues remain open."
   ],
   "triggeredIssues": [
@@ -44,7 +45,7 @@
       "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
       "matchedComponents": [
         "build.gradle",
-        "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/StateDatabaseTool.java",
+        "docs/boilerplate-sync-candidates.xlsx",
         "pm/state/boilerplate-state.sqlite",
         "pm/state/project-state.sqlite"
       ]
@@ -56,10 +57,13 @@
       "matchedComponents": [
         "build.gradle",
         "docs/issues-log.csv",
-        "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/StateDatabaseTool.java",
         "pm/reports/governance-alerts.json",
         "pm/state/project-state.sqlite",
-        "tools/sql_code_workflow.sh"
+        "tools/realm_policy_diff.py",
+        "tools/action_owner_summary.py",
+        "tools/action_sla_trend.py",
+        "tools/tests/test_check_action_ingest_strict.py",
+        "tools/tests/test_realm_policy_diff.py"
       ]
     }
   ],

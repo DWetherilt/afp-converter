@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T01:37:52Z",
+  "generatedAt": "2026-02-19T18:22:28Z",
   "issuesLogPath": "docs/issues-log.csv",
   "issuesLogTouchedInWorkingTree": true,
-  "changedPathCount": 32,
+  "changedPathCount": 45,
   "triggeredIssueCount": 4,
   "requiresIssuesLogUpdate": false,
   "triggeredIssues": [
@@ -29,7 +29,7 @@
       "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
       "matchedComponents": [
         "build.gradle",
-        "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/StateDatabaseTool.java",
+        "docs/boilerplate-sync-candidates.xlsx",
         "pm/state/boilerplate-state.sqlite",
         "pm/state/project-state.sqlite"
       ]
@@ -41,10 +41,13 @@
       "matchedComponents": [
         "build.gradle",
         "docs/issues-log.csv",
-        "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/StateDatabaseTool.java",
         "pm/reports/governance-alerts.json",
         "pm/state/project-state.sqlite",
-        "tools/sql_code_workflow.sh"
+        "tools/realm_policy_diff.py",
+        "tools/action_owner_summary.py",
+        "tools/action_sla_trend.py",
+        "tools/tests/test_check_action_ingest_strict.py",
+        "tools/tests/test_realm_policy_diff.py"
       ]
     }
   ],

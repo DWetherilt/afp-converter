@@ -126,6 +126,20 @@ Deliver near-IBM parity rendering for AFP input by implementing true AFP object/
   - reproducible trace reports for corpus files.
   - at least one concrete renderer improvement derived from trace evidence.
 
+### Workstream G: SQL Decision Intelligence (dedicated)
+- Objectives:
+  - make prioritization drivers explicit, queryable, and realm-local.
+  - containerize decision context at granular scope (including sub-boilerplate level).
+- Tasks:
+  - add `decision_log` and `decision_dependency` tables to each realm database.
+  - add commands to upsert/link decisions and export a cross-realm decision priority queue.
+  - wire decision-priority reporting into PM refresh/report pipeline and artifacts.
+  - add project-state SQL knowledge base (`knowledge_entries`, `knowledge_evidence`, `knowledge_decision_links`) to preserve reasoning context against artifacts and decision links.
+  - seed active workstream decisions with smallest-change/biggest-reward impact scoring.
+- Exit criteria:
+  - each realm has live decision records with scope granularity.
+  - PM reports include ranked cross-realm decision queue and knowledge base output that explain current execution drive and evidence context.
+
 ## Milestones
 ### Milestone 1: Composition Correctness
 - Deliver:
@@ -154,6 +168,7 @@ Deliver near-IBM parity rendering for AFP input by implementing true AFP object/
   - `fidelityScore >= 0.95` and `averagePixelDiffRatio <= 0.03` on agreed corpus.
 
 ## Proposed Immediate Next Execution Sequence
-1. keep SQLite-backed project/boilerplate state stores current (`projectStateDb`, `boilerplateStateDb`) and route workflow/reporting outputs through them by default.
-2. strengthen per-image resource binding in `sample.afp`: pair each `BIM` object with candidate embedded resources using token overlap + placement/size heuristics, then only promote page-level fallback when object-level binding confidence is below threshold.
-3. extend print-centric cross-exam output to include `BIM`/`BOC` token timeline slices and inferred binding decisions so renderer back-ports are directly evidence-linked.
+1. stand up and use SQL decision intelligence (`decision_log` per realm + cross-realm priority report) as the default execution driver.
+2. keep SQLite-backed project/boilerplate state stores current (`projectStateDb`, `boilerplateStateDb`) and route workflow/reporting outputs through them by default.
+3. strengthen per-image resource binding in `sample.afp`: pair each `BIM` object with candidate embedded resources using token overlap + placement/size heuristics, then only promote page-level fallback when object-level binding confidence is below threshold.
+4. extend print-centric cross-exam output to include `BIM`/`BOC` token timeline slices and inferred binding decisions so renderer back-ports are directly evidence-linked.

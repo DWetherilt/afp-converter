@@ -1,11 +1,11 @@
 {
     "schemaVersion": "1",
-    "generatedAt": "2026-02-19T01:45:32Z",
+    "generatedAt": "2026-02-19T18:22:30Z",
     "planPath": "docs/project-plan.md",
-    "actionCount": 6,
+    "actionCount": 7,
     "nextInstruction": {
         "title": "Immediate Next Step",
-        "task": "keep SQLite-backed project/boilerplate state stores current (`projectStateDb`, `boilerplateStateDb`) and route workflow/reporting outputs through them by default.",
+        "task": "stand up and use SQL decision intelligence (`decision_log` per realm + cross-realm priority report) as the default execution driver.",
         "source": "## Proposed Immediate Next Execution Sequence"
     },
     "actions": [
@@ -59,9 +59,20 @@
                 "add cross-examination report between AFP stream tokens and output operator/token stream.",
                 "use trace findings to back-port proven control-code handling into the native fidelity renderer."
             ]
+        },
+        {
+            "title": "Workstream G: SQL Decision Intelligence (dedicated)",
+            "tasks": [
+                "add `decision_log` and `decision_dependency` tables to each realm database.",
+                "add commands to upsert/link decisions and export a cross-realm decision priority queue.",
+                "wire decision-priority reporting into PM refresh/report pipeline and artifacts.",
+                "add project-state SQL knowledge base (`knowledge_entries`, `knowledge_evidence`, `knowledge_decision_links`) to preserve reasoning context against artifacts and decision links.",
+                "seed active workstream decisions with smallest-change/biggest-reward impact scoring."
+            ]
         }
     ],
     "immediateSequence": [
+        "stand up and use SQL decision intelligence (`decision_log` per realm + cross-realm priority report) as the default execution driver.",
         "keep SQLite-backed project/boilerplate state stores current (`projectStateDb`, `boilerplateStateDb`) and route workflow/reporting outputs through them by default.",
         "strengthen per-image resource binding in `sample.afp`: pair each `BIM` object with candidate embedded resources using token overlap + placement/size heuristics, then only promote page-level fallback when object-level binding confidence is below threshold.",
         "extend print-centric cross-exam output to include `BIM`/`BOC` token timeline slices and inferred binding decisions so renderer back-ports are directly evidence-linked."

@@ -1,34 +1,38 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T01:45:26Z",
+  "generatedAt": "2026-02-19T18:22:24Z",
   "source": "sqlite",
   "query": "render",
   "databaseCount": 3,
-  "dictionaryMatchCount": 72,
-  "fileHitCount": 107,
+  "dictionaryMatchCount": 81,
+  "fileHitCount": 145,
   "dictionaryMatches": [
     {
-      "token": "renderpolicy",
-      "totalOccurrences": 31
-    },
-    {
-      "token": "render",
-      "totalOccurrences": 20
-    },
-    {
       "token": "renderer",
-      "totalOccurrences": 15
-    },
-    {
-      "token": "afpnativepdfrenderer",
-      "totalOccurrences": 12
-    },
-    {
-      "token": "rendered",
-      "totalOccurrences": 10
+      "totalOccurrences": 55
     },
     {
       "token": "rendering",
+      "totalOccurrences": 36
+    },
+    {
+      "token": "renderpolicy",
+      "totalOccurrences": 34
+    },
+    {
+      "token": "render",
+      "totalOccurrences": 32
+    },
+    {
+      "token": "rendered",
+      "totalOccurrences": 19
+    },
+    {
+      "token": "afpnativepdfrenderer",
+      "totalOccurrences": 18
+    },
+    {
+      "token": "docs/native_renderer_plan.md",
       "totalOccurrences": 9
     },
     {
@@ -41,7 +45,7 @@
     },
     {
       "token": "afp.render.semanticlayout",
-      "totalOccurrences": 7
+      "totalOccurrences": 8
     },
     {
       "token": "ptocarenderresult",
@@ -52,12 +56,20 @@
       "totalOccurrences": 7
     },
     {
+      "token": "rendering.",
+      "totalOccurrences": 7
+    },
+    {
       "token": "renderedpages",
       "totalOccurrences": 6
     },
     {
       "token": "pdfrendermode",
-      "totalOccurrences": 5
+      "totalOccurrences": 6
+    },
+    {
+      "token": "afphtmlrenderer",
+      "totalOccurrences": 6
     },
     {
       "token": "renderdecisionpreview.add",
@@ -69,10 +81,6 @@
     },
     {
       "token": "renderedtextops",
-      "totalOccurrences": 5
-    },
-    {
-      "token": "afphtmlrenderer",
       "totalOccurrences": 5
     },
     {
@@ -116,6 +124,22 @@
       "totalOccurrences": 3
     },
     {
+      "token": "--rendermode",
+      "totalOccurrences": 3
+    },
+    {
+      "token": "afpnativepdfrenderertest",
+      "totalOccurrences": 3
+    },
+    {
+      "token": "app-render-001",
+      "totalOccurrences": 3
+    },
+    {
+      "token": "renderer.",
+      "totalOccurrences": 3
+    },
+    {
       "token": "afpnativepdfrenderer.lastimageresourcehinttrace",
       "totalOccurrences": 2
     },
@@ -156,7 +180,27 @@
       "totalOccurrences": 2
     },
     {
-      "token": "--rendermode",
+      "token": "afp.render.inferstyles",
+      "totalOccurrences": 2
+    },
+    {
+      "token": "rendersdecodedimageobjectwhenembeddedimagepayloadexists",
+      "totalOccurrences": 2
+    },
+    {
+      "token": "render-path",
+      "totalOccurrences": 2
+    },
+    {
+      "token": "render-time",
+      "totalOccurrences": 2
+    },
+    {
+      "token": "render/fidelity/resource",
+      "totalOccurrences": 2
+    },
+    {
+      "token": "renderer-side",
       "totalOccurrences": 2
     },
     {
@@ -168,15 +212,7 @@
       "totalOccurrences": 1
     },
     {
-      "token": "afp.render.inferstyles",
-      "totalOccurrences": 1
-    },
-    {
       "token": "afpnativepdfrenderer.imageresourcehinttrace.empty",
-      "totalOccurrences": 1
-    },
-    {
-      "token": "afpnativepdfrenderertest",
       "totalOccurrences": 1
     },
     {
@@ -240,10 +276,6 @@
       "totalOccurrences": 1
     },
     {
-      "token": "rendersdecodedimageobjectwhenembeddedimagepayloadexists",
-      "totalOccurrences": 1
-    },
-    {
       "token": "rendersmultiplepagesfrombpgmarkers",
       "totalOccurrences": 1
     },
@@ -276,15 +308,19 @@
       "totalOccurrences": 1
     },
     {
-      "token": "render/fidelity/resource",
+      "token": "counts/render",
       "totalOccurrences": 1
     },
     {
-      "token": "renderer.",
+      "token": "detection/rendering",
       "totalOccurrences": 1
     },
     {
-      "token": "rendering.",
+      "token": "rendering/diagnostics",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "rendering/output",
       "totalOccurrences": 1
     },
     {
@@ -1003,6 +1039,62 @@
     },
     {
       "db": "pm/state/pm-realm.sqlite",
+      "token": "renderer",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 34,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "rendering",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 26,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "docs/native_renderer_plan.md",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 9,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "render",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 8,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "afpnativepdfrenderer",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 6,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "rendered",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 6,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "rendering.",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 6,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
       "token": "render",
       "path": "docs/project-plan.md",
       "occurrences": 6,
@@ -1051,6 +1143,22 @@
     },
     {
       "db": "pm/state/pm-realm.sqlite",
+      "token": "rendered",
+      "path": "pm-console/src/main/java/solutions/pointzero/symphony/pm/console/PmConsoleMain.java",
+      "occurrences": 3,
+      "realm": "pm",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "render",
+      "path": "build.gradle",
+      "occurrences": 3,
+      "realm": "pm",
+      "language": "gradle"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
       "token": "renderer",
       "path": "README.md",
       "occurrences": 3,
@@ -1059,11 +1167,19 @@
     },
     {
       "db": "pm/state/pm-realm.sqlite",
-      "token": "render",
-      "path": "build.gradle",
+      "token": "renderer",
+      "path": "docs/project-plan-progress.csv",
+      "occurrences": 3,
+      "realm": "pm",
+      "language": "csv"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "app-render-001",
+      "path": "pm-tools/src/test/java/solutions/pointzero/symphony/pm/tools/StateDatabaseToolTest.java",
       "occurrences": 2,
       "realm": "pm",
-      "language": "gradle"
+      "language": "java"
     },
     {
       "db": "pm/state/pm-realm.sqlite",
@@ -1075,7 +1191,47 @@
     },
     {
       "db": "pm/state/pm-realm.sqlite",
+      "token": "renderpolicy",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 2,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "afpnativepdfrenderertest",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 2,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "renderer-side",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 2,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "render",
+      "path": "docs/project-plan-progress.csv",
+      "occurrences": 2,
+      "realm": "pm",
+      "language": "csv"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
       "token": "runrendertoken",
+      "path": "pm-tools/src/test/java/solutions/pointzero/symphony/pm/tools/StateDatabaseToolTest.java",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "renderer",
       "path": "pm-tools/src/test/java/solutions/pointzero/symphony/pm/tools/StateDatabaseToolTest.java",
       "occurrences": 1,
       "realm": "pm",
@@ -1112,6 +1268,190 @@
       "occurrences": 1,
       "realm": "pm",
       "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "rendering/output",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "pdfrendermode",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "afphtmlrenderer",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "detection/rendering",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "rendersdecodedimageobjectwhenembeddedimagepayloadexists",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "render-path",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "afp.render.semanticlayout",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "--rendermode",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "rendering/diagnostics",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "afp.render.inferstyles",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "renderer.",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "counts/render",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "render-time",
+      "path": "SESSION_CHANGELOG.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "render",
+      "path": "docs/SQL_FIRST_WORKFLOW.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "renderer",
+      "path": "docs/SQL_FIRST_WORKFLOW.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "app-render-001",
+      "path": "docs/SQL_FIRST_WORKFLOW.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "renderer",
+      "path": "docs/issues-log.csv",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "csv"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "renderer.",
+      "path": "docs/project-plan-progress.csv",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "csv"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "rendering",
+      "path": "docs/project-plan-progress.csv",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "csv"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "render-time",
+      "path": "docs/project-plan-progress.csv",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "csv"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "render/fidelity/resource",
+      "path": "docs/project-plan-progress.csv",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "csv"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "renderpolicy",
+      "path": "docs/project-plan-progress.csv",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "csv"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "render-path",
+      "path": "docs/project-plan-progress.csv",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "csv"
     },
     {
       "db": "pm/state/pm-realm.sqlite",

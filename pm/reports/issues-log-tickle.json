@@ -1,18 +1,37 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T14:57:54+00:00",
+  "generatedAt": "2026-02-19T18:22:28Z",
   "issuesLogPath": "docs/issues-log.csv",
-  "issuesLogTouchedInWorkingTree": false,
-  "changedPathCount": 22,
-  "triggeredIssueCount": 2,
-  "requiresIssuesLogUpdate": true,
+  "issuesLogTouchedInWorkingTree": true,
+  "changedPathCount": 45,
+  "triggeredIssueCount": 4,
+  "requiresIssuesLogUpdate": false,
   "triggeredIssues": [
     {
       "id": "ISSUE-001",
       "status": "Open",
       "title": "Excel automation and workbook update fragility due Office account/licensing context",
       "matchedComponents": [
-        "pm/reports/project-plan-progress-data.json"
+        "build.gradle"
+      ]
+    },
+    {
+      "id": "ISSUE-003",
+      "status": "Open",
+      "title": "Excel automation unavailable in headless/agent context (Apple event connection invalid), strict Excel-required mode fails as designed",
+      "matchedComponents": [
+        "build.gradle"
+      ]
+    },
+    {
+      "id": "ISSUE-005",
+      "status": "Open",
+      "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
+      "matchedComponents": [
+        "build.gradle",
+        "docs/boilerplate-sync-candidates.xlsx",
+        "pm/state/boilerplate-state.sqlite",
+        "pm/state/project-state.sqlite"
       ]
     },
     {
@@ -20,10 +39,17 @@
       "status": "Open",
       "title": "Policy-governance sequence drift when updating constitutional/policy text without full checklist sequencing",
       "matchedComponents": [
-        "tools/recovery_doctor.md",
-        "tools/recovery_doctor.sh"
+        "build.gradle",
+        "docs/issues-log.csv",
+        "pm/reports/governance-alerts.json",
+        "pm/state/project-state.sqlite",
+        "tools/realm_policy_diff.py",
+        "tools/action_owner_summary.py",
+        "tools/action_sla_trend.py",
+        "tools/tests/test_check_action_ingest_strict.py",
+        "tools/tests/test_realm_policy_diff.py"
       ]
     }
   ],
-  "message": "Issue-referenced components are being modified; update docs/issues-log.csv in the same change."
+  "message": "No issue-log tickle required."
 }

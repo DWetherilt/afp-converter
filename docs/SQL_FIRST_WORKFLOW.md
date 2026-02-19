@@ -299,6 +299,7 @@ Ingest actionable prompts from assistant inbox and export action ledger:
 
 ```bash
 ./gradlew --no-daemon actionItemsReport
+./gradlew --no-daemon actionOwnerSummaryReport actionSlaTrendReport
 ```
 
 Direct action upsert:
@@ -339,6 +340,8 @@ Generated outputs:
 
 - `pm/reports/action-items.json`
 - `pm/reports/action-decision-suggestions.json`
+- `pm/reports/action-owner-summary.json`
+- `pm/reports/action-sla-trend.json`
 - `pm/reports/action-ingest-strict.json`
 - `pm/reports/realm-policy-sync.json`
 - `pm/reports/realm-policy-diff.json`
@@ -359,6 +362,7 @@ Persistent live dashboard daemon (default check in execute-application phase):
 ```bash
 tools/pm_console_live_daemon.sh start
 tools/pm_console_live_daemon.sh status
+pm-console/build/install/pmconsole/bin/pmconsole live
 ```
 
 Stop/restart daemon:
@@ -379,6 +383,7 @@ Intent-style report output:
 ```bash
 pm-console/build/install/pmconsole/bin/pmconsole report --request "current workstream status"
 pm-console/build/install/pmconsole/bin/pmconsole report --request "reasoning drive"
+pm-console/build/install/pmconsole/bin/pmconsole report --request "action status"
 ```
 
 JSON payload output (exchange format `pm-console-screen@1`):
@@ -395,6 +400,12 @@ Granular refresh examples:
 ```bash
 pm-console/build/install/pmconsole/bin/pmconsole refresh --phase pm_refresh_and_reports
 pm-console/build/install/pmconsole/bin/pmconsole refresh --tasks projectStateDb,decisionPriorityReport,knowledgeBaseReport
+```
+
+Action view filters:
+
+```bash
+pm-console/build/install/pmconsole/bin/pmconsole actions --top 20 --priority high --stale-only
 ```
 
 Authorized DB aliases:
