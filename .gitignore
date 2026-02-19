@@ -45,3 +45,7 @@ Screenshot *.png
 
 ### Local scratch ###
 .tmp/
+
+### SQLite transient files ###
+*.sqlite-wal
+*.sqlite-shm
