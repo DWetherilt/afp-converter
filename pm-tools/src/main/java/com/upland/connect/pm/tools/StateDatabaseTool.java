@@ -534,6 +534,7 @@ public final class StateDatabaseTool {
         ensureParent(csvPath);
 
         String[] header = {
+            "realm",
             "candidate_id",
             "package_id",
             "target_repo",
@@ -547,7 +548,7 @@ public final class StateDatabaseTool {
         List<String[]> rows = new ArrayList<>();
         try (Connection conn = connect(dbPath);
              PreparedStatement ps = conn.prepareStatement(
-                 "select pf.candidate_id, pc.package_id, pc.target_repo, pf.file_path, pf.size_bytes " +
+                 "select pc.realm, pf.candidate_id, pc.package_id, pc.target_repo, pf.file_path, pf.size_bytes " +
                      "from package_files pf " +
                      "join package_candidates pc on pc.candidate_id = pf.candidate_id " +
                      "order by pf.candidate_id asc, pf.file_path asc"
@@ -559,11 +560,12 @@ public final class StateDatabaseTool {
                     text(rs.getString(2)),
                     text(rs.getString(3)),
                     text(rs.getString(4)),
-                    Long.toString(rs.getLong(5)),
+                    text(rs.getString(5)),
+                    Long.toString(rs.getLong(6)),
                     "package_files",
                     "boilerplateStateDb (sync-boilerplate)",
                     "boilerplateSyncWorkbook",
-                    "Rebuilt from docs/update-packages manifests + package trees on each boilerplateStateDb run"
+                    "Rebuilt from boilerplate/update-packages manifests + package trees on each boilerplateStateDb run"
                 });
             }
         }
@@ -716,6 +718,7 @@ public final class StateDatabaseTool {
             st.execute("""
                 create table if not exists package_candidates (
                     candidate_id text primary key,
+                    realm text not null default 'boilerplate',
                     package_id text not null default '',
                     target_repo text not null default '',
                     source_repo text not null default '',
@@ -730,6 +733,7 @@ public final class StateDatabaseTool {
                 """);
             st.execute("""
                 create table if not exists package_files (
+                    realm text not null default 'boilerplate',
                     candidate_id text not null,
                     file_path text not null,
                     size_bytes integer not null default 0,
@@ -737,6 +741,11 @@ public final class StateDatabaseTool {
                     primary key(candidate_id, file_path)
                 )
                 """);
+        }
+        ensureColumnExists(conn, "package_candidates", "realm", "text not null default 'boilerplate'");
+        ensureColumnExists(conn, "package_files", "realm", "text not null default 'boilerplate'");
+        try (Statement st = conn.createStatement()) {
+            st.execute("create index if not exists idx_package_candidates_realm on package_candidates(realm)");
         }
     }
 
@@ -984,35 +993,37 @@ public final class StateDatabaseTool {
             clear.execute("delete from package_candidates");
         }
         try (PreparedStatement ps = conn.prepareStatement(
-            "insert into package_candidates(candidate_id,package_id,target_repo,source_repo,created_at,summary,package_zip,patch_count,manifest_file_count,supersedes_json,updated_at) " +
-                "values(?,?,?,?,?,?,?,?,?,?,?)"
+            "insert into package_candidates(candidate_id,realm,package_id,target_repo,source_repo,created_at,summary,package_zip,patch_count,manifest_file_count,supersedes_json,updated_at) " +
+                "values(?,?,?,?,?,?,?,?,?,?,?,?)"
         )) {
             for (CandidateRow row : candidates) {
                 ps.setString(1, row.candidateId());
-                ps.setString(2, row.packageId());
-                ps.setString(3, row.targetRepo());
-                ps.setString(4, row.sourceRepo());
-                ps.setString(5, row.createdAt());
-                ps.setString(6, row.summary());
-                ps.setString(7, row.packageZip());
-                ps.setInt(8, row.patchCount());
-                ps.setInt(9, row.manifestFileCount());
-                ps.setString(10, GSON.toJson(row.supersedes()));
-                ps.setString(11, now);
+                ps.setString(2, row.realm());
+                ps.setString(3, row.packageId());
+                ps.setString(4, row.targetRepo());
+                ps.setString(5, row.sourceRepo());
+                ps.setString(6, row.createdAt());
+                ps.setString(7, row.summary());
+                ps.setString(8, row.packageZip());
+                ps.setInt(9, row.patchCount());
+                ps.setInt(10, row.manifestFileCount());
+                ps.setString(11, GSON.toJson(row.supersedes()));
+                ps.setString(12, now);
                 ps.addBatch();
             }
             ps.executeBatch();
         }
 
         try (PreparedStatement ps = conn.prepareStatement(
-            "insert into package_files(candidate_id,file_path,size_bytes,updated_at) values(?,?,?,?)"
+            "insert into package_files(realm,candidate_id,file_path,size_bytes,updated_at) values(?,?,?,?,?)"
         )) {
             for (CandidateRow row : candidates) {
                 for (PackageFileRow file : row.files()) {
-                    ps.setString(1, row.candidateId());
-                    ps.setString(2, file.path());
-                    ps.setLong(3, file.sizeBytes());
-                    ps.setString(4, now);
+                    ps.setString(1, row.realm());
+                    ps.setString(2, row.candidateId());
+                    ps.setString(3, file.path());
+                    ps.setLong(4, file.sizeBytes());
+                    ps.setString(5, now);
                     ps.addBatch();
                 }
             }
@@ -1036,6 +1047,7 @@ public final class StateDatabaseTool {
         for (Path dir : dirs) {
             String candidateId = dir.getFileName().toString();
             String targetRepo = packagesDir.getFileName().toString();
+            String realm = "boilerplate";
             String created = ISO.format(Files.getLastModifiedTime(dir).toInstant().atOffset(ZoneOffset.UTC));
             Path readme = dir.resolve("README.md");
             Path manifest = dir.resolve("package-manifest.json");
@@ -1051,6 +1063,7 @@ public final class StateDatabaseTool {
             String zipRel = Files.exists(zipPath) ? packagesDir.relativize(zipPath).toString().replace('\\', '/') : "";
             out.add(new CandidateRow(
                 candidateId,
+                realm,
                 packageId.isBlank() ? candidateId : packageId,
                 targetFromManifest.isBlank() ? targetRepo : targetFromManifest,
                 sourceRepo,
@@ -1354,6 +1367,14 @@ public final class StateDatabaseTool {
         }
     }
 
+    private static void ensureColumnExists(Connection conn, String table, String column, String columnDef) throws SQLException {
+        try (Statement st = conn.createStatement()) {
+            st.execute("alter table " + table + " add column " + column + " " + columnDef);
+        } catch (SQLException ignored) {
+            // SQLite does not support IF NOT EXISTS for ADD COLUMN; ignore duplicate-column failures.
+        }
+    }
+
     private static String nowIso() {
         return OffsetDateTime.now(ZoneOffset.UTC).withNano(0).format(ISO);
     }
@@ -1465,6 +1486,7 @@ public final class StateDatabaseTool {
     }
 
     private record CandidateRow(String candidateId,
+                                String realm,
                                 String packageId,
                                 String targetRepo,
                                 String sourceRepo,

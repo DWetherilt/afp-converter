@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-18T23:53:32Z",
+  "generatedAt": "2026-02-19T00:11:23Z",
   "source": "sqlite",
   "sourceTable": "policy_rule_catalog",
-  "ruleCount": 11,
+  "ruleCount": 12,
   "rules": [
     {
       "ruleId": "PM-PROD-001",
@@ -13,17 +13,27 @@
       "sourceRef": "build.gradle:prodBuild",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-18 23:53:29"
+      "updatedAt": "2026-02-19 00:11:22"
+    },
+    {
+      "ruleId": "PM-REALM-003",
+      "realm": "boilerplate",
+      "category": "realm-separation",
+      "ruleText": "Boilerplate transfer packages must be maintained under boilerplate/update-packages and tracked through boilerplate-state SQL tables as a dedicated third realm.",
+      "sourceRef": "pm-tools:StateDatabaseTool/package_candidates.realm",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 00:11:22"
     },
     {
       "ruleId": "PM-ROLLUP-001",
       "realm": "pm",
       "category": "boilerplate-promotion",
-      "ruleText": "Any framework/process/policy/build mutation must include an updated boilerplate roll-up package under docs/update-packages/pz-boilerplate-intelliJ in the same change set.",
+      "ruleText": "Any framework/process/policy/build mutation must include an updated boilerplate roll-up package under boilerplate/update-packages/pz-boilerplate-intelliJ in the same change set.",
       "sourceRef": "build.gradle:enforceBoilerplateRollupForFrameworkChanges",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-18 23:53:29"
+      "updatedAt": "2026-02-19 00:11:22"
     },
     {
       "ruleId": "PM-DOC-001",
@@ -33,7 +43,7 @@
       "sourceRef": "build.gradle:documentationManifest",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-18 23:53:29"
+      "updatedAt": "2026-02-19 00:11:22"
     },
     {
       "ruleId": "PM-EXEC-001",
@@ -43,7 +53,7 @@
       "sourceRef": "AI-POLICY.md#Default execution coupling",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-18 23:53:29"
+      "updatedAt": "2026-02-19 00:11:22"
     },
     {
       "ruleId": "PM-GATE-001",
@@ -53,7 +63,7 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-18 23:53:29"
+      "updatedAt": "2026-02-19 00:11:22"
     },
     {
       "ruleId": "PM-GATE-002",
@@ -63,7 +73,7 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-18 23:53:29"
+      "updatedAt": "2026-02-19 00:11:22"
     },
     {
       "ruleId": "PM-GATE-003",
@@ -73,7 +83,7 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-18 23:53:29"
+      "updatedAt": "2026-02-19 00:11:22"
     },
     {
       "ruleId": "PM-REALM-001",
@@ -83,7 +93,7 @@
       "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-18 23:53:29"
+      "updatedAt": "2026-02-19 00:11:22"
     },
     {
       "ruleId": "PM-REALM-002",
@@ -93,7 +103,7 @@
       "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-18 23:53:29"
+      "updatedAt": "2026-02-19 00:11:22"
     },
     {
       "ruleId": "PM-WF-001",
@@ -103,7 +113,7 @@
       "sourceRef": "pm/workflow/workflow-manifest.json",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-18 23:53:29"
+      "updatedAt": "2026-02-19 00:11:22"
     },
     {
       "ruleId": "PM-WF-002",
@@ -113,7 +123,7 @@
       "sourceRef": "build.gradle:pmWorkflowRun",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-18 23:53:29"
+      "updatedAt": "2026-02-19 00:11:22"
     }
   ]
 }

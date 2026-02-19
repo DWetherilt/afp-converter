@@ -645,3 +645,12 @@ This changelog is reconstructed from repository artifacts and our current thread
   - added toolchain-neutral runner `tools/pm_workflow.py` (`list` / `run`),
   - added Gradle adapter interface tasks `pmWorkflowList`, `pmWorkflowRun`, `pmWorkflowExecuteApplication` that resolve phase mappings from the manifest,
   - updated docs/policy to position workflow manifest as the canonical PM sequencing contract with Gradle as one adapter.
+- Added a dedicated fresh-instance convergence evaluation package under `docs/update-packages/pz-boilerplate-intelliJ/2026-02-19-fresh-instance-convergence-eval`:
+  - includes master `package-manifest.json`, `apply-checklist.md`, `fresh-session-prompt.md`, and `comparison-checklist.md`,
+  - formalizes reproducible handoff for a new AI instance to apply the latest roll-up and report convergence deltas.
+- Implemented dedicated boilerplate third realm for transfer packages and SQL tracking:
+  - moved package tree from `docs/update-packages/pz-boilerplate-intelliJ` to `boilerplate/update-packages/pz-boilerplate-intelliJ`,
+  - updated build/tooling/policy gates to consume `boilerplate/update-packages/...` as canonical path,
+  - updated `tools/init_update_package.sh` default package root to `boilerplate/update-packages/`,
+  - extended boilerplate SQLite schema with explicit `realm` column (`package_candidates.realm`, `package_files.realm`) and updated exports accordingly.
+- Added policy SQL rule `PM-REALM-003` to codify boilerplate as a dedicated third realm.

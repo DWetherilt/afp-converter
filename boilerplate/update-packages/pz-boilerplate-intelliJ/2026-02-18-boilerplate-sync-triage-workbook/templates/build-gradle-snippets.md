@@ -9,10 +9,10 @@ import java.util.Locale
 ```groovy
 tasks.register('boilerplateSyncWorkbook', Exec) {
     group = 'documentation'
-    description = 'Builds docs/boilerplate-sync-candidates.xlsx from docs/update-packages/pz-boilerplate-intelliJ while preserving manual decision columns.'
+    description = 'Builds docs/boilerplate-sync-candidates.xlsx from boilerplate/update-packages/pz-boilerplate-intelliJ while preserving manual decision columns.'
     dependsOn(':afp-tools:classes')
     onlyIf {
-        File packagesDir = file('docs/update-packages/pz-boilerplate-intelliJ')
+        File packagesDir = file('boilerplate/update-packages/pz-boilerplate-intelliJ')
         File xlsx = file('docs/boilerplate-sync-candidates.xlsx')
         String forceRaw = (System.getenv('AFP_FORCE_BOILERPLATE_SYNC_UPDATE') ?: '').trim().toLowerCase(Locale.ROOT)
         boolean force = forceRaw == '1' || forceRaw == 'true' || forceRaw == 'yes'
@@ -48,7 +48,7 @@ tasks.register('boilerplateSyncWorkbook', Exec) {
         commandLine 'java',
             '-cp', cp,
             'com.upland.connect.afp.tools.BoilerplateSyncWorkbookUpdater',
-            '--packages', 'docs/update-packages/pz-boilerplate-intelliJ',
+            '--packages', 'boilerplate/update-packages/pz-boilerplate-intelliJ',
             '--xlsx', 'docs/boilerplate-sync-candidates.xlsx'
     }
 }

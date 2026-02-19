@@ -4,7 +4,7 @@
 - Source of truth files:
   - `docs/boilerplate-sync-candidates.xlsx`
 - Build tasks section:
-  - `boilerplateSyncWorkbook` maintains this workbook from `docs/update-packages/pz-boilerplate-intelliJ`
+  - `boilerplateSyncWorkbook` maintains this workbook from `boilerplate/update-packages/pz-boilerplate-intelliJ`
   - must preserve manual triage columns (`decision`, `state`, `owner_notes`)
 
 ## README.md additions

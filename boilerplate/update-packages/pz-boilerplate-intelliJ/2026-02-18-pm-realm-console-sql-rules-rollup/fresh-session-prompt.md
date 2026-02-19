@@ -1,5 +1,5 @@
 Apply package:
-`docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-pm-realm-console-sql-rules-rollup`
+`boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-18-pm-realm-console-sql-rules-rollup`
 
 to target repo `pz-boilerplate-intelliJ`.
 

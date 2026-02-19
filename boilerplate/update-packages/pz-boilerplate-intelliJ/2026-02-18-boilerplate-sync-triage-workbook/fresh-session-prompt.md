@@ -1,5 +1,5 @@
 Apply package:
-`docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-boilerplate-sync-triage-workbook`
+`boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-18-boilerplate-sync-triage-workbook`
 
 to `pz-boilerplate-intelliJ`.
 

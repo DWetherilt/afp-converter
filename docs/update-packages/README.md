@@ -1,11 +1,7 @@
-# Update Packages
+# Update Packages (Moved)
 
-This folder stores portable patch bundles intended for applying changes to external/frozen sibling repos (for example `pz-boilerplate-intelliJ`).
+Active boilerplate transfer packages now live in the dedicated third realm:
+- `boilerplate/update-packages/`
 
-Workflow rule:
-- If a required package folder does not exist, create a new one.
-- Use:
-  - `tools/init_update_package.sh <target-repo-name> <package-name>`
-- You may remove package folders after successful merge into target repo.
-- Regenerate a fresh package for future updates rather than reusing stale bundles.
-- If multiple candidate packages are approved in the same cycle, produce one consolidated package and list superseded package IDs in the consolidated package manifest.
+Use:
+- `boilerplate/update-packages/README.md` for current workflow rules and package inventory.

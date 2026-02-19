@@ -17,7 +17,7 @@ git apply --index /path/to/patches/0001-consolidated-framework-sync.patch
 - `build.gradle`
 - `afp-tools/src/main/java/com/upland/connect/afp/tools/BoilerplateSyncWorkbookUpdater.java`
 - `tools/init_update_package.sh` (if target includes tools workflow)
-- `docs/update-packages/README.md` (if target includes external package workflow docs)
+- `boilerplate/update-packages/README.md` (if target includes external package workflow docs)
 
 4. Update target log by convention:
 - append `templates/changelog-entry.md` to `SESSION_CHANGELOG.md` and/or `docs/process-evolution-log.md`

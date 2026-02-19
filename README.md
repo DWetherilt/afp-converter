@@ -23,7 +23,7 @@ API documentation:
 - `docs/project-plan.md`
 - `docs/project-plan-progress.csv` (task-level completion tracker)
 - `docs/boilerplate-sync-candidates.xlsx`:
-  - summary workbook for potential boilerplate merges from `docs/update-packages/pz-boilerplate-intelliJ`
+  - summary workbook for potential boilerplate merges from `boilerplate/update-packages/pz-boilerplate-intelliJ`
   - generated/updated by `boilerplateSyncWorkbook`
   - preserves manual triage columns (`decision`, `state`, `owner_notes`) across refreshes
   - set `AFP_FORCE_BOILERPLATE_SYNC_UPDATE=true` to force refresh
@@ -143,7 +143,7 @@ Run the full quality gate (tests + fidelity thresholds + docs/changelog manifest
 `qualityGate` includes `enforceProjectBoundaries`, which fails if product modules (`afp-api`, `afp-engine`, `afp-cli`) reference project-management tooling/state.
 `qualityGate` also includes `enforceManagedTooling`, which fails if project-management tooling files under `tools/` or `pm-tools/.../tools` are untracked.
 `qualityGate` includes `enforcePmApplicationRealmSeparation`, which fails if PM artifacts appear under `preview/` or PM databases appear outside `pm/state/`.
-`qualityGate` includes `enforceBoilerplateRollupForFrameworkChanges`, which fails if framework/process files change without a same-change update under `docs/update-packages/pz-boilerplate-intelliJ/`.
+`qualityGate` includes `enforceBoilerplateRollupForFrameworkChanges`, which fails if framework/process files change without a same-change update under `boilerplate/update-packages/pz-boilerplate-intelliJ/`.
 `documentationManifest` now runs `stateInventoryCsv`, which rebuilds the two inventory CSVs above from SQLite state on each run.
 `documentationManifest` also runs `policyRulesReport`, which exports SQL-backed PM rule tables into `pm/reports/policy-rules.json`.
 

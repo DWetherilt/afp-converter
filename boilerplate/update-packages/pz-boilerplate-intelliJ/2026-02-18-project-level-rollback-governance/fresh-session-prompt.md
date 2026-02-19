@@ -1,5 +1,5 @@
 Apply the update package located at:
-`docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance`
+`boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance`
 
 Target repository: `pz-boilerplate-intelliJ` (separate repo).
 

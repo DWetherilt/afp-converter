@@ -375,7 +375,7 @@ tasks.register('boilerplateStateDb', Exec) {
     description = 'Builds pm/state/boilerplate-state.sqlite from update packages'
     dependsOn(':pm-tools:classes')
     onlyIf {
-        File packagesDir = file('docs/update-packages/pz-boilerplate-intelliJ')
+        File packagesDir = file('boilerplate/update-packages/pz-boilerplate-intelliJ')
         return packagesDir.exists() && packagesDir.isDirectory()
     }
     commandLine 'true'
@@ -387,7 +387,7 @@ tasks.register('boilerplateStateDb', Exec) {
             'com.upland.connect.pm.tools.StateDatabaseTool',
             'sync-boilerplate',
             '--db', 'pm/state/boilerplate-state.sqlite',
-            '--packages', 'docs/update-packages/pz-boilerplate-intelliJ'
+            '--packages', 'boilerplate/update-packages/pz-boilerplate-intelliJ'
     }
 }
 
@@ -434,11 +434,11 @@ tasks.register('stateInventoryCsv') {
 
 tasks.register('boilerplateSyncWorkbook', Exec) {
     group = 'documentation'
-    description = 'Builds docs/boilerplate-sync-candidates.xlsx from docs/update-packages/pz-boilerplate-intelliJ while preserving manual decision columns.'
+    description = 'Builds docs/boilerplate-sync-candidates.xlsx from boilerplate/update-packages/pz-boilerplate-intelliJ while preserving manual decision columns.'
     dependsOn(':pm-tools:classes')
     dependsOn('boilerplateStateDb')
     onlyIf {
-        File packagesDir = file('docs/update-packages/pz-boilerplate-intelliJ')
+        File packagesDir = file('boilerplate/update-packages/pz-boilerplate-intelliJ')
         File xlsx = file('docs/boilerplate-sync-candidates.xlsx')
         String forceRaw = (System.getenv('AFP_FORCE_BOILERPLATE_SYNC_UPDATE') ?: '').trim().toLowerCase(Locale.ROOT)
         boolean force = forceRaw == '1' || forceRaw == 'true' || forceRaw == 'yes'
@@ -1059,12 +1059,12 @@ tasks.register('enforceBoilerplateRollupForFrameworkChanges') {
         }
 
         boolean hasRollupUpdate = changed.any { path ->
-            path.startsWith('docs/update-packages/pz-boilerplate-intelliJ/')
+            path.startsWith('boilerplate/update-packages/pz-boilerplate-intelliJ/')
         }
         if (!hasRollupUpdate) {
             throw new GradleException(
                 "Framework/process files changed without boilerplate roll-up update.\n" +
-                "Add/update a package under docs/update-packages/pz-boilerplate-intelliJ/ in the same change set."
+                "Add/update a package under boilerplate/update-packages/pz-boilerplate-intelliJ/ in the same change set."
             )
         }
     }

@@ -1,5 +1,5 @@
 Apply package:
-`docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-workbook-change-driven-guard`
+`boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-18-workbook-change-driven-guard`
 
 to target repo `pz-boilerplate-intelliJ`.
 

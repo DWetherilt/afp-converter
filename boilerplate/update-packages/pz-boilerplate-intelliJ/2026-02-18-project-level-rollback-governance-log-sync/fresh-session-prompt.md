@@ -1,5 +1,5 @@
 Apply the update package located at:
-`docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance-log-sync`
+`boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance-log-sync`
 
 Target repository: `pz-boilerplate-intelliJ`.
 

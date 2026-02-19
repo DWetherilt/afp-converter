@@ -3,7 +3,7 @@
 1. Create rollback checkpoint in target repo:
    - `CHECKPOINT_LABEL=pm-realm-console-sql-rules-rollup ./gradlew createRollbackCheckpoint`
 2. Apply patch:
-   - `git apply docs/update-packages/pz-boilerplate-intelliJ/2026-02-18-pm-realm-console-sql-rules-rollup/patches/0001-pm-realm-console-sql-rules-rollup.patch`
+   - `git apply boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-18-pm-realm-console-sql-rules-rollup/patches/0001-pm-realm-console-sql-rules-rollup.patch`
 3. If module/path names differ in target boilerplate, apply equivalent manual mapping for:
    - PM state/report/checkpoint paths,
    - PM console module wiring,

@@ -9,7 +9,7 @@ fi
 
 target_repo="$1"
 package_name="$2"
-base_dir="docs/update-packages/${target_repo}/${package_name}"
+base_dir="boilerplate/update-packages/${target_repo}/${package_name}"
 patch_dir="${base_dir}/patches"
 
 mkdir -p "${patch_dir}"
