@@ -1077,6 +1077,20 @@ tasks.register('realmKnowledgeSync', Exec) {
         '--report', 'pm/reports/realm-knowledge-sync.json'
 }
 
+tasks.register('realmKnowledgeLinkGate', Exec) {
+    group = 'verification'
+    description = 'Warns/fails when realm knowledge->decision links are unresolved. Strict mode via AFP_KNOWLEDGE_LINK_STRICT=true.'
+    dependsOn('realmKnowledgeSync')
+    doFirst {
+        String strictRaw = (System.getenv('AFP_KNOWLEDGE_LINK_STRICT') ?: 'false').toString()
+        commandLine 'python3',
+            'tools/realm_knowledge_link_gate.py',
+            '--sync-report', 'pm/reports/realm-knowledge-sync.json',
+            '--output', 'pm/reports/realm-knowledge-link-gate.json',
+            '--strict', strictRaw
+    }
+}
+
 tasks.register('actionInboxIngest', Exec) {
     group = 'documentation'
     description = 'Ingests prompt-derived actionable items from assistant inbox into project-state SQLite.'
@@ -1258,6 +1272,7 @@ tasks.register('stateInventoryCsv') {
     dependsOn('decisionPriorityReport')
     dependsOn('knowledgeBaseReport')
     dependsOn('realmKnowledgeSync')
+    dependsOn('realmKnowledgeLinkGate')
     dependsOn('actionItemsReport')
     dependsOn('actionDecisionSuggestionReport')
     dependsOn('actionOwnerSummaryReport')
@@ -1434,6 +1449,7 @@ tasks.register('documentationManifest') {
             file('pm/reports/decision-priority-queue.json'),
             file('pm/reports/knowledge-base.json'),
             file('pm/reports/realm-knowledge-sync.json'),
+            file('pm/reports/realm-knowledge-link-gate.json'),
             file('pm/reports/action-items.json'),
             file('pm/reports/action-decision-suggestions.json'),
             file('pm/reports/action-owner-summary.json'),
@@ -1538,6 +1554,7 @@ tasks.register('publishCiArtifacts') {
             file('pm/reports/decision-priority-queue.json'),
             file('pm/reports/knowledge-base.json'),
             file('pm/reports/realm-knowledge-sync.json'),
+            file('pm/reports/realm-knowledge-link-gate.json'),
             file('pm/reports/action-items.json'),
             file('pm/reports/action-decision-suggestions.json'),
             file('pm/reports/action-owner-summary.json'),

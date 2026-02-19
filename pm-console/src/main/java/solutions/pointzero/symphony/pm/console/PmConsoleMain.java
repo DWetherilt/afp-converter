@@ -61,6 +61,8 @@ public final class PmConsoleMain implements Callable<Integer> {
     private static final Path ACTION_SLA_TREND = Path.of("pm/reports/action-sla-trend.json");
     private static final Path ACTION_INGEST_STRICT = Path.of("pm/reports/action-ingest-strict.json");
     private static final Path ACTION_SUGGESTIONS = Path.of("pm/reports/action-decision-suggestions.json");
+    private static final Path REALM_KNOWLEDGE_SYNC = Path.of("pm/reports/realm-knowledge-sync.json");
+    private static final Path REALM_KNOWLEDGE_LINK_GATE = Path.of("pm/reports/realm-knowledge-link-gate.json");
     private static final Path AI_INBOX = Path.of("pm/state/assistant-inbox.ndjson");
     private static final Path AUTHORIZED_DBS = Path.of("pm/security/authorized-databases.json");
 
@@ -730,6 +732,30 @@ public final class PmConsoleMain implements Callable<Integer> {
             }
             return;
         }
+        if ("realm_knowledge_status".equals(screenId)) {
+            JsonArray realms = data.getAsJsonArray("realms");
+            JsonObject gate = data.getAsJsonObject("linkGate");
+            System.out.println();
+            System.out.println("Realm knowledge status:");
+            if (realms != null) {
+                for (JsonElement el : realms) {
+                    if (!el.isJsonObject()) {
+                        continue;
+                    }
+                    JsonObject row = el.getAsJsonObject();
+                    System.out.println("  - " + str(row, "realm", "")
+                        + " | knowledge=" + str(row, "knowledgeCount", "0")
+                        + " | evidence=" + str(row, "evidenceCount", "0")
+                        + " | links=" + str(row, "decisionLinkCount", "0")
+                        + " | unresolved=" + str(row, "unresolvedDecisionLinks", "0"));
+                }
+            }
+            if (gate != null) {
+                System.out.println("  - gate=" + str(gate, "overallStatus", "UNKNOWN")
+                    + " | unresolvedTotal=" + str(gate, "unresolvedTotal", "0"));
+            }
+            return;
+        }
 
         System.out.println();
         System.out.println(GSON.toJson(payload));
@@ -746,14 +772,18 @@ public final class PmConsoleMain implements Callable<Integer> {
         if (normalized.contains("action") && (normalized.contains("status") || normalized.contains("summary"))) {
             return buildActionStatusPayload(request, aliases);
         }
+        if (normalized.contains("realm") && normalized.contains("knowledge") && normalized.contains("status")) {
+            return buildRealmKnowledgeStatusPayload(request, aliases);
+        }
 
         JsonObject data = new JsonObject();
         JsonArray intents = new JsonArray();
         intents.add("current workstream status");
         intents.add("reasoning drive");
         intents.add("action status");
+        intents.add("realm knowledge status");
         data.add("supportedRequests", intents);
-        data.addProperty("message", "Request was not recognized. Try: 'current workstream status', 'reasoning drive', or 'action status'.");
+        data.addProperty("message", "Request was not recognized. Try: 'current workstream status', 'reasoning drive', 'action status', or 'realm knowledge status'.");
         JsonObject payload = buildScreenPayload("unsupported_request", request, aliases, data);
         return new ReportPayload(payload, aliases.toString());
     }
@@ -976,6 +1006,28 @@ public final class PmConsoleMain implements Callable<Integer> {
         data.add("topSuggestions", topSuggestions);
         data.add("ingestStrict", ingestStrict);
         JsonObject payload = buildScreenPayload("action_status", request, aliases, data);
+        return new ReportPayload(payload, aliases.toString());
+    }
+
+    private static ReportPayload buildRealmKnowledgeStatusPayload(String request, List<String> aliases) {
+        JsonObject data = new JsonObject();
+        JsonArray realms = new JsonArray();
+        JsonObject sync = readJson(REALM_KNOWLEDGE_SYNC);
+        if (sync != null) {
+            JsonElement targets = sync.get("targets");
+            if (targets != null && targets.isJsonArray()) {
+                realms = targets.getAsJsonArray();
+            }
+        }
+        JsonObject gate = readJson(REALM_KNOWLEDGE_LINK_GATE);
+        if (gate == null) {
+            gate = new JsonObject();
+            gate.addProperty("overallStatus", "UNKNOWN");
+            gate.addProperty("unresolvedTotal", "0");
+        }
+        data.add("realms", realms);
+        data.add("linkGate", gate);
+        JsonObject payload = buildScreenPayload("realm_knowledge_status", request, aliases, data);
         return new ReportPayload(payload, aliases.toString());
     }
 

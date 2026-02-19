@@ -297,6 +297,13 @@ Export knowledge base report:
 Realm-mirrored knowledge sync report:
 
 - `pm/reports/realm-knowledge-sync.json`
+- `pm/reports/realm-knowledge-link-gate.json`
+
+Run unresolved-link gate in strict mode:
+
+```bash
+AFP_KNOWLEDGE_LINK_STRICT=true ./gradlew --no-daemon realmKnowledgeLinkGate
+```
 
 ### Action Tracking And Realm Governance
 

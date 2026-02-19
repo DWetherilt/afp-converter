@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T18:31:37Z",
+  "generatedAt": "2026-02-19T18:45:01Z",
   "issuesLogPath": "docs/issues-log.csv",
   "issuesLogTouchedInWorkingTree": true,
-  "changedPathCount": 33,
+  "changedPathCount": 34,
   "triggeredIssueCount": 4,
   "requiresIssuesLogUpdate": false,
   "triggeredIssues": [
@@ -12,7 +12,8 @@
       "status": "Open",
       "title": "Excel automation and workbook update fragility due Office account/licensing context",
       "matchedComponents": [
-        "build.gradle"
+        "build.gradle",
+        "docs/project-plan-progress.csv"
       ]
     },
     {
@@ -42,7 +43,7 @@
         "docs/issues-log.csv",
         "pm/reports/governance-alerts.json",
         "pm/state/project-state.sqlite",
-        "tools/realm_knowledge_sync.py"
+        "tools/realm_knowledge_link_gate.py"
       ]
     }
   ],

@@ -48,6 +48,7 @@
           "decisionPriorityReport",
           "knowledgeBaseReport",
           "realmKnowledgeSync",
+          "realmKnowledgeLinkGate",
           "actionItemsReport",
           "actionDecisionSuggestionReport",
           "actionOwnerSummaryReport",
