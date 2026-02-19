@@ -65,6 +65,7 @@ public final class PmConsoleMain implements Callable<Integer> {
                 "  - policyGovernanceWorkbook, stateInventoryCsv",
                 "  - policyRulesReport",
                 "  - policyRulesLint, dataDictionaryLint",
+                "  - realmCodeDatabases, realmTokenSearch",
                 "  - documentationManifest",
                 "",
                 "Dev helper tasks:",

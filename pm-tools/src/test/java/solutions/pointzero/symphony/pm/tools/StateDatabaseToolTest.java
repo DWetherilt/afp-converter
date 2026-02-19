@@ -145,4 +145,145 @@ class StateDatabaseToolTest {
         assertTrue(payload.contains("\"policyRuleAudit\""));
         assertTrue(payload.contains("\"requiredRuleEnabled\": false"));
     }
+
+    @Test
+    void syncCodeIndexAndSearchByTokenAcrossRealmDb(@TempDir Path tempDir) throws Exception {
+        Path src = tempDir.resolve("src");
+        Files.createDirectories(src.resolve("pkg"));
+        Files.writeString(
+            src.resolve("pkg/Sample.java"),
+            "package pkg; class Sample { void runRenderToken() { String value = \"render optimize\"; } }",
+            StandardCharsets.UTF_8
+        );
+
+        Path db = tempDir.resolve("application-realm.sqlite");
+        Path search = tempDir.resolve("token-search.json");
+        int syncExit = StateDatabaseTool.execute(new String[] {
+            "sync-code-index",
+            "--db", db.toString(),
+            "--realm", "application",
+            "--roots", src.toString()
+        });
+        assertEquals(0, syncExit);
+
+        int searchExit = StateDatabaseTool.execute(new String[] {
+            "search-code-token",
+            "--db", db.toString(),
+            "--keyword", "render",
+            "--output", search.toString()
+        });
+        assertEquals(0, searchExit);
+
+        String payload = Files.readString(search, StandardCharsets.UTF_8);
+        assertTrue(payload.contains("\"dictionaryMatches\""));
+        assertTrue(payload.contains("\"fileHits\""));
+        assertTrue(payload.contains("Sample.java"));
+        assertTrue(payload.contains("render"));
+    }
+
+    @Test
+    void upsertAndMaterializeCodeFileRoundTrip(@TempDir Path tempDir) throws Exception {
+        Path db = tempDir.resolve("pm-realm.sqlite");
+        Path source = tempDir.resolve("snippet.java");
+        Files.writeString(source, "class SqlManaged { String v = \"tokenized\"; }", StandardCharsets.UTF_8);
+
+        int upsertExit = StateDatabaseTool.execute(new String[] {
+            "upsert-code-file",
+            "--db", db.toString(),
+            "--realm", "pm",
+            "--endpoint", "tmp/sql-managed/Snippet.java",
+            "--source", source.toString()
+        });
+        assertEquals(0, upsertExit);
+
+        Path outRoot = tempDir.resolve("out");
+        int materializeExit = StateDatabaseTool.execute(new String[] {
+            "materialize-code-realm",
+            "--db", db.toString(),
+            "--realm", "pm",
+            "--target-root", outRoot.toString()
+        });
+        assertEquals(0, materializeExit);
+
+        Path materialized = outRoot.resolve("tmp/sql-managed/Snippet.java");
+        assertTrue(Files.exists(materialized));
+        String value = Files.readString(materialized, StandardCharsets.UTF_8);
+        assertTrue(value.contains("SqlManaged"));
+        assertTrue(value.contains("tokenized"));
+    }
+
+    @Test
+    void upsertManifestAppliesMultipleFilesTransactionally(@TempDir Path tempDir) throws Exception {
+        Path db = tempDir.resolve("application.sqlite");
+        Path src1 = tempDir.resolve("A.java");
+        Path src2 = tempDir.resolve("B.java");
+        Files.writeString(src1, "class A {}", StandardCharsets.UTF_8);
+        Files.writeString(src2, "class B {}", StandardCharsets.UTF_8);
+        Path manifest = tempDir.resolve("patch.json");
+        Files.writeString(
+            manifest,
+            "{ \"files\": [" +
+                "{ \"endpoint\": \"tmp/sql/A.java\", \"source\": \"" + src1.toString().replace("\\", "\\\\") + "\" }," +
+                "{ \"endpoint\": \"tmp/sql/B.java\", \"source\": \"" + src2.toString().replace("\\", "\\\\") + "\" }" +
+                "] }",
+            StandardCharsets.UTF_8
+        );
+
+        int exit = StateDatabaseTool.execute(new String[] {
+            "upsert-code-files-manifest",
+            "--db", db.toString(),
+            "--realm", "application",
+            "--manifest", manifest.toString()
+        });
+        assertEquals(0, exit);
+
+        Path outRoot = tempDir.resolve("out");
+        int materializeExit = StateDatabaseTool.execute(new String[] {
+            "materialize-code-realm",
+            "--db", db.toString(),
+            "--realm", "application",
+            "--target-root", outRoot.toString()
+        });
+        assertEquals(0, materializeExit);
+        assertTrue(Files.exists(outRoot.resolve("tmp/sql/A.java")));
+        assertTrue(Files.exists(outRoot.resolve("tmp/sql/B.java")));
+    }
+
+    @Test
+    void verifyCodeRealmDetectsFilesystemDrift(@TempDir Path tempDir) throws Exception {
+        Path db = tempDir.resolve("pm.sqlite");
+        Path source = tempDir.resolve("Sample.java");
+        Files.writeString(source, "class Sample {}", StandardCharsets.UTF_8);
+        int upsertExit = StateDatabaseTool.execute(new String[] {
+            "upsert-code-file",
+            "--db", db.toString(),
+            "--realm", "pm",
+            "--endpoint", "tmp/managed/Sample.java",
+            "--source", source.toString()
+        });
+        assertEquals(0, upsertExit);
+
+        Path root = tempDir.resolve("root");
+        StateDatabaseTool.execute(new String[] {
+            "materialize-code-realm",
+            "--db", db.toString(),
+            "--realm", "pm",
+            "--target-root", root.toString()
+        });
+        Files.writeString(root.resolve("tmp/managed/Sample.java"), "class Sample { int drift = 1; }", StandardCharsets.UTF_8);
+
+        Path report = tempDir.resolve("drift.json");
+        int verifyExit = StateDatabaseTool.execute(new String[] {
+            "verify-code-realm",
+            "--db", db.toString(),
+            "--realm", "pm",
+            "--target-root", root.toString(),
+            "--output", report.toString(),
+            "--enforce"
+        });
+        assertEquals(2, verifyExit);
+        String payload = Files.readString(report, StandardCharsets.UTF_8);
+        assertTrue(payload.contains("\"ok\": false"));
+        assertTrue(payload.contains("\"mismatchCount\": 1"));
+    }
 }

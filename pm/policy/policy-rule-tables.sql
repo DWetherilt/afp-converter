@@ -41,7 +41,11 @@ insert into policy_rule_catalog(rule_id, realm, category, rule_text, source_ref,
   ('PM-WF-001', 'pm', 'workflow-normalization', 'PM process sequencing should be defined in pm/workflow/workflow-manifest.json and consumed by adapter interfaces.', 'pm/workflow/workflow-manifest.json', 'human', 1, current_timestamp),
   ('PM-WF-002', 'pm', 'workflow-normalization', 'Gradle adapter must expose normalized PM workflow interface tasks that resolve phases from workflow manifest.', 'build.gradle:pmWorkflowRun', 'human', 1, current_timestamp),
   ('PM-NS-001', 'pm', 'namespace-governance', 'First-party Java package roots must use solutions.pointzero.symphony and must not use com.upland.connect in active source/build/policy scope.', 'build.gradle:enforceNamespaceRoot', 'human', 1, current_timestamp),
-  ('PM-COMMS-001', 'pm', 'communication-governance', 'Assistant responses must end with a concise list of the next 10 prioritized tasks.', 'pm/policy/policy-rule-tables.sql', 'human', 1, current_timestamp);
+  ('PM-COMMS-001', 'pm', 'communication-governance', 'Assistant responses must end with a concise list of the next 10 prioritized tasks.', 'pm/policy/policy-rule-tables.sql', 'human', 1, current_timestamp),
+  ('PM-SQLCODE-001', 'pm', 'sql-code-index', 'Maintain separate SQL code-index/token-dictionary databases for application, pm, and boilerplate realms.', 'build.gradle:realmCodeDatabases', 'human', 1, current_timestamp),
+  ('PM-SQLCODE-002', 'pm', 'sql-code-index', 'Cross-realm keyword swatch changes must use token-dictionary/code-token search workflows.', 'build.gradle:realmTokenSearch', 'human', 1, current_timestamp),
+  ('PM-SQLCODE-003', 'pm', 'sql-code-index', 'Build flows must materialize realm-managed source files from SQL before compilation.', 'build.gradle:realmSourcesExport', 'human', 1, current_timestamp),
+  ('PM-SQLCODE-004', 'pm', 'sql-code-index', 'Direct filesystem drift from SQL-managed content must be blocked by SQL authority checks in strict mode.', 'build.gradle:sqlAuthorityDriftCheck', 'human', 1, current_timestamp);
 
 insert into pm_data_dictionary(object_name, object_type, realm, definition, source_ref, naming_pattern, updated_at) values
   ('issues', 'table', 'pm', 'Issue log records loaded from docs/issues-log.csv for governance tickle/effectiveness workflows.', 'pm-tools:StateDatabaseTool/initProjectSchema', 'snake_case', current_timestamp),
@@ -51,6 +55,10 @@ insert into pm_data_dictionary(object_name, object_type, realm, definition, sour
   ('repo_file_state', 'table', 'pm', 'Per-path repository state mirror used for file-discipline reporting.', 'pm-tools:StateDatabaseTool/initProjectSchema', 'snake_case', current_timestamp),
   ('policy_rule_catalog', 'table', 'pm', 'SQL-backed mutable policy rule catalog exported to pm/reports/policy-rules.json.', 'pm/policy/policy-rule-tables.sql', 'snake_case', current_timestamp),
   ('pm_data_dictionary', 'table', 'pm', 'Data dictionary of PM governance/state objects and naming conventions.', 'pm/policy/policy-rule-tables.sql', 'snake_case', current_timestamp),
+  ('code_files', 'table', 'pm', 'Realm-scoped file index for SQL-managed code search and traceability.', 'pm-tools:StateDatabaseTool/initCodeIndexSchema', 'snake_case', current_timestamp),
+  ('code_file_content', 'table', 'pm', 'Canonical realm-managed source content for SQL-first materialization to filesystem endpoints.', 'pm-tools:StateDatabaseTool/initCodeIndexSchema', 'snake_case', current_timestamp),
+  ('code_tokens', 'table', 'pm', 'Token postings list mapping indexed tokens to files and occurrence counts.', 'pm-tools:StateDatabaseTool/initCodeIndexSchema', 'snake_case', current_timestamp),
+  ('token_dictionary', 'table', 'pm', 'Realm-scoped token dictionary derived from indexed source files for keyword swatch search.', 'pm-tools:StateDatabaseTool/initCodeIndexSchema', 'snake_case', current_timestamp),
   ('pm_workflow_manifest', 'manifest', 'pm', 'Normalized PM workflow phase/adapter mapping manifest.', 'pm/workflow/workflow-manifest.json', 'snake_case', current_timestamp),
   ('pm_workflow_phase_task_map', 'adapter_map', 'pm', 'Gradle adapter phaseTaskMap binding phase IDs to executable task lists.', 'pm/workflow/workflow-manifest.json#adapters.gradle.phaseTaskMap', 'snake_case', current_timestamp),
   ('pm_workflow_defaults', 'adapter_defaults', 'pm', 'Default workflow phase selection for normalized PM execution.', 'pm/workflow/workflow-manifest.json#defaults', 'snake_case', current_timestamp),

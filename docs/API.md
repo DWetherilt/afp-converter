@@ -221,6 +221,20 @@ Pass in `ConversionRequest.cancel()` to support cooperative cancellation.
   - Default required set currently includes `PM-COMMS-001`.
 - `lint-data-dictionary --db <path> --output <path>`
   - Validates required object definitions in `pm_data_dictionary`.
+- `sync-code-index --db <path> --realm <application|pm|boilerplate> --roots <csv-paths>`
+  - Indexes realm code files into SQL (`code_files`, `code_tokens`, `token_dictionary`) for swatch-scale changes.
+- `search-code-token --db <path> --keyword <token-fragment> --output <path>`
+  - Searches token dictionary/postings for keyword-driven cross-file impact analysis.
+- `search-code-token-multi --dbs <csv-dbs> --keyword <token-fragment> --output <path>`
+  - Searches token dictionaries across multiple realm databases and merges results.
+- `upsert-code-file --db <path> --realm <id> --endpoint <repo-relative-path> --source <local-file>`
+  - Writes canonical code content into SQL and updates token postings/dictionary.
+- `upsert-code-files-manifest --db <path> --realm <id> --manifest <json>`
+  - Applies transactional multi-file SQL patch updates.
+- `materialize-code-realm --db <path> --realm <id> --target-root <path>`
+  - Emits realm-managed source files from SQL to filesystem endpoints.
+- `verify-code-realm --db <path> --realm <id> --target-root <path> --output <json> [--enforce]`
+  - Detects and optionally fails on filesystem drift from SQL-managed content.
 
 ## Engine Configuration (`AfpConverterConfig`)
 

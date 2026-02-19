@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "1",
+  "description": "SQL-first realm-managed source roots and endpoints.",
+  "realms": {
+    "application": {
+      "database": "pm/state/application-realm.sqlite",
+      "roots": [
+        "afp-api/src/main/java",
+        "afp-engine/src/main/java",
+        "afp-cli/src/main/java",
+        "afp-api/build.gradle",
+        "afp-engine/build.gradle",
+        "afp-cli/build.gradle"
+      ]
+    },
+    "pm": {
+      "database": "pm/state/pm-realm.sqlite",
+      "roots": [
+        "pm/policy",
+        "pm/workflow",
+        "pm-tools/src/main/java",
+        "pm-tools/src/test/java",
+        "pm-console/src/main/java",
+        "tools",
+        "build.gradle",
+        "settings.gradle",
+        "AI-POLICY.md",
+        "README.md",
+        "docs/API.md",
+        "docs/project-plan.md"
+      ]
+    },
+    "boilerplate": {
+      "database": "pm/state/boilerplate-realm.sqlite",
+      "roots": [
+        "boilerplate/update-packages/pz-boilerplate-intelliJ"
+      ]
+    }
+  }
+}

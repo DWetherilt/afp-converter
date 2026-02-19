@@ -26,6 +26,28 @@ def pmWorkflowDefaults = (pmWorkflowManifest?.defaults instanceof Map)
     ? (pmWorkflowManifest.defaults as Map)
     : [:]
 
+def realmManagedManifestFile = file('pm/workflow/realm-managed-manifest.json')
+def realmManagedManifest = realmManagedManifestFile.exists()
+    ? (new JsonSlurper().parse(realmManagedManifestFile) as Map)
+    : [:]
+def realmManagedRealms = (realmManagedManifest?.realms instanceof Map)
+    ? (realmManagedManifest.realms as Map)
+    : [:]
+def realmRootsCsv = { String realmId, String fallback ->
+    Object realmNode = realmManagedRealms.get(realmId)
+    if (!(realmNode instanceof Map)) {
+        return fallback
+    }
+    Object roots = ((Map) realmNode).get('roots')
+    if (!(roots instanceof List)) {
+        return fallback
+    }
+    List<String> values = ((List) roots)
+        .collect { it == null ? '' : it.toString().trim() }
+        .findAll { !it.isEmpty() }
+    return values.isEmpty() ? fallback : values.join(',')
+}
+
 def resolvePmWorkflowTasks = { String phaseId ->
     Object raw = pmWorkflowGradleMap.get(phaseId)
     if (!(raw instanceof List)) {
@@ -346,6 +368,284 @@ tasks.register('policyRulesLint', Exec) {
     }
 }
 
+tasks.register('applicationRealmCodeDb', Exec) {
+    group = 'documentation'
+    description = 'Builds SQL code index/token dictionary for application realm.'
+    dependsOn(':pm-tools:classes')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'sync-code-index',
+            '--db', 'pm/state/application-realm.sqlite',
+            '--realm', 'application',
+            '--roots', realmRootsCsv('application', 'afp-api/src/main/java,afp-engine/src/main/java,afp-cli/src/main/java,afp-api/build.gradle,afp-engine/build.gradle,afp-cli/build.gradle')
+    }
+}
+
+tasks.register('pmRealmCodeDb', Exec) {
+    group = 'documentation'
+    description = 'Builds SQL code index/token dictionary for PM realm.'
+    dependsOn(':pm-tools:classes')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'sync-code-index',
+            '--db', 'pm/state/pm-realm.sqlite',
+            '--realm', 'pm',
+            '--roots', realmRootsCsv('pm', 'pm/policy,pm/workflow,pm-tools/src/main/java,pm-tools/src/test/java,pm-console/src/main/java,tools,build.gradle,settings.gradle,AI-POLICY.md,README.md,docs/API.md,docs/project-plan.md')
+    }
+}
+
+tasks.register('boilerplateRealmCodeDb', Exec) {
+    group = 'documentation'
+    description = 'Builds SQL code index/token dictionary for boilerplate realm.'
+    dependsOn(':pm-tools:classes')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'sync-code-index',
+            '--db', 'pm/state/boilerplate-realm.sqlite',
+            '--realm', 'boilerplate',
+            '--roots', realmRootsCsv('boilerplate', 'boilerplate/update-packages/pz-boilerplate-intelliJ')
+    }
+}
+
+tasks.register('realmCodeDatabases') {
+    group = 'documentation'
+    description = 'Builds SQL code index/token dictionaries for all three realms.'
+    dependsOn('applicationRealmCodeDb')
+    dependsOn('pmRealmCodeDb')
+    dependsOn('boilerplateRealmCodeDb')
+}
+
+tasks.register('applicationRealmSourceExport', Exec) {
+    group = 'build'
+    description = 'Materializes application realm source files from SQL to filesystem endpoints.'
+    dependsOn(':pm-tools:classes')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'materialize-code-realm',
+            '--db', 'pm/state/application-realm.sqlite',
+            '--realm', 'application',
+            '--target-root', '.'
+    }
+}
+
+tasks.register('pmRealmSourceExport', Exec) {
+    group = 'build'
+    description = 'Materializes PM realm managed files from SQL to filesystem endpoints.'
+    dependsOn(':pm-tools:classes')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'materialize-code-realm',
+            '--db', 'pm/state/pm-realm.sqlite',
+            '--realm', 'pm',
+            '--target-root', '.'
+    }
+}
+
+tasks.register('boilerplateRealmSourceExport', Exec) {
+    group = 'build'
+    description = 'Materializes boilerplate realm managed files from SQL to filesystem endpoints.'
+    dependsOn(':pm-tools:classes')
+    onlyIf {
+        file('boilerplate/update-packages/pz-boilerplate-intelliJ').exists()
+    }
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'materialize-code-realm',
+            '--db', 'pm/state/boilerplate-realm.sqlite',
+            '--realm', 'boilerplate',
+            '--target-root', '.'
+    }
+}
+
+tasks.register('applicationRealmSqlAuthorityCheck', Exec) {
+    group = 'verification'
+    description = 'Verifies application realm files have not drifted from SQL-managed content.'
+    dependsOn(':pm-tools:classes')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        String strictRaw = (System.getenv('AFP_SQL_AUTH_STRICT') ?: 'true').trim().toLowerCase(Locale.ROOT)
+        boolean strict = !(strictRaw in ['0', 'false', 'no'])
+        List<String> cmd = [
+            'java', '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'verify-code-realm',
+            '--db', 'pm/state/application-realm.sqlite',
+            '--realm', 'application',
+            '--target-root', '.',
+            '--output', 'pm/reports/sql-authority-application.json'
+        ]
+        if (strict) {
+            cmd.add('--enforce')
+        }
+        commandLine cmd
+    }
+}
+
+tasks.register('pmRealmSqlAuthorityCheck', Exec) {
+    group = 'verification'
+    description = 'Verifies PM realm files have not drifted from SQL-managed content.'
+    dependsOn(':pm-tools:classes')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        String strictRaw = (System.getenv('AFP_SQL_AUTH_STRICT') ?: 'true').trim().toLowerCase(Locale.ROOT)
+        boolean strict = !(strictRaw in ['0', 'false', 'no'])
+        List<String> cmd = [
+            'java', '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'verify-code-realm',
+            '--db', 'pm/state/pm-realm.sqlite',
+            '--realm', 'pm',
+            '--target-root', '.',
+            '--output', 'pm/reports/sql-authority-pm.json'
+        ]
+        if (strict) {
+            cmd.add('--enforce')
+        }
+        commandLine cmd
+    }
+}
+
+tasks.register('boilerplateRealmSqlAuthorityCheck', Exec) {
+    group = 'verification'
+    description = 'Verifies boilerplate realm files have not drifted from SQL-managed content.'
+    dependsOn(':pm-tools:classes')
+    onlyIf {
+        file('pm/state/boilerplate-realm.sqlite').exists()
+    }
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        String strictRaw = (System.getenv('AFP_SQL_AUTH_STRICT') ?: 'true').trim().toLowerCase(Locale.ROOT)
+        boolean strict = !(strictRaw in ['0', 'false', 'no'])
+        List<String> cmd = [
+            'java', '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'verify-code-realm',
+            '--db', 'pm/state/boilerplate-realm.sqlite',
+            '--realm', 'boilerplate',
+            '--target-root', '.',
+            '--output', 'pm/reports/sql-authority-boilerplate.json'
+        ]
+        if (strict) {
+            cmd.add('--enforce')
+        }
+        commandLine cmd
+    }
+}
+
+tasks.register('sqlAuthorityDriftCheck') {
+    group = 'verification'
+    description = 'Runs SQL-authority drift checks across all realms before source materialization.'
+    dependsOn('applicationRealmSqlAuthorityCheck')
+    dependsOn('pmRealmSqlAuthorityCheck')
+    dependsOn('boilerplateRealmSqlAuthorityCheck')
+}
+
+tasks.register('sqlMaterializationCheckpoint', Exec) {
+    group = 'release'
+    description = 'Creates a pre-materialization rollback checkpoint when a documentation manifest exists.'
+    commandLine 'true'
+    doFirst {
+        File manifest = file('pm/reports/documentation-manifest.json')
+        if (!manifest.exists()) {
+            logger.lifecycle("sqlMaterializationCheckpoint: skipping (manifest missing at ${manifest.path})")
+            commandLine 'true'
+            return
+        }
+        commandLine 'python3',
+            'tools/rollback_manager.py',
+            '--root', '.',
+            '--base', 'pm/checkpoints',
+            '--manifest', manifest.path,
+            'create',
+            '--label', 'pre-sql-materialization'
+    }
+}
+
+tasks.register('realmSourcesExport') {
+    group = 'build'
+    description = 'Materializes all realm-managed files from SQL ahead of build.'
+    dependsOn('sqlMaterializationCheckpoint')
+    dependsOn('sqlAuthorityDriftCheck')
+    dependsOn('applicationRealmSourceExport')
+    dependsOn('pmRealmSourceExport')
+    dependsOn('boilerplateRealmSourceExport')
+}
+
+tasks.register('realmTokenSearch', Exec) {
+    group = 'documentation'
+    description = 'Searches SQL token dictionaries for a keyword (set -Prealm=application|pm|boilerplate and -Pkeyword=<token>).'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmCodeDatabases')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        String realm = (project.findProperty('realm') ?: 'application').toString().trim().toLowerCase(Locale.ROOT)
+        String keyword = (project.findProperty('keyword') ?: 'render').toString().trim().toLowerCase(Locale.ROOT)
+        Map<String, String> dbByRealm = [
+            'application': 'pm/state/application-realm.sqlite',
+            'pm'         : 'pm/state/pm-realm.sqlite',
+            'boilerplate': 'pm/state/boilerplate-realm.sqlite'
+        ]
+        if (!dbByRealm.containsKey(realm)) {
+            throw new GradleException("Unsupported realm '${realm}'. Use application|pm|boilerplate.")
+        }
+        String out = "pm/reports/${realm}-realm-token-search.json"
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'search-code-token',
+            '--db', dbByRealm.get(realm),
+            '--keyword', keyword,
+            '--output', out
+    }
+}
+
+tasks.register('crossRealmTokenSearch', Exec) {
+    group = 'documentation'
+    description = 'Searches token dictionaries across all realm databases (set -Pkeyword=<token>).'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmCodeDatabases')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        String keyword = (project.findProperty('keyword') ?: 'render').toString().trim().toLowerCase(Locale.ROOT)
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'search-code-token-multi',
+            '--dbs', 'pm/state/application-realm.sqlite,pm/state/pm-realm.sqlite,pm/state/boilerplate-realm.sqlite',
+            '--keyword', keyword,
+            '--output', 'pm/reports/cross-realm-token-search.json'
+    }
+}
+
 tasks.register('dataDictionaryReport', Exec) {
     group = 'documentation'
     description = 'Exports SQL-backed PM data dictionary from SQLite state into pm/reports/data-dictionary.json'
@@ -382,6 +682,7 @@ tasks.register('governanceAlerts', Exec) {
     group = 'documentation'
     description = 'Generates governance/trust alerts from SQLite project state.'
     dependsOn('projectStateDb')
+    dependsOn('sqlAuthorityDriftCheck')
     doFirst {
         def sourceSets = project(':pm-tools').sourceSets
         String cp = sourceSets.main.runtimeClasspath.asPath
@@ -393,7 +694,8 @@ tasks.register('governanceAlerts', Exec) {
             'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
             'governance-alerts',
             '--db', 'pm/state/project-state.sqlite',
-            '--output', 'pm/reports/governance-alerts.json'
+            '--output', 'pm/reports/governance-alerts.json',
+            '--sql-drift', 'pm/reports/sql-authority-pm.json'
         ]
         if (enforce) {
             cmd.add('--enforce')
@@ -591,6 +893,8 @@ tasks.register('documentationManifest') {
     dependsOn('policyRulesLint')
     dependsOn('dataDictionaryReport')
     dependsOn('dataDictionaryLint')
+    dependsOn('realmCodeDatabases')
+    dependsOn('crossRealmTokenSearch')
     dependsOn('stateInventoryCsv')
     dependsOn('projectPlanWorkbook')
     dependsOn('policyGovernanceWorkbook')
@@ -617,6 +921,10 @@ tasks.register('documentationManifest') {
             file('pm/reports/issues-effectiveness.json'),
             file('pm/reports/policy-rules.json'),
             file('pm/reports/policy-rules-lint.json'),
+            file('pm/reports/sql-authority-application.json'),
+            file('pm/reports/sql-authority-pm.json'),
+            file('pm/reports/sql-authority-boilerplate.json'),
+            file('pm/reports/cross-realm-token-search.json'),
             file('pm/reports/data-dictionary.json'),
             file('pm/reports/data-dictionary-lint.json'),
             file('pm/reports/project-plan-next-step.json'),
@@ -626,6 +934,9 @@ tasks.register('documentationManifest') {
             file('pm/reports/boilerplate-package-files-with-context.csv'),
             file('pm/state/project-state.sqlite'),
             file('pm/state/boilerplate-state.sqlite'),
+            file('pm/state/application-realm.sqlite'),
+            file('pm/state/pm-realm.sqlite'),
+            file('pm/state/boilerplate-realm.sqlite'),
             file('pm/reports/version.json'),
             file('VERSION')
         ]
@@ -690,6 +1001,10 @@ tasks.register('publishCiArtifacts') {
             file('pm/reports/issues-effectiveness.json'),
             file('pm/reports/policy-rules.json'),
             file('pm/reports/policy-rules-lint.json'),
+            file('pm/reports/sql-authority-application.json'),
+            file('pm/reports/sql-authority-pm.json'),
+            file('pm/reports/sql-authority-boilerplate.json'),
+            file('pm/reports/cross-realm-token-search.json'),
             file('pm/reports/data-dictionary.json'),
             file('pm/reports/data-dictionary-lint.json'),
             file('pm/policy/policy-rule-tables.sql'),
@@ -700,6 +1015,9 @@ tasks.register('publishCiArtifacts') {
             file('pm/reports/workbook-refresh-status.json'),
             file('pm/state/project-state.sqlite'),
             file('pm/state/boilerplate-state.sqlite'),
+            file('pm/state/application-realm.sqlite'),
+            file('pm/state/pm-realm.sqlite'),
+            file('pm/state/boilerplate-realm.sqlite'),
             file('pm/reports/version.json'),
             file('docs/fidelity-corpus.txt'),
             file('docs/project-plan.md'),
@@ -940,6 +1258,7 @@ tasks.register('projectPlanNextStep') {
 }
 
 tasks.named('build') {
+    dependsOn('realmSourcesExport')
     dependsOn('documentationManifest')
 }
 
@@ -1197,6 +1516,7 @@ tasks.register('enforceNamespaceRoot') {
 tasks.register('prodBuild') {
     group = 'build'
     description = 'Production build path without test compilation/execution; assumes a prepared runtime/resource environment'
+    dependsOn('realmSourcesExport')
     dependsOn(':afp-api:jar')
     dependsOn(':afp-engine:jar')
     dependsOn(':afp-cli:installDist')

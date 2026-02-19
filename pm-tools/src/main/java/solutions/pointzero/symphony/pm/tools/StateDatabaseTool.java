@@ -59,13 +59,26 @@ public final class StateDatabaseTool {
         "repo_file_state",
         "policy_rule_catalog",
         "pm_data_dictionary",
+        "code_files",
+        "code_file_content",
+        "code_tokens",
+        "token_dictionary",
         "pm_workflow_manifest",
         "pm_workflow_phase_task_map",
         "pm_workflow_defaults",
         "package_candidates",
         "package_files"
     );
-    private static final List<String> REQUIRED_POLICY_RULE_IDS = List.of("PM-COMMS-001");
+    private static final List<String> REQUIRED_POLICY_RULE_IDS = List.of(
+        "PM-COMMS-001",
+        "PM-SQLCODE-001",
+        "PM-SQLCODE-002"
+    );
+    private static final Set<String> CODE_INDEX_EXTENSIONS = Set.of(
+        ".java", ".kt", ".groovy", ".gradle", ".kts", ".xml", ".json", ".yaml", ".yml",
+        ".properties", ".sql", ".py", ".sh", ".bat", ".md", ".txt", ".csv"
+    );
+    private static final int MAX_CODE_FILE_BYTES = 2_000_000;
     private static final DateTimeFormatter ISO = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
     private StateDatabaseTool() {}
@@ -79,7 +92,7 @@ public final class StateDatabaseTool {
 
     static int execute(String[] args) throws Exception {
         if (args.length == 0) {
-            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-policy-rules|export-data-dictionary|lint-data-dictionary|lint-policy-rules");
+            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-policy-rules|export-data-dictionary|lint-data-dictionary|lint-policy-rules|sync-code-index|search-code-token|search-code-token-multi|materialize-code-realm|upsert-code-file|upsert-code-files-manifest|verify-code-realm");
         }
         String command = args[0];
         Map<String, String> cli = parseArgs(args, 1);
@@ -98,6 +111,13 @@ public final class StateDatabaseTool {
             case "export-data-dictionary" -> runExportDataDictionary(cli);
             case "lint-data-dictionary" -> runLintDataDictionary(cli);
             case "lint-policy-rules" -> runLintPolicyRules(cli);
+            case "sync-code-index" -> runSyncCodeIndex(cli);
+            case "search-code-token" -> runSearchCodeToken(cli);
+            case "search-code-token-multi" -> runSearchCodeTokenMulti(cli);
+            case "materialize-code-realm" -> runMaterializeCodeRealm(cli);
+            case "upsert-code-file" -> runUpsertCodeFile(cli);
+            case "upsert-code-files-manifest" -> runUpsertCodeFilesManifest(cli);
+            case "verify-code-realm" -> runVerifyCodeRealm(cli);
             default -> throw new IllegalArgumentException("Unsupported command: " + command);
         };
     }
@@ -405,6 +425,7 @@ public final class StateDatabaseTool {
     private static int runGovernanceAlerts(Map<String, String> cli) throws Exception {
         Path dbPath = requiredPath(cli, "--db");
         Path outputPath = requiredPath(cli, "--output");
+        Path sqlDriftPath = optionalPath(cli, "--sql-drift");
         boolean enforce = "true".equalsIgnoreCase(cli.getOrDefault("--enforce", "false"));
         ensureParent(outputPath);
 
@@ -463,6 +484,12 @@ public final class StateDatabaseTool {
 
         boolean hasBreach = !activeBreaches.isEmpty();
         boolean requiredPolicyRuleMissing = requiredPolicyRuleEnabledCount == 0;
+        boolean sqlAuthorityDrift = false;
+        JsonObject sqlDrift = null;
+        if (sqlDriftPath != null && Files.exists(sqlDriftPath)) {
+            sqlDrift = readJsonObject(sqlDriftPath);
+            sqlAuthorityDrift = sqlDrift.has("ok") && !sqlDrift.get("ok").getAsBoolean();
+        }
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("schemaVersion", "1");
         payload.put("generatedAt", nowIso());
@@ -479,13 +506,22 @@ public final class StateDatabaseTool {
             "requiredRuleId", "PM-COMMS-001",
             "requiredRuleEnabled", requiredPolicyRuleEnabledCount > 0
         ));
+        payload.put("sqlAuthorityAudit", Map.of(
+            "driftReportPath", sqlDriftPath == null ? "" : sqlDriftPath.toString().replace('\\', '/'),
+            "driftDetected", sqlAuthorityDrift
+        ));
+        if (sqlDrift != null) {
+            payload.put("sqlAuthorityDrift", sqlDrift);
+        }
         payload.put("message", hasBreach
             ? "Governance breach/in-progress items require human visibility."
             : (requiredPolicyRuleMissing
                 ? "No active governance breaches, but required policy rules are missing/disabled."
-                : "No active governance breaches."));
+                : (sqlAuthorityDrift
+                    ? "No active governance breaches, but SQL authority drift is detected."
+                    : "No active governance breaches.")));
         writeJson(outputPath, payload);
-        return (enforce && (hasBreach || requiredPolicyRuleMissing)) ? 2 : 0;
+        return (enforce && (hasBreach || requiredPolicyRuleMissing || sqlAuthorityDrift)) ? 2 : 0;
     }
 
     private static int runVersionControlLedger(Map<String, String> cli) throws Exception {
@@ -834,6 +870,616 @@ public final class StateDatabaseTool {
             return REQUIRED_POLICY_RULE_IDS;
         }
         return List.copyOf(ids);
+    }
+
+    private static int runSyncCodeIndex(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        String realm = requiredValue(cli, "--realm");
+        List<Path> roots = parseRootPaths(cli.get("--roots"));
+        ensureParent(dbPath);
+        try (Connection conn = connect(dbPath)) {
+            initCodeIndexSchema(conn);
+            clearCodeIndex(conn, realm);
+            syncCodeIndex(conn, realm, roots);
+            rebuildTokenDictionary(conn, realm);
+        }
+        return 0;
+    }
+
+    private static int runSearchCodeToken(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        Path outputPath = requiredPath(cli, "--output");
+        String keyword = text(cli.get("--keyword")).toLowerCase(Locale.ROOT);
+        int limit = parsePositiveInt(cli.get("--limit"), 200);
+        ensureParent(outputPath);
+
+        List<Map<String, Object>> dictionaryMatches = new ArrayList<>();
+        List<Map<String, Object>> fileHits = new ArrayList<>();
+        try (Connection conn = connect(dbPath);
+             PreparedStatement dictPs = conn.prepareStatement(
+                 "select token, file_count, total_occurrences, updated_at " +
+                     "from token_dictionary where token like ? order by total_occurrences desc, token asc limit ?"
+             );
+             PreparedStatement filePs = conn.prepareStatement(
+                 "select ct.token, ct.path, ct.occurrences, cf.realm, cf.language, cf.updated_at " +
+                     "from code_tokens ct join code_files cf on cf.path = ct.path " +
+                     "where ct.token like ? order by ct.occurrences desc, ct.path asc limit ?"
+             )) {
+            String like = "%" + keyword + "%";
+            dictPs.setString(1, like);
+            dictPs.setInt(2, limit);
+            try (ResultSet rs = dictPs.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> row = new LinkedHashMap<>();
+                    row.put("token", text(rs.getString(1)));
+                    row.put("fileCount", rs.getInt(2));
+                    row.put("totalOccurrences", rs.getInt(3));
+                    row.put("updatedAt", text(rs.getString(4)));
+                    dictionaryMatches.add(row);
+                }
+            }
+
+            filePs.setString(1, like);
+            filePs.setInt(2, limit);
+            try (ResultSet rs = filePs.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> row = new LinkedHashMap<>();
+                    row.put("token", text(rs.getString(1)));
+                    row.put("path", text(rs.getString(2)));
+                    row.put("occurrences", rs.getInt(3));
+                    row.put("realm", text(rs.getString(4)));
+                    row.put("language", text(rs.getString(5)));
+                    row.put("updatedAt", text(rs.getString(6)));
+                    fileHits.add(row);
+                }
+            }
+        }
+
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("schemaVersion", "1");
+        payload.put("generatedAt", nowIso());
+        payload.put("source", "sqlite");
+        payload.put("query", keyword);
+        payload.put("dictionaryMatchCount", dictionaryMatches.size());
+        payload.put("fileHitCount", fileHits.size());
+        payload.put("dictionaryMatches", dictionaryMatches);
+        payload.put("fileHits", fileHits);
+        writeJson(outputPath, payload);
+        return 0;
+    }
+
+    private static int runSearchCodeTokenMulti(Map<String, String> cli) throws Exception {
+        String dbsRaw = requiredValue(cli, "--dbs");
+        String keyword = text(cli.get("--keyword")).toLowerCase(Locale.ROOT);
+        Path outputPath = requiredPath(cli, "--output");
+        int limit = parsePositiveInt(cli.get("--limit"), 200);
+        ensureParent(outputPath);
+
+        List<Path> dbs = parseRootPaths(dbsRaw);
+        Map<String, Integer> aggregateTokenCounts = new LinkedHashMap<>();
+        List<Map<String, Object>> fileHits = new ArrayList<>();
+        for (Path dbPath : dbs) {
+            try (Connection conn = connect(dbPath);
+                 PreparedStatement dictPs = conn.prepareStatement(
+                     "select token, total_occurrences from token_dictionary where token like ? order by total_occurrences desc limit ?"
+                 );
+                 PreparedStatement filePs = conn.prepareStatement(
+                     "select ct.token, ct.path, ct.occurrences, cf.realm, cf.language " +
+                         "from code_tokens ct join code_files cf on cf.path = ct.path " +
+                         "where ct.token like ? order by ct.occurrences desc limit ?"
+                 )) {
+                String like = "%" + keyword + "%";
+                dictPs.setString(1, like);
+                dictPs.setInt(2, limit);
+                try (ResultSet rs = dictPs.executeQuery()) {
+                    while (rs.next()) {
+                        aggregateTokenCounts.merge(text(rs.getString(1)), rs.getInt(2), Integer::sum);
+                    }
+                }
+                filePs.setString(1, like);
+                filePs.setInt(2, limit);
+                try (ResultSet rs = filePs.executeQuery()) {
+                    while (rs.next()) {
+                        Map<String, Object> row = new LinkedHashMap<>();
+                        row.put("db", dbPath.toString().replace('\\', '/'));
+                        row.put("token", text(rs.getString(1)));
+                        row.put("path", text(rs.getString(2)));
+                        row.put("occurrences", rs.getInt(3));
+                        row.put("realm", text(rs.getString(4)));
+                        row.put("language", text(rs.getString(5)));
+                        fileHits.add(row);
+                    }
+                }
+            }
+        }
+
+        List<Map<String, Object>> dictionaryMatches = aggregateTokenCounts.entrySet().stream()
+            .sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()))
+            .limit(limit)
+            .map(e -> {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("token", e.getKey());
+                row.put("totalOccurrences", e.getValue());
+                return row;
+            })
+            .toList();
+
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("schemaVersion", "1");
+        payload.put("generatedAt", nowIso());
+        payload.put("source", "sqlite");
+        payload.put("query", keyword);
+        payload.put("databaseCount", dbs.size());
+        payload.put("dictionaryMatchCount", dictionaryMatches.size());
+        payload.put("fileHitCount", fileHits.size());
+        payload.put("dictionaryMatches", dictionaryMatches);
+        payload.put("fileHits", fileHits);
+        writeJson(outputPath, payload);
+        return 0;
+    }
+
+    private static int runMaterializeCodeRealm(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        String realm = requiredValue(cli, "--realm");
+        Path targetRoot = requiredPath(cli, "--target-root");
+        ensureParent(targetRoot.resolve(".placeholder"));
+        int written = 0;
+        try (Connection conn = connect(dbPath);
+             PreparedStatement ps = conn.prepareStatement(
+                 "select path, content, encoding from code_file_content where realm = ? order by path asc"
+             )) {
+            initCodeIndexSchema(conn);
+            ps.setString(1, realm);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String endpoint = text(rs.getString(1));
+                    String content = rs.getString(2);
+                    String encoding = text(rs.getString(3));
+                    if (endpoint.isBlank()) {
+                        continue;
+                    }
+                    Path out = safeMaterializePath(targetRoot, endpoint);
+                    Path parent = out.getParent();
+                    if (parent != null) {
+                        Files.createDirectories(parent);
+                    }
+                    if ("utf-8".equalsIgnoreCase(encoding) || encoding.isBlank()) {
+                        Files.writeString(out, content == null ? "" : content, StandardCharsets.UTF_8);
+                    } else {
+                        Files.writeString(out, content == null ? "" : content, StandardCharsets.UTF_8);
+                    }
+                    written++;
+                }
+            }
+        }
+        return written >= 0 ? 0 : 1;
+    }
+
+    private static int runUpsertCodeFile(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        String realm = requiredValue(cli, "--realm");
+        String endpoint = requiredValue(cli, "--endpoint");
+        Path source = requiredPath(cli, "--source");
+        if (!Files.exists(source) || !Files.isRegularFile(source)) {
+            throw new IllegalArgumentException("Missing source file: " + source);
+        }
+        ensureParent(dbPath);
+        try (Connection conn = connect(dbPath)) {
+            initCodeIndexSchema(conn);
+            upsertCodeFileFromSource(conn, realm, endpoint, source);
+            rebuildTokenDictionary(conn, realm);
+        }
+        return 0;
+    }
+
+    private static int runUpsertCodeFilesManifest(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        String realm = requiredValue(cli, "--realm");
+        Path manifest = requiredPath(cli, "--manifest");
+        if (!Files.exists(manifest)) {
+            throw new IllegalArgumentException("Missing manifest file: " + manifest);
+        }
+        JsonObject root = readJsonObject(manifest);
+        JsonElement entries = root.get("files");
+        if (entries == null || !entries.isJsonArray()) {
+            throw new IllegalArgumentException("Manifest must contain files[] array: " + manifest);
+        }
+        ensureParent(dbPath);
+        int count = 0;
+        try (Connection conn = connect(dbPath)) {
+            initCodeIndexSchema(conn);
+            conn.setAutoCommit(false);
+            try {
+                for (JsonElement el : entries.getAsJsonArray()) {
+                    if (!el.isJsonObject()) {
+                        continue;
+                    }
+                    JsonObject row = el.getAsJsonObject();
+                    String endpoint = text(row.has("endpoint") ? row.get("endpoint").getAsString() : "");
+                    String sourceRaw = text(row.has("source") ? row.get("source").getAsString() : "");
+                    if (endpoint.isBlank() || sourceRaw.isBlank()) {
+                        continue;
+                    }
+                    Path source = Path.of(sourceRaw);
+                    upsertCodeFileFromSource(conn, realm, endpoint, source);
+                    count++;
+                }
+                rebuildTokenDictionary(conn, realm);
+                conn.commit();
+            } catch (Exception e) {
+                conn.rollback();
+                throw e;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        }
+        return count >= 0 ? 0 : 1;
+    }
+
+    private static int runVerifyCodeRealm(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        String realm = requiredValue(cli, "--realm");
+        Path targetRoot = requiredPath(cli, "--target-root");
+        Path outputPath = requiredPath(cli, "--output");
+        boolean enforce = "true".equalsIgnoreCase(cli.getOrDefault("--enforce", "false"));
+        ensureParent(outputPath);
+
+        List<Map<String, Object>> mismatches = new ArrayList<>();
+        int tracked = 0;
+        try (Connection conn = connect(dbPath);
+             PreparedStatement ps = conn.prepareStatement(
+                 "select path, content_sha256 from code_file_content where realm = ? order by path asc"
+             )) {
+            initCodeIndexSchema(conn);
+            ps.setString(1, realm);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    tracked++;
+                    String endpoint = text(rs.getString(1));
+                    String expectedHash = text(rs.getString(2));
+                    Path out = safeMaterializePath(targetRoot, endpoint);
+                    String actualHash = Files.exists(out) && Files.isRegularFile(out) ? safeSha256(out) : "";
+                    if (!expectedHash.equalsIgnoreCase(actualHash)) {
+                        Map<String, Object> row = new LinkedHashMap<>();
+                        row.put("path", endpoint);
+                        row.put("expectedSha256", expectedHash);
+                        row.put("actualSha256", actualHash);
+                        row.put("existsOnDisk", Files.exists(out));
+                        mismatches.add(row);
+                    }
+                }
+            }
+        }
+
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("schemaVersion", "1");
+        payload.put("generatedAt", nowIso());
+        payload.put("realm", realm);
+        payload.put("trackedFileCount", tracked);
+        payload.put("mismatchCount", mismatches.size());
+        payload.put("ok", mismatches.isEmpty());
+        payload.put("mismatches", mismatches);
+        payload.put("message", mismatches.isEmpty()
+            ? "SQL authority verification passed."
+            : "SQL authority verification failed: filesystem drift detected.");
+        writeJson(outputPath, payload);
+        return (enforce && !mismatches.isEmpty()) ? 2 : 0;
+    }
+
+    private static void initCodeIndexSchema(Connection conn) throws SQLException {
+        try (Statement st = conn.createStatement()) {
+            st.execute("pragma journal_mode = wal");
+            st.execute("""
+                create table if not exists code_files (
+                    path text primary key,
+                    realm text not null default '',
+                    language text not null default '',
+                    size_bytes integer not null default 0,
+                    sha256 text not null default '',
+                    updated_at text not null
+                )
+                """);
+            st.execute("""
+                create table if not exists code_tokens (
+                    token text not null,
+                    path text not null,
+                    occurrences integer not null default 0,
+                    updated_at text not null,
+                    primary key(token, path)
+                )
+                """);
+            st.execute("create index if not exists idx_code_tokens_token on code_tokens(token)");
+            st.execute("create index if not exists idx_code_tokens_path on code_tokens(path)");
+            st.execute("""
+                create table if not exists code_file_content (
+                    path text primary key,
+                    realm text not null default '',
+                    encoding text not null default 'utf-8',
+                    content text not null default '',
+                    content_sha256 text not null default '',
+                    updated_at text not null
+                )
+                """);
+            st.execute("create index if not exists idx_code_file_content_realm on code_file_content(realm)");
+            st.execute("""
+                create table if not exists token_dictionary (
+                    token text primary key,
+                    realm text not null default '',
+                    file_count integer not null default 0,
+                    total_occurrences integer not null default 0,
+                    token_kind text not null default 'derived',
+                    notes text not null default '',
+                    updated_at text not null
+                )
+                """);
+            st.execute("create index if not exists idx_token_dictionary_realm on token_dictionary(realm)");
+        }
+    }
+
+    private static void clearCodeIndex(Connection conn, String realm) throws SQLException {
+        try (PreparedStatement delFiles = conn.prepareStatement("delete from code_files where realm = ?");
+             PreparedStatement delTokens = conn.prepareStatement(
+                 "delete from code_tokens where path in (select path from code_files where realm = ?)"
+             );
+             PreparedStatement delContent = conn.prepareStatement("delete from code_file_content where realm = ?");
+             PreparedStatement delDictionary = conn.prepareStatement("delete from token_dictionary where realm = ?")) {
+            delTokens.setString(1, realm);
+            delTokens.executeUpdate();
+            delFiles.setString(1, realm);
+            delFiles.executeUpdate();
+            delContent.setString(1, realm);
+            delContent.executeUpdate();
+            delDictionary.setString(1, realm);
+            delDictionary.executeUpdate();
+        }
+    }
+
+    private static void syncCodeIndex(Connection conn, String realm, List<Path> roots) throws Exception {
+        String now = nowIso();
+        try (PreparedStatement filePs = conn.prepareStatement(
+            "insert or replace into code_files(path, realm, language, size_bytes, sha256, updated_at) values(?,?,?,?,?,?)"
+        );
+             PreparedStatement tokenPs = conn.prepareStatement(
+                 "insert or replace into code_tokens(token, path, occurrences, updated_at) values(?,?,?,?)"
+             );
+             PreparedStatement contentPs = conn.prepareStatement(
+                 "insert or replace into code_file_content(path, realm, encoding, content, content_sha256, updated_at) values(?,?,?,?,?,?)"
+             )) {
+            for (Path root : roots) {
+                if (root == null || !Files.exists(root)) {
+                    continue;
+                }
+                if (Files.isRegularFile(root)) {
+                    indexCodeFile(root, realm, now, filePs, tokenPs, contentPs);
+                    continue;
+                }
+                try (var stream = Files.walk(root)) {
+                    for (Path path : (Iterable<Path>) stream::iterator) {
+                        if (!Files.isRegularFile(path)) {
+                            continue;
+                        }
+                        indexCodeFile(path, realm, now, filePs, tokenPs, contentPs);
+                    }
+                }
+            }
+        }
+    }
+
+    private static void indexCodeFile(Path file,
+                                      String realm,
+                                      String now,
+                                      PreparedStatement filePs,
+                                      PreparedStatement tokenPs,
+                                      PreparedStatement contentPs) throws Exception {
+        String path = file.toString().replace('\\', '/');
+        String ext = extension(path);
+        if (!CODE_INDEX_EXTENSIONS.contains(ext)) {
+            return;
+        }
+        long size = safeSize(file);
+        if (size <= 0 || size > MAX_CODE_FILE_BYTES) {
+            return;
+        }
+        String language = detectLanguage(path, ext);
+        String content;
+        try {
+            content = Files.readString(file, StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            return;
+        }
+        Map<String, Integer> tokenCounts = extractTokenCounts(content);
+        if (tokenCounts.isEmpty()) {
+            return;
+        }
+
+        filePs.setString(1, path);
+        filePs.setString(2, realm);
+        filePs.setString(3, language);
+        filePs.setLong(4, size);
+        filePs.setString(5, safeSha256(file));
+        filePs.setString(6, now);
+        filePs.executeUpdate();
+
+        contentPs.setString(1, path);
+        contentPs.setString(2, realm);
+        contentPs.setString(3, "utf-8");
+        contentPs.setString(4, content);
+        contentPs.setString(5, safeSha256Text(content));
+        contentPs.setString(6, now);
+        contentPs.executeUpdate();
+
+        for (Map.Entry<String, Integer> entry : tokenCounts.entrySet()) {
+            String token = entry.getKey();
+            int occurrences = entry.getValue();
+            tokenPs.setString(1, token);
+            tokenPs.setString(2, path);
+            tokenPs.setInt(3, occurrences);
+            tokenPs.setString(4, now);
+            tokenPs.executeUpdate();
+        }
+    }
+
+    private static void upsertCodeFileFromSource(Connection conn,
+                                                 String realm,
+                                                 String endpoint,
+                                                 Path source) throws Exception {
+        String normalizedEndpoint = endpoint.replace('\\', '/');
+        String ext = extension(normalizedEndpoint);
+        if (!CODE_INDEX_EXTENSIONS.contains(ext)) {
+            throw new IllegalArgumentException("Unsupported endpoint extension for SQL code management: " + ext);
+        }
+        String content = Files.readString(source, StandardCharsets.UTF_8);
+        String now = nowIso();
+        Map<String, Integer> tokenCounts = extractTokenCounts(content);
+        try (PreparedStatement filePs = conn.prepareStatement(
+            "insert or replace into code_files(path, realm, language, size_bytes, sha256, updated_at) values(?,?,?,?,?,?)"
+        );
+             PreparedStatement contentPs = conn.prepareStatement(
+                 "insert or replace into code_file_content(path, realm, encoding, content, content_sha256, updated_at) values(?,?,?,?,?,?)"
+             );
+             PreparedStatement delTokens = conn.prepareStatement("delete from code_tokens where path = ?");
+             PreparedStatement tokenPs = conn.prepareStatement(
+                 "insert or replace into code_tokens(token, path, occurrences, updated_at) values(?,?,?,?)"
+             )) {
+            filePs.setString(1, normalizedEndpoint);
+            filePs.setString(2, realm);
+            filePs.setString(3, detectLanguage(normalizedEndpoint, ext));
+            filePs.setLong(4, Files.size(source));
+            filePs.setString(5, safeSha256(source));
+            filePs.setString(6, now);
+            filePs.executeUpdate();
+
+            contentPs.setString(1, normalizedEndpoint);
+            contentPs.setString(2, realm);
+            contentPs.setString(3, "utf-8");
+            contentPs.setString(4, content);
+            contentPs.setString(5, safeSha256Text(content));
+            contentPs.setString(6, now);
+            contentPs.executeUpdate();
+
+            delTokens.setString(1, normalizedEndpoint);
+            delTokens.executeUpdate();
+            for (Map.Entry<String, Integer> entry : tokenCounts.entrySet()) {
+                tokenPs.setString(1, entry.getKey());
+                tokenPs.setString(2, normalizedEndpoint);
+                tokenPs.setInt(3, entry.getValue());
+                tokenPs.setString(4, now);
+                tokenPs.executeUpdate();
+            }
+        }
+    }
+
+    private static void rebuildTokenDictionary(Connection conn, String realm) throws SQLException {
+        String now = nowIso();
+        try (PreparedStatement delete = conn.prepareStatement("delete from token_dictionary where realm = ?");
+             PreparedStatement insert = conn.prepareStatement(
+            "insert or replace into token_dictionary(token, realm, file_count, total_occurrences, token_kind, notes, updated_at) " +
+                "select token, ?, count(path), sum(occurrences), 'derived', '', ? from code_tokens " +
+                "where path in (select path from code_files where realm = ?) group by token"
+        )) {
+            delete.setString(1, realm);
+            delete.executeUpdate();
+            insert.setString(1, realm);
+            insert.setString(2, now);
+            insert.setString(3, realm);
+            insert.executeUpdate();
+        }
+    }
+
+    private static Map<String, Integer> extractTokenCounts(String content) {
+        if (content == null || content.isBlank()) {
+            return Map.of();
+        }
+        String normalized = content
+            .replaceAll("(?s)/\\*.*?\\*/", " ")
+            .replaceAll("(?m)//.*$", " ")
+            .replaceAll("[^A-Za-z0-9_./\\-]+", " ");
+        LinkedHashMap<String, Integer> counts = new LinkedHashMap<>();
+        for (String raw : normalized.split("\\s+")) {
+            String token = text(raw).toLowerCase(Locale.ROOT);
+            if (!isIndexableToken(token)) {
+                continue;
+            }
+            counts.merge(token, 1, Integer::sum);
+        }
+        return counts;
+    }
+
+    private static boolean isIndexableToken(String token) {
+        if (token == null || token.length() < 2 || token.length() > 128) {
+            return false;
+        }
+        boolean hasLetterOrDigit = false;
+        for (int i = 0; i < token.length(); i++) {
+            char c = token.charAt(i);
+            if (Character.isLetterOrDigit(c)) {
+                hasLetterOrDigit = true;
+                break;
+            }
+        }
+        return hasLetterOrDigit;
+    }
+
+    private static String extension(String path) {
+        int idx = path.lastIndexOf('.');
+        if (idx < 0 || idx == path.length() - 1) {
+            return "";
+        }
+        return path.substring(idx).toLowerCase(Locale.ROOT);
+    }
+
+    private static String detectLanguage(String path, String ext) {
+        return switch (ext) {
+            case ".java" -> "java";
+            case ".kt", ".kts" -> "kotlin";
+            case ".gradle", ".groovy" -> "gradle";
+            case ".py" -> "python";
+            case ".sql" -> "sql";
+            case ".md" -> "markdown";
+            case ".json" -> "json";
+            case ".xml" -> "xml";
+            case ".yaml", ".yml" -> "yaml";
+            case ".sh" -> "shell";
+            case ".bat" -> "batch";
+            default -> ext.isBlank() ? "text" : ext.substring(1);
+        };
+    }
+
+    private static String requiredValue(Map<String, String> cli, String key) {
+        String value = text(cli.get(key));
+        if (value.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: " + key);
+        }
+        return value;
+    }
+
+    private static List<Path> parseRootPaths(String raw) {
+        if (raw == null || raw.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --roots");
+        }
+        List<Path> paths = new ArrayList<>();
+        for (String part : raw.split(",")) {
+            String value = text(part);
+            if (!value.isBlank()) {
+                paths.add(Path.of(value));
+            }
+        }
+        if (paths.isEmpty()) {
+            throw new IllegalArgumentException("Missing required argument: --roots");
+        }
+        return paths;
+    }
+
+    private static int parsePositiveInt(String raw, int fallback) {
+        if (raw == null || raw.isBlank()) {
+            return fallback;
+        }
+        try {
+            int value = Integer.parseInt(raw.trim());
+            return value > 0 ? value : fallback;
+        } catch (Exception e) {
+            return fallback;
+        }
     }
 
     private static List<String> resolveDictionaryRefs(String ruleText, String sourceRef, List<DictionaryRef> dictionaryRefs) {
@@ -1646,6 +2292,34 @@ public final class StateDatabaseTool {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    private static String safeSha256Text(String content) {
+        try {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] bytes = (content == null ? "" : content).getBytes(StandardCharsets.UTF_8);
+            byte[] hash = digest.digest(bytes);
+            StringBuilder sb = new StringBuilder(hash.length * 2);
+            for (byte b : hash) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
+    private static Path safeMaterializePath(Path targetRoot, String endpoint) {
+        Path root = targetRoot.toAbsolutePath().normalize();
+        Path rel = Path.of(endpoint).normalize();
+        if (rel.isAbsolute()) {
+            throw new IllegalArgumentException("Endpoint path must be relative: " + endpoint);
+        }
+        Path out = root.resolve(rel).normalize();
+        if (!out.startsWith(root)) {
+            throw new IllegalArgumentException("Endpoint escapes target root: " + endpoint);
+        }
+        return out;
     }
 
     private static String text(String value) {
