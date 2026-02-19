@@ -654,3 +654,11 @@ This changelog is reconstructed from repository artifacts and our current thread
   - updated `tools/init_update_package.sh` default package root to `boilerplate/update-packages/`,
   - extended boilerplate SQLite schema with explicit `realm` column (`package_candidates.realm`, `package_files.realm`) and updated exports accordingly.
 - Added policy SQL rule `PM-REALM-003` to codify boilerplate as a dedicated third realm.
+- Standardized first-party namespace roots from `com.upland.connect.*` to `solutions.pointzero.symphony.*` across active modules:
+  - moved Java source and test trees under `afp-api`, `afp-engine`, `afp-cli`, `pm-tools`, and `pm-console` from `com/upland/connect/...` to `solutions/pointzero/symphony/...`,
+  - updated package/import references, Gradle `group`, and module `mainClass` entries to the new namespace root.
+- Added hard namespace governance:
+  - new verification task `enforceNamespaceRoot` in `build.gradle`,
+  - wired `enforceNamespaceRoot` into `qualityGate`,
+  - added SQL policy rule `PM-NS-001` in `pm/policy/policy-rule-tables.sql`.
+- Added boilerplate promotion package `2026-02-19-namespace-root-solutions-pointzero-symphony` under `boilerplate/update-packages/pz-boilerplate-intelliJ/` to carry the namespace mandate into the boilerplate framework.

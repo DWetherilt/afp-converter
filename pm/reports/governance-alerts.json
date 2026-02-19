@@ -1,10 +1,11 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T00:42:16Z",
+  "generatedAt": "2026-02-19T01:02:30Z",
   "source": "sqlite",
   "hasActiveGovernanceBreach": false,
   "activeBreachCount": 0,
   "trustEventCount": 2,
+  "policyGovernanceEventCount": 2,
   "activeBreaches": [],
   "trustEvents": [
     {
@@ -30,5 +31,34 @@
       "updated_by": "Human+AI"
     }
   ],
+  "policyGovernanceEvents": [
+    {
+      "event_id": "GOV-2026-02-18-002",
+      "event_date": "2026-02-18",
+      "phase": "Policy Governance",
+      "status": "closed",
+      "checkpoint_id": "20260218T214702Z-0.2.0-beta.1-governance-events-workbook",
+      "issue_id": "ISSUE-006",
+      "summary": "Introduced dedicated governance events tracker workbook and build task automation.",
+      "evidence": "docs/policy-governance-events.csv|docs/policy-governance-events.xlsx|build.gradle|pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/PolicyGovernanceWorkbookUpdater.java",
+      "updated_by": "Human+AI"
+    },
+    {
+      "event_id": "GOV-2026-02-18-001",
+      "event_date": "2026-02-18",
+      "phase": "Policy Governance",
+      "status": "closed",
+      "checkpoint_id": "20260218T214353Z-0.2.0-beta.1-policy-first-principles-governance-fix",
+      "issue_id": "ISSUE-006",
+      "summary": "Corrected policy-governance sequence drift and encoded first-principles sequencing invariance.",
+      "evidence": "AI-POLICY.md|docs/issues-log.csv|SESSION_CHANGELOG.md|pm/checkpoints/20260218T214353Z-0.2.0-beta.1-policy-first-principles-governance-fix",
+      "updated_by": "Human+AI"
+    }
+  ],
+  "policyRuleAudit": {
+    "requiredRuleEnabled": true,
+    "enabledPolicyRuleCount": 14,
+    "requiredRuleId": "PM-COMMS-001"
+  },
   "message": "No active governance breaches."
 }

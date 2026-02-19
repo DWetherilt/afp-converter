@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T00:20:59Z",
+  "generatedAt": "2026-02-19T01:02:32Z",
   "source": "sqlite",
   "sourceTable": "policy_rule_catalog",
-  "ruleCount": 13,
+  "ruleCount": 14,
   "rules": [
     {
       "ruleId": "PM-PROD-001",
@@ -13,7 +13,8 @@
       "sourceRef": "build.gradle:prodBuild",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 00:20:57"
+      "updatedAt": "2026-02-19 01:02:28",
+      "dictionaryRefs": []
     },
     {
       "ruleId": "PM-REALM-003",
@@ -23,7 +24,10 @@
       "sourceRef": "pm-tools:StateDatabaseTool/package_candidates.realm",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 00:20:57"
+      "updatedAt": "2026-02-19 01:02:28",
+      "dictionaryRefs": [
+        "package_candidates"
+      ]
     },
     {
       "ruleId": "PM-ROLLUP-001",
@@ -33,7 +37,22 @@
       "sourceRef": "build.gradle:enforceBoilerplateRollupForFrameworkChanges",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 00:20:57"
+      "updatedAt": "2026-02-19 01:02:28",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-COMMS-001",
+      "realm": "pm",
+      "category": "communication-governance",
+      "ruleText": "Assistant responses must end with a concise list of the next 10 prioritized tasks.",
+      "sourceRef": "pm/policy/policy-rule-tables.sql",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 01:02:28",
+      "dictionaryRefs": [
+        "policy_rule_catalog",
+        "pm_data_dictionary"
+      ]
     },
     {
       "ruleId": "PM-DOC-001",
@@ -43,7 +62,8 @@
       "sourceRef": "build.gradle:documentationManifest",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 00:20:57"
+      "updatedAt": "2026-02-19 01:02:28",
+      "dictionaryRefs": []
     },
     {
       "ruleId": "PM-EXEC-001",
@@ -53,7 +73,8 @@
       "sourceRef": "AI-POLICY.md#Default execution coupling",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 00:20:57"
+      "updatedAt": "2026-02-19 01:02:28",
+      "dictionaryRefs": []
     },
     {
       "ruleId": "PM-NS-001",
@@ -63,7 +84,8 @@
       "sourceRef": "build.gradle:enforceNamespaceRoot",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 00:20:57"
+      "updatedAt": "2026-02-19 01:02:28",
+      "dictionaryRefs": []
     },
     {
       "ruleId": "PM-GATE-001",
@@ -73,7 +95,8 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 00:20:57"
+      "updatedAt": "2026-02-19 01:02:28",
+      "dictionaryRefs": []
     },
     {
       "ruleId": "PM-GATE-002",
@@ -83,7 +106,8 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 00:20:57"
+      "updatedAt": "2026-02-19 01:02:28",
+      "dictionaryRefs": []
     },
     {
       "ruleId": "PM-GATE-003",
@@ -93,7 +117,8 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 00:20:57"
+      "updatedAt": "2026-02-19 01:02:28",
+      "dictionaryRefs": []
     },
     {
       "ruleId": "PM-REALM-001",
@@ -103,7 +128,8 @@
       "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 00:20:57"
+      "updatedAt": "2026-02-19 01:02:28",
+      "dictionaryRefs": []
     },
     {
       "ruleId": "PM-REALM-002",
@@ -113,7 +139,8 @@
       "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 00:20:57"
+      "updatedAt": "2026-02-19 01:02:28",
+      "dictionaryRefs": []
     },
     {
       "ruleId": "PM-WF-001",
@@ -123,7 +150,10 @@
       "sourceRef": "pm/workflow/workflow-manifest.json",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 00:20:57"
+      "updatedAt": "2026-02-19 01:02:28",
+      "dictionaryRefs": [
+        "pm_workflow_manifest"
+      ]
     },
     {
       "ruleId": "PM-WF-002",
@@ -133,7 +163,8 @@
       "sourceRef": "build.gradle:pmWorkflowRun",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 00:20:57"
+      "updatedAt": "2026-02-19 01:02:28",
+      "dictionaryRefs": []
     }
   ]
 }
