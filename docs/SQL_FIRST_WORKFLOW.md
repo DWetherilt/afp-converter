@@ -32,6 +32,8 @@ Or Gradle:
 
 ```bash
 ./gradlew realmCodeDatabases
+./gradlew sqlCoverageReport
+./gradlew sqlReconstructionCheck
 ./gradlew realmSourcesExport
 ./gradlew realmTokenSearch -Prealm=application -Pkeyword=render
 ./gradlew crossRealmTokenSearch -Pkeyword=token
@@ -44,6 +46,7 @@ Or Gradle:
   - rollback checkpoint hook (`sqlMaterializationCheckpoint`)
   - drift guard (`sqlAuthorityDriftCheck`)
   - per-realm materialization tasks
+- `qualityGate` runs `sqlReconstructionCheck`.
 
 Strict mode is controlled by:
 

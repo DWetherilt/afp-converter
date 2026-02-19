@@ -45,7 +45,9 @@ insert into policy_rule_catalog(rule_id, realm, category, rule_text, source_ref,
   ('PM-SQLCODE-001', 'pm', 'sql-code-index', 'Maintain separate SQL code-index/token-dictionary databases for application, pm, and boilerplate realms.', 'build.gradle:realmCodeDatabases', 'human', 1, current_timestamp),
   ('PM-SQLCODE-002', 'pm', 'sql-code-index', 'Cross-realm keyword swatch changes must use token-dictionary/code-token search workflows.', 'build.gradle:realmTokenSearch', 'human', 1, current_timestamp),
   ('PM-SQLCODE-003', 'pm', 'sql-code-index', 'Build flows must materialize realm-managed source files from SQL before compilation.', 'build.gradle:realmSourcesExport', 'human', 1, current_timestamp),
-  ('PM-SQLCODE-004', 'pm', 'sql-code-index', 'Direct filesystem drift from SQL-managed content must be blocked by SQL authority checks in strict mode.', 'build.gradle:sqlAuthorityDriftCheck', 'human', 1, current_timestamp);
+  ('PM-SQLCODE-004', 'pm', 'sql-code-index', 'Direct filesystem drift from SQL-managed content must be blocked by SQL authority checks in strict mode.', 'build.gradle:sqlAuthorityDriftCheck', 'human', 1, current_timestamp),
+  ('PM-SQLCODE-005', 'pm', 'sql-code-index', 'Each realm must publish SQL coverage reports proving managed file index completeness.', 'build.gradle:sqlCoverageReport', 'human', 1, current_timestamp),
+  ('PM-SQLCODE-006', 'pm', 'sql-code-index', 'Quality gate must verify SQL reconstruction into a clean temp root before release.', 'build.gradle:sqlReconstructionCheck', 'human', 1, current_timestamp);
 
 insert into pm_data_dictionary(object_name, object_type, realm, definition, source_ref, naming_pattern, updated_at) values
   ('issues', 'table', 'pm', 'Issue log records loaded from docs/issues-log.csv for governance tickle/effectiveness workflows.', 'pm-tools:StateDatabaseTool/initProjectSchema', 'snake_case', current_timestamp),

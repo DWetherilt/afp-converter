@@ -5,12 +5,14 @@
     "application": {
       "database": "pm/state/application-realm.sqlite",
       "roots": [
-        "afp-api/src/main/java",
-        "afp-engine/src/main/java",
-        "afp-cli/src/main/java",
+        "afp-api/src",
+        "afp-engine/src",
+        "afp-cli/src",
+        "afp-tools/src",
         "afp-api/build.gradle",
         "afp-engine/build.gradle",
-        "afp-cli/build.gradle"
+        "afp-cli/build.gradle",
+        "afp-tools/build.gradle"
       ]
     },
     "pm": {

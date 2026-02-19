@@ -381,7 +381,7 @@ tasks.register('applicationRealmCodeDb', Exec) {
             'sync-code-index',
             '--db', 'pm/state/application-realm.sqlite',
             '--realm', 'application',
-            '--roots', realmRootsCsv('application', 'afp-api/src/main/java,afp-engine/src/main/java,afp-cli/src/main/java,afp-api/build.gradle,afp-engine/build.gradle,afp-cli/build.gradle')
+            '--roots', realmRootsCsv('application', 'afp-api/src,afp-engine/src,afp-cli/src,afp-tools/src,afp-api/build.gradle,afp-engine/build.gradle,afp-cli/build.gradle,afp-tools/build.gradle')
     }
 }
 
@@ -565,6 +565,208 @@ tasks.register('sqlAuthorityDriftCheck') {
     dependsOn('applicationRealmSqlAuthorityCheck')
     dependsOn('pmRealmSqlAuthorityCheck')
     dependsOn('boilerplateRealmSqlAuthorityCheck')
+}
+
+tasks.register('applicationRealmCoverageReport', Exec) {
+    group = 'verification'
+    description = 'Reports SQL coverage for application realm managed roots.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('applicationRealmCodeDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'report-code-realm-coverage',
+            '--db', 'pm/state/application-realm.sqlite',
+            '--realm', 'application',
+            '--roots', realmRootsCsv('application', 'afp-api/src,afp-engine/src,afp-cli/src,afp-tools/src,afp-api/build.gradle,afp-engine/build.gradle,afp-cli/build.gradle,afp-tools/build.gradle'),
+            '--output', 'pm/reports/sql-coverage-application.json'
+    }
+}
+
+tasks.register('pmRealmCoverageReport', Exec) {
+    group = 'verification'
+    description = 'Reports SQL coverage for PM realm managed roots.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('pmRealmCodeDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'report-code-realm-coverage',
+            '--db', 'pm/state/pm-realm.sqlite',
+            '--realm', 'pm',
+            '--roots', realmRootsCsv('pm', 'pm/policy,pm/workflow,pm-tools/src/main/java,pm-tools/src/test/java,pm-console/src/main/java,tools,build.gradle,settings.gradle,AI-POLICY.md,README.md,docs/API.md,docs/project-plan.md'),
+            '--output', 'pm/reports/sql-coverage-pm.json'
+    }
+}
+
+tasks.register('boilerplateRealmCoverageReport', Exec) {
+    group = 'verification'
+    description = 'Reports SQL coverage for boilerplate realm managed roots.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('boilerplateRealmCodeDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'report-code-realm-coverage',
+            '--db', 'pm/state/boilerplate-realm.sqlite',
+            '--realm', 'boilerplate',
+            '--roots', realmRootsCsv('boilerplate', 'boilerplate/update-packages/pz-boilerplate-intelliJ'),
+            '--output', 'pm/reports/sql-coverage-boilerplate.json'
+    }
+}
+
+tasks.register('sqlCoverageReport') {
+    group = 'verification'
+    description = 'Generates SQL coverage reports for all realms.'
+    dependsOn('applicationRealmCoverageReport')
+    dependsOn('pmRealmCoverageReport')
+    dependsOn('boilerplateRealmCoverageReport')
+}
+
+tasks.register('sqlReconstructionCheck') {
+    group = 'verification'
+    description = 'Verifies SQL-managed files can be reconstructed into a clean temp root.'
+    dependsOn('sqlReconstructionVerifyApplication')
+    dependsOn('sqlReconstructionVerifyPm')
+    dependsOn('sqlReconstructionVerifyBoilerplate')
+}
+
+tasks.register('sqlReconstructionPrepare') {
+    group = 'verification'
+    description = 'Prepares temporary root for SQL reconstruction checks.'
+    doLast {
+        File tempRoot = file('build/sql-reconstruction-check')
+        if (tempRoot.exists()) {
+            tempRoot.deleteDir()
+        }
+        tempRoot.mkdirs()
+    }
+}
+
+tasks.register('sqlReconstructionMaterializeApplication', Exec) {
+    group = 'verification'
+    description = 'Materializes application realm into temporary reconstruction root.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmCodeDatabases')
+    dependsOn('sqlReconstructionPrepare')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'materialize-code-realm',
+            '--db', 'pm/state/application-realm.sqlite',
+            '--realm', 'application',
+            '--target-root', 'build/sql-reconstruction-check'
+    }
+}
+
+tasks.register('sqlReconstructionMaterializePm', Exec) {
+    group = 'verification'
+    description = 'Materializes PM realm into temporary reconstruction root.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmCodeDatabases')
+    dependsOn('sqlReconstructionMaterializeApplication')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'materialize-code-realm',
+            '--db', 'pm/state/pm-realm.sqlite',
+            '--realm', 'pm',
+            '--target-root', 'build/sql-reconstruction-check'
+    }
+}
+
+tasks.register('sqlReconstructionMaterializeBoilerplate', Exec) {
+    group = 'verification'
+    description = 'Materializes boilerplate realm into temporary reconstruction root.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmCodeDatabases')
+    dependsOn('sqlReconstructionMaterializePm')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'materialize-code-realm',
+            '--db', 'pm/state/boilerplate-realm.sqlite',
+            '--realm', 'boilerplate',
+            '--target-root', 'build/sql-reconstruction-check'
+    }
+}
+
+tasks.register('sqlReconstructionVerifyApplication', Exec) {
+    group = 'verification'
+    description = 'Verifies application reconstruction output against SQL authority.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('sqlReconstructionMaterializeBoilerplate')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'verify-code-realm',
+            '--db', 'pm/state/application-realm.sqlite',
+            '--realm', 'application',
+            '--target-root', 'build/sql-reconstruction-check',
+            '--output', 'pm/reports/sql-reconstruction-application.json',
+            '--enforce'
+    }
+}
+
+tasks.register('sqlReconstructionVerifyPm', Exec) {
+    group = 'verification'
+    description = 'Verifies PM reconstruction output against SQL authority.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('sqlReconstructionMaterializeBoilerplate')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'verify-code-realm',
+            '--db', 'pm/state/pm-realm.sqlite',
+            '--realm', 'pm',
+            '--target-root', 'build/sql-reconstruction-check',
+            '--output', 'pm/reports/sql-reconstruction-pm.json',
+            '--enforce'
+    }
+}
+
+tasks.register('sqlReconstructionVerifyBoilerplate', Exec) {
+    group = 'verification'
+    description = 'Verifies boilerplate reconstruction output against SQL authority.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('sqlReconstructionMaterializeBoilerplate')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'verify-code-realm',
+            '--db', 'pm/state/boilerplate-realm.sqlite',
+            '--realm', 'boilerplate',
+            '--target-root', 'build/sql-reconstruction-check',
+            '--output', 'pm/reports/sql-reconstruction-boilerplate.json',
+            '--enforce'
+    }
 }
 
 tasks.register('sqlMaterializationCheckpoint', Exec) {
@@ -894,6 +1096,7 @@ tasks.register('documentationManifest') {
     dependsOn('dataDictionaryReport')
     dependsOn('dataDictionaryLint')
     dependsOn('realmCodeDatabases')
+    dependsOn('sqlCoverageReport')
     dependsOn('crossRealmTokenSearch')
     dependsOn('stateInventoryCsv')
     dependsOn('projectPlanWorkbook')
@@ -924,6 +1127,12 @@ tasks.register('documentationManifest') {
             file('pm/reports/sql-authority-application.json'),
             file('pm/reports/sql-authority-pm.json'),
             file('pm/reports/sql-authority-boilerplate.json'),
+            file('pm/reports/sql-coverage-application.json'),
+            file('pm/reports/sql-coverage-pm.json'),
+            file('pm/reports/sql-coverage-boilerplate.json'),
+            file('pm/reports/sql-reconstruction-application.json'),
+            file('pm/reports/sql-reconstruction-pm.json'),
+            file('pm/reports/sql-reconstruction-boilerplate.json'),
             file('pm/reports/cross-realm-token-search.json'),
             file('pm/reports/data-dictionary.json'),
             file('pm/reports/data-dictionary-lint.json'),
@@ -1004,6 +1213,12 @@ tasks.register('publishCiArtifacts') {
             file('pm/reports/sql-authority-application.json'),
             file('pm/reports/sql-authority-pm.json'),
             file('pm/reports/sql-authority-boilerplate.json'),
+            file('pm/reports/sql-coverage-application.json'),
+            file('pm/reports/sql-coverage-pm.json'),
+            file('pm/reports/sql-coverage-boilerplate.json'),
+            file('pm/reports/sql-reconstruction-application.json'),
+            file('pm/reports/sql-reconstruction-pm.json'),
+            file('pm/reports/sql-reconstruction-boilerplate.json'),
             file('pm/reports/cross-realm-token-search.json'),
             file('pm/reports/data-dictionary.json'),
             file('pm/reports/data-dictionary-lint.json'),
@@ -1533,6 +1748,7 @@ tasks.register('qualityGate') {
     dependsOn('enforceNamespaceRoot')
     dependsOn('policyRulesLint')
     dependsOn('dataDictionaryLint')
+    dependsOn('sqlReconstructionCheck')
     dependsOn(':afp-engine:test')
     dependsOn(':afp-engine:fidelityGate')
     dependsOn('documentationManifest')

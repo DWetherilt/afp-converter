@@ -10,7 +10,9 @@ Usage:
   tools/sql_code_workflow.sh upsert-manifest <realm> <manifest-json>
   tools/sql_code_workflow.sh export <realm>
   tools/sql_code_workflow.sh verify <realm>
+  tools/sql_code_workflow.sh coverage <realm>
   tools/sql_code_workflow.sh search <realm|all> <keyword>
+  tools/sql_code_workflow.sh reconstruct-check
 
 Realms:
   application | pm | boilerplate
@@ -86,6 +88,16 @@ case "$cmd" in
       --output "pm/reports/sql-authority-${realm}.json" \
       --enforce
     ;;
+  coverage)
+    [[ $# -eq 1 ]] || { usage; exit 2; }
+    realm="$1"
+    case "$realm" in
+      application) ./gradlew applicationRealmCoverageReport ;;
+      pm) ./gradlew pmRealmCoverageReport ;;
+      boilerplate) ./gradlew boilerplateRealmCoverageReport ;;
+      *) echo "Unsupported realm: $realm" >&2; exit 2 ;;
+    esac
+    ;;
   search)
     [[ $# -eq 2 ]] || { usage; exit 2; }
     realm="$1"; keyword="$2"
@@ -94,6 +106,10 @@ case "$cmd" in
     else
       ./gradlew realmTokenSearch -Prealm="$realm" -Pkeyword="$keyword"
     fi
+    ;;
+  reconstruct-check)
+    [[ $# -eq 0 ]] || { usage; exit 2; }
+    ./gradlew sqlReconstructionCheck
     ;;
   *)
     usage

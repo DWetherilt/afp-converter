@@ -235,6 +235,8 @@ Pass in `ConversionRequest.cancel()` to support cooperative cancellation.
   - Emits realm-managed source files from SQL to filesystem endpoints.
 - `verify-code-realm --db <path> --realm <id> --target-root <path> --output <json> [--enforce]`
   - Detects and optionally fails on filesystem drift from SQL-managed content.
+- `report-code-realm-coverage --db <path> --realm <id> --roots <csv-paths> --output <json>`
+  - Reports managed-file coverage ratio between configured roots and SQL-indexed content.
 
 ## Engine Configuration (`AfpConverterConfig`)
 

@@ -72,7 +72,11 @@ public final class StateDatabaseTool {
     private static final List<String> REQUIRED_POLICY_RULE_IDS = List.of(
         "PM-COMMS-001",
         "PM-SQLCODE-001",
-        "PM-SQLCODE-002"
+        "PM-SQLCODE-002",
+        "PM-SQLCODE-003",
+        "PM-SQLCODE-004",
+        "PM-SQLCODE-005",
+        "PM-SQLCODE-006"
     );
     private static final Set<String> CODE_INDEX_EXTENSIONS = Set.of(
         ".java", ".kt", ".groovy", ".gradle", ".kts", ".xml", ".json", ".yaml", ".yml",
@@ -92,7 +96,7 @@ public final class StateDatabaseTool {
 
     static int execute(String[] args) throws Exception {
         if (args.length == 0) {
-            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-policy-rules|export-data-dictionary|lint-data-dictionary|lint-policy-rules|sync-code-index|search-code-token|search-code-token-multi|materialize-code-realm|upsert-code-file|upsert-code-files-manifest|verify-code-realm");
+            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-policy-rules|export-data-dictionary|lint-data-dictionary|lint-policy-rules|sync-code-index|search-code-token|search-code-token-multi|materialize-code-realm|upsert-code-file|upsert-code-files-manifest|verify-code-realm|report-code-realm-coverage");
         }
         String command = args[0];
         Map<String, String> cli = parseArgs(args, 1);
@@ -118,6 +122,7 @@ public final class StateDatabaseTool {
             case "upsert-code-file" -> runUpsertCodeFile(cli);
             case "upsert-code-files-manifest" -> runUpsertCodeFilesManifest(cli);
             case "verify-code-realm" -> runVerifyCodeRealm(cli);
+            case "report-code-realm-coverage" -> runReportCodeRealmCoverage(cli);
             default -> throw new IllegalArgumentException("Unsupported command: " + command);
         };
     }
@@ -1166,6 +1171,77 @@ public final class StateDatabaseTool {
         return (enforce && !mismatches.isEmpty()) ? 2 : 0;
     }
 
+    private static int runReportCodeRealmCoverage(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        String realm = requiredValue(cli, "--realm");
+        List<Path> roots = parseRootPaths(cli.get("--roots"));
+        Path outputPath = requiredPath(cli, "--output");
+        ensureParent(outputPath);
+
+        Set<String> expected = new LinkedHashSet<>();
+        for (Path root : roots) {
+            if (root == null || !Files.exists(root)) {
+                continue;
+            }
+            if (Files.isRegularFile(root)) {
+                String rel = root.toString().replace('\\', '/');
+                if (isManagedCodeEndpoint(rel)) {
+                    expected.add(rel);
+                }
+                continue;
+            }
+            try (var stream = Files.walk(root)) {
+                for (Path p : (Iterable<Path>) stream::iterator) {
+                    if (!Files.isRegularFile(p)) {
+                        continue;
+                    }
+                    String rel = p.toString().replace('\\', '/');
+                    if (isManagedCodeEndpoint(rel)) {
+                        expected.add(rel);
+                    }
+                }
+            }
+        }
+
+        Set<String> indexed = new LinkedHashSet<>();
+        try (Connection conn = connect(dbPath);
+             PreparedStatement ps = conn.prepareStatement(
+                 "select path from code_file_content where realm = ? order by path asc"
+             )) {
+            ps.setString(1, realm);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String path = text(rs.getString(1));
+                    if (!path.isBlank()) {
+                        indexed.add(path);
+                    }
+                }
+            }
+        }
+
+        List<String> missing = expected.stream().filter(p -> !indexed.contains(p)).toList();
+        List<String> extra = indexed.stream().filter(p -> !expected.contains(p)).toList();
+        double coverage = expected.isEmpty() ? 1.0 : (expected.size() - missing.size()) / (double) expected.size();
+
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("schemaVersion", "1");
+        payload.put("generatedAt", nowIso());
+        payload.put("realm", realm);
+        payload.put("expectedManagedFileCount", expected.size());
+        payload.put("indexedManagedFileCount", indexed.size());
+        payload.put("missingCount", missing.size());
+        payload.put("extraCount", extra.size());
+        payload.put("coverageRatio", round6(coverage));
+        payload.put("missingFiles", missing);
+        payload.put("extraFiles", extra);
+        payload.put("ok", missing.isEmpty());
+        payload.put("message", missing.isEmpty()
+            ? "Realm code coverage is complete."
+            : "Realm code coverage is incomplete.");
+        writeJson(outputPath, payload);
+        return 0;
+    }
+
     private static void initCodeIndexSchema(Connection conn) throws SQLException {
         try (Statement st = conn.createStatement()) {
             st.execute("pragma journal_mode = wal");
@@ -1480,6 +1556,14 @@ public final class StateDatabaseTool {
         } catch (Exception e) {
             return fallback;
         }
+    }
+
+    private static boolean isManagedCodeEndpoint(String path) {
+        if (path == null || path.isBlank()) {
+            return false;
+        }
+        String ext = extension(path);
+        return CODE_INDEX_EXTENSIONS.contains(ext);
     }
 
     private static List<String> resolveDictionaryRefs(String ruleText, String sourceRef, List<DictionaryRef> dictionaryRefs) {
@@ -2149,6 +2233,10 @@ public final class StateDatabaseTool {
 
     private static double round2(double value) {
         return Math.round(value * 100.0d) / 100.0d;
+    }
+
+    private static double round6(double value) {
+        return Math.round(value * 1_000_000.0d) / 1_000_000.0d;
     }
 
     private static Double number(JsonObject object, String key) {
