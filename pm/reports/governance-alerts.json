@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T19:39:46Z",
+  "generatedAt": "2026-02-19T19:50:25Z",
   "source": "sqlite",
   "hasActiveGovernanceBreach": false,
   "activeBreachCount": 0,
   "trustEventCount": 2,
-  "policyGovernanceEventCount": 2,
+  "policyGovernanceEventCount": 3,
   "activeBreaches": [],
   "trustEvents": [
     {
@@ -35,6 +35,18 @@
   ],
   "policyGovernanceEvents": [
     {
+      "event_id": "GOV-2026-02-19-001",
+      "event_date": "2026-02-19",
+      "phase": "Policy Governance",
+      "status": "closed",
+      "checkpoint_id": "20260219T194452Z-0.2.0-beta.1-checkpoint",
+      "issue_id": "ISSUE-006",
+      "summary": "Executed controlled SQL managed-file delete-and-remanifest drill with rollback checkpoint and reconstruction/quality verification.",
+      "evidence": "pm/state/managed-delete-manifest.txt|pm/reports/remanifest-drill.json|pm/checkpoints/20260219T194452Z-0.2.0-beta.1-checkpoint|build.gradle",
+      "updated_by": "Human+AI",
+      "event_ref": "Governance Event | 2026-02-19 | #001"
+    },
+    {
       "event_id": "GOV-2026-02-18-002",
       "event_date": "2026-02-18",
       "phase": "Policy Governance",
@@ -61,18 +73,18 @@
   ],
   "policyRuleAudit": {
     "requiredRuleEnabled": true,
-    "enabledPolicyRuleCount": 49,
-    "requiredRuleId": "PM-COMMS-001"
+    "requiredRuleId": "PM-COMMS-001",
+    "enabledPolicyRuleCount": 49
   },
   "sqlAuthorityAudit": {
-    "driftDetected": false,
-    "driftReportPath": "pm/reports/sql-authority-pm.json"
+    "driftReportPath": "pm/reports/sql-authority-pm.json",
+    "driftDetected": false
   },
   "sqlAuthorityDrift": {
     "schemaVersion": "1",
-    "generatedAt": "2026-02-19T19:39:45Z",
+    "generatedAt": "2026-02-19T19:50:24Z",
     "realm": "pm",
-    "trackedFileCount": 79,
+    "trackedFileCount": 80,
     "mismatchCount": 0,
     "ok": true,
     "mismatches": [],

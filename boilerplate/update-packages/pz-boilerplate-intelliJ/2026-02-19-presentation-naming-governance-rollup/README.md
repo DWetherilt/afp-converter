@@ -17,3 +17,7 @@ Standardize human-friendly presentation references for governance/decision/actio
 ## Additional governance extension
 - Persist all created identifiers across PM/policy/code/version-control workflows into SQL `identifier_registry`.
 - Publish `pm/reports/identifier-registry.json` for audit visibility.
+
+## Validation drill note
+- Executed controlled SQL managed-file delete-and-remanifest drill on 2026-02-19.
+- Restored managed endpoints directly from realm SQL stores and re-validated with reconstruction + quality gates.

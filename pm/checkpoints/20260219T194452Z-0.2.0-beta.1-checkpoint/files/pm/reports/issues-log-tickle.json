@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-19T19:44:44Z",
+  "issuesLogPath": "docs/issues-log.csv",
+  "issuesLogTouchedInWorkingTree": true,
+  "changedPathCount": 16,
+  "triggeredIssueCount": 2,
+  "requiresIssuesLogUpdate": false,
+  "triggeredIssues": [
+    {
+      "id": "ISSUE-005",
+      "status": "Open",
+      "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
+      "matchedComponents": [
+        "pm/state/boilerplate-state.sqlite",
+        "pm/state/project-state.sqlite"
+      ]
+    },
+    {
+      "id": "ISSUE-006",
+      "status": "Open",
+      "title": "Policy-governance sequence drift when updating constitutional/policy text without full checklist sequencing",
+      "matchedComponents": [
+        "docs/issues-log.csv",
+        "pm/reports/governance-alerts.json",
+        "pm/state/project-state.sqlite"
+      ]
+    }
+  ],
+  "message": "No issue-log tickle required."
+}

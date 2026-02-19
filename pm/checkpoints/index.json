@@ -64,6 +64,14 @@
       "label": "",
       "fileCount": 77,
       "gitHead": "d041c3cf9ab73a54bffed273ca8b35825d833ff0"
+    },
+    {
+      "id": "20260219T194452Z-0.2.0-beta.1-checkpoint",
+      "createdAt": "2026-02-19T19:44:52+00:00",
+      "version": "0.2.0-beta.1",
+      "label": "",
+      "fileCount": 78,
+      "gitHead": "994b235317bca52c2a32e6086ba02aec5ebeb4d8"
     }
   ]
 }

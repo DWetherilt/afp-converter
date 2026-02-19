@@ -1000,6 +1000,45 @@ tasks.register('identifierRegistryReport', Exec) {
     }
 }
 
+tasks.register('remanifestDrillSafetyCheck') {
+    group = 'verification'
+    description = 'Non-interactive safety gate for delete-and-remanifest drill; requires AFP_REMANIFEST_APPROVED=true.'
+    doLast {
+        String approved = (System.getenv('AFP_REMANIFEST_APPROVED') ?: '').trim().toLowerCase(Locale.ROOT)
+        if (!(approved in ['1', 'true', 'yes'])) {
+            throw new GradleException(
+                "Remanifest drill blocked. Set AFP_REMANIFEST_APPROVED=true to proceed with managed-file delete/rematerialize."
+            )
+        }
+    }
+}
+
+tasks.register('remanifestDrill', Exec) {
+    group = 'verification'
+    description = 'Deletes SQL-managed endpoints and rematerializes from realm SQL stores; writes pm/reports/remanifest-drill.json.'
+    dependsOn('remanifestDrillSafetyCheck')
+    dependsOn('createRollbackCheckpoint')
+    commandLine 'python3',
+        'tools/remanifest_drill.py',
+        '--output', 'pm/reports/remanifest-drill.json',
+        '--manifest', 'pm/state/managed-delete-manifest.txt',
+        '--application-db', 'pm/state/application-realm.sqlite',
+        '--pm-db', 'pm/state/pm-realm.sqlite',
+        '--boilerplate-db', 'pm/state/boilerplate-realm.sqlite'
+}
+
+tasks.register('remanifestDrillValidate', Exec) {
+    group = 'verification'
+    description = 'Runs remanifest drill then full quality gate, and finalizes drill report status.'
+    dependsOn('remanifestDrill')
+    dependsOn('qualityGate')
+    commandLine 'python3',
+        'tools/remanifest_drill.py',
+        '--output', 'pm/reports/remanifest-drill.json',
+        '--manifest', 'pm/state/managed-delete-manifest.txt',
+        '--finalize-status', 'PASS'
+}
+
 tasks.register('boilerplateStateDb', Exec) {
     group = 'documentation'
     description = 'Builds pm/state/boilerplate-state.sqlite from update packages'
@@ -1485,6 +1524,7 @@ tasks.register('documentationManifest') {
             file('pm/reports/governance-alerts.json'),
             file('pm/reports/version-control-ledger.json'),
             file('pm/reports/identifier-registry.json'),
+            file('pm/reports/remanifest-drill.json'),
             file('pm/reports/issues-log-tickle.json'),
             file('pm/reports/issues-effectiveness.json'),
             file('pm/reports/policy-rules.json'),
@@ -1596,6 +1636,7 @@ tasks.register('publishCiArtifacts') {
             file('pm/reports/governance-alerts.json'),
             file('pm/reports/version-control-ledger.json'),
             file('pm/reports/identifier-registry.json'),
+            file('pm/reports/remanifest-drill.json'),
             file('pm/reports/issues-log-tickle.json'),
             file('pm/reports/issues-effectiveness.json'),
             file('pm/reports/policy-rules.json'),

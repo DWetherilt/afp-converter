@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-19T19:44:44Z",
+  "summary": {
+    "averageTaskPercentComplete": 84.5,
+    "issueCount": 6,
+    "requiresIssuesLogUpdate": false,
+    "taskCount": 34,
+    "triggeredIssueCount": 2,
+    "highSeverityOpenCount": 3,
+    "openIssueCount": 6
+  },
+  "fidelity": {
+    "fidelityScore": 0.952575,
+    "averagePixelDiffRatio": 0.072288,
+    "tokenRecall": 0.959064,
+    "tokenPrecision": 1.0
+  },
+  "signals": [
+    "Average pixel diff ratio above target (0.03).",
+    "Token recall below target (0.98).",
+    "Average plan task completion below 85%.",
+    "High-severity issues remain open."
+  ],
+  "triggeredIssues": [
+    {
+      "id": "ISSUE-005",
+      "status": "Open",
+      "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
+      "matchedComponents": [
+        "pm/state/boilerplate-state.sqlite",
+        "pm/state/project-state.sqlite"
+      ]
+    },
+    {
+      "id": "ISSUE-006",
+      "status": "Open",
+      "title": "Policy-governance sequence drift when updating constitutional/policy text without full checklist sequencing",
+      "matchedComponents": [
+        "docs/issues-log.csv",
+        "pm/reports/governance-alerts.json",
+        "pm/state/project-state.sqlite"
+      ]
+    }
+  ],
+  "openHighSeverityIssues": [
+    {
+      "id": "ISSUE-001",
+      "title": "Excel automation and workbook update fragility due Office account/licensing context",
+      "owner": "Human+AI",
+      "last_reviewed": "2026-02-19"
+    },
+    {
+      "id": "ISSUE-003",
+      "title": "Excel automation unavailable in headless/agent context (Apple event connection invalid), strict Excel-required mode fails as designed",
+      "owner": "Human+AI",
+      "last_reviewed": "2026-02-19"
+    },
+    {
+      "id": "ISSUE-005",
+      "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
+      "owner": "Human+AI",
+      "last_reviewed": "2026-02-19"
+    }
+  ]
+}
