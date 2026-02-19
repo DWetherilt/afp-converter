@@ -291,7 +291,12 @@ Export knowledge base report:
 
 ```bash
 ./gradlew --no-daemon knowledgeBaseReport
+./gradlew --no-daemon realmKnowledgeSync
 ```
+
+Realm-mirrored knowledge sync report:
+
+- `pm/reports/realm-knowledge-sync.json`
 
 ### Action Tracking And Realm Governance
 

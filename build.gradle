@@ -1063,6 +1063,20 @@ tasks.register('knowledgeBaseReport', Exec) {
     }
 }
 
+tasks.register('realmKnowledgeSync', Exec) {
+    group = 'documentation'
+    description = 'Mirrors project knowledge base into each realm DB with decision-link resolution stats.'
+    dependsOn('projectStateDb')
+    dependsOn('realmCodeDatabases')
+    commandLine 'python3',
+        'tools/realm_knowledge_sync.py',
+        '--project-db', 'pm/state/project-state.sqlite',
+        '--application-db', 'pm/state/application-realm.sqlite',
+        '--pm-db', 'pm/state/pm-realm.sqlite',
+        '--boilerplate-db', 'pm/state/boilerplate-realm.sqlite',
+        '--report', 'pm/reports/realm-knowledge-sync.json'
+}
+
 tasks.register('actionInboxIngest', Exec) {
     group = 'documentation'
     description = 'Ingests prompt-derived actionable items from assistant inbox into project-state SQLite.'
@@ -1243,6 +1257,7 @@ tasks.register('stateInventoryCsv') {
     dependsOn('boilerplatePromotionReport')
     dependsOn('decisionPriorityReport')
     dependsOn('knowledgeBaseReport')
+    dependsOn('realmKnowledgeSync')
     dependsOn('actionItemsReport')
     dependsOn('actionDecisionSuggestionReport')
     dependsOn('actionOwnerSummaryReport')
@@ -1418,6 +1433,7 @@ tasks.register('documentationManifest') {
             file('pm/reports/boilerplate-promotion-status.json'),
             file('pm/reports/decision-priority-queue.json'),
             file('pm/reports/knowledge-base.json'),
+            file('pm/reports/realm-knowledge-sync.json'),
             file('pm/reports/action-items.json'),
             file('pm/reports/action-decision-suggestions.json'),
             file('pm/reports/action-owner-summary.json'),
@@ -1521,6 +1537,7 @@ tasks.register('publishCiArtifacts') {
             file('pm/reports/boilerplate-promotion-status.json'),
             file('pm/reports/decision-priority-queue.json'),
             file('pm/reports/knowledge-base.json'),
+            file('pm/reports/realm-knowledge-sync.json'),
             file('pm/reports/action-items.json'),
             file('pm/reports/action-decision-suggestions.json'),
             file('pm/reports/action-owner-summary.json'),

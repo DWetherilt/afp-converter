@@ -47,6 +47,7 @@
           "policyRulesReport",
           "decisionPriorityReport",
           "knowledgeBaseReport",
+          "realmKnowledgeSync",
           "actionItemsReport",
           "actionDecisionSuggestionReport",
           "actionOwnerSummaryReport",
