@@ -1,18 +1,18 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T00:21:01Z",
+  "generatedAt": "2026-02-19T00:42:19Z",
   "source": "sqlite",
   "repo": {
-    "gitHead": "cae7911e6bf6ab89e78be553818a386487f8a714",
+    "gitHead": "3f4197782968a95b02f6349cfc0c5502e7e7d179",
     "gitBranch": "chore/ci-prodbuild-boilerplate-kickoff",
     "isDirty": true,
-    "trackedCount": 491,
-    "modifiedCount": 98,
+    "trackedCount": 512,
+    "modifiedCount": 21,
     "untrackedCount": 5,
     "deletedCount": 0,
-    "updatedAt": "2026-02-19T00:20:57Z"
+    "updatedAt": "2026-02-19T00:42:14Z"
   },
-  "fileCount": 496,
+  "fileCount": 517,
   "files": [
     {
       "path": ".github/CODEOWNERS",
@@ -105,7 +105,7 @@
     {
       "path": "AI-POLICY.md",
       "tracked": true,
-      "statusCode": "M",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 20331,
       "sha256": "85e084a1b754b66e1cec8a991603f97abdd022f4355f1fe255643e97bb671c92"
@@ -113,7 +113,7 @@
     {
       "path": "README.md",
       "tracked": true,
-      "statusCode": "M",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 15657,
       "sha256": "b7e2cdf82425009185a16023ff608734ce953fce0500c4e71d04e662610a7546"
@@ -123,8 +123,8 @@
       "tracked": true,
       "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 59412,
-      "sha256": "d1cc1a23c5e84cd0553a816c95cf0dbb6d07266074ca0af6ddafc3435c159963"
+      "sizeBytes": 60284,
+      "sha256": "ae528f89b4ffb448d8249da9489f57f393dc19ad9e1a1a106a3fd73263bcf2be"
     },
     {
       "path": "VERSION",
@@ -145,7 +145,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/AfpConverter.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 738,
       "sha256": "9efcb28b21d20d56ab6757bd7b248064d56db7078577ed9955225e656e2514d2"
@@ -153,7 +153,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/AfpConverterConfig.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 2713,
       "sha256": "20024ed2b3c5e0df228926fef9919b14e7908fdb1c93f92961f0e45ece42d22a"
@@ -161,7 +161,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/AfpConverterFactory.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 5457,
       "sha256": "e7ecea19cb0d78573977155d3933ccaec75b8a9d5339aace0cdd04eb6b3fb4c2"
@@ -169,7 +169,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/CancellationToken.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 284,
       "sha256": "8c621468d97c5fa5afec91bfab2e1db02c637084b78945dd6e9c5afc2fac22fe"
@@ -177,7 +177,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/ConfigurationException.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 358,
       "sha256": "fed01e17bcd7cec83b6cfec650ca8fb83c02db43361b508ba6dde59183df01a8"
@@ -185,7 +185,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/ConversionException.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 563,
       "sha256": "00f652854acc28084bc555effca2aec17863b0071475dce616746baacd0e2934"
@@ -193,7 +193,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/ConversionOptions.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 3912,
       "sha256": "7d9419013d440ec994b68aec9d09dc57b37c575bf6a9b22b8ec083ba0c29fb12"
@@ -201,7 +201,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/ConversionRequest.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 2253,
       "sha256": "12b0035b5076b46177f07b68e01f1aa5985fca688661f54f3f69874c996415c1"
@@ -209,7 +209,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/ConversionResult.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 1714,
       "sha256": "9e2ee7536a55645219ff2945f6f1717e139932fe8152bfb836321492d9a93fe3"
@@ -217,7 +217,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/ConversionWarning.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 310,
       "sha256": "6754512c2ae6099e4939fe54c2ae8fdc90d9c3b431e7a5bc912ac67cd8e57925"
@@ -225,7 +225,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/DiagnosticsPolicy.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 384,
       "sha256": "f1206d8c535be35897ae6ae7057a733b8fb2853fd5bff8440629ba8e852e0031"
@@ -233,7 +233,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/FontPolicy.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 256,
       "sha256": "ee310bbef353dc037c318fa2ecc67b539b0c18c594a923380649eba8e29706bd"
@@ -241,7 +241,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/GeometryPolicy.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 268,
       "sha256": "5f6ed64bee33a9532740c9bd10d5d4db2891cc9ebe8e790a6bc24c6c06c508c6"
@@ -249,7 +249,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/Limits.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 731,
       "sha256": "4afadaed12f80b3ac6a8946a9fd1d6e7a8d748ccfb7242f73efc29eae8070717"
@@ -257,7 +257,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/MetadataPolicy.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 268,
       "sha256": "d58165ec69efd592953dcbe15e990f132fae22e18da07cc66e68514fb6b1e227"
@@ -265,7 +265,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/RenderPolicy.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 900,
       "sha256": "6481ee5624a7805597c3d34ea46d1b27c2104aaaff807187f07d3811e25b84f2"
@@ -273,7 +273,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/ResourceContext.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 1716,
       "sha256": "9020acba0ad5785b8d377eafd1d42c4e58d62591093d5e868ad4fbcf902340a2"
@@ -281,7 +281,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/Severity.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 270,
       "sha256": "c5d452aded55fde44e7b382df60f37bdf872afcb4a2f842ad40992b499e05515"
@@ -289,7 +289,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/TextFallback.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 379,
       "sha256": "0409c043767b3b0a6e6a3b20ad01ba1bdf745b8530daec1d48038cb42e1ee605"
@@ -297,7 +297,7 @@
     {
       "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/TextPolicy.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 419,
       "sha256": "2611e79fb498b4d2dfc1de8de64e559c619a159161e80ee79fa42d5ba9437c6a"
@@ -305,7 +305,7 @@
     {
       "path": "afp-cli/build.gradle",
       "tracked": true,
-      "statusCode": "M",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 1926,
       "sha256": "18f508fe3c915f16b32c6a70d7aefd06e59d06e8fa80928c57c2cf1a036939cb"
@@ -313,7 +313,7 @@
     {
       "path": "afp-cli/src/main/java/solutions/pointzero/symphony/afp/cli/Afp2PdfMain.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 7361,
       "sha256": "e503eddb6d8a97690f92eca8195ab4985b9e84773ba6184544541a03c2d919de"
@@ -329,7 +329,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpCodePageProfile.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 559,
       "sha256": "b0c8f29b69e4967d031ab3bda0d033ce210d4b76486ee3b7991b17bebf5de359"
@@ -337,7 +337,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpCodePageResolver.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 7646,
       "sha256": "61abae9ad8f4f9613fcef5e4fd0c7eabbe73b244613cd1c3d530fe204d3d6fcd"
@@ -345,7 +345,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpDocumentLayout.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 436,
       "sha256": "607d27eddc59c21781180569b72bd699927d684b58989162b6024797431adc2a"
@@ -353,7 +353,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpEngineAdapter.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 316,
       "sha256": "2eef427b630c6248bb054f2eda9117dd7d77d19bb7cd25758f05aa47c22f92e2"
@@ -361,7 +361,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpHtmlRenderer.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 3468,
       "sha256": "10f97246a56f02f85e5ac6c650d2d04f9ca1427a12d40b5cc262fbc5cffa53c9"
@@ -369,7 +369,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpInterpretation.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 768,
       "sha256": "1ed8443af4985891ee2fe56d6f84422161158909ccfd814d5ecb0a7097bc737d"
@@ -377,7 +377,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpInterpreter.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 7283,
       "sha256": "acbb8c150d5a241aeced82746f594257a7dc92640464ee9eef2a144df9bf491e"
@@ -385,7 +385,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpLayoutInterpreter.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 5496,
       "sha256": "8044de24d3bf8c26fe5a04e154d94cc49a12ee9d265f716a7a9fd34d2d02b044"
@@ -393,15 +393,15 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 150982,
-      "sha256": "052e1acd3deba35a355168811709cbd94f05e236165c93728dd56da78f373a75"
+      "sizeBytes": 154927,
+      "sha256": "afb751bc39a678d42a2b424afe12b615604fe8cf39dd2ab697c89a4d0c16a7e7"
     },
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpOptionRow.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 123,
       "sha256": "c25c6dc9ed05a862b4bc53063e50721dcd35156ac19da0615ed744e6c6389e64"
@@ -409,7 +409,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpParseResult.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 287,
       "sha256": "ba95b321cfb729e47b0e25b870f5085166f0c4d8e555790165b5da69d553686b"
@@ -417,7 +417,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpPrintCentricTraceEngine.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 16223,
       "sha256": "a91d2c5f8f8c1520429e84e2a780215a79ca8705092a39b416c2cafeaa22d203"
@@ -425,7 +425,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpSemantics.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 980,
       "sha256": "2d2e4deff2e84c83965f6939f5b5ef58b98854158af1b0be672aebafca502a15"
@@ -433,7 +433,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpStructuredField.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 604,
       "sha256": "a30092045e7730608da4e680d2b80a868e8ac05d11fbec7af779703f5675fc8a"
@@ -441,7 +441,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpStructuredFieldParser.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 2620,
       "sha256": "eaccc425aad82867dca253f16f83575101ffbf2bf9c53212481179919294af05"
@@ -449,7 +449,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpTextDecoders.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 10921,
       "sha256": "324cbfcb3f10f1d26be4270de4a36d5421760ba95194366ad4b5d06d9f924a05"
@@ -457,7 +457,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfplibSemanticPass.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 6720,
       "sha256": "66333d661c379a25f047dafeaced3d3aec195bc81e55b5b88b7bf9fced67dde9"
@@ -465,7 +465,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/CliAfpEngineAdapter.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 4530,
       "sha256": "b070a0a8db69dc0d037fb5f6046242d15ebc0324ab03fa72d0aab99540786130"
@@ -473,7 +473,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/DefaultAfpConverter.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 12864,
       "sha256": "b357afc47cb1b98763063082b24ab6dd34a1ddf1089723e35b0c55cfed336110"
@@ -481,7 +481,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/EngineIdentity.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 126,
       "sha256": "7614d75d29d332e71a9fd5c1d64bff9bdff0175074f868e714da10218423958c"
@@ -489,7 +489,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/EngineInputs.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 653,
       "sha256": "fc6c0efb8f612875718eeeb0de6496fc25390abbdca3d927b251fbdfd32e118c"
@@ -497,7 +497,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/EngineOutputs.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 265,
       "sha256": "6614255cff22adaa119f537932e0a237f2945852cd712182138f12e99a44d9c1"
@@ -505,7 +505,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/EngineStats.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 191,
       "sha256": "eef448515ae29df6598974b7788fa8b338373b46208971e3692556827845ed90"
@@ -513,15 +513,15 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 127810,
-      "sha256": "1686648b8be7873ba0e8bb2a7b98da1d43c86bd4926fb2ce1ea37b31c6aba513"
+      "sizeBytes": 130247,
+      "sha256": "d742f7f58bc7fe5a4019229c9f881ba83e52f5390b60932dc84d81ef19ba6908"
     },
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/Fingerprints.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 5378,
       "sha256": "cfd84e1439a7235f9fed3f06ff63aed5cfc52910be06d792188b700a2b5e74df"
@@ -529,7 +529,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/ImageResolutionService.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 7604,
       "sha256": "65f56c86e464342b6076109ecf59782f3a2c9806d1be9d56d595ee374f0969f5"
@@ -537,7 +537,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/InProcAfpEngineAdapter.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 1744,
       "sha256": "a541dfc65ce03277009e2d94b636aa845c211cafb7fa8fb082667a564d61a117"
@@ -545,7 +545,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/PdfBoxPdfWriter.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 3951,
       "sha256": "6a446397c167b01bdfc5a8ea8ef5d4aa2bb91e777163060235b0a9a1e68e9078"
@@ -553,7 +553,7 @@
     {
       "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/PdfWriter.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 709,
       "sha256": "9ad62342375f8ca49295efc87246cc241d5875bf459dff0c5bfc8fb7b8170367"
@@ -561,7 +561,7 @@
     {
       "path": "afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpGroundTruthComparisonTest.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 3209,
       "sha256": "e6847ec4eec36ac3a8f3a7e437b6ad72f22eee4c336c8cbade346d9b2535d994"
@@ -569,7 +569,7 @@
     {
       "path": "afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpInterpreterTest.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 3912,
       "sha256": "49bbff0930c535005527f7617f18136d455816ddb16ea553e00c78b1d7fa040a"
@@ -577,7 +577,7 @@
     {
       "path": "afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRendererTest.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 12999,
       "sha256": "0388f0496f153d853a2f70390ae259b84d456f8459ee556d6ef992c064dc2c42"
@@ -585,7 +585,7 @@
     {
       "path": "afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpPdfFidelityReportIT.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 18971,
       "sha256": "1c7b400b4159e5b013f781e5e50a2d76f2101997eb85315a9dc4e4824fc729d2"
@@ -593,7 +593,7 @@
     {
       "path": "afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpPrintCentricTraceEngineTest.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 3973,
       "sha256": "95f55bc25cafdae8b7051fdad1afab53618eed73c7e1c4613de3df03dfd1cf36"
@@ -601,7 +601,7 @@
     {
       "path": "afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpStructuredFieldParserTest.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 1556,
       "sha256": "21a8c4761dcb898f87d45a4bc7d5bd7919b6277091dface97fb86c5053072981"
@@ -609,7 +609,7 @@
     {
       "path": "afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpTextDecodersTest.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 1171,
       "sha256": "a84d4f72f10092337d1e06ffc9875262699cfd0043cf94bbac1f170492e2f0ad"
@@ -617,7 +617,7 @@
     {
       "path": "afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/DefaultAfpConverterTest.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 7960,
       "sha256": "2aaee301d5dbfd5dfc99cf06736a2fde26d452660bf2a13c31b194288bfca6c7"
@@ -625,7 +625,7 @@
     {
       "path": "afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/ImageResolutionServiceTest.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 3169,
       "sha256": "02561754e30649238e01f306896426f1be2dddaf5a323fdab0eeb06cd3874f79"
@@ -633,7 +633,7 @@
     {
       "path": "afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/InProcAfpEngineAdapterTest.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 15019,
       "sha256": "bf458bb32be22105a35209e94344b09cd978ab644f46be3ff19740d858ca9cc9"
@@ -641,7 +641,7 @@
     {
       "path": "afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/PdfBoxPdfWriterTest.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 1051,
       "sha256": "4f9c8c2db39dba9829e4d5fc29b5d85c72fa7bb1dd7b715f52c0796d4c0a3941"
@@ -665,7 +665,7 @@
     {
       "path": "boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-18-boilerplate-sync-triage-workbook/README.md",
       "tracked": true,
-      "statusCode": "M",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 725,
       "sha256": "26b9d7445301219b65ac7a5c271e0dadf87861b4c9c7e2103f2e0bf4be1d0825"
@@ -673,7 +673,7 @@
     {
       "path": "boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-18-boilerplate-sync-triage-workbook/apply-checklist.md",
       "tracked": true,
-      "statusCode": "M",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 974,
       "sha256": "1e0ce98edcc240eee05ca1f0861da1818fdc3e52a685b9700eecb767defccd41"
@@ -705,7 +705,7 @@
     {
       "path": "boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-18-boilerplate-sync-triage-workbook/templates/BoilerplateSyncWorkbookUpdater.java",
       "tracked": true,
-      "statusCode": "M",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 13855,
       "sha256": "68981a5ff5695f4a688b977e82c636d57e08283a8730f6164b84065b25a8b444"
@@ -713,7 +713,7 @@
     {
       "path": "boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-18-boilerplate-sync-triage-workbook/templates/build-gradle-snippets.md",
       "tracked": true,
-      "statusCode": "M",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 2675,
       "sha256": "b848a3bcf13bc1152c6a2c6513af777fad78b9a13241b25160d1f0a71ddaa0ea"
@@ -745,7 +745,7 @@
     {
       "path": "boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-18-consolidated-framework-sync/apply-checklist.md",
       "tracked": true,
-      "statusCode": "M",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 1275,
       "sha256": "093083eeee79f860007469bcf8722f32490de88981bebb8d31059eb131193a6c"
@@ -1247,25 +1247,49 @@
       "sha256": "7c681df03db1bb946e9eedfb9566e63cd42dfe7ad57cc1078b1f3ed3aecf26e9"
     },
     {
-      "path": "boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-namespace-root-solutions-pointzero-symphony/",
-      "tracked": false,
-      "statusCode": "??",
+      "path": "boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-namespace-root-solutions-pointzero-symphony/README.md",
+      "tracked": true,
+      "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 192,
-      "sha256": ""
+      "sizeBytes": 484,
+      "sha256": "acd1695e00000853e2ae9c7e6225ba96a380d274956fe79a373d2832550162e1"
+    },
+    {
+      "path": "boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-namespace-root-solutions-pointzero-symphony/apply-checklist.md",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 524,
+      "sha256": "29462e6baf64599284a25fed5420406624a9a2cd89f1f35345eed86267e84f06"
+    },
+    {
+      "path": "boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-namespace-root-solutions-pointzero-symphony/fresh-session-prompt.md",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 422,
+      "sha256": "e530120ee749278b65ce31438d5a85729355bb3f27383a68b63e1710428c0c54"
+    },
+    {
+      "path": "boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-namespace-root-solutions-pointzero-symphony/package-manifest.json",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 775,
+      "sha256": "7051d6d1ac165d0507865937d3e4fd5fcb58cf6e679f081ce96a0cf1819a2795"
     },
     {
       "path": "build.gradle",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 46227,
-      "sha256": "ace42071c18615f7f07fd299d235ea49b3d69ba2f54649a3e05bb45a526d47b8"
+      "sizeBytes": 47803,
+      "sha256": "9a1b078eb6eea2c2912b2a9a081d4b69eee071c1115a0db6b01fc1fd52eb9ab8"
     },
     {
       "path": "docs/API.md",
       "tracked": true,
-      "statusCode": "M",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 7634,
       "sha256": "c6fbb7dfdba08ad89c99a670ba3af499c172ff4d11dc2e878a9adc40af65b66b"
@@ -1273,7 +1297,7 @@
     {
       "path": "docs/boilerplate-sync-candidates.xlsx",
       "tracked": true,
-      "statusCode": "M",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 8390,
       "sha256": "fd955433c2b4151d815ceda9a4bef620bcd522ef582616ac4a60c0a33c6acf17"
@@ -1300,12 +1324,12 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 5987,
-      "sha256": "465002c980fe420c40d83c7dfc4ebd1efd3de085a9991a3687f0a85cf4d4a522"
+      "sha256": "9212e49fbcdd6307e2706d60ec793f0362c381b55f699fff4b7f4b0d42866c03"
     },
     {
       "path": "docs/policy-governance-events.csv",
       "tracked": true,
-      "statusCode": "M",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 1713,
       "sha256": "2d467921ce88a08b270c72a87a0149aa0948e976e1aff13ea13f5858a9b68ea5"
@@ -1313,7 +1337,7 @@
     {
       "path": "docs/policy-governance-events.xlsx",
       "tracked": true,
-      "statusCode": "M",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 4347,
       "sha256": "e3122f3ce9d210b4c576197a3582ef22dbb6e10df05a9d3567468554bafdb5a0"
@@ -1393,7 +1417,7 @@
     {
       "path": "pm-console/build.gradle",
       "tracked": true,
-      "statusCode": "M",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 454,
       "sha256": "57bf41851234afeb13a6747749524fb30a9350f5a7dc4afdf8a07767feb2052a"
@@ -1401,7 +1425,7 @@
     {
       "path": "pm-console/src/main/java/solutions/pointzero/symphony/pm/console/PmConsoleMain.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 13246,
       "sha256": "7d18d360d69d2293e58f9e59c02a56adbcbceecc6c8932dc8b62b448dd6d5e34"
@@ -1417,7 +1441,7 @@
     {
       "path": "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/BoilerplateSyncWorkbookUpdater.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 18283,
       "sha256": "20c3603fe10ea33dc3d48bb2e7b6a806c19df61bf19037c53ebe0ecbc68c7c3f"
@@ -1425,7 +1449,7 @@
     {
       "path": "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/PolicyGovernanceWorkbookUpdater.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 5953,
       "sha256": "c42bff43bb409866e8ccc7745c45e745541e8296d080665f428830bbf8a8c53c"
@@ -1433,7 +1457,7 @@
     {
       "path": "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/ProjectPlanWorkbookUpdater.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 19958,
       "sha256": "742c4d126692f7c6bbddb4eb6d7cc7f58efc9fc75eeeb7fdd9047c669fd81694"
@@ -1441,10 +1465,10 @@
     {
       "path": "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/StateDatabaseTool.java",
       "tracked": true,
-      "statusCode": "RM",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 64074,
-      "sha256": "6dc0e0a91ce2c66142218e125f9b518f19c47463a85b98f6d9049648849fde80"
+      "sizeBytes": 68677,
+      "sha256": "cbe557346eeb15a156253a4240a7290823b73f74b8dd735fa18450f3484c4dc2"
     },
     {
       "path": "pm/checkpoints/20260218T180055Z-0.2.0-beta.1-initial-versioning-rollback/files/AI-POLICY.md",
@@ -3467,24 +3491,32 @@
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 3624,
-      "sha256": "076f1b9a01e4b8c9c09d866a5bf18ed1070ec29f4894b80c02cceea84e54c83a"
+      "sizeBytes": 6469,
+      "sha256": "e693cd73cb54ae410d761c00e48da1844572d1b34ff0354e7dca1c30f8cdadb0"
     },
     {
       "path": "pm/reports/boilerplate-package-files-with-context.csv",
       "tracked": true,
-      "statusCode": "M",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 24278,
       "sha256": "f4eafed4ea5d14834460f338130b48339f325e5287cd725d936a7641ce59e482"
+    },
+    {
+      "path": "pm/reports/data-dictionary.json",
+      "tracked": false,
+      "statusCode": "??",
+      "existsOnDisk": true,
+      "sizeBytes": 3278,
+      "sha256": "012c33bf662ce7a6374b3fa8e93749d5a957c1b09e9a1270170bf3593281fec0"
     },
     {
       "path": "pm/reports/documentation-manifest.json",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 7097,
-      "sha256": "3267790fadda2a627ba0eae59a606e3ac9aec88d3fa3115bb28df8e1fcad6950"
+      "sizeBytes": 7299,
+      "sha256": "c8646f3a8c77d7e87f0834cfc2c3c61f459d224e2e745e5d1ddaaf2eb404256c"
     },
     {
       "path": "pm/reports/governance-alerts.json",
@@ -3492,23 +3524,23 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 1523,
-      "sha256": "3c3fbcf26a7558e1ba84b7b6441a09edcb07af249a62060d4f193a45d9d42ef5"
+      "sha256": "fc6527c08cb2f9cd2d92a4c841df6e4f409fce32af7095086a2b224eafbdf3da"
     },
     {
       "path": "pm/reports/issues-effectiveness.json",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 3624,
-      "sha256": "d6b7365b8f21c0c75b72af14853e961e3302840110bbb4c4c4f58530fea8db4d"
+      "sizeBytes": 2708,
+      "sha256": "2ec7ab5d0565b957beac7a79b8de6cf2af614690426b421ded42ac71d30575e5"
     },
     {
       "path": "pm/reports/issues-log-tickle.json",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 2608,
-      "sha256": "85138a5f5e7bf5f49c6e6b0ca2440ce1eadb2f977d30076567cd95fd620792cf"
+      "sizeBytes": 1692,
+      "sha256": "fc8830ed24a6c7e92d55bfca2c856bcfdfcde0c8af923523227c96e3a51f3216"
     },
     {
       "path": "pm/reports/policy-rules.json",
@@ -3516,7 +3548,7 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 4970,
-      "sha256": "a9102a9ce0bd23dc8bcd929d1279bd09a943dcce55afaa648ece5961fc28cadc"
+      "sha256": "641a37be219d718455f4a97203c741a159e4d30b3b85f4581f825774820f0071"
     },
     {
       "path": "pm/reports/project-plan-next-step.json",
@@ -3524,7 +3556,7 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 3755,
-      "sha256": "8ee56fa63f29fb942c2dfbe8536e77d666d578661b3a1e0e53a8772e26e0514a"
+      "sha256": "6997b12f9a286cdba163f48b0592da65880e14240fd6f23f982caf55662ef811"
     },
     {
       "path": "pm/reports/project-plan-progress-data.json",
@@ -3532,23 +3564,23 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 11198,
-      "sha256": "6e7ecdd6aa9a01a5923f06a90bfe735efcaec69e9df946f4bc0ce2c3b84ba31e"
+      "sha256": "609607a0115b0e5b98fe671e89e5f8737365689046ee4123801b1d5e9d6659ec"
     },
     {
       "path": "pm/reports/repo-file-inventory-with-context.csv",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 170860,
-      "sha256": "89f4f8b32bf0f874a0ef4f1608aee14e184b6cd6e195fd54780a00bd4bf974ba"
+      "sizeBytes": 177065,
+      "sha256": "4246299b8cd48c0a463c6703d3b0529b0757a27f85c685fe86856a5540826923"
     },
     {
       "path": "pm/reports/version-control-ledger.json",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 160366,
-      "sha256": "52703d6e22d1639093554a15bcd6821151ae085809de67f3aac6aa759e5e5db2"
+      "sizeBytes": 166109,
+      "sha256": "0be7632d09025c3caa954c0b410291c35476364ddb915107f8adc71c2df45f3e"
     },
     {
       "path": "pm/reports/version.json",
@@ -3556,7 +3588,7 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 103,
-      "sha256": "97e31c704334db90decc54ad2b317504ae77903d1012a68510049f29619bba56"
+      "sha256": "d38311b208a7004b3b5f618193870b14fa15bf721c496e0c9b15afeac8bde923"
     },
     {
       "path": "pm/reports/workbook-refresh-status.json",
@@ -3572,15 +3604,15 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 49152,
-      "sha256": "b3001fd816d496af0be23bced9b74a11b1784a520a7fd82fe8b91a7b2021d802"
+      "sha256": "b698a7b9400eec34ade81577ffa52306928fb5ffa10179bf261ce769836f9588"
     },
     {
       "path": "pm/state/project-state.sqlite",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 253952,
-      "sha256": "459881e274c694f11429669822bbecfbfb3abfbe8b81697337b938c739e761b1"
+      "sizeBytes": 270336,
+      "sha256": "6a01ada0c49552e0ecca96517888d9fe0c3ac151a85d37959235c040c2d2903b"
     },
     {
       "path": "pm/state/project-state.sqlite-shm",
@@ -3588,15 +3620,15 @@
       "statusCode": "??",
       "existsOnDisk": true,
       "sizeBytes": 32768,
-      "sha256": "adc70f266b6e8e49722e1702c872e4b65a9681e65edc9e0af75709c980b68b21"
+      "sha256": "9da6ce40b249a01403d94e3c197633cc6ee88f03227f7dc440e8d67c713f269b"
     },
     {
       "path": "pm/state/project-state.sqlite-wal",
       "tracked": false,
       "statusCode": "??",
       "existsOnDisk": true,
-      "sizeBytes": 70072,
-      "sha256": "16327951fb0bbd31e5268e261374723d3cad0521cb3585637caf85ff3be0a424"
+      "sizeBytes": 78312,
+      "sha256": "232186ffc28ebbf8622f1ef1332f1c7292f7733c66d9f34497ddcf0d5c96ca69"
     },
     {
       "path": "pm/workflow/workflow-manifest.json",
@@ -3636,15 +3668,15 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 1957,
-      "sha256": "8f0c7ae9b349e381b8c31f91dec8783681fac0935b02cd2b6d5d386ac041dd8f"
+      "sha256": "8cc742a3b28834ab62f22e060fdf6af5614f54f72d4fc2f0f9fdff22df54130e"
     },
     {
       "path": "preview/ci-artifacts/latest/AI-POLICY.md",
       "tracked": true,
       "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 4661,
-      "sha256": "362e33f8abb5050017c995d6ba73f8427553b944912544ed4d1552d9d1a251bc"
+      "sizeBytes": 20331,
+      "sha256": "85e084a1b754b66e1cec8a991603f97abdd022f4355f1fe255643e97bb671c92"
     },
     {
       "path": "preview/ci-artifacts/latest/NATIVE_RENDERER_PLAN.md",
@@ -3659,24 +3691,32 @@
       "tracked": true,
       "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 35988,
-      "sha256": "c92114c95506b86509e220de349dc4c56a59d63cf885a68417c2ffd76bbd52c1"
+      "sizeBytes": 59412,
+      "sha256": "d1cc1a23c5e84cd0553a816c95cf0dbb6d07266074ca0af6ddafc3435c159963"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/VERSION",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 13,
+      "sha256": "214374e4ab6ceb79d5fa5ff001fe9bbcbea31c3fd8c6bd42d48e7efaf6b2ce9f"
     },
     {
       "path": "preview/ci-artifacts/latest/afp-diag.json",
       "tracked": true,
       "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 14879,
-      "sha256": "3646c33dad1546b12854c076ca1d358c9c7fc3d1edee2819f725d4ef5e77c4b1"
+      "sizeBytes": 15501,
+      "sha256": "54a44c85007f3a546c58caf7cb3093b2b620dc64600f9a17c268b391030aef1e"
     },
     {
       "path": "preview/ci-artifacts/latest/afp-meta.json",
       "tracked": true,
       "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 58455,
-      "sha256": "1fd6fd98bd19bfe7cca64d00056925cf08d949c9db012a6a6553768f21030d6e"
+      "sizeBytes": 59077,
+      "sha256": "c385e4b36f9bfe6f2f709ce365c209a1bf77def6b79013d825aa8b463482d8aa"
     },
     {
       "path": "preview/ci-artifacts/latest/afp-output.html",
@@ -3692,15 +3732,39 @@
       "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 1957,
-      "sha256": "f12388a8ce74aab3e10cf74ea35633da3186f6b91504e6fa405a38ee25e9f794"
+      "sha256": "5ee87aeeb5d622e5070717e780b5049c2e41fe4a520ae8d91a02e139c9e86986"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/boilerplate-package-files-with-context.csv",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 24278,
+      "sha256": "f4eafed4ea5d14834460f338130b48339f325e5287cd725d936a7641ce59e482"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/boilerplate-state.sqlite",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 49152,
+      "sha256": "b3001fd816d496af0be23bced9b74a11b1784a520a7fd82fe8b91a7b2021d802"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/boilerplate-sync-candidates.xlsx",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 8390,
+      "sha256": "fd955433c2b4151d815ceda9a4bef620bcd522ef582616ac4a60c0a33c6acf17"
     },
     {
       "path": "preview/ci-artifacts/latest/documentation-manifest.json",
       "tracked": true,
       "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 2808,
-      "sha256": "9cc5dc694d47c2a99e7300446b7ef2caaa3a4fedfbbb694589eb75e0c89d35f6"
+      "sizeBytes": 7097,
+      "sha256": "eb580948f637ba0b5861a8f241b2d66af5af9c133601daa6b94cbe305361f237"
     },
     {
       "path": "preview/ci-artifacts/latest/fidelity-corpus.txt",
@@ -3716,47 +3780,151 @@
       "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 2013,
-      "sha256": "9cbf974dc9596d5db8a3a85ed1580aae384c09b007c03fa024bc12e11a49c06f"
+      "sha256": "96c1ed24de9bd02c52e86d43e90884f55b39a0ea37c50a74a67a33366631771a"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/governance-alerts.json",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 1523,
+      "sha256": "2ae6d014fdacfe886c0276e7ec31db8dce732dea1ebc9815d7dc88efdcce3c1f"
     },
     {
       "path": "preview/ci-artifacts/latest/index.json",
       "tracked": true,
       "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 2772,
-      "sha256": "ca2b818475812cc9e5a03d73daad461c64b754b6575630f6a6dd716126764061"
+      "sizeBytes": 6521,
+      "sha256": "c84c896a34f4a758cda231e2d9a35ca692441b4d3fb8519c21a97002048516b1"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/issues-effectiveness.json",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 3824,
+      "sha256": "eb3e70c84f59ea12b8cb23a148c50f7e6dc78126057858d9796a95836631aaf1"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/issues-log-tickle.json",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 2809,
+      "sha256": "861cded6d96cd4d958b8934710fd4ccf2b4384a3578fb4645add17e77305e6c7"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/policy-governance-events.csv",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 1713,
+      "sha256": "2d467921ce88a08b270c72a87a0149aa0948e976e1aff13ea13f5858a9b68ea5"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/policy-governance-events.xlsx",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 4347,
+      "sha256": "e3122f3ce9d210b4c576197a3582ef22dbb6e10df05a9d3567468554bafdb5a0"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/policy-rule-tables.sql",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 3624,
+      "sha256": "076f1b9a01e4b8c9c09d866a5bf18ed1070ec29f4894b80c02cceea84e54c83a"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/policy-rules.json",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 4970,
+      "sha256": "fcb9529d4f85ed4b8e513d506e20f3d210f8b9571847f76c18b5d566093fd720"
     },
     {
       "path": "preview/ci-artifacts/latest/project-plan-next-step.json",
       "tracked": true,
       "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 3571,
-      "sha256": "a511af9df9ab61a76caf98102ea444b439858aaf0c868ad18dbaf83a4a49313f"
+      "sizeBytes": 3755,
+      "sha256": "82be3714b36efbc5eb8b1d57d8464213c57f8262a821cfc4478a8b418d3122f9"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/project-plan-progress-data.json",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 11198,
+      "sha256": "905457ed639615a898d82dcff71572224aa5600ccdbca074b4bbc9481c4eaf7e"
     },
     {
       "path": "preview/ci-artifacts/latest/project-plan-progress.csv",
       "tracked": true,
       "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 4533,
-      "sha256": "f32c48b7efc12158f2d7178ad06373ea814a7c386923112ea83df716366ce286"
+      "sizeBytes": 6740,
+      "sha256": "19503640e8257b8fee54a8ab8be629c783876bc52ffcf08387befeea1571fc13"
     },
     {
       "path": "preview/ci-artifacts/latest/project-plan-progress.xlsx",
       "tracked": true,
       "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 18041,
-      "sha256": "c4e3a68c187e0e3307137589cc5110e2af7ce2ee93094b65ec5acc1070ad09c0"
+      "sizeBytes": 29961,
+      "sha256": "76f07a44f12e21299ab2cc55af5ec1f2945b97a974ffafc4c2167123df27aeb7"
     },
     {
       "path": "preview/ci-artifacts/latest/project-plan.md",
       "tracked": true,
       "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 6592,
-      "sha256": "b2a7b0a1a7767a4868ace79fce7d1aaeb6488b0707c3ee7f4b6f00d34603a849"
+      "sizeBytes": 6891,
+      "sha256": "4e7f6e95637a345803f098d4f00ed37560ff4141830230ce2f998fd16e93061e"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/project-state.sqlite",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 253952,
+      "sha256": "915af89a5f003c48e5dc58ed0972b057d131bc88a8bd66572ac91b477866eeb0"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/repo-file-inventory-with-context.csv",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 170873,
+      "sha256": "6a8da63588e3870eeeb656bee92db1e1661f2a4f3850b21266589f149e335341"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/version-control-ledger.json",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 160379,
+      "sha256": "3dd1212c01a6000101cca83517edaf760f4f404cdb1582d385739e6c3392d269"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/version.json",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 103,
+      "sha256": "43b7e1db8538ec49b478d48fe37e2e7f3317864ae229ab96f04775917226832a"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/workbook-refresh-status.json",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 96,
+      "sha256": "da893a9d602c4b0508338ba3e4d68b59fdd719129a918860fea05098d8091968"
     },
     {
       "path": "preview/fidelity-report.json",
@@ -3764,7 +3932,7 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 2013,
-      "sha256": "96c1ed24de9bd02c52e86d43e90884f55b39a0ea37c50a74a67a33366631771a"
+      "sha256": "3c5f34a5d6ade30789250797da368fb0c6b35caf5a807c6118807893cc6d91f2"
     },
     {
       "path": "preview/ibm-output.html",
