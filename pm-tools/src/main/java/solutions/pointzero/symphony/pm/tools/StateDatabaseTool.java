@@ -38,6 +38,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class StateDatabaseTool {
 
@@ -465,15 +467,19 @@ public final class StateDatabaseTool {
             ); ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     Map<String, String> event = new LinkedHashMap<>();
-                    event.put("event_id", text(rs.getString(1)));
-                    event.put("event_date", text(rs.getString(2)));
-                    event.put("phase", text(rs.getString(3)));
+                    String eventId = text(rs.getString(1));
+                    String eventDate = text(rs.getString(2));
+                    String phaseValue = text(rs.getString(3));
+                    event.put("event_id", eventId);
+                    event.put("event_date", eventDate);
+                    event.put("phase", phaseValue);
                     event.put("status", text(rs.getString(4)));
                     event.put("checkpoint_id", text(rs.getString(5)));
                     event.put("issue_id", text(rs.getString(6)));
                     event.put("summary", text(rs.getString(7)));
                     event.put("evidence", text(rs.getString(8)));
                     event.put("updated_by", text(rs.getString(9)));
+                    event.put("event_ref", humanReadableRef("Governance Event", eventId, eventDate, -1));
                     String status = event.get("status").toLowerCase(Locale.ROOT);
                     if (status.equals("open") || status.equals("in_progress") || status.equals("breach")) {
                         activeBreaches.add(event);
@@ -1019,6 +1025,12 @@ public final class StateDatabaseTool {
 
                 Map<String, Object> row = new LinkedHashMap<>();
                 row.put("knowledgeId", knowledgeId);
+                row.put("knowledgeRef", humanReadableRef(
+                    "Knowledge",
+                    knowledgeId,
+                    firstNonBlank(dateFromIdentifier(knowledgeId), isoDateOnly(text(entryRs.getString(14)))),
+                    -1
+                ));
                 row.put("realm", realm);
                 row.put("scopeLevel", text(entryRs.getString(3)));
                 row.put("scopeRef", text(entryRs.getString(4)));
@@ -1205,6 +1217,7 @@ public final class StateDatabaseTool {
         List<Map<String, Object>> items = new ArrayList<>();
         Map<String, Integer> byStatus = new LinkedHashMap<>();
         Map<String, Integer> byPriority = new LinkedHashMap<>();
+        Map<String, Integer> actionDaySequence = new LinkedHashMap<>();
         try (Connection conn = connect(dbPath);
              PreparedStatement ps = conn.prepareStatement(
                  "select action_id, realm, source, title, status, priority, implied_by, owner, decision_id, knowledge_id, notes, created_at, updated_at " +
@@ -1218,7 +1231,8 @@ public final class StateDatabaseTool {
                 byStatus.put(status, byStatus.getOrDefault(status, 0) + 1);
                 byPriority.put(priority, byPriority.getOrDefault(priority, 0) + 1);
                 Map<String, Object> row = new LinkedHashMap<>();
-                row.put("actionId", text(rs.getString(1)));
+                String actionId = text(rs.getString(1));
+                row.put("actionId", actionId);
                 row.put("realm", text(rs.getString(2)));
                 row.put("source", text(rs.getString(3)));
                 row.put("title", text(rs.getString(4)));
@@ -1231,6 +1245,9 @@ public final class StateDatabaseTool {
                 row.put("notes", text(rs.getString(11)));
                 String createdAt = text(rs.getString(12));
                 String updatedAt = text(rs.getString(13));
+                String actionDate = firstNonBlank(dateFromIdentifier(actionId), isoDateOnly(createdAt), isoDateOnly(updatedAt));
+                int sequence = bumpSequence(actionDaySequence, firstNonBlank(actionDate, "date-unknown"));
+                row.put("actionRef", humanReadableRef("Action", actionId, actionDate, sequence));
                 row.put("createdAt", createdAt);
                 row.put("updatedAt", updatedAt);
                 int staleAfterDays = staleAfterDaysForPriority(priority);
@@ -1238,7 +1255,7 @@ public final class StateDatabaseTool {
                 row.put("ageDays", ageDays);
                 row.put("staleAfterDays", staleAfterDays);
                 row.put("isStale", ageDays >= staleAfterDays);
-                row.put("decisionLinks", fetchActionDecisionLinks(conn, text(rs.getString(1))));
+                row.put("decisionLinks", fetchActionDecisionLinks(conn, actionId));
                 items.add(row);
             }
         }
@@ -1290,15 +1307,23 @@ public final class StateDatabaseTool {
                     try (ResultSet rs = ps.executeQuery()) {
                         while (rs.next()) {
                             Map<String, Object> row = new LinkedHashMap<>();
+                            String actionId = text(rs.getString(1));
+                            String updatedAt = text(rs.getString(8));
                             row.put("searchRealm", realmDb.realm());
-                            row.put("actionId", text(rs.getString(1)));
+                            row.put("actionId", actionId);
+                            row.put("actionRef", humanReadableRef(
+                                "Action",
+                                actionId,
+                                firstNonBlank(dateFromIdentifier(actionId), isoDateOnly(updatedAt)),
+                                -1
+                            ));
                             row.put("realm", text(rs.getString(2)));
                             row.put("source", text(rs.getString(3)));
                             row.put("title", text(rs.getString(4)));
                             row.put("status", normalizeActionStatus(text(rs.getString(5))));
                             row.put("priority", normalizeActionPriority(text(rs.getString(6))));
                             row.put("promptText", text(rs.getString(7)));
-                            row.put("updatedAt", text(rs.getString(8)));
+                            row.put("updatedAt", updatedAt);
                             hits.add(row);
                         }
                     }
@@ -3281,7 +3306,14 @@ public final class StateDatabaseTool {
                     impact = recomputed;
                 }
                 Map<String, Object> row = new LinkedHashMap<>();
-                row.put("decisionId", text(rs.getString(1)));
+                String decisionId = text(rs.getString(1));
+                row.put("decisionId", decisionId);
+                row.put("decisionRef", humanReadableRef(
+                    "Decision",
+                    decisionId,
+                    firstNonBlank(dateFromIdentifier(decisionId), isoDateOnly(text(rs.getString(20)))),
+                    -1
+                ));
                 row.put("realm", impactRealm);
                 row.put("scopeLevel", text(rs.getString(3)));
                 row.put("scopeRef", text(rs.getString(4)));
@@ -3338,6 +3370,71 @@ public final class StateDatabaseTool {
             case "rejected", "invalid", "discarded" -> "rejected";
             default -> "open";
         };
+    }
+
+    private static int bumpSequence(Map<String, Integer> counters, String key) {
+        int next = counters.getOrDefault(key, 0) + 1;
+        counters.put(key, next);
+        return next;
+    }
+
+    private static String firstNonBlank(String... values) {
+        if (values == null) {
+            return "";
+        }
+        for (String value : values) {
+            String normalized = text(value);
+            if (!normalized.isBlank()) {
+                return normalized;
+            }
+        }
+        return "";
+    }
+
+    private static String isoDateOnly(String value) {
+        String raw = text(value);
+        if (raw.length() >= 10 && raw.charAt(4) == '-' && raw.charAt(7) == '-') {
+            return raw.substring(0, 10);
+        }
+        return "";
+    }
+
+    private static String dateFromIdentifier(String identifier) {
+        String id = text(identifier);
+        Matcher dashDate = Pattern.compile("(\\d{4}-\\d{2}-\\d{2})").matcher(id);
+        if (dashDate.find()) {
+            return dashDate.group(1);
+        }
+        Matcher compactDate = Pattern.compile("(\\d{8})").matcher(id);
+        if (compactDate.find()) {
+            String raw = compactDate.group(1);
+            return raw.substring(0, 4) + "-" + raw.substring(4, 6) + "-" + raw.substring(6, 8);
+        }
+        return "";
+    }
+
+    private static String sequenceFromIdentifier(String identifier) {
+        String id = text(identifier);
+        Matcher matcher = Pattern.compile(".*?(\\d{3,})$").matcher(id);
+        if (matcher.matches()) {
+            return matcher.group(1);
+        }
+        return "";
+    }
+
+    private static String humanReadableRef(String kind, String identifier, String dateHint, int occurrenceHint) {
+        String kindLabel = text(kind).isBlank() ? "Event" : text(kind);
+        String date = firstNonBlank(dateHint, dateFromIdentifier(identifier), "date-unknown");
+        String occurrence = "";
+        if (occurrenceHint > 0) {
+            occurrence = String.format(Locale.ROOT, "%03d", occurrenceHint);
+        } else {
+            occurrence = sequenceFromIdentifier(identifier);
+        }
+        if (occurrence.isBlank()) {
+            occurrence = "001";
+        }
+        return kindLabel + " | " + date + " | #" + occurrence;
     }
 
     private static String normalizeActionStatus(String status) {

@@ -38,6 +38,7 @@ def main() -> int:
     out_rows: list[dict] = []
     for action in actions:
         action_id = str(action.get("actionId", "")).strip()
+        action_ref = str(action.get("actionRef", "")).strip()
         realm = str(action.get("realm", "")).strip().lower()
         title = str(action.get("title", "")).strip()
         status = str(action.get("status", "")).strip().lower()
@@ -48,6 +49,7 @@ def main() -> int:
         for decision in decisions:
             d_realm = str(decision.get("realm", "")).strip().lower()
             d_id = str(decision.get("decisionId", "")).strip()
+            d_ref = str(decision.get("decisionRef", "")).strip()
             d_title = str(decision.get("title", "")).strip()
             if not d_id:
                 continue
@@ -65,6 +67,7 @@ def main() -> int:
                 continue
             best.append({
                 "decisionId": d_id,
+                "decisionRef": d_ref,
                 "realm": d_realm,
                 "title": d_title,
                 "score": round(score, 3),
@@ -73,6 +76,7 @@ def main() -> int:
         best.sort(key=lambda x: (-x["score"], -x["impactScore"], x["decisionId"]))
         out_rows.append({
             "actionId": action_id,
+            "actionRef": action_ref,
             "realm": realm,
             "title": title,
             "status": status,

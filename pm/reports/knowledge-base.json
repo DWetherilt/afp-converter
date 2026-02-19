@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T18:57:46Z",
+  "generatedAt": "2026-02-19T19:24:27Z",
   "source": "sqlite",
   "sourceTable": "knowledge_entries",
   "entryCount": 4,
@@ -17,6 +17,7 @@
   "knowledge": [
     {
       "knowledgeId": "KB-PM-2026-02-19-002",
+      "knowledgeRef": "Knowledge | 2026-02-19 | #002",
       "realm": "pm",
       "scopeLevel": "component",
       "scopeRef": "realm-knowledge-sync",
@@ -51,6 +52,7 @@
     },
     {
       "knowledgeId": "KB-PM-2026-02-19-001",
+      "knowledgeRef": "Knowledge | 2026-02-19 | #001",
       "realm": "pm",
       "scopeLevel": "workstream",
       "scopeRef": "Workstream-G",
@@ -93,6 +95,7 @@
     },
     {
       "knowledgeId": "KB-2026-02-19-BOILERPLATE-PROMO",
+      "knowledgeRef": "Knowledge | 2026-02-19 | #001",
       "realm": "boilerplate",
       "scopeLevel": "sub_boilerplate",
       "scopeRef": "pz-boilerplate-intelliJ/2026-02-19-recovery-ci-sql-integrity",
@@ -135,6 +138,7 @@
     },
     {
       "knowledgeId": "KB-2026-02-19-RENDER-GAP",
+      "knowledgeRef": "Knowledge | 2026-02-19 | #001",
       "realm": "application",
       "scopeLevel": "component",
       "scopeRef": "afp-engine",

@@ -189,10 +189,20 @@ tasks.register('versionStamp') {
     doLast {
         File out = file('pm/reports/version.json')
         out.parentFile.mkdirs()
+        String generatedAt = new Date().format("yyyy-MM-dd'T'HH:mm:ssXXX")
+        String releaseDate = generatedAt.substring(0, 10)
+        String releaseOccurrence = '001'
+        def prereleaseMatch = (resolvedVersion =~ /.*?(\\d+)$/)
+        if (prereleaseMatch.matches()) {
+            releaseOccurrence = String.format('%03d', Integer.parseInt(prereleaseMatch.group(1)))
+        }
+        String releaseName = "Release ${resolvedVersion} (${releaseDate})"
         out.text = JsonOutput.prettyPrint(JsonOutput.toJson([
             schemaVersion: '1',
-            generatedAt  : new Date().format("yyyy-MM-dd'T'HH:mm:ssXXX"),
-            version      : resolvedVersion
+            generatedAt  : generatedAt,
+            version      : resolvedVersion,
+            releaseName  : releaseName,
+            releaseRef   : "Release | ${releaseDate} | #${releaseOccurrence}"
         ])) + '\n'
     }
 }
@@ -379,6 +389,24 @@ tasks.register('policyRulesLint', Exec) {
             '--db', 'pm/state/project-state.sqlite',
             '--output', 'pm/reports/policy-rules-lint.json'
     }
+}
+
+tasks.register('presentationRefLint', Exec) {
+    group = 'verification'
+    description = 'Fails when presentation-facing PM reports omit/violate human-friendly reference naming.'
+    dependsOn('actionItemsReport')
+    dependsOn('decisionPriorityReport')
+    dependsOn('knowledgeBaseReport')
+    dependsOn('governanceAlerts')
+    dependsOn('versionStamp')
+    commandLine 'python3',
+        'tools/presentation_ref_lint.py',
+        '--actions', 'pm/reports/action-items.json',
+        '--decisions', 'pm/reports/decision-priority-queue.json',
+        '--knowledge', 'pm/reports/knowledge-base.json',
+        '--governance', 'pm/reports/governance-alerts.json',
+        '--version', 'pm/reports/version.json',
+        '--output', 'pm/reports/presentation-ref-lint.json'
 }
 
 tasks.register('applicationRealmCodeDb', Exec) {
@@ -1427,6 +1455,7 @@ tasks.register('documentationManifest') {
             file('AI-POLICY.md'),
             file('README.md'),
             file('docs/API.md'),
+            file('docs/PRESENTATION_ID_MIGRATION.md'),
             file('docs/project-plan.md'),
             file('docs/boilerplate-sync-candidates.xlsx'),
             file('SESSION_CHANGELOG.md'),
@@ -1442,6 +1471,7 @@ tasks.register('documentationManifest') {
             file('pm/reports/issues-effectiveness.json'),
             file('pm/reports/policy-rules.json'),
             file('pm/reports/policy-rules-lint.json'),
+            file('pm/reports/presentation-ref-lint.json'),
             file('pm/reports/sql-authority-application.json'),
             file('pm/reports/sql-authority-pm.json'),
             file('pm/reports/sql-authority-boilerplate.json'),
@@ -1532,11 +1562,13 @@ tasks.register('publishCiArtifacts') {
     group = 'verification'
     description = 'Publishes CI-facing artifact bundle under preview/ci-artifacts/latest'
     dependsOn('documentationManifest')
+    dependsOn('presentationRefLint')
     doLast {
         File outputDir = file('preview/ci-artifacts/latest')
         outputDir.mkdirs()
         List<File> artifacts = [
             file('AI-POLICY.md'),
+            file('docs/PRESENTATION_ID_MIGRATION.md'),
             file('preview/afp-output.pdf'),
             file('preview/afp-output.html'),
             file('preview/afp-meta.json'),
@@ -1549,6 +1581,7 @@ tasks.register('publishCiArtifacts') {
             file('pm/reports/issues-effectiveness.json'),
             file('pm/reports/policy-rules.json'),
             file('pm/reports/policy-rules-lint.json'),
+            file('pm/reports/presentation-ref-lint.json'),
             file('pm/reports/sql-authority-application.json'),
             file('pm/reports/sql-authority-pm.json'),
             file('pm/reports/sql-authority-boilerplate.json'),
@@ -1637,7 +1670,7 @@ tasks.register('publishCiArtifacts') {
 
 tasks.register('enforceCiArtifactIndexIncludesPolicyLints') {
     group = 'verification'
-    description = 'Fails when CI artifact index omits policy/data dictionary lint reports.'
+    description = 'Fails when CI artifact index omits policy/data dictionary/presentation-reference lint reports.'
     dependsOn('publishCiArtifacts')
     doLast {
         File index = file('preview/ci-artifacts/latest/index.json')
@@ -1647,7 +1680,8 @@ tasks.register('enforceCiArtifactIndexIncludesPolicyLints') {
         String text = index.getText('UTF-8')
         List<String> required = [
             "pm/reports/policy-rules-lint.json",
-            "pm/reports/data-dictionary-lint.json"
+            "pm/reports/data-dictionary-lint.json",
+            "pm/reports/presentation-ref-lint.json"
         ]
         List<String> missing = required.findAll { !text.contains(it) }
         if (!missing.isEmpty()) {
@@ -2116,6 +2150,7 @@ tasks.register('qualityGate') {
     dependsOn('realmKnowledgeLinkGateStrict')
     dependsOn('policyRulesLint')
     dependsOn('dataDictionaryLint')
+    dependsOn('presentationRefLint')
     dependsOn('sqlReconstructionCheck')
     dependsOn(':afp-engine:test')
     dependsOn(':afp-engine:fidelityGate')

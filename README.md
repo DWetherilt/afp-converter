@@ -65,6 +65,13 @@ API documentation:
 - `pm/reports/governance-alerts.json`:
   - generated governance/trust alert report sourced from `pm/state/project-state.sqlite`
   - includes active governance-breach visibility and trust-event tracking for handoff/status reporting
+- Presentation-facing PM reports now include human-friendly references alongside internal IDs:
+  - `actionRef`, `decisionRef`, `knowledgeRef`, `event_ref`, `releaseRef`
+  - reference format: `<What> | <YYYY-MM-DD> | #<occurrence>`
+  - internal token IDs (`actionId`, `decisionId`, `knowledgeId`, `event_id`) remain authoritative for storage/joins
+- `pm/reports/presentation-ref-lint.json`:
+  - generated lint output that verifies presentation reference presence/format across key PM reports
+  - enforced by `presentationRefLint` and included in `qualityGate`
 - `pm/reports/version-control-ledger.json`:
   - generated VCS/file-discipline ledger sourced from `pm/state/project-state.sqlite`
 - `pm/reports/repo-file-inventory-with-context.csv`:

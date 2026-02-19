@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T18:57:44Z",
+  "generatedAt": "2026-02-19T19:23:46Z",
   "source": {
     "actions": "pm/reports/action-items.json",
     "decisions": "pm/reports/decision-priority-queue.json"
@@ -9,12 +9,14 @@
   "suggestions": [
     {
       "actionId": "action::db59f0535ec0",
+      "actionRef": "Action | 2026-02-19 | #001",
       "realm": "application",
       "title": "Close high-completion rendering tasks (A/F/D/B)",
       "status": "in_progress",
       "suggestions": [
         {
           "decisionId": "APP-RENDER-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
           "realm": "application",
           "title": "Close Workstream A graphics semantics gap",
           "score": 3.71,
@@ -22,6 +24,7 @@
         },
         {
           "decisionId": "APP-TEXT-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
           "realm": "application",
           "title": "Complete coded-font parity tuning",
           "score": 2.655,
@@ -29,6 +32,7 @@
         },
         {
           "decisionId": "PM-DEC-QUEUE-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
           "realm": "pm",
           "title": "Adopt SQL decision queue as default PM driver",
           "score": 0.765,
@@ -36,6 +40,7 @@
         },
         {
           "decisionId": "BP-DEC-SUB-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
           "realm": "boilerplate",
           "title": "Promote recovery/checksum package to boilerplate",
           "score": 0.652,
@@ -45,12 +50,14 @@
     },
     {
       "actionId": "action::d0caf0185bf1",
+      "actionRef": "Action | 2026-02-19 | #002",
       "realm": "pm",
       "title": "Publish and maintain concise workstream status summary",
       "status": "in_progress",
       "suggestions": [
         {
           "decisionId": "PM-DEC-QUEUE-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
           "realm": "pm",
           "title": "Adopt SQL decision queue as default PM driver",
           "score": 2.765,
@@ -58,6 +65,7 @@
         },
         {
           "decisionId": "APP-RENDER-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
           "realm": "application",
           "title": "Close Workstream A graphics semantics gap",
           "score": 1.71,
@@ -65,6 +73,7 @@
         },
         {
           "decisionId": "APP-TEXT-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
           "realm": "application",
           "title": "Complete coded-font parity tuning",
           "score": 0.655,
@@ -72,6 +81,7 @@
         },
         {
           "decisionId": "BP-DEC-SUB-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
           "realm": "boilerplate",
           "title": "Promote recovery/checksum package to boilerplate",
           "score": 0.652,

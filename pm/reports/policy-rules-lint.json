@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T18:57:40Z",
+  "generatedAt": "2026-02-19T19:24:20Z",
   "source": "sqlite",
   "sourceTable": "policy_rule_catalog",
   "requiredCount": 7,
-  "enabledCount": 45,
+  "enabledCount": 47,
   "missingCount": 0,
   "requiredRuleIds": [
     "PM-COMMS-001",

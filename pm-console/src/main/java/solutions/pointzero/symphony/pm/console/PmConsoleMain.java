@@ -98,6 +98,7 @@ public final class PmConsoleMain implements Callable<Integer> {
                 "  - pmconsole apply-suggestion --action-id action::xxxx",
                 "  - pmconsole report --request \"current workstream status\"",
                 "  - pmconsole report --request \"reasoning drive\"",
+                "  - pmconsole report --request \"governance status\"",
                 "  - pmconsole refresh --phase pm_refresh_and_reports",
                 "  - pmconsole refresh --tasks projectStateDb,decisionPriorityReport",
                 "  - pmconsole db --list",
@@ -170,9 +171,12 @@ public final class PmConsoleMain implements Callable<Integer> {
         @Option(names = "--top", description = "How many rows to print (default: ${DEFAULT-VALUE})")
         int top = 10;
 
+        @Option(names = "--id-mode", description = "Identifier display mode: friendly|raw (default: ${DEFAULT-VALUE})")
+        String idMode = "friendly";
+
         @Override
         public Integer call() {
-            return printDecisionQueue(Math.max(1, top));
+            return printDecisionQueue(Math.max(1, top), idMode);
         }
     }
 
@@ -194,9 +198,12 @@ public final class PmConsoleMain implements Callable<Integer> {
         @Option(names = "--open-only", description = "Show only open/in_progress/blocked action rows.")
         boolean openOnly;
 
+        @Option(names = "--id-mode", description = "Identifier display mode: friendly|raw (default: ${DEFAULT-VALUE})")
+        String idMode = "friendly";
+
         @Override
         public Integer call() {
-            return printActionItems(Math.max(1, top), priority, staleOnly, owner, openOnly);
+            return printActionItems(Math.max(1, top), priority, staleOnly, owner, openOnly, idMode);
         }
     }
 
@@ -336,13 +343,14 @@ public final class PmConsoleMain implements Callable<Integer> {
                     if (n != null) {
                         topDecisions = Math.max(1, n);
                     }
-                    printDecisionQueue(Math.max(1, topDecisions));
+                    String idMode = lower.contains("raw") ? "raw" : "friendly";
+                    printDecisionQueue(Math.max(1, topDecisions), idMode);
                     System.out.println();
                     continue;
                 }
                 if (lower.startsWith("actions")) {
                     LiveActionSelection parsed = parseLiveActionsSelection(normalized);
-                    printActionItems(parsed.top, parsed.priority, parsed.staleOnly, parsed.owner, parsed.openOnly);
+                    printActionItems(parsed.top, parsed.priority, parsed.staleOnly, parsed.owner, parsed.openOnly, parsed.idMode);
                     System.out.println();
                     continue;
                 }
@@ -543,7 +551,8 @@ public final class PmConsoleMain implements Callable<Integer> {
         }
     }
 
-    private static int printDecisionQueue(int top) {
+    private static int printDecisionQueue(int top, String idModeRaw) {
+        String idMode = normalizeIdMode(idModeRaw);
         System.out.println("Decision queue:");
         JsonObject queue = readJson(DECISION_QUEUE);
         if (queue == null) {
@@ -565,8 +574,11 @@ public final class PmConsoleMain implements Callable<Integer> {
                 continue;
             }
             JsonObject row = el.getAsJsonObject();
+            String displayId = "raw".equals(idMode)
+                ? str(row, "decisionId", "<id>")
+                : str(row, "decisionRef", str(row, "decisionId", "<id>"));
             System.out.println("  - [" + str(row, "priorityBucket", "P3") + "] "
-                + str(row, "decisionId", "<id>") + " | "
+                + displayId + " | "
                 + str(row, "realm", "<realm>") + " | "
                 + str(row, "status", "<status>") + " | impact="
                 + str(row, "impactScore", "0")
@@ -576,7 +588,8 @@ public final class PmConsoleMain implements Callable<Integer> {
         return 0;
     }
 
-    private static int printActionItems(int top, String priorityFilter, boolean staleOnly, String ownerFilter, boolean openOnly) {
+    private static int printActionItems(int top, String priorityFilter, boolean staleOnly, String ownerFilter, boolean openOnly, String idModeRaw) {
+        String idMode = normalizeIdMode(idModeRaw);
         System.out.println("Action items:");
         JsonObject root = readJson(ACTION_ITEMS);
         if (root == null) {
@@ -620,8 +633,11 @@ public final class PmConsoleMain implements Callable<Integer> {
             if (openOnly && !Set.of("open", "in_progress", "blocked").contains(status)) {
                 continue;
             }
+            String displayId = "raw".equals(idMode)
+                ? str(row, "actionId", "<id>")
+                : str(row, "actionRef", str(row, "actionId", "<id>"));
             System.out.println("  - [" + str(row, "priority", "medium") + "] "
-                + str(row, "actionId", "<id>") + " | "
+                + displayId + " | "
                 + str(row, "realm", "<realm>") + " | "
                 + status + " | "
                 + str(row, "title", "")
@@ -768,8 +784,8 @@ public final class PmConsoleMain implements Callable<Integer> {
                         continue;
                     }
                     JsonObject row = el.getAsJsonObject();
-                    System.out.println("  - " + str(row, "actionId", "")
-                        + " -> " + str(row, "decisionId", "")
+                    System.out.println("  - " + str(row, "actionRef", str(row, "actionId", ""))
+                        + " -> " + str(row, "decisionRef", str(row, "decisionId", ""))
                         + " | score=" + str(row, "score", "0"));
                 }
             }
@@ -799,6 +815,34 @@ public final class PmConsoleMain implements Callable<Integer> {
             }
             return;
         }
+        if ("governance_status".equals(screenId)) {
+            JsonArray active = data.getAsJsonArray("activeBreaches");
+            JsonArray trust = data.getAsJsonArray("trustEvents");
+            JsonArray policy = data.getAsJsonArray("policyEvents");
+            JsonObject audit = data.getAsJsonObject("policyRuleAudit");
+
+            System.out.println();
+            System.out.println("Governance status:");
+            System.out.println("  - activeBreaches=" + (active == null ? 0 : active.size())
+                + " | trustEvents=" + (trust == null ? 0 : trust.size())
+                + " | policyEvents=" + (policy == null ? 0 : policy.size()));
+            if (audit != null) {
+                System.out.println("  - requiredRule=" + str(audit, "requiredRuleId", "PM-COMMS-001")
+                    + " | enabled=" + str(audit, "requiredRuleEnabled", "false"));
+            }
+            if (active != null) {
+                for (JsonElement el : active) {
+                    if (!el.isJsonObject()) {
+                        continue;
+                    }
+                    JsonObject row = el.getAsJsonObject();
+                    System.out.println("  - breach: " + str(row, "event_ref", str(row, "event_id", ""))
+                        + " | phase=" + str(row, "phase", "")
+                        + " | status=" + str(row, "status", ""));
+                }
+            }
+            return;
+        }
 
         System.out.println();
         System.out.println(GSON.toJson(payload));
@@ -818,6 +862,9 @@ public final class PmConsoleMain implements Callable<Integer> {
         if (normalized.contains("realm") && normalized.contains("knowledge") && normalized.contains("status")) {
             return buildRealmKnowledgeStatusPayload(request, aliases);
         }
+        if (normalized.contains("governance") && (normalized.contains("status") || normalized.contains("alert"))) {
+            return buildGovernanceStatusPayload(request, aliases);
+        }
 
         JsonObject data = new JsonObject();
         JsonArray intents = new JsonArray();
@@ -825,9 +872,24 @@ public final class PmConsoleMain implements Callable<Integer> {
         intents.add("reasoning drive");
         intents.add("action status");
         intents.add("realm knowledge status");
+        intents.add("governance status");
         data.add("supportedRequests", intents);
-        data.addProperty("message", "Request was not recognized. Try: 'current workstream status', 'reasoning drive', 'action status', or 'realm knowledge status'.");
+        data.addProperty("message", "Request was not recognized. Try: 'current workstream status', 'reasoning drive', 'action status', 'realm knowledge status', or 'governance status'.");
         JsonObject payload = buildScreenPayload("unsupported_request", request, aliases, data);
+        return new ReportPayload(payload, aliases.toString());
+    }
+
+    private static ReportPayload buildGovernanceStatusPayload(String request, List<String> aliases) {
+        JsonObject data = new JsonObject();
+        JsonObject governance = readJson(Path.of("pm/reports/governance-alerts.json"));
+        if (governance == null) {
+            governance = new JsonObject();
+        }
+        data.add("activeBreaches", governance.has("activeBreaches") ? governance.get("activeBreaches") : new JsonArray());
+        data.add("trustEvents", governance.has("trustEvents") ? governance.get("trustEvents") : new JsonArray());
+        data.add("policyEvents", governance.has("policyGovernanceEvents") ? governance.get("policyGovernanceEvents") : new JsonArray());
+        data.add("policyRuleAudit", governance.has("policyRuleAudit") ? governance.get("policyRuleAudit") : new JsonObject());
+        JsonObject payload = buildScreenPayload("governance_status", request, aliases, data);
         return new ReportPayload(payload, aliases.toString());
     }
 
@@ -1027,7 +1089,9 @@ public final class PmConsoleMain implements Callable<Integer> {
                     JsonObject first = suggestionRows.getAsJsonArray().get(0).getAsJsonObject();
                     JsonObject out = new JsonObject();
                     out.addProperty("actionId", str(row, "actionId", ""));
+                    out.addProperty("actionRef", str(row, "actionRef", str(row, "actionId", "")));
                     out.addProperty("decisionId", str(first, "decisionId", ""));
+                    out.addProperty("decisionRef", str(first, "decisionRef", str(first, "decisionId", "")));
                     out.addProperty("score", str(first, "score", "0"));
                     topSuggestions.add(out);
                     count++;
@@ -1394,6 +1458,7 @@ public final class PmConsoleMain implements Callable<Integer> {
         boolean staleOnly = false;
         String owner = "";
         boolean openOnly = false;
+        String idMode = "friendly";
         String[] tokens = text(command).split("\\s+");
         for (int i = 1; i < tokens.length; i++) {
             String token = text(tokens[i]).toLowerCase(Locale.ROOT);
@@ -1412,6 +1477,14 @@ public final class PmConsoleMain implements Callable<Integer> {
                 priority = token;
                 continue;
             }
+            if ("raw".equals(token) || "id-raw".equals(token)) {
+                idMode = "raw";
+                continue;
+            }
+            if ("friendly".equals(token) || "id-friendly".equals(token)) {
+                idMode = "friendly";
+                continue;
+            }
             if ("owner".equals(token) && i + 1 < tokens.length) {
                 owner = text(tokens[++i]);
                 continue;
@@ -1422,7 +1495,12 @@ public final class PmConsoleMain implements Callable<Integer> {
                 // ignore non-numeric tokens.
             }
         }
-        return new LiveActionSelection(top, priority, staleOnly, owner, openOnly);
+        return new LiveActionSelection(top, priority, staleOnly, owner, openOnly, idMode);
+    }
+
+    private static String normalizeIdMode(String raw) {
+        String value = text(raw).toLowerCase(Locale.ROOT);
+        return "raw".equals(value) ? "raw" : "friendly";
     }
 
     private static int applyTopSuggestion(String actionIdFilter, boolean dryRun) throws Exception {
@@ -1500,8 +1578,8 @@ public final class PmConsoleMain implements Callable<Integer> {
         System.out.println("pmconsole live commands:");
         System.out.println("  - help");
         System.out.println("  - status");
-        System.out.println("  - decisions [n]");
-        System.out.println("  - actions [n] [high|medium|low] [stale] [open] [owner <name>]");
+        System.out.println("  - decisions [n] [raw|friendly]");
+        System.out.println("  - actions [n] [high|medium|low] [stale] [open] [owner <name>] [raw|friendly]");
         System.out.println("  - apply-suggestion [action-id] [dry-run]");
         System.out.println("  - report <request>  (e.g., action status)");
         System.out.println("  - refresh");
@@ -1536,5 +1614,5 @@ public final class PmConsoleMain implements Callable<Integer> {
 
     private record ReportPayload(JsonObject payload, String sourcesSummary) {}
 
-    static record LiveActionSelection(int top, String priority, boolean staleOnly, String owner, boolean openOnly) {}
+    static record LiveActionSelection(int top, String priority, boolean staleOnly, String owner, boolean openOnly, String idMode) {}
 }

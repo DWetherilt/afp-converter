@@ -22,6 +22,7 @@ class PmConsoleMainTest {
         assertTrue(parsed.staleOnly());
         assertEquals("ai-agent", parsed.owner());
         assertTrue(parsed.openOnly());
+        assertEquals("friendly", parsed.idMode());
     }
 
     @Test
@@ -32,6 +33,14 @@ class PmConsoleMainTest {
         assertFalse(parsed.staleOnly());
         assertEquals("", parsed.owner());
         assertFalse(parsed.openOnly());
+        assertEquals("friendly", parsed.idMode());
+    }
+
+    @Test
+    void parsesLiveActionsCommandWithRawIdMode() {
+        PmConsoleMain.LiveActionSelection parsed = PmConsoleMain.parseLiveActionsSelection("actions 5 raw");
+        assertEquals(5, parsed.top());
+        assertEquals("raw", parsed.idMode());
     }
 
     @Test
@@ -47,6 +56,24 @@ class PmConsoleMainTest {
             String raw = Files.readString(out, StandardCharsets.UTF_8);
             JsonObject obj = JsonParser.parseString(raw).getAsJsonObject();
             assertEquals("realm_knowledge_status", obj.get("screenId").getAsString());
+        } finally {
+            Files.deleteIfExists(out);
+        }
+    }
+
+    @Test
+    void reportCommandSupportsGovernanceStatus() throws Exception {
+        Path out = Files.createTempFile("pmconsole-governance-status-", ".json");
+        try {
+            PmConsoleMain.ReportCommand cmd = new PmConsoleMain.ReportCommand();
+            cmd.request = "governance status";
+            cmd.format = "json";
+            cmd.output = out.toString();
+            int exit = cmd.call();
+            assertEquals(0, exit);
+            String raw = Files.readString(out, StandardCharsets.UTF_8);
+            JsonObject obj = JsonParser.parseString(raw).getAsJsonObject();
+            assertEquals("governance_status", obj.get("screenId").getAsString());
         } finally {
             Files.deleteIfExists(out);
         }

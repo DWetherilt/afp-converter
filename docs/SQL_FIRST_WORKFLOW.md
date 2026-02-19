@@ -361,6 +361,18 @@ Generated outputs:
 - `pm/reports/pm-realm-policy.json`
 - `pm/reports/boilerplate-realm-policy.json`
 
+Presentation naming convention in report payloads:
+
+- action rows include `actionRef` (`Action | YYYY-MM-DD | #NNN`) alongside internal `actionId`
+- decision rows include `decisionRef` alongside internal `decisionId`
+- knowledge rows include `knowledgeRef` alongside internal `knowledgeId`
+- governance event rows include `event_ref` alongside internal `event_id`
+- `pm/reports/version.json` includes `releaseName` and `releaseRef`
+
+Migration note:
+
+- see `docs/PRESENTATION_ID_MIGRATION.md` for compatibility guidance
+
 Cross-realm action token search from SQL:
 
 ```bash
