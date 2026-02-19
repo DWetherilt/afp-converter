@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T01:29:32Z",
+  "generatedAt": "2026-02-19T01:37:53Z",
   "source": "sqlite",
   "sourceTable": "policy_rule_catalog",
-  "ruleCount": 18,
+  "ruleCount": 20,
   "rules": [
     {
       "ruleId": "PM-PROD-001",
@@ -13,7 +13,7 @@
       "sourceRef": "build.gradle:prodBuild",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": []
     },
     {
@@ -24,7 +24,7 @@
       "sourceRef": "pm-tools:StateDatabaseTool/package_candidates.realm",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": [
         "package_candidates"
       ]
@@ -37,7 +37,7 @@
       "sourceRef": "build.gradle:enforceBoilerplateRollupForFrameworkChanges",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": []
     },
     {
@@ -48,7 +48,7 @@
       "sourceRef": "pm/policy/policy-rule-tables.sql",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": [
         "policy_rule_catalog",
         "pm_data_dictionary"
@@ -62,7 +62,7 @@
       "sourceRef": "build.gradle:documentationManifest",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": []
     },
     {
@@ -73,7 +73,7 @@
       "sourceRef": "AI-POLICY.md#Default execution coupling",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": []
     },
     {
@@ -84,7 +84,7 @@
       "sourceRef": "build.gradle:enforceNamespaceRoot",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": []
     },
     {
@@ -95,7 +95,7 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": []
     },
     {
@@ -106,7 +106,7 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": []
     },
     {
@@ -117,7 +117,7 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": []
     },
     {
@@ -128,7 +128,7 @@
       "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": []
     },
     {
@@ -139,7 +139,7 @@
       "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": []
     },
     {
@@ -150,7 +150,7 @@
       "sourceRef": "build.gradle:realmCodeDatabases",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": []
     },
     {
@@ -161,7 +161,7 @@
       "sourceRef": "build.gradle:realmTokenSearch",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": []
     },
     {
@@ -172,7 +172,7 @@
       "sourceRef": "build.gradle:realmSourcesExport",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": []
     },
     {
@@ -183,7 +183,29 @@
       "sourceRef": "build.gradle:sqlAuthorityDriftCheck",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-SQLCODE-005",
+      "realm": "pm",
+      "category": "sql-code-index",
+      "ruleText": "Each realm must publish SQL coverage reports proving managed file index completeness.",
+      "sourceRef": "build.gradle:sqlCoverageReport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 01:37:48",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-SQLCODE-006",
+      "realm": "pm",
+      "category": "sql-code-index",
+      "ruleText": "Quality gate must verify SQL reconstruction into a clean temp root before release.",
+      "sourceRef": "build.gradle:sqlReconstructionCheck",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": []
     },
     {
@@ -194,7 +216,7 @@
       "sourceRef": "pm/workflow/workflow-manifest.json",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": [
         "pm_workflow_manifest"
       ]
@@ -207,7 +229,7 @@
       "sourceRef": "build.gradle:pmWorkflowRun",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:29:27",
+      "updatedAt": "2026-02-19 01:37:48",
       "dictionaryRefs": []
     }
   ]
