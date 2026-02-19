@@ -138,6 +138,12 @@ The recovery doctor:
 - emits SQL drift summary at `pm/reports/sql-drift-summary.json`
 - refreshes critical DB checksum baseline and validates it
 
+Optional flags:
+
+- `RECOVERY_STRICT_CONDITIONAL_BINARIES=true` to enforce conditional binaries as required
+- `RECOVERY_CHECKPOINT_RETENTION_COUNT=<n>` to cap local checkpoint count
+- `RECOVERY_SKIP_BASELINE_REFRESH=true` to keep prior critical DB baseline and verify only
+
 ### Optional Git Hook
 
 Template hook:

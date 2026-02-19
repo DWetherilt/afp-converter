@@ -13,3 +13,9 @@ Workflow rule:
 Fresh-instance convergence handoff:
 - `boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-fresh-instance-convergence-eval`
   - contains a master handoff manifest and comparison checklist for validating that a new AI instance converges on the same boilerplate outcome.
+
+Package release checklist:
+- Validate package structure and manifest:
+  - `tools/validate_boilerplate_package.sh <package-id>`
+- Export zip payload and checksum for transfer:
+  - `tools/export_boilerplate_package.sh <package-id>`

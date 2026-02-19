@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T13:04:40.153902Z",
-  "status": "PASS",
+  "generatedAt": "2026-02-19T14:57:54.558419Z",
+  "status": "FAIL",
   "realms": [
     {
       "realm": "application",
@@ -15,11 +15,13 @@
     {
       "realm": "pm",
       "database": "pm/state/pm-realm.sqlite",
-      "total": 363,
+      "total": 365,
       "missingCount": 0,
-      "mismatchCount": 0,
+      "mismatchCount": 1,
       "missingPreview": [],
-      "mismatchPreview": []
+      "mismatchPreview": [
+        "pm/reports/sql-drift-summary.json"
+      ]
     },
     {
       "realm": "boilerplate",

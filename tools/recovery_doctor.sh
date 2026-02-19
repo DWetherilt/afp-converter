@@ -6,6 +6,7 @@ cd "$ROOT_DIR"
 
 RECOVERY_STRICT_CONDITIONAL_BINARIES="${RECOVERY_STRICT_CONDITIONAL_BINARIES:-false}"
 RECOVERY_CHECKPOINT_RETENTION_COUNT="${RECOVERY_CHECKPOINT_RETENTION_COUNT:-20}"
+RECOVERY_SKIP_BASELINE_REFRESH="${RECOVERY_SKIP_BASELINE_REFRESH:-false}"
 
 upsert_pm_text() {
   local path="$1"
@@ -98,7 +99,11 @@ python3 tools/sql_drift_summary.py --output pm/reports/sql-drift-summary.json --
 upsert_pm_text pm/reports/sql-drift-summary.json
 
 echo "[7/7] Refresh and verify critical DB hashes"
-tools/check_critical_db_hashes.sh baseline
-tools/check_critical_db_hashes.sh check
+if [[ "$RECOVERY_SKIP_BASELINE_REFRESH" == "true" || "$RECOVERY_SKIP_BASELINE_REFRESH" == "1" ]]; then
+  tools/check_critical_db_hashes.sh check
+else
+  tools/check_critical_db_hashes.sh baseline
+  tools/check_critical_db_hashes.sh check
+fi
 
 echo "recovery_doctor=PASS"

@@ -12,7 +12,8 @@
         "afp-api/build.gradle",
         "afp-engine/build.gradle",
         "afp-cli/build.gradle",
-        "afp-tools/build.gradle"
+        "afp-tools/build.gradle",
+        "sampleOutput/sample.html"
       ]
     },
     "pm": {
@@ -26,15 +27,38 @@
         "tools",
         "build.gradle",
         "settings.gradle",
+        "pm-tools/build.gradle",
+        "pm-console/build.gradle",
+        "gradle/wrapper/gradle-wrapper.properties",
+        "gradlew",
+        "gradlew.bat",
+        ".github/CODEOWNERS",
+        ".github/pull_request_template.md",
+        ".github/ISSUE_TEMPLATE/bug_report.yml",
+        ".github/ISSUE_TEMPLATE/config.yml",
+        ".github/ISSUE_TEMPLATE/feature_request.yml",
+        ".github/workflows/ci.yml",
+        ".gitignore",
         "AI-POLICY.md",
         "README.md",
+        "SESSION_CHANGELOG.md",
+        "VERSION",
         "docs/API.md",
-        "docs/project-plan.md"
+        "docs/SQL_FIRST_WORKFLOW.md",
+        "docs/NEW_MACHINE_BOOTSTRAP.md",
+        "docs/fidelity-corpus.txt",
+        "docs/issues-log-template.csv",
+        "docs/issues-log.csv",
+        "docs/policy-governance-events.csv",
+        "docs/project-plan-progress.csv",
+        "docs/project-plan.md",
+        "docs/update-packages/README.md"
       ]
     },
     "boilerplate": {
       "database": "pm/state/boilerplate-realm.sqlite",
       "roots": [
+        "boilerplate/update-packages/README.md",
         "boilerplate/update-packages/pz-boilerplate-intelliJ"
       ]
     }

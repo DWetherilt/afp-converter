@@ -20,6 +20,12 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+      - name: Validate boilerplate packages
+        run: |
+          for dir in boilerplate/update-packages/pz-boilerplate-intelliJ/*; do
+            [ -d "$dir" ] || continue
+            tools/validate_boilerplate_package.sh "$dir"
+          done
       - name: Recovery quick check
         run: tools/recovery_quick_check.sh
       - name: Production build

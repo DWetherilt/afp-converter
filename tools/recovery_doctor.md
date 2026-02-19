@@ -19,6 +19,8 @@
   - `true` treats `required=conditional` binary policy entries as required.
 - `RECOVERY_CHECKPOINT_RETENTION_COUNT=<n>`
   - Number of local recovery checkpoints to keep. Default: `20`.
+- `RECOVERY_SKIP_BASELINE_REFRESH=true|false`
+  - `true` keeps the existing critical DB checksum baseline and runs verify-only.
 
 ## Related scripts
 
