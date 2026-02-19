@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T19:23:50Z",
+  "generatedAt": "2026-02-19T19:25:10Z",
   "realms": {
     "application": {
       "schemaVersion": "1",
-      "generatedAt": "2026-02-19T19:23:47Z",
+      "generatedAt": "2026-02-19T19:25:07Z",
       "source": "sqlite",
       "sourceTable": "realm_policy_catalog",
       "ruleCount": 43,
@@ -17,7 +17,7 @@
           "sourceRef": "build.gradle:applicationRealmPolicyReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-PROD-001",
@@ -27,7 +27,7 @@
           "sourceRef": "build.gradle:prodBuild",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-ACTION-001",
@@ -37,7 +37,7 @@
           "sourceRef": "build.gradle:actionInboxIngest;build.gradle:actionItemsReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-ACTION-002",
@@ -47,7 +47,7 @@
           "sourceRef": "pm-tools:StateDatabaseTool/action_item_decision_links",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-ACTION-003",
@@ -57,7 +57,7 @@
           "sourceRef": "build.gradle:actionOwnerSummaryReport;build.gradle:actionSlaTrendReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-ROLLUP-001",
@@ -67,7 +67,7 @@
           "sourceRef": "build.gradle:enforceBoilerplateRollupForFrameworkChanges",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CI-001",
@@ -77,7 +77,7 @@
           "sourceRef": ".github/workflows/ci.yml",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CI-002",
@@ -87,7 +87,7 @@
           "sourceRef": ".github/workflows/ci.yml",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CI-003",
@@ -97,7 +97,7 @@
           "sourceRef": ".github/workflows/ci.yml;tools/validate_boilerplate_package.sh;tools/export_boilerplate_package.sh",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-COMMS-001",
@@ -107,7 +107,7 @@
           "sourceRef": "pm/policy/policy-rule-tables.sql",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CONSOLE-001",
@@ -117,7 +117,7 @@
           "sourceRef": "docs/PM_CONSOLE_EXCHANGE_FORMAT.md",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CONSOLE-002",
@@ -127,7 +127,7 @@
           "sourceRef": "pm-console:PmConsoleMain.LiveCommand",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CONSOLE-003",
@@ -137,7 +137,7 @@
           "sourceRef": "osascript Terminal launch workflow",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-DECISION-001",
@@ -147,7 +147,7 @@
           "sourceRef": "build.gradle:decisionPriorityReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-DOC-001",
@@ -157,7 +157,7 @@
           "sourceRef": "build.gradle:documentationManifest",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-EXEC-001",
@@ -167,7 +167,7 @@
           "sourceRef": "build.gradle:pmConsoleEnsureLive;AI-POLICY.md#Default execution coupling",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-KB-001",
@@ -177,7 +177,7 @@
           "sourceRef": "pm-tools:StateDatabaseTool/knowledge_entries",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-KB-002",
@@ -187,7 +187,7 @@
           "sourceRef": "build.gradle:knowledgeBaseReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-KB-003",
@@ -197,7 +197,7 @@
           "sourceRef": "build.gradle:realmKnowledgeSync",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-KB-004",
@@ -207,7 +207,7 @@
           "sourceRef": "build.gradle:realmKnowledgeLinkGate",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-NS-001",
@@ -217,7 +217,7 @@
           "sourceRef": "build.gradle:enforceNamespaceRoot",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-NAME-001",
@@ -227,7 +227,7 @@
           "sourceRef": "pm-tools:StateDatabaseTool/humanReadableRef;build.gradle:versionStamp",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-NAME-002",
@@ -237,7 +237,7 @@
           "sourceRef": "pm-tools:StateDatabaseTool/humanReadableRef;build.gradle:versionStamp",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-GATE-001",
@@ -247,7 +247,7 @@
           "sourceRef": "build.gradle:qualityGate",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-GATE-002",
@@ -257,7 +257,7 @@
           "sourceRef": "build.gradle:qualityGate",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-GATE-003",
@@ -267,7 +267,7 @@
           "sourceRef": "build.gradle:qualityGate",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REALM-GOV-002",
@@ -277,7 +277,7 @@
           "sourceRef": "build.gradle:pmRealmPolicyReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REALM-001",
@@ -287,7 +287,7 @@
           "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REALM-002",
@@ -297,7 +297,7 @@
           "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REASON-001",
@@ -307,7 +307,7 @@
           "sourceRef": "build.gradle:reasoningDatabases",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REASON-002",
@@ -317,7 +317,7 @@
           "sourceRef": "tools/reasoning_sync.py",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REC-001",
@@ -327,7 +327,7 @@
           "sourceRef": "tools/recovery_doctor.sh#RECOVERY_CHECKPOINT_RETENTION_COUNT",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REC-002",
@@ -337,7 +337,7 @@
           "sourceRef": "tools/recovery_doctor.sh#RECOVERY_SKIP_BASELINE_REFRESH",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SEC-001",
@@ -347,7 +347,7 @@
           "sourceRef": "pm/security/authorized-databases.json",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SEC-002",
@@ -357,7 +357,7 @@
           "sourceRef": "pm-console:DbCommand --human-approved",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-001",
@@ -367,7 +367,7 @@
           "sourceRef": "build.gradle:realmCodeDatabases",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-002",
@@ -377,7 +377,7 @@
           "sourceRef": "build.gradle:realmTokenSearch",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-003",
@@ -387,7 +387,7 @@
           "sourceRef": "build.gradle:realmSourcesExport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-004",
@@ -397,7 +397,7 @@
           "sourceRef": "build.gradle:sqlAuthorityDriftCheck",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-005",
@@ -407,7 +407,7 @@
           "sourceRef": "build.gradle:sqlCoverageReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-006",
@@ -417,7 +417,7 @@
           "sourceRef": "build.gradle:sqlReconstructionCheck",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-WF-001",
@@ -427,7 +427,7 @@
           "sourceRef": "pm/workflow/workflow-manifest.json",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-WF-002",
@@ -437,13 +437,13 @@
           "sourceRef": "build.gradle:pmWorkflowRun",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:46Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         }
       ]
     },
     "pm": {
       "schemaVersion": "1",
-      "generatedAt": "2026-02-19T19:23:49Z",
+      "generatedAt": "2026-02-19T19:25:09Z",
       "source": "sqlite",
       "sourceTable": "realm_policy_catalog",
       "ruleCount": 41,
@@ -456,7 +456,7 @@
           "sourceRef": "build.gradle:actionInboxIngest;build.gradle:actionItemsReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-ACTION-002",
@@ -466,7 +466,7 @@
           "sourceRef": "pm-tools:StateDatabaseTool/action_item_decision_links",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-ACTION-003",
@@ -476,7 +476,7 @@
           "sourceRef": "build.gradle:actionOwnerSummaryReport;build.gradle:actionSlaTrendReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-ROLLUP-001",
@@ -486,7 +486,7 @@
           "sourceRef": "build.gradle:enforceBoilerplateRollupForFrameworkChanges",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CI-001",
@@ -496,7 +496,7 @@
           "sourceRef": ".github/workflows/ci.yml",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CI-002",
@@ -506,7 +506,7 @@
           "sourceRef": ".github/workflows/ci.yml",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CI-003",
@@ -516,7 +516,7 @@
           "sourceRef": ".github/workflows/ci.yml;tools/validate_boilerplate_package.sh;tools/export_boilerplate_package.sh",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-COMMS-001",
@@ -526,7 +526,7 @@
           "sourceRef": "pm/policy/policy-rule-tables.sql",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CONSOLE-001",
@@ -536,7 +536,7 @@
           "sourceRef": "docs/PM_CONSOLE_EXCHANGE_FORMAT.md",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CONSOLE-002",
@@ -546,7 +546,7 @@
           "sourceRef": "pm-console:PmConsoleMain.LiveCommand",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CONSOLE-003",
@@ -556,7 +556,7 @@
           "sourceRef": "osascript Terminal launch workflow",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-DECISION-001",
@@ -566,7 +566,7 @@
           "sourceRef": "build.gradle:decisionPriorityReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-DOC-001",
@@ -576,7 +576,7 @@
           "sourceRef": "build.gradle:documentationManifest",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-EXEC-001",
@@ -586,7 +586,7 @@
           "sourceRef": "build.gradle:pmConsoleEnsureLive;AI-POLICY.md#Default execution coupling",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-KB-001",
@@ -596,7 +596,7 @@
           "sourceRef": "pm-tools:StateDatabaseTool/knowledge_entries",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-KB-002",
@@ -606,7 +606,7 @@
           "sourceRef": "build.gradle:knowledgeBaseReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-KB-003",
@@ -616,7 +616,7 @@
           "sourceRef": "build.gradle:realmKnowledgeSync",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-KB-004",
@@ -626,7 +626,7 @@
           "sourceRef": "build.gradle:realmKnowledgeLinkGate",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-NS-001",
@@ -636,7 +636,7 @@
           "sourceRef": "build.gradle:enforceNamespaceRoot",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-NAME-001",
@@ -646,7 +646,7 @@
           "sourceRef": "pm-tools:StateDatabaseTool/humanReadableRef;build.gradle:versionStamp",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-NAME-002",
@@ -656,7 +656,7 @@
           "sourceRef": "pm-tools:StateDatabaseTool/humanReadableRef;build.gradle:versionStamp",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-GATE-001",
@@ -666,7 +666,7 @@
           "sourceRef": "build.gradle:qualityGate",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-GATE-002",
@@ -676,7 +676,7 @@
           "sourceRef": "build.gradle:qualityGate",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-GATE-003",
@@ -686,7 +686,7 @@
           "sourceRef": "build.gradle:qualityGate",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REALM-GOV-002",
@@ -696,7 +696,7 @@
           "sourceRef": "build.gradle:pmRealmPolicyReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REALM-001",
@@ -706,7 +706,7 @@
           "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REALM-002",
@@ -716,7 +716,7 @@
           "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REASON-001",
@@ -726,7 +726,7 @@
           "sourceRef": "build.gradle:reasoningDatabases",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REASON-002",
@@ -736,7 +736,7 @@
           "sourceRef": "tools/reasoning_sync.py",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REC-001",
@@ -746,7 +746,7 @@
           "sourceRef": "tools/recovery_doctor.sh#RECOVERY_CHECKPOINT_RETENTION_COUNT",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REC-002",
@@ -756,7 +756,7 @@
           "sourceRef": "tools/recovery_doctor.sh#RECOVERY_SKIP_BASELINE_REFRESH",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SEC-001",
@@ -766,7 +766,7 @@
           "sourceRef": "pm/security/authorized-databases.json",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SEC-002",
@@ -776,7 +776,7 @@
           "sourceRef": "pm-console:DbCommand --human-approved",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-001",
@@ -786,7 +786,7 @@
           "sourceRef": "build.gradle:realmCodeDatabases",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-002",
@@ -796,7 +796,7 @@
           "sourceRef": "build.gradle:realmTokenSearch",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-003",
@@ -806,7 +806,7 @@
           "sourceRef": "build.gradle:realmSourcesExport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-004",
@@ -816,7 +816,7 @@
           "sourceRef": "build.gradle:sqlAuthorityDriftCheck",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-005",
@@ -826,7 +826,7 @@
           "sourceRef": "build.gradle:sqlCoverageReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-006",
@@ -836,7 +836,7 @@
           "sourceRef": "build.gradle:sqlReconstructionCheck",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-WF-001",
@@ -846,7 +846,7 @@
           "sourceRef": "pm/workflow/workflow-manifest.json",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-WF-002",
@@ -856,13 +856,13 @@
           "sourceRef": "build.gradle:pmWorkflowRun",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         }
       ]
     },
     "boilerplate": {
       "schemaVersion": "1",
-      "generatedAt": "2026-02-19T19:23:48Z",
+      "generatedAt": "2026-02-19T19:25:08Z",
       "source": "sqlite",
       "sourceTable": "realm_policy_catalog",
       "ruleCount": 45,
@@ -875,7 +875,7 @@
           "sourceRef": "pm-tools:StateDatabaseTool/decision_log",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-BOILER-001",
@@ -885,7 +885,7 @@
           "sourceRef": "build.gradle:boilerplatePromotionReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REALM-GOV-003",
@@ -895,7 +895,7 @@
           "sourceRef": "build.gradle:boilerplateRealmPolicyReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REALM-003",
@@ -905,7 +905,7 @@
           "sourceRef": "pm-tools:StateDatabaseTool/package_candidates.realm",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-ACTION-001",
@@ -915,7 +915,7 @@
           "sourceRef": "build.gradle:actionInboxIngest;build.gradle:actionItemsReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-ACTION-002",
@@ -925,7 +925,7 @@
           "sourceRef": "pm-tools:StateDatabaseTool/action_item_decision_links",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-ACTION-003",
@@ -935,7 +935,7 @@
           "sourceRef": "build.gradle:actionOwnerSummaryReport;build.gradle:actionSlaTrendReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-ROLLUP-001",
@@ -945,7 +945,7 @@
           "sourceRef": "build.gradle:enforceBoilerplateRollupForFrameworkChanges",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CI-001",
@@ -955,7 +955,7 @@
           "sourceRef": ".github/workflows/ci.yml",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CI-002",
@@ -965,7 +965,7 @@
           "sourceRef": ".github/workflows/ci.yml",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CI-003",
@@ -975,7 +975,7 @@
           "sourceRef": ".github/workflows/ci.yml;tools/validate_boilerplate_package.sh;tools/export_boilerplate_package.sh",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-COMMS-001",
@@ -985,7 +985,7 @@
           "sourceRef": "pm/policy/policy-rule-tables.sql",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CONSOLE-001",
@@ -995,7 +995,7 @@
           "sourceRef": "docs/PM_CONSOLE_EXCHANGE_FORMAT.md",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CONSOLE-002",
@@ -1005,7 +1005,7 @@
           "sourceRef": "pm-console:PmConsoleMain.LiveCommand",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-CONSOLE-003",
@@ -1015,7 +1015,7 @@
           "sourceRef": "osascript Terminal launch workflow",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-DECISION-001",
@@ -1025,7 +1025,7 @@
           "sourceRef": "build.gradle:decisionPriorityReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-DOC-001",
@@ -1035,7 +1035,7 @@
           "sourceRef": "build.gradle:documentationManifest",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-EXEC-001",
@@ -1045,7 +1045,7 @@
           "sourceRef": "build.gradle:pmConsoleEnsureLive;AI-POLICY.md#Default execution coupling",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-KB-001",
@@ -1055,7 +1055,7 @@
           "sourceRef": "pm-tools:StateDatabaseTool/knowledge_entries",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-KB-002",
@@ -1065,7 +1065,7 @@
           "sourceRef": "build.gradle:knowledgeBaseReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-KB-003",
@@ -1075,7 +1075,7 @@
           "sourceRef": "build.gradle:realmKnowledgeSync",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-KB-004",
@@ -1085,7 +1085,7 @@
           "sourceRef": "build.gradle:realmKnowledgeLinkGate",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-NS-001",
@@ -1095,7 +1095,7 @@
           "sourceRef": "build.gradle:enforceNamespaceRoot",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-NAME-001",
@@ -1105,7 +1105,7 @@
           "sourceRef": "pm-tools:StateDatabaseTool/humanReadableRef;build.gradle:versionStamp",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-NAME-002",
@@ -1115,7 +1115,7 @@
           "sourceRef": "pm-tools:StateDatabaseTool/humanReadableRef;build.gradle:versionStamp",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-GATE-001",
@@ -1125,7 +1125,7 @@
           "sourceRef": "build.gradle:qualityGate",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-GATE-002",
@@ -1135,7 +1135,7 @@
           "sourceRef": "build.gradle:qualityGate",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-GATE-003",
@@ -1145,7 +1145,7 @@
           "sourceRef": "build.gradle:qualityGate",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REALM-GOV-002",
@@ -1155,7 +1155,7 @@
           "sourceRef": "build.gradle:pmRealmPolicyReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REALM-001",
@@ -1165,7 +1165,7 @@
           "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REALM-002",
@@ -1175,7 +1175,7 @@
           "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REASON-001",
@@ -1185,7 +1185,7 @@
           "sourceRef": "build.gradle:reasoningDatabases",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REASON-002",
@@ -1195,7 +1195,7 @@
           "sourceRef": "tools/reasoning_sync.py",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REC-001",
@@ -1205,7 +1205,7 @@
           "sourceRef": "tools/recovery_doctor.sh#RECOVERY_CHECKPOINT_RETENTION_COUNT",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-REC-002",
@@ -1215,7 +1215,7 @@
           "sourceRef": "tools/recovery_doctor.sh#RECOVERY_SKIP_BASELINE_REFRESH",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SEC-001",
@@ -1225,7 +1225,7 @@
           "sourceRef": "pm/security/authorized-databases.json",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SEC-002",
@@ -1235,7 +1235,7 @@
           "sourceRef": "pm-console:DbCommand --human-approved",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-001",
@@ -1245,7 +1245,7 @@
           "sourceRef": "build.gradle:realmCodeDatabases",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-002",
@@ -1255,7 +1255,7 @@
           "sourceRef": "build.gradle:realmTokenSearch",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-003",
@@ -1265,7 +1265,7 @@
           "sourceRef": "build.gradle:realmSourcesExport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-004",
@@ -1275,7 +1275,7 @@
           "sourceRef": "build.gradle:sqlAuthorityDriftCheck",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-005",
@@ -1285,7 +1285,7 @@
           "sourceRef": "build.gradle:sqlCoverageReport",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-SQLCODE-006",
@@ -1295,7 +1295,7 @@
           "sourceRef": "build.gradle:sqlReconstructionCheck",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-WF-001",
@@ -1305,7 +1305,7 @@
           "sourceRef": "pm/workflow/workflow-manifest.json",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         },
         {
           "ruleId": "PM-WF-002",
@@ -1315,7 +1315,7 @@
           "sourceRef": "build.gradle:pmWorkflowRun",
           "mutableBy": "human",
           "enabled": true,
-          "updatedAt": "2026-02-19T19:23:47Z"
+          "updatedAt": "2026-02-19T19:25:07Z"
         }
       ]
     }

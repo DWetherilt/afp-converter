@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T19:23:50+00:00",
+  "generatedAt": "2026-02-19T19:25:10+00:00",
   "source": "reasoning-sync",
   "experience": {
     "db": "/Users/dal/IdeaProjects/afp-converter/pm/state/reasoning-experience.sqlite",
@@ -14,7 +14,7 @@
         "score": 75.0,
         "sampleCount": 4,
         "signal": "positive=3,total=4",
-        "updatedAt": "2026-02-19T19:23:50+00:00"
+        "updatedAt": "2026-02-19T19:25:10+00:00"
       },
       {
         "heuristicKey": "evidence_density::application",
@@ -22,7 +22,7 @@
         "score": 66.25,
         "sampleCount": 1,
         "signal": "avg_impact=4.500,avg_evidence=2.000",
-        "updatedAt": "2026-02-19T19:23:50+00:00"
+        "updatedAt": "2026-02-19T19:25:10+00:00"
       },
       {
         "heuristicKey": "evidence_density::pm",
@@ -30,7 +30,7 @@
         "score": 61.25,
         "sampleCount": 2,
         "signal": "avg_impact=4.300,avg_evidence=1.500",
-        "updatedAt": "2026-02-19T19:23:50+00:00"
+        "updatedAt": "2026-02-19T19:25:10+00:00"
       },
       {
         "heuristicKey": "evidence_density::boilerplate",
@@ -38,7 +38,7 @@
         "score": 60.0,
         "sampleCount": 1,
         "signal": "avg_impact=4.000,avg_evidence=2.000",
-        "updatedAt": "2026-02-19T19:23:50+00:00"
+        "updatedAt": "2026-02-19T19:25:10+00:00"
       }
     ]
   },
@@ -56,7 +56,7 @@
           "experience_events::pm",
           "heuristic_scores::evidence_density"
         ],
-        "updatedAt": "2026-02-19T19:23:50+00:00"
+        "updatedAt": "2026-02-19T19:25:10+00:00"
       },
       {
         "insightId": "insight::application::1",
@@ -68,7 +68,7 @@
           "experience_events::application",
           "heuristic_scores::evidence_density"
         ],
-        "updatedAt": "2026-02-19T19:23:50+00:00"
+        "updatedAt": "2026-02-19T19:25:10+00:00"
       },
       {
         "insightId": "insight::boilerplate::3",
@@ -80,7 +80,7 @@
           "experience_events::boilerplate",
           "heuristic_scores::evidence_density"
         ],
-        "updatedAt": "2026-02-19T19:23:50+00:00"
+        "updatedAt": "2026-02-19T19:25:10+00:00"
       }
     ]
   }

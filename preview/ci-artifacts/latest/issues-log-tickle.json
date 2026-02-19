@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T19:23:42Z",
+  "generatedAt": "2026-02-19T19:25:02Z",
   "issuesLogPath": "docs/issues-log.csv",
   "issuesLogTouchedInWorkingTree": true,
-  "changedPathCount": 118,
+  "changedPathCount": 123,
   "triggeredIssueCount": 4,
   "requiresIssuesLogUpdate": false,
   "triggeredIssues": [
