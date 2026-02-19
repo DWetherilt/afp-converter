@@ -330,6 +330,22 @@ tasks.register('policyRulesReport', Exec) {
     }
 }
 
+tasks.register('policyRulesLint', Exec) {
+    group = 'verification'
+    description = 'Fails when required SQL policy rules are missing/disabled in SQLite state'
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'lint-policy-rules',
+            '--db', 'pm/state/project-state.sqlite',
+            '--output', 'pm/reports/policy-rules-lint.json'
+    }
+}
+
 tasks.register('dataDictionaryReport', Exec) {
     group = 'documentation'
     description = 'Exports SQL-backed PM data dictionary from SQLite state into pm/reports/data-dictionary.json'
@@ -572,6 +588,7 @@ tasks.register('documentationManifest') {
     dependsOn('issuesLogTickle')
     dependsOn('issuesEffectivenessReport')
     dependsOn('policyRulesReport')
+    dependsOn('policyRulesLint')
     dependsOn('dataDictionaryReport')
     dependsOn('dataDictionaryLint')
     dependsOn('stateInventoryCsv')
@@ -599,6 +616,7 @@ tasks.register('documentationManifest') {
             file('pm/reports/issues-log-tickle.json'),
             file('pm/reports/issues-effectiveness.json'),
             file('pm/reports/policy-rules.json'),
+            file('pm/reports/policy-rules-lint.json'),
             file('pm/reports/data-dictionary.json'),
             file('pm/reports/data-dictionary-lint.json'),
             file('pm/reports/project-plan-next-step.json'),
@@ -671,6 +689,7 @@ tasks.register('publishCiArtifacts') {
             file('pm/reports/issues-log-tickle.json'),
             file('pm/reports/issues-effectiveness.json'),
             file('pm/reports/policy-rules.json'),
+            file('pm/reports/policy-rules-lint.json'),
             file('pm/reports/data-dictionary.json'),
             file('pm/reports/data-dictionary-lint.json'),
             file('pm/policy/policy-rule-tables.sql'),
@@ -720,6 +739,27 @@ tasks.register('publishCiArtifacts') {
                 filesJson + "\n" +
                 "  ]\n" +
                 "}\n"
+    }
+}
+
+tasks.register('enforceCiArtifactIndexIncludesPolicyLints') {
+    group = 'verification'
+    description = 'Fails when CI artifact index omits policy/data dictionary lint reports.'
+    dependsOn('publishCiArtifacts')
+    doLast {
+        File index = file('preview/ci-artifacts/latest/index.json')
+        if (!index.exists()) {
+            throw new GradleException("Missing CI artifact index: " + index.path)
+        }
+        String text = index.getText('UTF-8')
+        List<String> required = [
+            "pm/reports/policy-rules-lint.json",
+            "pm/reports/data-dictionary-lint.json"
+        ]
+        List<String> missing = required.findAll { !text.contains(it) }
+        if (!missing.isEmpty()) {
+            throw new GradleException("CI artifact index missing required lint reports: " + missing.join(', '))
+        }
     }
 }
 
@@ -1171,11 +1211,13 @@ tasks.register('qualityGate') {
     dependsOn('enforcePmApplicationRealmSeparation')
     dependsOn('enforceBoilerplateRollupForFrameworkChanges')
     dependsOn('enforceNamespaceRoot')
+    dependsOn('policyRulesLint')
     dependsOn('dataDictionaryLint')
     dependsOn(':afp-engine:test')
     dependsOn(':afp-engine:fidelityGate')
     dependsOn('documentationManifest')
     dependsOn('publishCiArtifacts')
+    dependsOn('enforceCiArtifactIndexIncludesPolicyLints')
 }
 
 subprojects {

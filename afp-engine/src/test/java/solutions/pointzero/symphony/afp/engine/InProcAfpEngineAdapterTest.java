@@ -236,6 +236,98 @@ class InProcAfpEngineAdapterTest {
         assertTrue(diag.contains("\"resourceResolution\""), "diag should include resource resolution trace");
     }
 
+    @Test
+    void emitsUnresolvedImageHintTraceForDescriptorOnlyPayload(@TempDir Path tempDir) throws Exception {
+        byte[] hintPayload = utf16BeAscii("Arial Bold");
+        Path afpFile = tempDir.resolve("input.afp");
+        Files.write(afpFile, concat(
+            sf("D3A8A8", new byte[0]), // BDT
+            sf("D3A8AF", new byte[0]), // BPG
+            sf("D3A8C9", new byte[0]), // BIM
+            sf("D3ABC3", hintPayload), // descriptor-like payload, not raster
+            sf("D3A9C9", new byte[0]), // EIM
+            sf("D3A9AF", new byte[0]), // EPG
+            sf("D3A9A8", new byte[0])  // EDT
+        ));
+        Path workspace = tempDir.resolve("work");
+        Files.createDirectories(workspace);
+
+        InProcAfpEngineAdapter adapter = new InProcAfpEngineAdapter("pdfbox", Map.of());
+        EngineOutputs outputs = adapter.convertToWorkspace(
+            new EngineInputs(
+                afpFile,
+                "input.afp",
+                new ResourceContext(java.util.List.of(), Optional.empty(), false),
+                new ConversionOptions(
+                    new TextPolicy(TextFallback.SUBSTITUTE, true),
+                    new FontPolicy("default"),
+                    new GeometryPolicy("default"),
+                    new MetadataPolicy("strict"),
+                    true
+                ),
+                new Limits(10_000, 100, Duration.ofSeconds(5), 1000, 1024 * 1024),
+                Optional.empty()
+            ),
+            workspace
+        );
+
+        String diag = Files.readString(outputs.diagJsonPath());
+        assertTrue(diag.contains("\"imageResourceHintTrace\""), "diag should expose image hint trace");
+        assertTrue(diag.contains("\"unresolvedHintedImageObjects\": 1"), "diag should report unresolved hinted image");
+        assertTrue(diag.contains("\"filteredFontHintImageObjects\": 1"), "diag should report filtered font-like hints");
+        assertTrue(diag.contains("\"pageSummaries\""), "diag should expose per-page hint summary");
+    }
+
+    @Test
+    void tracesMixedResolvedAndUnresolvedImageHints(@TempDir Path tempDir) throws Exception {
+        byte[] tinyPng = Base64.getDecoder().decode(
+            "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR4nGNgYAAAAAMAASsJTYQAAAAASUVORK5CYII="
+        );
+        Path resources = tempDir.resolve("resources");
+        Files.createDirectories(resources);
+        Files.write(resources.resolve("match-image-001.png"), tinyPng);
+
+        Path afpFile = tempDir.resolve("input.afp");
+        Files.write(afpFile, concat(
+            sf("D3A8A8", new byte[0]), // BDT
+            sf("D3A8AF", new byte[0]), // BPG
+            sf("D3A8C9", new byte[0]), // BIM #1
+            sf("D3ABC3", utf16BeAscii("match image 001")),
+            sf("D3A9C9", new byte[0]), // EIM #1
+            sf("D3A8C9", new byte[0]), // BIM #2
+            sf("D3ABC3", utf16BeAscii("missing image 002")),
+            sf("D3A9C9", new byte[0]), // EIM #2
+            sf("D3A9AF", new byte[0]), // EPG
+            sf("D3A9A8", new byte[0])  // EDT
+        ));
+        Path workspace = tempDir.resolve("work");
+        Files.createDirectories(workspace);
+
+        InProcAfpEngineAdapter adapter = new InProcAfpEngineAdapter("pdfbox", Map.of());
+        EngineOutputs outputs = adapter.convertToWorkspace(
+            new EngineInputs(
+                afpFile,
+                "input.afp",
+                new ResourceContext(java.util.List.of(resources), Optional.empty(), false),
+                new ConversionOptions(
+                    new TextPolicy(TextFallback.SUBSTITUTE, true),
+                    new FontPolicy("default"),
+                    new GeometryPolicy("default"),
+                    new MetadataPolicy("strict"),
+                    true
+                ),
+                new Limits(10_000, 100, Duration.ofSeconds(5), 1000, 1024 * 1024),
+                Optional.empty()
+            ),
+            workspace
+        );
+
+        String diag = Files.readString(outputs.diagJsonPath());
+        assertTrue(diag.contains("\"hintedImageObjects\": 2"), "diag should report two hinted image objects");
+        assertTrue(diag.contains("\"resolvedHintedImageObjects\": 1"), "diag should report one resolved hinted image");
+        assertTrue(diag.contains("\"unresolvedHintedImageObjects\": 1"), "diag should report one unresolved hinted image");
+    }
+
     private static byte[] sf(String sfIdHex, byte[] payload) {
         byte[] sfId = HexFormat.of().parseHex(sfIdHex);
         int length = 8 + payload.length;
@@ -274,6 +366,16 @@ class InProcAfpEngineAdapterTest {
         out[1] = (byte) (length & 0xFF);
         out[2] = fn;
         System.arraycopy(data, 0, out, 3, data.length);
+        return out;
+    }
+
+    private static byte[] utf16BeAscii(String value) {
+        byte[] chars = value.getBytes(StandardCharsets.US_ASCII);
+        byte[] out = new byte[chars.length * 2];
+        for (int i = 0; i < chars.length; i++) {
+            out[i * 2] = 0x00;
+            out[(i * 2) + 1] = chars[i];
+        }
         return out;
     }
 }

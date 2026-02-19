@@ -212,6 +212,16 @@ interface CancellationToken {
 
 Pass in `ConversionRequest.cancel()` to support cooperative cancellation.
 
+## PM Tooling Commands
+
+`pm-tools` exposes SQL-backed governance commands used by root Gradle tasks:
+
+- `lint-policy-rules --db <path> --output <path>`
+  - Validates required enabled policy rules in `policy_rule_catalog`.
+  - Default required set currently includes `PM-COMMS-001`.
+- `lint-data-dictionary --db <path> --output <path>`
+  - Validates required object definitions in `pm_data_dictionary`.
+
 ## Engine Configuration (`AfpConverterConfig`)
 
 ### `EngineConfig` (sealed)

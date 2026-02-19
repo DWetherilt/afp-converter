@@ -2102,6 +2102,7 @@ final class AfpNativePdfRenderer {
         int unresolvedHintedImages = 0;
         int filteredFontHintImages = 0;
         List<String> unresolvedHintPreview = new ArrayList<>();
+        List<PageHintSummary> pageSummaries = new ArrayList<>();
         for (int pageIndex = 0; pageIndex < pageImageEvidence.size(); pageIndex++) {
             List<ImageObjectEvidence> page = pageImageEvidence.get(pageIndex);
             List<BufferedImage> resolvedPage =
@@ -2109,8 +2110,11 @@ final class AfpNativePdfRenderer {
                     ? pageResolvedResourceImages.get(pageIndex)
                     : List.of();
             if (page == null || page.isEmpty()) {
+                pageSummaries.add(new PageHintSummary(pageIndex + 1, 0, 0));
                 continue;
             }
+            int pageHinted = 0;
+            int pageUnresolved = 0;
             for (int imageIndex = 0; imageIndex < page.size(); imageIndex++) {
                 ImageObjectEvidence evidence = page.get(imageIndex);
                 totalImages++;
@@ -2119,6 +2123,7 @@ final class AfpNativePdfRenderer {
                     continue;
                 }
                 hintedImages++;
+                pageHinted++;
                 if (containsLikelyFontHints(hints)) {
                     filteredFontHintImages++;
                 }
@@ -2127,6 +2132,7 @@ final class AfpNativePdfRenderer {
                     resolvedHintedImages++;
                 } else {
                     unresolvedHintedImages++;
+                    pageUnresolved++;
                     if (unresolvedHintPreview.size() < 20) {
                         unresolvedHintPreview.add(
                             "page=" + (pageIndex + 1)
@@ -2136,6 +2142,7 @@ final class AfpNativePdfRenderer {
                     }
                 }
             }
+            pageSummaries.add(new PageHintSummary(pageIndex + 1, pageHinted, pageUnresolved));
         }
         return new ImageResourceHintTrace(
             totalImages,
@@ -2143,7 +2150,8 @@ final class AfpNativePdfRenderer {
             resolvedHintedImages,
             unresolvedHintedImages,
             filteredFontHintImages,
-            unresolvedHintPreview
+            unresolvedHintPreview,
+            pageSummaries
         );
     }
 
@@ -2733,23 +2741,38 @@ final class AfpNativePdfRenderer {
         final int unresolvedHintedImageObjects;
         final int filteredFontHintImageObjects;
         final List<String> unresolvedHintPreview;
+        final List<PageHintSummary> pageSummaries;
 
         private ImageResourceHintTrace(int totalImageObjects,
                                        int hintedImageObjects,
                                        int resolvedHintedImageObjects,
                                        int unresolvedHintedImageObjects,
                                        int filteredFontHintImageObjects,
-                                       List<String> unresolvedHintPreview) {
+                                       List<String> unresolvedHintPreview,
+                                       List<PageHintSummary> pageSummaries) {
             this.totalImageObjects = Math.max(0, totalImageObjects);
             this.hintedImageObjects = Math.max(0, hintedImageObjects);
             this.resolvedHintedImageObjects = Math.max(0, resolvedHintedImageObjects);
             this.unresolvedHintedImageObjects = Math.max(0, unresolvedHintedImageObjects);
             this.filteredFontHintImageObjects = Math.max(0, filteredFontHintImageObjects);
             this.unresolvedHintPreview = unresolvedHintPreview == null ? List.of() : List.copyOf(unresolvedHintPreview);
+            this.pageSummaries = pageSummaries == null ? List.of() : List.copyOf(pageSummaries);
         }
 
         static ImageResourceHintTrace empty() {
-            return new ImageResourceHintTrace(0, 0, 0, 0, 0, List.of());
+            return new ImageResourceHintTrace(0, 0, 0, 0, 0, List.of(), List.of());
+        }
+    }
+
+    static final class PageHintSummary {
+        final int pageIndex;
+        final int hintedImageCount;
+        final int unresolvedHintedImageCount;
+
+        private PageHintSummary(int pageIndex, int hintedImageCount, int unresolvedHintedImageCount) {
+            this.pageIndex = Math.max(1, pageIndex);
+            this.hintedImageCount = Math.max(0, hintedImageCount);
+            this.unresolvedHintedImageCount = Math.max(0, unresolvedHintedImageCount);
         }
     }
 

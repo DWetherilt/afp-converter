@@ -40,7 +40,8 @@ insert into policy_rule_catalog(rule_id, realm, category, rule_text, source_ref,
 insert into policy_rule_catalog(rule_id, realm, category, rule_text, source_ref, mutable_by, enabled, updated_at) values
   ('PM-WF-001', 'pm', 'workflow-normalization', 'PM process sequencing should be defined in pm/workflow/workflow-manifest.json and consumed by adapter interfaces.', 'pm/workflow/workflow-manifest.json', 'human', 1, current_timestamp),
   ('PM-WF-002', 'pm', 'workflow-normalization', 'Gradle adapter must expose normalized PM workflow interface tasks that resolve phases from workflow manifest.', 'build.gradle:pmWorkflowRun', 'human', 1, current_timestamp),
-  ('PM-NS-001', 'pm', 'namespace-governance', 'First-party Java package roots must use solutions.pointzero.symphony and must not use com.upland.connect in active source/build/policy scope.', 'build.gradle:enforceNamespaceRoot', 'human', 1, current_timestamp);
+  ('PM-NS-001', 'pm', 'namespace-governance', 'First-party Java package roots must use solutions.pointzero.symphony and must not use com.upland.connect in active source/build/policy scope.', 'build.gradle:enforceNamespaceRoot', 'human', 1, current_timestamp),
+  ('PM-COMMS-001', 'pm', 'communication-governance', 'Assistant responses must end with a concise list of the next 10 prioritized tasks.', 'pm/policy/policy-rule-tables.sql', 'human', 1, current_timestamp);
 
 insert into pm_data_dictionary(object_name, object_type, realm, definition, source_ref, naming_pattern, updated_at) values
   ('issues', 'table', 'pm', 'Issue log records loaded from docs/issues-log.csv for governance tickle/effectiveness workflows.', 'pm-tools:StateDatabaseTool/initProjectSchema', 'snake_case', current_timestamp),

@@ -64,6 +64,7 @@ public final class PmConsoleMain implements Callable<Integer> {
                 "  - projectPlanProgressJson, projectPlanWorkbook",
                 "  - policyGovernanceWorkbook, stateInventoryCsv",
                 "  - policyRulesReport",
+                "  - policyRulesLint, dataDictionaryLint",
                 "  - documentationManifest",
                 "",
                 "Dev helper tasks:",
@@ -165,6 +166,8 @@ public final class PmConsoleMain implements Callable<Integer> {
                 int activeGovernance = queryInt(conn,
                     "select count(*) from governance_events where lower(status) in ('open','in_progress','breach')", 0);
                 int policyRules = queryInt(conn, "select count(*) from policy_rule_catalog where enabled = 1", 0);
+                int nextTenRuleEnabled = queryInt(conn,
+                    "select count(*) from policy_rule_catalog where rule_id = 'PM-COMMS-001' and enabled = 1", 0);
 
                 System.out.println("Project DB summary:");
                 System.out.println("  - git: " + branch + " @ " + shorten(head) + (dirty == 1 ? " (dirty)" : " (clean)"));
@@ -172,6 +175,7 @@ public final class PmConsoleMain implements Callable<Integer> {
                 System.out.println("  - plan tasks: " + taskCount + ", avg completion=" + PCT.format(avgCompletion) + "%");
                 System.out.println("  - active governance events: " + activeGovernance);
                 System.out.println("  - enabled policy rules (SQL): " + policyRules);
+                System.out.println("  - next-10 response policy (PM-COMMS-001): " + (nextTenRuleEnabled > 0 ? "active" : "missing/disabled"));
                 System.out.println();
             } catch (Exception e) {
                 System.out.println("Project DB summary: error -> " + e.getMessage());
@@ -202,10 +206,12 @@ public final class PmConsoleMain implements Callable<Integer> {
             Path report = Path.of("pm/reports/issues-effectiveness.json");
             Path alerts = Path.of("pm/reports/governance-alerts.json");
             Path policyRules = Path.of("pm/reports/policy-rules.json");
+            Path policyRulesLint = Path.of("pm/reports/policy-rules-lint.json");
             System.out.println("Report summary:");
             System.out.println("  - issues effectiveness: " + describePath(report));
             System.out.println("  - governance alerts: " + describePath(alerts));
             System.out.println("  - policy rules: " + describePath(policyRules));
+            System.out.println("  - policy rules lint: " + describePath(policyRulesLint));
 
             JsonObject issues = readJson(report);
             if (issues != null) {
@@ -219,6 +225,12 @@ public final class PmConsoleMain implements Callable<Integer> {
             JsonObject governance = readJson(alerts);
             if (governance != null) {
                 System.out.println("  - active governance breach: " + str(governance, "hasActiveGovernanceBreach", "false"));
+            }
+
+            JsonObject lint = readJson(policyRulesLint);
+            if (lint != null) {
+                System.out.println("  - policy lint ok: " + str(lint, "ok", "false")
+                    + ", missingRuleIds=" + str(lint, "missingRuleIds", "[]"));
             }
         }
 

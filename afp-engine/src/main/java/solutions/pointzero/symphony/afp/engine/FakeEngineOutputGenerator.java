@@ -1337,13 +1337,36 @@ public final class FakeEngineOutputGenerator {
             .append("\"hintedImageObjects\": ").append(v.hintedImageObjects).append(", ")
             .append("\"resolvedHintedImageObjects\": ").append(v.resolvedHintedImageObjects).append(", ")
             .append("\"unresolvedHintedImageObjects\": ").append(v.unresolvedHintedImageObjects).append(", ")
-            .append("\"filteredFontHintImageObjects\": ").append(v.filteredFontHintImageObjects);
+            .append("\"filteredFontHintImageObjects\": ").append(v.filteredFontHintImageObjects).append(", ")
+            .append("\"pageSummaries\": ").append(pageHintSummariesJson(v.pageSummaries, verbose ? Integer.MAX_VALUE : 20));
         if (verbose) {
             sb.append(", \"unresolvedHintPreview\": ").append(stringPreviewJson(v.unresolvedHintPreview, Integer.MAX_VALUE));
         } else {
             sb.append(", \"unresolvedHintPreview\": ").append(stringPreviewJson(v.unresolvedHintPreview, 12));
         }
         sb.append("}");
+        return sb.toString();
+    }
+
+    private static String pageHintSummariesJson(List<AfpNativePdfRenderer.PageHintSummary> pageSummaries, int limit) {
+        if (pageSummaries == null || pageSummaries.isEmpty()) {
+            return "[]";
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        int count = Math.min(limit, pageSummaries.size());
+        for (int i = 0; i < count; i++) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            AfpNativePdfRenderer.PageHintSummary page = pageSummaries.get(i);
+            sb.append("{")
+                .append("\"pageIndex\": ").append(page.pageIndex).append(", ")
+                .append("\"hintedImageCount\": ").append(page.hintedImageCount).append(", ")
+                .append("\"unresolvedHintedImageCount\": ").append(page.unresolvedHintedImageCount)
+                .append("}");
+        }
+        sb.append(']');
         return sb.toString();
     }
 

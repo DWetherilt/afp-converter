@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -66,10 +68,11 @@ class AfpPdfFidelityReportIT {
 
             Path actualPdfPath = outputs.pdfPath();
             assertTrue(Files.exists(actualPdfPath), "Generated PDF missing: " + actualPdfPath);
+            ImageHintTrace imageHintTrace = parseImageHintTrace(Files.readString(outputs.diagJsonPath()));
 
             try (PDDocument expected = PDDocument.load(entry.expectedPdfPath.toFile());
                  PDDocument actual = PDDocument.load(actualPdfPath.toFile())) {
-                CaseReport report = compare(entry.label, entry.afpPath, entry.expectedPdfPath, expected, actual);
+                CaseReport report = compare(entry.label, entry.afpPath, entry.expectedPdfPath, expected, actual, imageHintTrace);
                 cases.add(report);
             }
         }
@@ -89,7 +92,12 @@ class AfpPdfFidelityReportIT {
         assertTrue(written.contains("\"cases\": ["), "report should include per-case metrics");
     }
 
-    private static CaseReport compare(String label, Path afpPath, Path expectedPdfPath, PDDocument expected, PDDocument actual) throws Exception {
+    private static CaseReport compare(String label,
+                                      Path afpPath,
+                                      Path expectedPdfPath,
+                                      PDDocument expected,
+                                      PDDocument actual,
+                                      ImageHintTrace imageHintTrace) throws Exception {
         int expectedPages = expected.getNumberOfPages();
         int actualPages = actual.getNumberOfPages();
         int comparedPages = Math.min(expectedPages, actualPages);
@@ -142,13 +150,15 @@ class AfpPdfFidelityReportIT {
             matched,
             tokenRecall,
             tokenPrecision,
+            imageHintTrace.summaryRatio,
+            imageHintTrace.pageRatios,
             pages
         );
     }
 
     private static ReportData aggregate(List<CaseReport> cases) {
         if (cases.isEmpty()) {
-            return new ReportData(Instant.now().toString(), 0, 0, 0, 0, 1.0, 1.0, 1.0, 1.0, 0.0, 0, 0, 0L, 0.0, 0.0, List.of(), List.of());
+            return new ReportData(Instant.now().toString(), 0, 0, 0, 0, 1.0, 1.0, 1.0, 1.0, 0.0, 0, 0, 0L, 0.0, 0.0, 0.0, List.of(), List.of(), List.of());
         }
         int expectedPages = 0;
         int actualPages = 0;
@@ -161,7 +171,9 @@ class AfpPdfFidelityReportIT {
         int expectedTokens = 0;
         int actualTokens = 0;
         long matchedTokens = 0;
+        double unresolvedHintRatioSum = 0.0;
         List<PageMetrics> allPages = new ArrayList<>();
+        List<HintPageRatio> hintPages = new ArrayList<>();
         for (CaseReport c : cases) {
             expectedPages += c.expectedPageCount;
             actualPages += c.actualPageCount;
@@ -174,7 +186,9 @@ class AfpPdfFidelityReportIT {
             expectedTokens += c.expectedTokenCount;
             actualTokens += c.actualTokenCount;
             matchedTokens += c.matchedTokenCount;
+            unresolvedHintRatioSum += c.unresolvedHintRatio;
             allPages.addAll(c.pages);
+            hintPages.addAll(c.hintPageRatios);
         }
         int count = cases.size();
         double tokenRecall = expectedTokens == 0 ? 0.0 : matchedTokens / (double) expectedTokens;
@@ -195,7 +209,9 @@ class AfpPdfFidelityReportIT {
             matchedTokens,
             tokenRecall,
             tokenPrecision,
+            unresolvedHintRatioSum / count,
             cases,
+            hintPages,
             allPages
         );
     }
@@ -302,6 +318,45 @@ class AfpPdfFidelityReportIT {
         return String.format(Locale.ROOT, "%.6f", value);
     }
 
+    private static ImageHintTrace parseImageHintTrace(String diagJson) {
+        if (diagJson == null || diagJson.isBlank()) {
+            return new ImageHintTrace(0.0, List.of());
+        }
+        int hinted = extractInt(diagJson, "\"hintedImageObjects\"\\s*:\\s*(\\d+)");
+        int unresolved = extractInt(diagJson, "\"unresolvedHintedImageObjects\"\\s*:\\s*(\\d+)");
+        double summaryRatio = hinted > 0 ? unresolved / (double) hinted : 0.0;
+
+        Pattern pagePattern = Pattern.compile(
+            "\"pageIndex\"\\s*:\\s*(\\d+)\\s*,\\s*\"hintedImageCount\"\\s*:\\s*(\\d+)\\s*,\\s*\"unresolvedHintedImageCount\"\\s*:\\s*(\\d+)"
+        );
+        Matcher matcher = pagePattern.matcher(diagJson);
+        List<HintPageRatio> pageRatios = new ArrayList<>();
+        while (matcher.find()) {
+            int page = parseIntOrZero(matcher.group(1));
+            int pageHinted = parseIntOrZero(matcher.group(2));
+            int pageUnresolved = parseIntOrZero(matcher.group(3));
+            double ratio = pageHinted > 0 ? pageUnresolved / (double) pageHinted : 0.0;
+            pageRatios.add(new HintPageRatio(page, ratio, pageHinted, pageUnresolved));
+        }
+        return new ImageHintTrace(summaryRatio, pageRatios);
+    }
+
+    private static int extractInt(String text, String regex) {
+        Matcher matcher = Pattern.compile(regex).matcher(text);
+        if (!matcher.find()) {
+            return 0;
+        }
+        return parseIntOrZero(matcher.group(1));
+    }
+
+    private static int parseIntOrZero(String value) {
+        try {
+            return Integer.parseInt(value == null ? "0" : value.trim());
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
     private record CorpusEntry(String label, Path afpPath, Path expectedPdfPath) {
     }
 
@@ -321,6 +376,8 @@ class AfpPdfFidelityReportIT {
                               long matchedTokenCount,
                               double tokenRecall,
                               double tokenPrecision,
+                              double unresolvedHintRatio,
+                              List<HintPageRatio> hintPageRatios,
                               List<PageMetrics> pages) {
         private String toJson() {
             return "{"
@@ -339,9 +396,24 @@ class AfpPdfFidelityReportIT {
                 + "\"actualTokenCount\": " + actualTokenCount + ", "
                 + "\"matchedTokenCount\": " + matchedTokenCount + ", "
                 + "\"tokenRecall\": " + f(tokenRecall) + ", "
-                + "\"tokenPrecision\": " + f(tokenPrecision)
+                + "\"tokenPrecision\": " + f(tokenPrecision) + ", "
+                + "\"unresolvedImageHintRatio\": " + f(unresolvedHintRatio)
                 + "}";
         }
+    }
+
+    private record HintPageRatio(int pageNumber, double unresolvedHintRatio, int hintedImageCount, int unresolvedHintedImageCount) {
+        private String toJson() {
+            return "{"
+                + "\"page\": " + pageNumber + ", "
+                + "\"hintedImageCount\": " + hintedImageCount + ", "
+                + "\"unresolvedHintedImageCount\": " + unresolvedHintedImageCount + ", "
+                + "\"unresolvedHintRatio\": " + f(unresolvedHintRatio)
+                + "}";
+        }
+    }
+
+    private record ImageHintTrace(double summaryRatio, List<HintPageRatio> pageRatios) {
     }
 
     private record PageMetrics(int pageNumber,
@@ -379,10 +451,13 @@ class AfpPdfFidelityReportIT {
                               long matchedTokenCount,
                               double tokenRecall,
                               double tokenPrecision,
+                              double unresolvedHintRatio,
                               List<CaseReport> cases,
+                              List<HintPageRatio> hintPages,
                               List<PageMetrics> pages) {
         private String toJson() {
             String casesJson = cases.stream().map(CaseReport::toJson).collect(Collectors.joining(", "));
+            String hintPagesJson = hintPages.stream().map(HintPageRatio::toJson).collect(Collectors.joining(", "));
             String pagesJson = pages.stream().map(PageMetrics::toJson).collect(Collectors.joining(", "));
             return "{\n"
                 + "  \"schemaVersion\": \"1\",\n"
@@ -406,7 +481,11 @@ class AfpPdfFidelityReportIT {
                 + "    \"actualTokenCount\": " + actualTokenCount + ",\n"
                 + "    \"matchedTokenCount\": " + matchedTokenCount + ",\n"
                 + "    \"tokenRecall\": " + f(tokenRecall) + ",\n"
-                + "    \"tokenPrecision\": " + f(tokenPrecision) + "\n"
+                + "    \"tokenPrecision\": " + f(tokenPrecision) + ",\n"
+                + "    \"unresolvedImageHintRatio\": " + f(unresolvedHintRatio) + "\n"
+                + "  },\n"
+                + "  \"imageHints\": {\n"
+                + "    \"pages\": [\n      " + hintPagesJson + "\n    ]\n"
                 + "  },\n"
                 + "  \"cases\": [\n    " + casesJson + "\n  ],\n"
                 + "  \"pages\": [\n    " + pagesJson + "\n  ]\n"

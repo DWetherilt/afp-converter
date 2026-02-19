@@ -65,17 +65,25 @@ public final class StateDatabaseTool {
         "package_candidates",
         "package_files"
     );
+    private static final List<String> REQUIRED_POLICY_RULE_IDS = List.of("PM-COMMS-001");
     private static final DateTimeFormatter ISO = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
     private StateDatabaseTool() {}
 
     public static void main(String[] args) throws Exception {
+        int exit = execute(args);
+        if (exit != 0) {
+            System.exit(exit);
+        }
+    }
+
+    static int execute(String[] args) throws Exception {
         if (args.length == 0) {
-            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-policy-rules|export-data-dictionary|lint-data-dictionary");
+            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-policy-rules|export-data-dictionary|lint-data-dictionary|lint-policy-rules");
         }
         String command = args[0];
         Map<String, String> cli = parseArgs(args, 1);
-        int exit = switch (command) {
+        return switch (command) {
             case "sync-project" -> runSyncProject(cli);
             case "sync-boilerplate" -> runSyncBoilerplate(cli);
             case "sync-policy-rules" -> runSyncPolicyRules(cli);
@@ -89,11 +97,9 @@ public final class StateDatabaseTool {
             case "export-policy-rules" -> runExportPolicyRules(cli);
             case "export-data-dictionary" -> runExportDataDictionary(cli);
             case "lint-data-dictionary" -> runLintDataDictionary(cli);
+            case "lint-policy-rules" -> runLintPolicyRules(cli);
             default -> throw new IllegalArgumentException("Unsupported command: " + command);
         };
-        if (exit != 0) {
-            System.exit(exit);
-        }
     }
 
     private static Map<String, String> parseArgs(String[] args, int start) {
@@ -404,6 +410,9 @@ public final class StateDatabaseTool {
 
         List<Map<String, String>> activeBreaches = new ArrayList<>();
         List<Map<String, String>> trustEntries = new ArrayList<>();
+        List<Map<String, String>> policyGovernanceEntries = new ArrayList<>();
+        int enabledPolicyRuleCount = 0;
+        int requiredPolicyRuleEnabledCount = 0;
         try (Connection conn = connect(dbPath)) {
             try (PreparedStatement ps = conn.prepareStatement(
                 "select event_id, event_date, phase, status, checkpoint_id, issue_id, summary, evidence, updated_by " +
@@ -429,11 +438,31 @@ public final class StateDatabaseTool {
                     if (summary.contains("trust") || phase.contains("trust")) {
                         trustEntries.add(event);
                     }
+                    if (summary.contains("policy")
+                        || phase.contains("policy")
+                        || event.get("checkpoint_id").toLowerCase(Locale.ROOT).contains("policy")) {
+                        policyGovernanceEntries.add(event);
+                    }
+                }
+            }
+            try (PreparedStatement ps = conn.prepareStatement(
+                "select count(*) from policy_rule_catalog where enabled = 1"
+            ); ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    enabledPolicyRuleCount = rs.getInt(1);
+                }
+            }
+            try (PreparedStatement ps = conn.prepareStatement(
+                "select count(*) from policy_rule_catalog where enabled = 1 and rule_id = 'PM-COMMS-001'"
+            ); ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    requiredPolicyRuleEnabledCount = rs.getInt(1);
                 }
             }
         }
 
         boolean hasBreach = !activeBreaches.isEmpty();
+        boolean requiredPolicyRuleMissing = requiredPolicyRuleEnabledCount == 0;
         Map<String, Object> payload = new LinkedHashMap<>();
         payload.put("schemaVersion", "1");
         payload.put("generatedAt", nowIso());
@@ -441,13 +470,22 @@ public final class StateDatabaseTool {
         payload.put("hasActiveGovernanceBreach", hasBreach);
         payload.put("activeBreachCount", activeBreaches.size());
         payload.put("trustEventCount", trustEntries.size());
+        payload.put("policyGovernanceEventCount", policyGovernanceEntries.size());
         payload.put("activeBreaches", activeBreaches);
         payload.put("trustEvents", trustEntries);
+        payload.put("policyGovernanceEvents", policyGovernanceEntries);
+        payload.put("policyRuleAudit", Map.of(
+            "enabledPolicyRuleCount", enabledPolicyRuleCount,
+            "requiredRuleId", "PM-COMMS-001",
+            "requiredRuleEnabled", requiredPolicyRuleEnabledCount > 0
+        ));
         payload.put("message", hasBreach
             ? "Governance breach/in-progress items require human visibility."
-            : "No active governance breaches.");
+            : (requiredPolicyRuleMissing
+                ? "No active governance breaches, but required policy rules are missing/disabled."
+                : "No active governance breaches."));
         writeJson(outputPath, payload);
-        return (enforce && hasBreach) ? 2 : 0;
+        return (enforce && (hasBreach || requiredPolicyRuleMissing)) ? 2 : 0;
     }
 
     private static int runVersionControlLedger(Map<String, String> cli) throws Exception {
@@ -596,21 +634,35 @@ public final class StateDatabaseTool {
 
         List<Map<String, Object>> rules = new ArrayList<>();
         try (Connection conn = connect(dbPath);
+             PreparedStatement dictPs = conn.prepareStatement(
+                 "select object_name, source_ref from pm_data_dictionary"
+             );
+             ResultSet dictRs = dictPs.executeQuery();
              PreparedStatement ps = conn.prepareStatement(
                  "select rule_id, realm, category, rule_text, source_ref, mutable_by, enabled, updated_at " +
                      "from policy_rule_catalog order by realm asc, category asc, rule_id asc"
              );
              ResultSet rs = ps.executeQuery()) {
+            List<DictionaryRef> dictionaryRefs = new ArrayList<>();
+            while (dictRs.next()) {
+                dictionaryRefs.add(new DictionaryRef(
+                    text(dictRs.getString(1)),
+                    text(dictRs.getString(2))
+                ));
+            }
             while (rs.next()) {
                 Map<String, Object> row = new LinkedHashMap<>();
+                String ruleText = text(rs.getString(4));
+                String sourceRef = text(rs.getString(5));
                 row.put("ruleId", text(rs.getString(1)));
                 row.put("realm", text(rs.getString(2)));
                 row.put("category", text(rs.getString(3)));
-                row.put("ruleText", text(rs.getString(4)));
-                row.put("sourceRef", text(rs.getString(5)));
+                row.put("ruleText", ruleText);
+                row.put("sourceRef", sourceRef);
                 row.put("mutableBy", text(rs.getString(6)));
                 row.put("enabled", rs.getInt(7) != 0);
                 row.put("updatedAt", text(rs.getString(8)));
+                row.put("dictionaryRefs", resolveDictionaryRefs(ruleText, sourceRef, dictionaryRefs));
                 rules.add(row);
             }
         }
@@ -705,6 +757,51 @@ public final class StateDatabaseTool {
         return missing.isEmpty() ? 0 : 2;
     }
 
+    private static int runLintPolicyRules(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        Path outputPath = requiredPath(cli, "--output");
+        ensureParent(outputPath);
+
+        List<String> required = parseRequiredRuleIds(cli.get("--required"));
+        Set<String> enabledRules = new LinkedHashSet<>();
+        try (Connection conn = connect(dbPath);
+             PreparedStatement ps = conn.prepareStatement(
+                 "select rule_id from policy_rule_catalog where enabled = 1"
+             );
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String ruleId = text(rs.getString(1));
+                if (!ruleId.isBlank()) {
+                    enabledRules.add(ruleId);
+                }
+            }
+        }
+
+        List<String> missing = new ArrayList<>();
+        for (String ruleId : required) {
+            if (!enabledRules.contains(ruleId)) {
+                missing.add(ruleId);
+            }
+        }
+
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("schemaVersion", "1");
+        payload.put("generatedAt", nowIso());
+        payload.put("source", "sqlite");
+        payload.put("sourceTable", "policy_rule_catalog");
+        payload.put("requiredCount", required.size());
+        payload.put("enabledCount", enabledRules.size());
+        payload.put("missingCount", missing.size());
+        payload.put("requiredRuleIds", required);
+        payload.put("missingRuleIds", missing);
+        payload.put("ok", missing.isEmpty());
+        payload.put("message", missing.isEmpty()
+            ? "Policy-rule lint passed."
+            : "Policy-rule lint failed: required rules missing/disabled.");
+        writeJson(outputPath, payload);
+        return missing.isEmpty() ? 0 : 2;
+    }
+
     private static List<String> parseRequiredDictionaryObjects(String raw) {
         if (raw == null || raw.isBlank()) {
             return REQUIRED_DICTIONARY_OBJECTS;
@@ -720,6 +817,43 @@ public final class StateDatabaseTool {
             return REQUIRED_DICTIONARY_OBJECTS;
         }
         return List.copyOf(keys);
+    }
+
+    private static List<String> parseRequiredRuleIds(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return REQUIRED_POLICY_RULE_IDS;
+        }
+        LinkedHashSet<String> ids = new LinkedHashSet<>();
+        for (String part : raw.split(",")) {
+            String id = text(part).trim();
+            if (!id.isBlank()) {
+                ids.add(id);
+            }
+        }
+        if (ids.isEmpty()) {
+            return REQUIRED_POLICY_RULE_IDS;
+        }
+        return List.copyOf(ids);
+    }
+
+    private static List<String> resolveDictionaryRefs(String ruleText, String sourceRef, List<DictionaryRef> dictionaryRefs) {
+        if (dictionaryRefs == null || dictionaryRefs.isEmpty()) {
+            return List.of();
+        }
+        String textBlob = (text(ruleText) + " " + text(sourceRef)).toLowerCase(Locale.ROOT);
+        LinkedHashSet<String> refs = new LinkedHashSet<>();
+        for (DictionaryRef ref : dictionaryRefs) {
+            if (ref == null || ref.objectName.isBlank()) {
+                continue;
+            }
+            String objectKey = ref.objectName.toLowerCase(Locale.ROOT);
+            String sourceKey = text(ref.sourceRef).toLowerCase(Locale.ROOT);
+            if ((!objectKey.isBlank() && textBlob.contains(objectKey))
+                || (!sourceKey.isBlank() && textBlob.contains(sourceKey))) {
+                refs.add(ref.objectName);
+            }
+        }
+        return List.copyOf(refs);
     }
 
     private static Connection connect(Path dbPath) throws SQLException {
@@ -1609,6 +1743,8 @@ public final class StateDatabaseTool {
                                 int manifestFileCount,
                                 List<String> supersedes,
                                 List<PackageFileRow> files) {}
+
+    private record DictionaryRef(String objectName, String sourceRef) {}
 
     private record PackageFileRow(String path, long sizeBytes) {}
 }
