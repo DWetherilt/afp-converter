@@ -1,13 +1,14 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T12:55:24Z",
+  "generatedAt": "2026-02-19T13:04:09Z",
   "recovery": {
     "rehydratedFromSql": true,
     "gradleWrapperJarRestoredFromGit": true,
     "gradlewExecutable": true,
     "realmDriftVerification": "PASS",
     "criticalDbChecksums": "PASS",
-    "recoveryDoctor": "PASS"
+    "recoveryDoctor": "PASS",
+    "recoveryQuickCheck": "PASS"
   },
   "rebuild": {
     "pmReportsRegeneratedByPython": [
@@ -23,13 +24,13 @@
   },
   "ci": {
     "preGradleChecks": [
-      "tools/restore_binary_artifacts.sh (STRICT_MODE=true)",
-      "tools/manifest_from_sql.sh",
-      "tools/realm_drift_verify.sh",
-      "python3 tools/sql_drift_summary.py --output pm/reports/sql-drift-summary.json --enforce",
-      "tools/check_critical_db_hashes.sh check"
+      "tools/recovery_quick_check.sh"
     ],
     "artifactUpload": "recovery-artifacts"
+  },
+  "prAutomation": {
+    "status": "BLOCKED",
+    "reason": "gh CLI not authenticated in current environment"
   },
   "artifacts": {
     "minimalSnapshotScript": "tools/minimal_snapshot.sh",
@@ -39,9 +40,12 @@
     "criticalDbHashScript": "tools/check_critical_db_hashes.sh",
     "binaryRestoreScript": "tools/restore_binary_artifacts.sh",
     "recoveryDoctor": "tools/recovery_doctor.sh",
+    "recoveryQuickCheck": "tools/recovery_quick_check.sh",
     "checkpointRestoreScript": "tools/restore_recovery_checkpoint.sh",
     "sqlUpsertHelper": "tools/sql_upsert_text_files.sh",
     "gitHookInstaller": "tools/install_git_hooks.sh",
+    "boilerplatePackageValidator": "tools/validate_boilerplate_package.sh",
+    "boilerplatePackageExporter": "tools/export_boilerplate_package.sh",
     "minimalKeepManifest": "pm/workflow/minimal-snapshot-keep.txt",
     "binaryPolicy": "pm/workflow/binary-artifact-policy.txt"
   }

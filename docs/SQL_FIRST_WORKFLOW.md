@@ -178,3 +178,25 @@ Upsert one or more text files directly to a realm DB:
 ```bash
 tools/sql_upsert_text_files.sh pm docs/SQL_FIRST_WORKFLOW.md tools/recovery_doctor.sh
 ```
+
+### Boilerplate Package Helpers
+
+Validate a boilerplate package:
+
+```bash
+tools/validate_boilerplate_package.sh 2026-02-19-recovery-ci-sql-integrity
+```
+
+Export a boilerplate package zip + checksum:
+
+```bash
+tools/export_boilerplate_package.sh 2026-02-19-recovery-ci-sql-integrity
+```
+
+### CI Quick Check
+
+Run the CI-equivalent SQL integrity checks locally:
+
+```bash
+tools/recovery_quick_check.sh
+```

@@ -48,7 +48,7 @@ insert into policy_rule_catalog(rule_id, realm, category, rule_text, source_ref,
   ('PM-SQLCODE-004', 'pm', 'sql-code-index', 'Direct filesystem drift from SQL-managed content must be blocked by SQL authority checks in strict mode.', 'build.gradle:sqlAuthorityDriftCheck', 'human', 1, current_timestamp),
   ('PM-SQLCODE-005', 'pm', 'sql-code-index', 'Each realm must publish SQL coverage reports proving managed file index completeness.', 'build.gradle:sqlCoverageReport', 'human', 1, current_timestamp),
   ('PM-SQLCODE-006', 'pm', 'sql-code-index', 'Quality gate must verify SQL reconstruction into a clean temp root before release.', 'build.gradle:sqlReconstructionCheck', 'human', 1, current_timestamp),
-  ('PM-CI-001', 'pm', 'ci-governance', 'CI must run SQL-first pre-build integrity checks (binary restore, SQL materialization, drift verify, drift summary enforce, critical DB hash verify) before Gradle build steps.', '.github/workflows/ci.yml', 'human', 1, current_timestamp),
+  ('PM-CI-001', 'pm', 'ci-governance', 'CI must run SQL-first pre-build integrity checks (via tools/recovery_quick_check.sh or equivalent) before Gradle build steps.', '.github/workflows/ci.yml', 'human', 1, current_timestamp),
   ('PM-CI-002', 'pm', 'ci-governance', 'CI should publish recovery/integrity artifacts for troubleshooting and rollback traceability.', '.github/workflows/ci.yml', 'human', 1, current_timestamp);
 
 insert into pm_data_dictionary(object_name, object_type, realm, definition, source_ref, naming_pattern, updated_at) values

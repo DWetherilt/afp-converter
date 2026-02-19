@@ -5,6 +5,7 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$ROOT_DIR"
 
 RECOVERY_STRICT_CONDITIONAL_BINARIES="${RECOVERY_STRICT_CONDITIONAL_BINARIES:-false}"
+RECOVERY_CHECKPOINT_RETENTION_COUNT="${RECOVERY_CHECKPOINT_RETENTION_COUNT:-20}"
 
 upsert_pm_text() {
   local path="$1"
@@ -31,6 +32,30 @@ checkpoint_reports() {
   echo "checkpoint_created:$cp_dir"
 }
 
+prune_checkpoints() {
+  local base_dir="pm/checkpoints/recovery-doctor-local"
+  local keep_count="$RECOVERY_CHECKPOINT_RETENTION_COUNT"
+  if [[ ! -d "$base_dir" ]]; then
+    return 0
+  fi
+  if ! [[ "$keep_count" =~ ^[0-9]+$ ]]; then
+    echo "invalid RECOVERY_CHECKPOINT_RETENTION_COUNT=$keep_count" >&2
+    return 1
+  fi
+  local entries
+  entries="$(ls -1 "$base_dir" 2>/dev/null | sort || true)"
+  local total
+  total="$(printf '%s\n' "$entries" | sed '/^$/d' | wc -l | tr -d ' ')"
+  if [[ "$total" -le "$keep_count" ]]; then
+    return 0
+  fi
+  local delete_count=$((total - keep_count))
+  printf '%s\n' "$entries" | sed '/^$/d' | head -n "$delete_count" | while IFS= read -r entry; do
+    rm -rf "$base_dir/$entry"
+    echo "checkpoint_pruned:$base_dir/$entry"
+  done
+}
+
 echo "[1/7] Restore binary artifacts from policy"
 if [[ "$RECOVERY_STRICT_CONDITIONAL_BINARIES" == "true" || "$RECOVERY_STRICT_CONDITIONAL_BINARIES" == "1" ]]; then
   STRICT_MODE=true REQUIRE_CONDITIONAL=true tools/restore_binary_artifacts.sh
@@ -49,6 +74,7 @@ tools/minimal_snapshot_guard.sh
 
 echo "[5/7] Checkpoint PM core reports before mutation"
 checkpoint_reports
+prune_checkpoints
 
 echo "[6/7] Rebuild PM core reports"
 python3 tools/export_project_plan_progress_json.py \

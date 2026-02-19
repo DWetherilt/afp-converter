@@ -20,4 +20,8 @@ tools/restore_recovery_checkpoint.sh
 tools/sql_upsert_text_files.sh
 tools/install_git_hooks.sh
 tools/sql_drift_summary.py
+tools/recovery_quick_check.sh
+tools/validate_boilerplate_package.sh
+tools/export_boilerplate_package.sh
+tools/recovery_doctor.md
 tools/git-hooks/pre-commit
