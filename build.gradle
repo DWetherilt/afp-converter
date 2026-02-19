@@ -1029,6 +1029,106 @@ tasks.register('knowledgeBaseReport', Exec) {
     }
 }
 
+tasks.register('actionInboxIngest', Exec) {
+    group = 'documentation'
+    description = 'Ingests prompt-derived actionable items from assistant inbox into project-state SQLite.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'ingest-action-inbox',
+            '--db', 'pm/state/project-state.sqlite',
+            '--inbox', 'pm/state/assistant-inbox.ndjson',
+            '--source', 'pmconsole-live'
+    }
+}
+
+tasks.register('actionItemsReport', Exec) {
+    group = 'documentation'
+    description = 'Exports actionable item ledger from project-state SQLite.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('actionInboxIngest')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-action-items',
+            '--db', 'pm/state/project-state.sqlite',
+            '--json', 'pm/reports/action-items.json'
+    }
+}
+
+tasks.register('applicationRealmPolicyReport', Exec) {
+    group = 'documentation'
+    description = 'Exports realm governance policy catalog for application realm DB.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmPolicySync')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-realm-policy',
+            '--db', 'pm/state/application-realm.sqlite',
+            '--json', 'pm/reports/application-realm-policy.json'
+    }
+}
+
+tasks.register('pmRealmPolicyReport', Exec) {
+    group = 'documentation'
+    description = 'Exports realm governance policy catalog for PM realm DB.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmPolicySync')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-realm-policy',
+            '--db', 'pm/state/pm-realm.sqlite',
+            '--json', 'pm/reports/pm-realm-policy.json'
+    }
+}
+
+tasks.register('boilerplateRealmPolicyReport', Exec) {
+    group = 'documentation'
+    description = 'Exports realm governance policy catalog for boilerplate realm DB.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmPolicySync')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-realm-policy',
+            '--db', 'pm/state/boilerplate-realm.sqlite',
+            '--json', 'pm/reports/boilerplate-realm-policy.json'
+    }
+}
+
+tasks.register('realmPolicySync', Exec) {
+    group = 'documentation'
+    description = 'Syncs governance policy rules from project-state into each realm policy catalog.'
+    dependsOn('projectStateDb')
+    dependsOn('realmCodeDatabases')
+    commandLine 'python3',
+        'tools/realm_policy_sync.py',
+        '--project-db', 'pm/state/project-state.sqlite',
+        '--application-db', 'pm/state/application-realm.sqlite',
+        '--pm-db', 'pm/state/pm-realm.sqlite',
+        '--boilerplate-db', 'pm/state/boilerplate-realm.sqlite',
+        '--report', 'pm/reports/realm-policy-sync.json'
+}
+
 tasks.register('reasoningDatabases', Exec) {
     group = 'documentation'
     description = 'Builds reasoning experience/derived SQLite databases and exports reasoning-drive report.'
@@ -1049,6 +1149,10 @@ tasks.register('stateInventoryCsv') {
     dependsOn('boilerplatePromotionReport')
     dependsOn('decisionPriorityReport')
     dependsOn('knowledgeBaseReport')
+    dependsOn('actionItemsReport')
+    dependsOn('applicationRealmPolicyReport')
+    dependsOn('pmRealmPolicyReport')
+    dependsOn('boilerplateRealmPolicyReport')
     dependsOn('reasoningDatabases')
 }
 
@@ -1212,6 +1316,11 @@ tasks.register('documentationManifest') {
             file('pm/reports/boilerplate-promotion-status.json'),
             file('pm/reports/decision-priority-queue.json'),
             file('pm/reports/knowledge-base.json'),
+            file('pm/reports/action-items.json'),
+            file('pm/reports/realm-policy-sync.json'),
+            file('pm/reports/application-realm-policy.json'),
+            file('pm/reports/pm-realm-policy.json'),
+            file('pm/reports/boilerplate-realm-policy.json'),
             file('pm/reports/reasoning-drive.json'),
             file('pm/state/project-state.sqlite'),
             file('pm/state/boilerplate-state.sqlite'),
@@ -1302,6 +1411,11 @@ tasks.register('publishCiArtifacts') {
             file('pm/reports/boilerplate-promotion-status.json'),
             file('pm/reports/decision-priority-queue.json'),
             file('pm/reports/knowledge-base.json'),
+            file('pm/reports/action-items.json'),
+            file('pm/reports/realm-policy-sync.json'),
+            file('pm/reports/application-realm-policy.json'),
+            file('pm/reports/pm-realm-policy.json'),
+            file('pm/reports/boilerplate-realm-policy.json'),
             file('pm/reports/reasoning-drive.json'),
             file('pm/reports/documentation-manifest.json'),
             file('pm/reports/project-plan-next-step.json'),

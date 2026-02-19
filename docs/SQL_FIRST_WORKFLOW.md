@@ -293,6 +293,56 @@ Export knowledge base report:
 ./gradlew --no-daemon knowledgeBaseReport
 ```
 
+### Action Tracking And Realm Governance
+
+Ingest actionable prompts from assistant inbox and export action ledger:
+
+```bash
+./gradlew --no-daemon actionItemsReport
+```
+
+Direct action upsert:
+
+```bash
+java -cp "$(./gradlew -q :pm-tools:printRuntimeClasspath)" \
+  solutions.pointzero.symphony.pm.tools.StateDatabaseTool \
+  upsert-action-item \
+  --db pm/state/project-state.sqlite \
+  --action-id ACT-2026-02-19-001 \
+  --realm pm \
+  --title "Implement realm governance export pipeline" \
+  --status in_progress \
+  --priority high \
+  --implied-by human-question
+```
+
+Link an action item to a decision:
+
+```bash
+java -cp "$(./gradlew -q :pm-tools:printRuntimeClasspath)" \
+  solutions.pointzero.symphony.pm.tools.StateDatabaseTool \
+  link-action-item-decision \
+  --db pm/state/project-state.sqlite \
+  --action-id ACT-2026-02-19-001 \
+  --realm pm \
+  --decision-id PM-DEC-001 \
+  --relation implements
+```
+
+Export per-realm policy governance reports:
+
+```bash
+./gradlew --no-daemon applicationRealmPolicyReport pmRealmPolicyReport boilerplateRealmPolicyReport
+```
+
+Generated outputs:
+
+- `pm/reports/action-items.json`
+- `pm/reports/realm-policy-sync.json`
+- `pm/reports/application-realm-policy.json`
+- `pm/reports/pm-realm-policy.json`
+- `pm/reports/boilerplate-realm-policy.json`
+
 ### PM Console Reporting
 
 Intent-style report output:

@@ -55,6 +55,9 @@ public final class StateDatabaseTool {
         "issues",
         "plan_tasks",
         "governance_events",
+        "action_items",
+        "action_item_decision_links",
+        "action_inbox_events",
         "repo_vcs_snapshot",
         "repo_file_state",
         "policy_rule_catalog",
@@ -63,6 +66,7 @@ public final class StateDatabaseTool {
         "code_file_content",
         "code_tokens",
         "token_dictionary",
+        "realm_policy_catalog",
         "pm_workflow_manifest",
         "pm_workflow_phase_task_map",
         "pm_workflow_defaults",
@@ -96,7 +100,7 @@ public final class StateDatabaseTool {
 
     static int execute(String[] args) throws Exception {
         if (args.length == 0) {
-            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-boilerplate-promotion-report|upsert-decision|link-decision|export-decision-priority|upsert-knowledge|add-knowledge-evidence|link-knowledge-decision|export-knowledge-base|export-policy-rules|export-data-dictionary|lint-data-dictionary|lint-policy-rules|sync-code-index|search-code-token|search-code-token-multi|materialize-code-realm|upsert-code-file|upsert-code-files-manifest|verify-code-realm|report-code-realm-coverage");
+            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-boilerplate-promotion-report|upsert-decision|link-decision|export-decision-priority|upsert-knowledge|add-knowledge-evidence|link-knowledge-decision|export-knowledge-base|upsert-action-item|link-action-item-decision|ingest-action-inbox|export-action-items|upsert-realm-policy|export-realm-policy|export-policy-rules|export-data-dictionary|lint-data-dictionary|lint-policy-rules|sync-code-index|search-code-token|search-code-token-multi|materialize-code-realm|upsert-code-file|upsert-code-files-manifest|verify-code-realm|report-code-realm-coverage");
         }
         String command = args[0];
         Map<String, String> cli = parseArgs(args, 1);
@@ -119,6 +123,12 @@ public final class StateDatabaseTool {
             case "add-knowledge-evidence" -> runAddKnowledgeEvidence(cli);
             case "link-knowledge-decision" -> runLinkKnowledgeDecision(cli);
             case "export-knowledge-base" -> runExportKnowledgeBase(cli);
+            case "upsert-action-item" -> runUpsertActionItem(cli);
+            case "link-action-item-decision" -> runLinkActionItemDecision(cli);
+            case "ingest-action-inbox" -> runIngestActionInbox(cli);
+            case "export-action-items" -> runExportActionItems(cli);
+            case "upsert-realm-policy" -> runUpsertRealmPolicy(cli);
+            case "export-realm-policy" -> runExportRealmPolicy(cli);
             case "export-policy-rules" -> runExportPolicyRules(cli);
             case "export-data-dictionary" -> runExportDataDictionary(cli);
             case "lint-data-dictionary" -> runLintDataDictionary(cli);
@@ -1040,6 +1050,273 @@ public final class StateDatabaseTool {
         return 0;
     }
 
+    private static int runUpsertActionItem(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        String actionId = text(cli.get("--action-id"));
+        String title = text(cli.get("--title"));
+        if (actionId.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --action-id");
+        }
+        if (title.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --title");
+        }
+        ensureParent(dbPath);
+        try (Connection conn = connect(dbPath)) {
+            initProjectSchema(conn);
+            try (PreparedStatement ps = conn.prepareStatement(
+                "insert into action_items(" +
+                    "action_id, realm, source, prompt_text, title, status, priority, implied_by, owner, decision_id, knowledge_id, notes, created_at, updated_at" +
+                ") values(?,?,?,?,?,?,?,?,?,?,?,?,?,?) " +
+                "on conflict(action_id) do update set " +
+                    "realm=excluded.realm, source=excluded.source, prompt_text=excluded.prompt_text, title=excluded.title, " +
+                    "status=excluded.status, priority=excluded.priority, implied_by=excluded.implied_by, owner=excluded.owner, " +
+                    "decision_id=excluded.decision_id, knowledge_id=excluded.knowledge_id, notes=excluded.notes, updated_at=excluded.updated_at"
+            )) {
+                String now = nowIso();
+                ps.setString(1, actionId);
+                ps.setString(2, text(cli.get("--realm")));
+                ps.setString(3, text(cli.get("--source")));
+                ps.setString(4, text(cli.get("--prompt-text")));
+                ps.setString(5, title);
+                ps.setString(6, normalizeActionStatus(text(cli.get("--status"))));
+                ps.setString(7, normalizeActionPriority(text(cli.get("--priority"))));
+                ps.setString(8, text(cli.get("--implied-by")));
+                ps.setString(9, text(cli.get("--owner")));
+                ps.setString(10, text(cli.get("--decision-id")));
+                ps.setString(11, text(cli.get("--knowledge-id")));
+                ps.setString(12, text(cli.get("--notes")));
+                ps.setString(13, now);
+                ps.setString(14, now);
+                ps.executeUpdate();
+            }
+        }
+        return 0;
+    }
+
+    private static int runLinkActionItemDecision(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        String actionId = text(cli.get("--action-id"));
+        String decisionId = text(cli.get("--decision-id"));
+        if (actionId.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --action-id");
+        }
+        if (decisionId.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --decision-id");
+        }
+        ensureParent(dbPath);
+        try (Connection conn = connect(dbPath)) {
+            initProjectSchema(conn);
+            try (PreparedStatement ps = conn.prepareStatement(
+                "insert or replace into action_item_decision_links(action_id, realm, decision_id, relation, linked_at) values(?,?,?,?,?)"
+            )) {
+                ps.setString(1, actionId);
+                ps.setString(2, text(cli.get("--realm")));
+                ps.setString(3, decisionId);
+                ps.setString(4, text(cli.getOrDefault("--relation", "implements")));
+                ps.setString(5, nowIso());
+                ps.executeUpdate();
+            }
+        }
+        return 0;
+    }
+
+    private static int runIngestActionInbox(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        Path inboxPath = requiredPath(cli, "--inbox");
+        String sourceFilter = text(cli.getOrDefault("--source", "pmconsole-live"));
+        ensureParent(dbPath);
+        if (!Files.exists(inboxPath)) {
+            return 0;
+        }
+        List<String> lines = Files.readAllLines(inboxPath, StandardCharsets.UTF_8);
+        try (Connection conn = connect(dbPath)) {
+            initProjectSchema(conn);
+            for (String line : lines) {
+                String raw = text(line);
+                if (raw.isBlank()) {
+                    continue;
+                }
+                JsonElement parsed;
+                try {
+                    parsed = GSON.fromJson(raw, JsonElement.class);
+                } catch (Exception ignored) {
+                    continue;
+                }
+                if (parsed == null || !parsed.isJsonObject()) {
+                    continue;
+                }
+                JsonObject obj = parsed.getAsJsonObject();
+                String source = text(obj.has("source") ? obj.get("source").getAsString() : "");
+                if (!sourceFilter.isBlank() && !sourceFilter.equalsIgnoreCase(source)) {
+                    continue;
+                }
+                String prompt = text(obj.has("prompt") ? obj.get("prompt").getAsString() : "");
+                if (prompt.isBlank()) {
+                    continue;
+                }
+                String eventSha = sha256String(raw);
+                if (actionInboxEventExists(conn, eventSha)) {
+                    continue;
+                }
+                String actionId = "action::" + eventSha.substring(0, 12);
+                String title = prompt.length() > 120 ? prompt.substring(0, 120) : prompt;
+                try (PreparedStatement actionPs = conn.prepareStatement(
+                    "insert into action_items(action_id, realm, source, prompt_text, title, status, priority, implied_by, owner, decision_id, knowledge_id, notes, created_at, updated_at) " +
+                        "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?) on conflict(action_id) do nothing"
+                )) {
+                    String now = nowIso();
+                    actionPs.setString(1, actionId);
+                    actionPs.setString(2, "pm");
+                    actionPs.setString(3, source);
+                    actionPs.setString(4, prompt);
+                    actionPs.setString(5, title);
+                    actionPs.setString(6, "open");
+                    actionPs.setString(7, "high");
+                    actionPs.setString(8, "human-question");
+                    actionPs.setString(9, "");
+                    actionPs.setString(10, "");
+                    actionPs.setString(11, "");
+                    actionPs.setString(12, "auto-ingested from assistant inbox");
+                    actionPs.setString(13, now);
+                    actionPs.setString(14, now);
+                    actionPs.executeUpdate();
+                }
+                try (PreparedStatement inboxPs = conn.prepareStatement(
+                    "insert or replace into action_inbox_events(event_sha, source, prompt_text, captured_at, ingested_at, action_id) values(?,?,?,?,?,?)"
+                )) {
+                    inboxPs.setString(1, eventSha);
+                    inboxPs.setString(2, source);
+                    inboxPs.setString(3, prompt);
+                    inboxPs.setString(4, text(obj.has("capturedAt") ? obj.get("capturedAt").getAsString() : nowIso()));
+                    inboxPs.setString(5, nowIso());
+                    inboxPs.setString(6, actionId);
+                    inboxPs.executeUpdate();
+                }
+            }
+        }
+        return 0;
+    }
+
+    private static int runExportActionItems(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        Path outputPath = requiredPath(cli, "--json");
+        ensureParent(outputPath);
+        List<Map<String, Object>> items = new ArrayList<>();
+        Map<String, Integer> byStatus = new LinkedHashMap<>();
+        Map<String, Integer> byPriority = new LinkedHashMap<>();
+        try (Connection conn = connect(dbPath);
+             PreparedStatement ps = conn.prepareStatement(
+                 "select action_id, realm, source, title, status, priority, implied_by, owner, decision_id, knowledge_id, notes, created_at, updated_at " +
+                     "from action_items order by " +
+                     "case lower(priority) when 'high' then 0 when 'medium' then 1 when 'low' then 2 else 3 end, updated_at desc, action_id asc"
+             );
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String status = normalizeActionStatus(text(rs.getString(5)));
+                String priority = normalizeActionPriority(text(rs.getString(6)));
+                byStatus.put(status, byStatus.getOrDefault(status, 0) + 1);
+                byPriority.put(priority, byPriority.getOrDefault(priority, 0) + 1);
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("actionId", text(rs.getString(1)));
+                row.put("realm", text(rs.getString(2)));
+                row.put("source", text(rs.getString(3)));
+                row.put("title", text(rs.getString(4)));
+                row.put("status", status);
+                row.put("priority", priority);
+                row.put("impliedBy", text(rs.getString(7)));
+                row.put("owner", text(rs.getString(8)));
+                row.put("decisionId", text(rs.getString(9)));
+                row.put("knowledgeId", text(rs.getString(10)));
+                row.put("notes", text(rs.getString(11)));
+                row.put("createdAt", text(rs.getString(12)));
+                row.put("updatedAt", text(rs.getString(13)));
+                row.put("decisionLinks", fetchActionDecisionLinks(conn, text(rs.getString(1))));
+                items.add(row);
+            }
+        }
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("schemaVersion", "1");
+        payload.put("generatedAt", nowIso());
+        payload.put("source", "sqlite");
+        payload.put("sourceTable", "action_items");
+        payload.put("itemCount", items.size());
+        payload.put("byStatus", byStatus);
+        payload.put("byPriority", byPriority);
+        payload.put("actions", items);
+        writeJson(outputPath, payload);
+        return 0;
+    }
+
+    private static int runUpsertRealmPolicy(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        String realm = text(cli.get("--realm"));
+        String ruleId = text(cli.get("--rule-id"));
+        String ruleText = text(cli.get("--rule-text"));
+        if (realm.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --realm");
+        }
+        if (ruleId.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --rule-id");
+        }
+        if (ruleText.isBlank()) {
+            throw new IllegalArgumentException("Missing required argument: --rule-text");
+        }
+        ensureParent(dbPath);
+        try (Connection conn = connect(dbPath)) {
+            initCodeIndexSchema(conn);
+            try (PreparedStatement ps = conn.prepareStatement(
+                "insert or replace into realm_policy_catalog(rule_id, realm, category, rule_text, source_ref, mutable_by, enabled, updated_at) values(?,?,?,?,?,?,?,?)"
+            )) {
+                ps.setString(1, ruleId);
+                ps.setString(2, realm);
+                ps.setString(3, text(cli.get("--category")));
+                ps.setString(4, ruleText);
+                ps.setString(5, text(cli.get("--source-ref")));
+                ps.setString(6, text(cli.getOrDefault("--mutable-by", "human")));
+                ps.setInt(7, parseBooleanAsInt(cli.getOrDefault("--enabled", "true")));
+                ps.setString(8, nowIso());
+                ps.executeUpdate();
+            }
+        }
+        return 0;
+    }
+
+    private static int runExportRealmPolicy(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        Path outputPath = requiredPath(cli, "--json");
+        ensureParent(outputPath);
+        List<Map<String, Object>> rules = new ArrayList<>();
+        try (Connection conn = connect(dbPath);
+             PreparedStatement ps = conn.prepareStatement(
+                 "select rule_id, realm, category, rule_text, source_ref, mutable_by, enabled, updated_at from realm_policy_catalog order by realm asc, category asc, rule_id asc"
+             );
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("ruleId", text(rs.getString(1)));
+                row.put("realm", text(rs.getString(2)));
+                row.put("category", text(rs.getString(3)));
+                row.put("ruleText", text(rs.getString(4)));
+                row.put("sourceRef", text(rs.getString(5)));
+                row.put("mutableBy", text(rs.getString(6)));
+                row.put("enabled", rs.getInt(7) != 0);
+                row.put("updatedAt", text(rs.getString(8)));
+                rules.add(row);
+            }
+        } catch (SQLException ignored) {
+            // Realm DB may not yet have policy table; emit empty set.
+        }
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("schemaVersion", "1");
+        payload.put("generatedAt", nowIso());
+        payload.put("source", "sqlite");
+        payload.put("sourceTable", "realm_policy_catalog");
+        payload.put("ruleCount", rules.size());
+        payload.put("rules", rules);
+        writeJson(outputPath, payload);
+        return 0;
+    }
+
     private static int runExportPolicyRules(Map<String, String> cli) throws Exception {
         Path dbPath = requiredPath(cli, "--db");
         Path jsonPath = requiredPath(cli, "--json");
@@ -1698,6 +1975,19 @@ public final class StateDatabaseTool {
                     primary key(decision_id, depends_on_decision_id)
                 )
                 """);
+            st.execute("""
+                create table if not exists realm_policy_catalog (
+                    rule_id text primary key,
+                    realm text not null default '',
+                    category text not null default '',
+                    rule_text text not null default '',
+                    source_ref text not null default '',
+                    mutable_by text not null default 'human',
+                    enabled integer not null default 1,
+                    updated_at text not null
+                )
+                """);
+            st.execute("create index if not exists idx_realm_policy_catalog_realm_category on realm_policy_catalog(realm, category)");
         }
         ensureColumnExists(conn, "decision_log", "sub_scope_ref", "text not null default ''");
         ensureColumnExists(conn, "decision_log", "value_density", "real not null default 0.0");
@@ -1706,6 +1996,7 @@ public final class StateDatabaseTool {
         ensureColumnExists(conn, "decision_log", "status", "text not null default 'proposed'");
         ensureColumnExists(conn, "decision_log", "driver", "text not null default ''");
         ensureColumnExists(conn, "decision_log", "change_ref", "text not null default ''");
+        ensureColumnExists(conn, "realm_policy_catalog", "mutable_by", "text not null default 'human'");
     }
 
     private static void clearCodeIndex(Connection conn, String realm) throws SQLException {
@@ -2101,6 +2392,47 @@ public final class StateDatabaseTool {
                 )
                 """);
             st.execute("create index if not exists idx_policy_rule_realm_category on policy_rule_catalog(realm, category)");
+            st.execute("""
+                create table if not exists action_items (
+                    action_id text primary key,
+                    realm text not null default '',
+                    source text not null default '',
+                    prompt_text text not null default '',
+                    title text not null default '',
+                    status text not null default 'open',
+                    priority text not null default 'medium',
+                    implied_by text not null default '',
+                    owner text not null default '',
+                    decision_id text not null default '',
+                    knowledge_id text not null default '',
+                    notes text not null default '',
+                    created_at text not null,
+                    updated_at text not null
+                )
+                """);
+            st.execute("create index if not exists idx_action_items_status_priority on action_items(status, priority)");
+            st.execute("""
+                create table if not exists action_item_decision_links (
+                    action_id text not null,
+                    realm text not null default '',
+                    decision_id text not null,
+                    relation text not null default 'implements',
+                    linked_at text not null,
+                    primary key(action_id, realm, decision_id)
+                )
+                """);
+            st.execute("create index if not exists idx_action_item_decision_links_action on action_item_decision_links(action_id)");
+            st.execute("""
+                create table if not exists action_inbox_events (
+                    event_sha text primary key,
+                    source text not null default '',
+                    prompt_text text not null default '',
+                    captured_at text not null default '',
+                    ingested_at text not null default '',
+                    action_id text not null default ''
+                )
+                """);
+            st.execute("create index if not exists idx_action_inbox_events_action on action_inbox_events(action_id)");
             st.execute("""
                 create table if not exists knowledge_entries (
                     knowledge_id text primary key,
@@ -2934,6 +3266,81 @@ public final class StateDatabaseTool {
             case "applied", "implemented", "closed" -> "applied";
             case "rejected", "invalid", "discarded" -> "rejected";
             default -> "open";
+        };
+    }
+
+    private static String normalizeActionStatus(String status) {
+        String normalized = text(status).toLowerCase(Locale.ROOT).replace('-', '_').replace(' ', '_');
+        if (normalized.isBlank()) {
+            return "open";
+        }
+        return switch (normalized) {
+            case "open", "todo", "queued", "new" -> "open";
+            case "in_progress", "active", "doing", "working" -> "in_progress";
+            case "blocked", "waiting" -> "blocked";
+            case "done", "completed", "complete", "closed" -> "done";
+            case "cancelled", "canceled", "dropped" -> "cancelled";
+            default -> "open";
+        };
+    }
+
+    private static String normalizeActionPriority(String priority) {
+        String normalized = text(priority).toLowerCase(Locale.ROOT).replace('-', '_').replace(' ', '_');
+        if (normalized.isBlank()) {
+            return "medium";
+        }
+        return switch (normalized) {
+            case "high", "p0", "p1", "critical" -> "high";
+            case "medium", "med", "normal", "p2" -> "medium";
+            case "low", "p3", "backlog" -> "low";
+            default -> "medium";
+        };
+    }
+
+    private static boolean actionInboxEventExists(Connection conn, String eventSha) throws SQLException {
+        try (PreparedStatement ps = conn.prepareStatement(
+            "select 1 from action_inbox_events where event_sha = ? limit 1"
+        )) {
+            ps.setString(1, eventSha);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+    private static List<Map<String, Object>> fetchActionDecisionLinks(Connection conn, String actionId) throws SQLException {
+        List<Map<String, Object>> out = new ArrayList<>();
+        try (PreparedStatement ps = conn.prepareStatement(
+            "select realm, decision_id, relation, linked_at from action_item_decision_links " +
+                "where action_id = ? order by linked_at desc, realm asc, decision_id asc"
+        )) {
+            ps.setString(1, actionId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Map<String, Object> row = new LinkedHashMap<>();
+                    row.put("realm", text(rs.getString(1)));
+                    row.put("decisionId", text(rs.getString(2)));
+                    row.put("relation", text(rs.getString(3)));
+                    row.put("linkedAt", text(rs.getString(4)));
+                    out.add(row);
+                }
+            }
+        }
+        return out;
+    }
+
+    private static String sha256String(String value) {
+        return safeSha256Text(value);
+    }
+
+    private static int parseBooleanAsInt(String value) {
+        String normalized = text(value).toLowerCase(Locale.ROOT);
+        if (normalized.isBlank()) {
+            return 0;
+        }
+        return switch (normalized) {
+            case "1", "true", "yes", "y", "on", "enabled" -> 1;
+            default -> 0;
         };
     }
 

@@ -46,6 +46,11 @@
           "policyRulesReport",
           "decisionPriorityReport",
           "knowledgeBaseReport",
+          "actionItemsReport",
+          "realmPolicySync",
+          "applicationRealmPolicyReport",
+          "pmRealmPolicyReport",
+          "boilerplateRealmPolicyReport",
           "reasoningDatabases",
           "stateInventoryCsv",
           "documentationManifest"

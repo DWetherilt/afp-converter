@@ -62,7 +62,12 @@ insert into policy_rule_catalog(rule_id, realm, category, rule_text, source_ref,
   ('PM-SEC-001', 'pm', 'security-governance', 'Console database federation must be constrained to aliases in pm/security/authorized-databases.json.', 'pm/security/authorized-databases.json', 'human', 1, current_timestamp),
   ('PM-SEC-002', 'pm', 'security-governance', 'Mutating authorized database aliases requires explicit human approval token.', 'pm-console:DbCommand --human-approved', 'human', 1, current_timestamp),
   ('PM-REC-001', 'pm', 'recovery-governance', 'Recovery-doctor local checkpoints must be retained with bounded count to prevent unbounded workspace growth.', 'tools/recovery_doctor.sh#RECOVERY_CHECKPOINT_RETENTION_COUNT', 'human', 1, current_timestamp),
-  ('PM-REC-002', 'pm', 'recovery-governance', 'Recovery baseline refresh may be skipped only via explicit environment flag when preserving a prior checksum baseline is required.', 'tools/recovery_doctor.sh#RECOVERY_SKIP_BASELINE_REFRESH', 'human', 1, current_timestamp);
+  ('PM-REC-002', 'pm', 'recovery-governance', 'Recovery baseline refresh may be skipped only via explicit environment flag when preserving a prior checksum baseline is required.', 'tools/recovery_doctor.sh#RECOVERY_SKIP_BASELINE_REFRESH', 'human', 1, current_timestamp),
+  ('PM-ACTION-001', 'pm', 'action-governance', 'Human prompts that imply actionable work must be ingested into action_items and reported via pm/reports/action-items.json.', 'build.gradle:actionInboxIngest;build.gradle:actionItemsReport', 'human', 1, current_timestamp),
+  ('PM-ACTION-002', 'pm', 'action-governance', 'Action items should link to decision IDs for traceable execution sequencing.', 'pm-tools:StateDatabaseTool/action_item_decision_links', 'human', 1, current_timestamp),
+  ('PM-REALM-GOV-001', 'application', 'realm-governance', 'Each realm database should publish governance policy exports using realm_policy_catalog report outputs.', 'build.gradle:applicationRealmPolicyReport', 'human', 1, current_timestamp),
+  ('PM-REALM-GOV-002', 'pm', 'realm-governance', 'Each realm database should publish governance policy exports using realm_policy_catalog report outputs.', 'build.gradle:pmRealmPolicyReport', 'human', 1, current_timestamp),
+  ('PM-REALM-GOV-003', 'boilerplate', 'realm-governance', 'Each realm database should publish governance policy exports using realm_policy_catalog report outputs.', 'build.gradle:boilerplateRealmPolicyReport', 'human', 1, current_timestamp);
 
 insert into pm_data_dictionary(object_name, object_type, realm, definition, source_ref, naming_pattern, updated_at) values
   ('issues', 'table', 'pm', 'Issue log records loaded from docs/issues-log.csv for governance tickle/effectiveness workflows.', 'pm-tools:StateDatabaseTool/initProjectSchema', 'snake_case', current_timestamp),
@@ -81,6 +86,10 @@ insert into pm_data_dictionary(object_name, object_type, realm, definition, sour
   ('knowledge_entries', 'table', 'pm', 'Knowledge base entries that capture reasoning context, outcomes, and change references for decisions.', 'pm-tools:StateDatabaseTool/initProjectSchema', 'snake_case', current_timestamp),
   ('knowledge_evidence', 'table', 'pm', 'Artifact evidence linked to knowledge entries with path, hash, and capture metadata.', 'pm-tools:StateDatabaseTool/initProjectSchema', 'snake_case', current_timestamp),
   ('knowledge_decision_links', 'table', 'pm', 'Cross-reference map linking knowledge entries to decision IDs across realms.', 'pm-tools:StateDatabaseTool/initProjectSchema', 'snake_case', current_timestamp),
+  ('action_items', 'table', 'pm', 'Actionable work ledger with status/priority and optional knowledge/decision linkage.', 'pm-tools:StateDatabaseTool/initProjectSchema', 'snake_case', current_timestamp),
+  ('action_item_decision_links', 'table', 'pm', 'Links action items to one or more decision IDs for traceable execution.', 'pm-tools:StateDatabaseTool/initProjectSchema', 'snake_case', current_timestamp),
+  ('action_inbox_events', 'table', 'pm', 'Deduplicated event capture for prompt-derived action ingestion.', 'pm-tools:StateDatabaseTool/initProjectSchema', 'snake_case', current_timestamp),
+  ('realm_policy_catalog', 'table', 'pm', 'Realm-local governance rules exported from each realm database for governance visibility.', 'pm-tools:StateDatabaseTool/initCodeIndexSchema', 'snake_case', current_timestamp),
   ('experience_events', 'table', 'pm', 'Empirical reasoning event store derived from knowledge outcomes and decision link counts.', 'tools/reasoning_sync.py', 'snake_case', current_timestamp),
   ('heuristic_scores', 'table', 'pm', 'Derived heuristic scores computed from experience events for prioritization guidance.', 'tools/reasoning_sync.py', 'snake_case', current_timestamp),
   ('derived_insights', 'table', 'pm', 'Second-order insights synthesized from experience heuristics and support signals.', 'tools/reasoning_sync.py', 'snake_case', current_timestamp),
