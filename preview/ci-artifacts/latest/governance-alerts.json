@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T01:02:30Z",
+  "generatedAt": "2026-02-19T01:29:30Z",
   "source": "sqlite",
   "hasActiveGovernanceBreach": false,
   "activeBreachCount": 0,
@@ -57,8 +57,22 @@
   ],
   "policyRuleAudit": {
     "requiredRuleEnabled": true,
-    "enabledPolicyRuleCount": 14,
+    "enabledPolicyRuleCount": 18,
     "requiredRuleId": "PM-COMMS-001"
+  },
+  "sqlAuthorityAudit": {
+    "driftDetected": false,
+    "driftReportPath": "pm/reports/sql-authority-pm.json"
+  },
+  "sqlAuthorityDrift": {
+    "schemaVersion": "1",
+    "generatedAt": "2026-02-19T01:29:29Z",
+    "realm": "pm",
+    "trackedFileCount": 26,
+    "mismatchCount": 0,
+    "ok": true,
+    "mismatches": [],
+    "message": "SQL authority verification passed."
   },
   "message": "No active governance breaches."
 }

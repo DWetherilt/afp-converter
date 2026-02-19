@@ -1,0 +1,949 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-19T01:29:26Z",
+  "source": "sqlite",
+  "query": "render",
+  "databaseCount": 3,
+  "dictionaryMatchCount": 62,
+  "fileHitCount": 86,
+  "dictionaryMatches": [
+    {
+      "token": "renderpolicy",
+      "totalOccurrences": 29
+    },
+    {
+      "token": "render",
+      "totalOccurrences": 16
+    },
+    {
+      "token": "renderer",
+      "totalOccurrences": 12
+    },
+    {
+      "token": "rendering",
+      "totalOccurrences": 9
+    },
+    {
+      "token": "renderdecisionpreview",
+      "totalOccurrences": 8
+    },
+    {
+      "token": "afp.render.semanticlayout",
+      "totalOccurrences": 7
+    },
+    {
+      "token": "ptocarenderresult",
+      "totalOccurrences": 7
+    },
+    {
+      "token": "rendered",
+      "totalOccurrences": 7
+    },
+    {
+      "token": "renderedpdf",
+      "totalOccurrences": 7
+    },
+    {
+      "token": "renderedpages",
+      "totalOccurrences": 6
+    },
+    {
+      "token": "afpnativepdfrenderer",
+      "totalOccurrences": 5
+    },
+    {
+      "token": "renderdecisionpreview.add",
+      "totalOccurrences": 5
+    },
+    {
+      "token": "renderdecisionpreview.size",
+      "totalOccurrences": 5
+    },
+    {
+      "token": "renderedtextops",
+      "totalOccurrences": 5
+    },
+    {
+      "token": "afphtmlrenderer",
+      "totalOccurrences": 5
+    },
+    {
+      "token": "afpnativepdfrenderer.imageresourcehinttrace",
+      "totalOccurrences": 4
+    },
+    {
+      "token": "options.renderpolicy",
+      "totalOccurrences": 4
+    },
+    {
+      "token": "pdfrendermode",
+      "totalOccurrences": 4
+    },
+    {
+      "token": "renderresult",
+      "totalOccurrences": 4
+    },
+    {
+      "token": "nativepdfrenderer.render",
+      "totalOccurrences": 3
+    },
+    {
+      "token": "rendermode",
+      "totalOccurrences": 3
+    },
+    {
+      "token": "renderpolicy.mode",
+      "totalOccurrences": 3
+    },
+    {
+      "token": "rendersemanticlayout",
+      "totalOccurrences": 3
+    },
+    {
+      "token": "renderwithptoca",
+      "totalOccurrences": 3
+    },
+    {
+      "token": "afpnativepdfrenderer.lastimageresourcehinttrace",
+      "totalOccurrences": 2
+    },
+    {
+      "token": "afpnativepdfrenderer.pagehintsummary",
+      "totalOccurrences": 2
+    },
+    {
+      "token": "pdfrendererbuilder",
+      "totalOccurrences": 2
+    },
+    {
+      "token": "ptocarenderresult.empty",
+      "totalOccurrences": 2
+    },
+    {
+      "token": "rendernativepdf",
+      "totalOccurrences": 2
+    },
+    {
+      "token": "renderpolicy.fidelitylevel",
+      "totalOccurrences": 2
+    },
+    {
+      "token": "renderpolicy.resourcepolicy",
+      "totalOccurrences": 2
+    },
+    {
+      "token": "renderresult.rendered",
+      "totalOccurrences": 2
+    },
+    {
+      "token": "semanticrendered",
+      "totalOccurrences": 2
+    },
+    {
+      "token": "solutions.pointzero.symphony.afp.api.renderpolicy",
+      "totalOccurrences": 2
+    },
+    {
+      "token": "summary.renderdecisionpreview",
+      "totalOccurrences": 2
+    },
+    {
+      "token": "--rendermode",
+      "totalOccurrences": 2
+    },
+    {
+      "token": ".render",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "afp.render.inferstyles",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "afpnativepdfrenderer.imageresourcehinttrace.empty",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "com.openhtmltopdf.pdfboxout.pdfrendererbuilder",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "htmlrenderer",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "htmlrenderer.render",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "nativepdfrenderer",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "render.fidelitylevel",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "render.mode",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "render.resourcepolicy",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "rendered-pdf-missing",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "renderedpdf.tofile",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "renderpathcounts",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "renderresult.renderedpages",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "solutions.pointzero.symphony.afp.engine.afphtmlrenderer",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "that.renderpolicy",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "this.htmlrenderer",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "this.nativepdfrenderer",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "this.renderdecisionpreview",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "this.renderpolicy",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "conversion/rendering/diagnostics",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "render/fidelity/resource",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "renderer.",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "rendering.",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "runrendertoken",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "select/render",
+      "totalOccurrences": 1
+    }
+  ],
+  "fileHits": [
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderpolicy",
+      "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/ConversionOptions.java",
+      "occurrences": 13,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderpolicy",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 8,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderdecisionpreview",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 8,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderedpdf",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpPrintCentricTraceEngine.java",
+      "occurrences": 7,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "ptocarenderresult",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java",
+      "occurrences": 7,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "rendered",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java",
+      "occurrences": 7,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "afp.render.semanticlayout",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 6,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderedpages",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java",
+      "occurrences": 6,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderdecisionpreview.size",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 5,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderdecisionpreview.add",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 5,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderedtextops",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java",
+      "occurrences": 5,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "afpnativepdfrenderer.imageresourcehinttrace",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 4,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "pdfrendermode",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 4,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderresult",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java",
+      "occurrences": 4,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "options.renderpolicy",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/Fingerprints.java",
+      "occurrences": 3,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderpolicy.mode",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 3,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "nativepdfrenderer.render",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 3,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "afpnativepdfrenderer",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java",
+      "occurrences": 3,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "render",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java",
+      "occurrences": 3,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "rendersemanticlayout",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java",
+      "occurrences": 3,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderwithptoca",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java",
+      "occurrences": 3,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderpolicy",
+      "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/RenderPolicy.java",
+      "occurrences": 2,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "afphtmlrenderer",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 2,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "afpnativepdfrenderer",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 2,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "afpnativepdfrenderer.lastimageresourcehinttrace",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 2,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "rendernativepdf",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 2,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderpolicy.fidelitylevel",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 2,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderpolicy.resourcepolicy",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 2,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "summary.renderdecisionpreview",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 2,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "afpnativepdfrenderer.pagehintsummary",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 2,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "semanticrendered",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java",
+      "occurrences": 2,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderresult.rendered",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java",
+      "occurrences": 2,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "ptocarenderresult.empty",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java",
+      "occurrences": 2,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "pdfrendererbuilder",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/PdfBoxPdfWriter.java",
+      "occurrences": 2,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "rendermode",
+      "path": "afp-cli/src/main/java/solutions/pointzero/symphony/afp/cli/Afp2PdfMain.java",
+      "occurrences": 2,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "this.renderpolicy",
+      "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/ConversionOptions.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "that.renderpolicy",
+      "path": "afp-api/src/main/java/solutions/pointzero/symphony/afp/api/ConversionOptions.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "afphtmlrenderer",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpHtmlRenderer.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "render",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpHtmlRenderer.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "render.mode",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/Fingerprints.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "render.fidelitylevel",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/Fingerprints.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "render.resourcepolicy",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/Fingerprints.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "solutions.pointzero.symphony.afp.api.renderpolicy",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "htmlrenderer",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "nativepdfrenderer",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "this.htmlrenderer",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "this.nativepdfrenderer",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "options.renderpolicy",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "htmlrenderer.render",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "rendermode",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderpathcounts",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "afpnativepdfrenderer.imageresourcehinttrace.empty",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "this.renderdecisionpreview",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "rendered-pdf-missing",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpPrintCentricTraceEngine.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderedpdf.tofile",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpPrintCentricTraceEngine.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "afp.render.semanticlayout",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderresult.renderedpages",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "afp.render.inferstyles",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "com.openhtmltopdf.pdfboxout.pdfrendererbuilder",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/PdfBoxPdfWriter.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "render",
+      "path": "afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/PdfBoxPdfWriter.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "solutions.pointzero.symphony.afp.api.renderpolicy",
+      "path": "afp-cli/src/main/java/solutions/pointzero/symphony/afp/cli/Afp2PdfMain.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "solutions.pointzero.symphony.afp.engine.afphtmlrenderer",
+      "path": "afp-cli/src/main/java/solutions/pointzero/symphony/afp/cli/Afp2PdfMain.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "--rendermode",
+      "path": "afp-cli/src/main/java/solutions/pointzero/symphony/afp/cli/Afp2PdfMain.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "rendering",
+      "path": "afp-cli/src/main/java/solutions/pointzero/symphony/afp/cli/Afp2PdfMain.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "renderpolicy",
+      "path": "afp-cli/src/main/java/solutions/pointzero/symphony/afp/cli/Afp2PdfMain.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": "afphtmlrenderer",
+      "path": "afp-cli/src/main/java/solutions/pointzero/symphony/afp/cli/Afp2PdfMain.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/application-realm.sqlite",
+      "token": ".render",
+      "path": "afp-cli/src/main/java/solutions/pointzero/symphony/afp/cli/Afp2PdfMain.java",
+      "occurrences": 1,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "render",
+      "path": "docs/project-plan.md",
+      "occurrences": 6,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "renderpolicy",
+      "path": "docs/API.md",
+      "occurrences": 5,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "rendering",
+      "path": "docs/project-plan.md",
+      "occurrences": 5,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "renderer",
+      "path": "AI-POLICY.md",
+      "occurrences": 4,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "renderer",
+      "path": "docs/project-plan.md",
+      "occurrences": 4,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "render",
+      "path": "pm-tools/src/test/java/solutions/pointzero/symphony/pm/tools/StateDatabaseToolTest.java",
+      "occurrences": 3,
+      "realm": "pm",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "renderer",
+      "path": "README.md",
+      "occurrences": 3,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "render",
+      "path": "build.gradle",
+      "occurrences": 2,
+      "realm": "pm",
+      "language": "gradle"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "rendering",
+      "path": "AI-POLICY.md",
+      "occurrences": 2,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "runrendertoken",
+      "path": "pm-tools/src/test/java/solutions/pointzero/symphony/pm/tools/StateDatabaseToolTest.java",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "renderer",
+      "path": "pm-console/src/main/java/solutions/pointzero/symphony/pm/console/PmConsoleMain.java",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "java"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "conversion/rendering/diagnostics",
+      "path": "AI-POLICY.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "rendering",
+      "path": "README.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "afphtmlrenderer",
+      "path": "README.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "rendering.",
+      "path": "docs/project-plan.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "--rendermode",
+      "path": "docs/project-plan.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "render/fidelity/resource",
+      "path": "docs/project-plan.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "select/render",
+      "path": "docs/project-plan.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
+      "token": "renderer.",
+      "path": "docs/project-plan.md",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "markdown"
+    }
+  ]
+}

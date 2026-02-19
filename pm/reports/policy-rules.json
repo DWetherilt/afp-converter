@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T01:02:32Z",
+  "generatedAt": "2026-02-19T01:29:32Z",
   "source": "sqlite",
   "sourceTable": "policy_rule_catalog",
-  "ruleCount": 14,
+  "ruleCount": 18,
   "rules": [
     {
       "ruleId": "PM-PROD-001",
@@ -13,7 +13,7 @@
       "sourceRef": "build.gradle:prodBuild",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:02:28",
+      "updatedAt": "2026-02-19 01:29:27",
       "dictionaryRefs": []
     },
     {
@@ -24,7 +24,7 @@
       "sourceRef": "pm-tools:StateDatabaseTool/package_candidates.realm",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:02:28",
+      "updatedAt": "2026-02-19 01:29:27",
       "dictionaryRefs": [
         "package_candidates"
       ]
@@ -37,7 +37,7 @@
       "sourceRef": "build.gradle:enforceBoilerplateRollupForFrameworkChanges",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:02:28",
+      "updatedAt": "2026-02-19 01:29:27",
       "dictionaryRefs": []
     },
     {
@@ -48,7 +48,7 @@
       "sourceRef": "pm/policy/policy-rule-tables.sql",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:02:28",
+      "updatedAt": "2026-02-19 01:29:27",
       "dictionaryRefs": [
         "policy_rule_catalog",
         "pm_data_dictionary"
@@ -62,7 +62,7 @@
       "sourceRef": "build.gradle:documentationManifest",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:02:28",
+      "updatedAt": "2026-02-19 01:29:27",
       "dictionaryRefs": []
     },
     {
@@ -73,7 +73,7 @@
       "sourceRef": "AI-POLICY.md#Default execution coupling",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:02:28",
+      "updatedAt": "2026-02-19 01:29:27",
       "dictionaryRefs": []
     },
     {
@@ -84,7 +84,7 @@
       "sourceRef": "build.gradle:enforceNamespaceRoot",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:02:28",
+      "updatedAt": "2026-02-19 01:29:27",
       "dictionaryRefs": []
     },
     {
@@ -95,7 +95,7 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:02:28",
+      "updatedAt": "2026-02-19 01:29:27",
       "dictionaryRefs": []
     },
     {
@@ -106,7 +106,7 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:02:28",
+      "updatedAt": "2026-02-19 01:29:27",
       "dictionaryRefs": []
     },
     {
@@ -117,7 +117,7 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:02:28",
+      "updatedAt": "2026-02-19 01:29:27",
       "dictionaryRefs": []
     },
     {
@@ -128,7 +128,7 @@
       "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:02:28",
+      "updatedAt": "2026-02-19 01:29:27",
       "dictionaryRefs": []
     },
     {
@@ -139,7 +139,51 @@
       "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:02:28",
+      "updatedAt": "2026-02-19 01:29:27",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-SQLCODE-001",
+      "realm": "pm",
+      "category": "sql-code-index",
+      "ruleText": "Maintain separate SQL code-index/token-dictionary databases for application, pm, and boilerplate realms.",
+      "sourceRef": "build.gradle:realmCodeDatabases",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 01:29:27",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-SQLCODE-002",
+      "realm": "pm",
+      "category": "sql-code-index",
+      "ruleText": "Cross-realm keyword swatch changes must use token-dictionary/code-token search workflows.",
+      "sourceRef": "build.gradle:realmTokenSearch",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 01:29:27",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-SQLCODE-003",
+      "realm": "pm",
+      "category": "sql-code-index",
+      "ruleText": "Build flows must materialize realm-managed source files from SQL before compilation.",
+      "sourceRef": "build.gradle:realmSourcesExport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 01:29:27",
+      "dictionaryRefs": []
+    },
+    {
+      "ruleId": "PM-SQLCODE-004",
+      "realm": "pm",
+      "category": "sql-code-index",
+      "ruleText": "Direct filesystem drift from SQL-managed content must be blocked by SQL authority checks in strict mode.",
+      "sourceRef": "build.gradle:sqlAuthorityDriftCheck",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-19 01:29:27",
       "dictionaryRefs": []
     },
     {
@@ -150,7 +194,7 @@
       "sourceRef": "pm/workflow/workflow-manifest.json",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:02:28",
+      "updatedAt": "2026-02-19 01:29:27",
       "dictionaryRefs": [
         "pm_workflow_manifest"
       ]
@@ -163,7 +207,7 @@
       "sourceRef": "build.gradle:pmWorkflowRun",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 01:02:28",
+      "updatedAt": "2026-02-19 01:29:27",
       "dictionaryRefs": []
     }
   ]
