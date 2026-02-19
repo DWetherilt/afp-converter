@@ -2,6 +2,33 @@
 
 This changelog is reconstructed from repository artifacts and our current thread (the repo has no git commits yet).
 
+## 2026-02-19
+
+- Performed repository cleanup + SQL-first recovery baseline reset.
+- Restored canonical binary/reference assets from previous commit baseline:
+  - `sampleData/sample.afp`, `sampleData/image-heavy.afp`
+  - `sampleOutput/sample.pdf`, `sampleOutput/image-heavy.pdf`
+  - `preview/afp-output.pdf`, `preview/ibm-output.pdf`
+  - `docs/policy-governance-events.xlsx`, `docs/boilerplate-sync-candidates.xlsx`
+- Added recovery and resilience tooling:
+  - `tools/restore_binary_artifacts.sh`
+  - `tools/recovery_doctor.sh`
+  - `tools/manifest_from_sql.py` (exact byte-safe SQL materialization)
+  - `tools/manifest_from_sql.sh`
+  - `tools/minimal_snapshot.sh`
+  - `tools/minimal_snapshot_guard.sh`
+  - `tools/realm_drift_verify.sh`
+  - `tools/check_critical_db_hashes.sh`
+- Added/updated recovery governance manifests:
+  - `pm/workflow/binary-artifact-policy.txt`
+  - `pm/workflow/minimal-snapshot-keep.txt`
+  - `pm/state/critical-db-sha256.txt`
+- Extended CI pipeline pre-build checks:
+  - binary restore
+  - SQL materialization
+  - realm drift verification
+  - critical DB hash verification
+
 ## 2026-02-16
 
 - Established the multi-module project structure:

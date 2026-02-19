@@ -20,6 +20,14 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+      - name: Restore binary artifacts
+        run: tools/restore_binary_artifacts.sh
+      - name: Rehydrate from SQL
+        run: tools/manifest_from_sql.sh
+      - name: SQL drift verification
+        run: tools/realm_drift_verify.sh
+      - name: Critical DB hash verification
+        run: tools/check_critical_db_hashes.sh check
       - name: Production build
         run: ./gradlew --no-daemon prodBuild
       - name: Documentation manifest

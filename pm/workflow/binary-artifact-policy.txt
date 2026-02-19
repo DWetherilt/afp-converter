@@ -13,6 +13,7 @@ docs/policy-governance-events.xlsx|source=user_or_generator|required=conditional
 docs/boilerplate-sync-candidates.xlsx|source=user_or_generator|required=conditional
 # Reference/output artifacts
 preview/afp-output.pdf|source=generated|required=false
+preview/ibm-output.pdf|source=reference|required=conditional
 sampleOutput/sample.pdf|source=reference|required=conditional
 sampleOutput/image-heavy.pdf|source=reference|required=conditional
 sampleData/sample.afp|source=reference|required=conditional

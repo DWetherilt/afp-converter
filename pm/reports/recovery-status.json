@@ -1,12 +1,13 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T02:07:06Z",
+  "generatedAt": "2026-02-19T11:03:57Z",
   "recovery": {
     "rehydratedFromSql": true,
     "gradleWrapperJarRestoredFromGit": true,
     "gradlewExecutable": true,
     "realmDriftVerification": "PASS",
-    "criticalDbChecksums": "PASS"
+    "criticalDbChecksums": "PASS",
+    "recoveryDoctor": "PASS"
   },
   "rebuild": {
     "pmReportsRegeneratedByPython": [
@@ -15,16 +16,29 @@
       "pm/reports/issues-effectiveness.json"
     ],
     "projectPlanWorkbookRegenerated": "docs/project-plan-progress.xlsx",
-    "gradleTasks": {
+    "qualityGate": {
       "status": "BLOCKED",
-      "reason": "Network restriction in sandbox: cannot resolve services.gradle.org for Gradle distribution download"
+      "reason": "Sandbox network restriction: cannot resolve services.gradle.org for Gradle distribution download"
     }
+  },
+  "ci": {
+    "preGradleChecks": [
+      "tools/restore_binary_artifacts.sh (STRICT_MODE=true)",
+      "tools/manifest_from_sql.sh",
+      "tools/realm_drift_verify.sh",
+      "python3 tools/sql_drift_summary.py --output pm/reports/sql-drift-summary.json --enforce",
+      "tools/check_critical_db_hashes.sh check"
+    ],
+    "artifactUpload": "recovery-artifacts"
   },
   "artifacts": {
     "minimalSnapshotScript": "tools/minimal_snapshot.sh",
     "rehydrationScript": "tools/manifest_from_sql.sh",
     "driftVerifyScript": "tools/realm_drift_verify.sh",
+    "driftSummaryReport": "pm/reports/sql-drift-summary.json",
     "criticalDbHashScript": "tools/check_critical_db_hashes.sh",
+    "binaryRestoreScript": "tools/restore_binary_artifacts.sh",
+    "recoveryDoctor": "tools/recovery_doctor.sh",
     "minimalKeepManifest": "pm/workflow/minimal-snapshot-keep.txt",
     "binaryPolicy": "pm/workflow/binary-artifact-policy.txt"
   }
