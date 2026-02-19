@@ -25,6 +25,9 @@ def pmWorkflowGradleMap = (pmWorkflowManifest?.adapters instanceof Map
 def pmWorkflowDefaults = (pmWorkflowManifest?.defaults instanceof Map)
     ? (pmWorkflowManifest.defaults as Map)
     : [:]
+def envGovernanceMode = (System.getenv('ENV_GOVERNANCE_MODE') ?: 'strict').trim().toLowerCase(Locale.ROOT)
+def isCiEnvironment = (System.getenv('CI') ?: '').trim().toLowerCase(Locale.ROOT) in ['1', 'true', 'yes']
+def pmConsoleAutolaunch = (System.getenv('PM_CONSOLE_AUTOLAUNCH') ?: (isCiEnvironment ? 'false' : 'true')).trim().toLowerCase(Locale.ROOT)
 
 def realmManagedManifestFile = file('pm/workflow/realm-managed-manifest.json')
 def realmManagedManifest = realmManagedManifestFile.exists()
@@ -103,6 +106,372 @@ tasks.register('pmConsoleLiveStatus', Exec) {
     commandLine 'bash', 'tools/pm_console_live_daemon.sh', 'status'
 }
 
+tasks.register('pmConsoleVisibleLaunch') {
+    group = 'documentation'
+    description = 'Launches a visible desktop terminal PM console session (skips on CI/headless).'
+    dependsOn(':pm-console:installDist')
+    doLast {
+        if (isCiEnvironment) {
+            logger.lifecycle('pmConsoleVisibleLaunch: skipping visible launch in CI/headless mode')
+            return
+        }
+        exec {
+            commandLine 'osascript', '-e',
+                'tell application "Terminal" to activate\n' +
+                'tell application "Terminal" to do script "cd ' + project.rootDir.absolutePath.replace('"', '\\"') + ' && ./pm-console/build/install/pmconsole/bin/pmconsole live"'
+        }
+    }
+}
+
+tasks.register('pmConsoleVisibleCheck', Exec) {
+    group = 'documentation'
+    description = 'Verifies visible PM console session + daemon health and emits environment health report.'
+    dependsOn('pmConsoleEnsureLive')
+    dependsOn('pmConsoleLiveStatus')
+    dependsOn(':pm-console:installDist')
+    doFirst {
+        commandLine 'python3',
+            'tools/environment_health_check.py',
+            '--pid-file', 'pm/state/pmconsole-live.pid',
+            '--log-file', 'pm/state/pmconsole-live.log',
+            '--output', 'pm/reports/environment-health.json',
+            '--expect-running', 'true',
+            '--expect-visible', (isCiEnvironment ? 'false' : 'true'),
+            '--governance-mode', envGovernanceMode,
+            '--auto-launch-if-missing', pmConsoleAutolaunch,
+            '--console-command', './pm-console/build/install/pmconsole/bin/pmconsole live',
+            '--ci', Boolean.toString(isCiEnvironment)
+    }
+}
+
+tasks.register('pmEnvironmentPreflight') {
+    group = 'documentation'
+    description = 'Environment-first preflight: ensure PM console daemon and visible session are healthy.'
+    dependsOn('pmConsoleVisibleCheck')
+}
+
+tasks.register('pmEnvironmentKnowledgeSync', Exec) {
+    group = 'documentation'
+    description = 'Persists PM console environment status into SQL knowledge base.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('projectStateDb')
+    dependsOn('pmEnvironmentPreflight')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'upsert-knowledge',
+            '--db', 'pm/state/project-state.sqlite',
+            '--knowledge-id', 'KB-PM-ENV-CONSOLE-HEALTH',
+            '--realm', 'pm',
+            '--scope-level', 'realm',
+            '--scope-ref', 'environment',
+            '--title', 'PM console environment health preflight',
+            '--reasoning', 'Environment-first governance requires live PM console status checks before workflow execution.',
+            '--context-snapshot', 'pm/reports/environment-health.json',
+            '--outcome-status', 'applied',
+            '--outcome-summary', "Recorded console daemon + visibility state (mode=${envGovernanceMode}, ci=${isCiEnvironment}) for this cycle.",
+            '--confidence', '5.0',
+            '--impact-score', '5.0',
+            '--change-ref', 'pm/reports/environment-health.json'
+    }
+}
+
+tasks.register('pmEnvironmentKnowledgeEvidence', Exec) {
+    group = 'documentation'
+    description = 'Links environment health report artifact as evidence to environment knowledge entry.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('pmEnvironmentKnowledgeSync')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'add-knowledge-evidence',
+            '--db', 'pm/state/project-state.sqlite',
+            '--knowledge-id', 'KB-PM-ENV-CONSOLE-HEALTH',
+            '--artifact-path', 'pm/reports/environment-health.json',
+            '--type', 'report',
+            '--notes', 'Environment preflight status including PID and running state.'
+    }
+}
+
+tasks.register('pmConsoleVisibilityKnowledgeSync', Exec) {
+    group = 'documentation'
+    description = 'Persists PM console visible-session PID/terminal context into SQL knowledge base.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('pmEnvironmentPreflight')
+    doFirst {
+        Map report = [:]
+        File reportFile = file('pm/reports/environment-health.json')
+        if (reportFile.exists()) {
+            report = (new JsonSlurper().parse(reportFile) as Map)
+        }
+        Map visibility = report?.visibility instanceof Map ? (report.visibility as Map) : [:]
+        List visiblePids = visibility?.visibleSessionPids instanceof List ? (visibility.visibleSessionPids as List) : []
+        String terminalWindow = visibility?.terminalWindowId == null ? '' : visibility.terminalWindowId.toString()
+        String summary = "visiblePids=${visiblePids.collect { it.toString() }.join(',')}; terminalWindowId=${terminalWindow}; visible=${visibility?.visibleRunning}; status=${report?.status}"
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'upsert-knowledge',
+            '--db', 'pm/state/project-state.sqlite',
+            '--knowledge-id', 'KB-PM-ENV-CONSOLE-VISIBLE',
+            '--realm', 'pm',
+            '--scope-level', 'realm',
+            '--scope-ref', 'environment.console.visibility',
+            '--title', 'PM console visible session context',
+            '--reasoning', 'Visible desktop PM console presence is required for environment readiness in local development flows.',
+            '--context-snapshot', 'pm/reports/environment-health.json',
+            '--outcome-status', 'applied',
+            '--outcome-summary', summary,
+            '--confidence', '5.0',
+            '--impact-score', '5.0',
+            '--change-ref', 'pm/reports/environment-health.json'
+    }
+}
+
+tasks.register('pmConsoleVisibilityKnowledgeEvidence', Exec) {
+    group = 'documentation'
+    description = 'Links visibility health report as evidence to visible-session knowledge entry.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('pmConsoleVisibilityKnowledgeSync')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'add-knowledge-evidence',
+            '--db', 'pm/state/project-state.sqlite',
+            '--knowledge-id', 'KB-PM-ENV-CONSOLE-VISIBLE',
+            '--artifact-path', 'pm/reports/environment-health.json',
+            '--type', 'report',
+            '--notes', 'Visibility context report including visible session PIDs and terminal window ID.'
+    }
+}
+
+tasks.register('pmConsoleSessionIdentityKnowledgeSync', Exec) {
+    group = 'documentation'
+    description = 'Persists deterministic terminal window/tab identity for visible PM console session.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('pmEnvironmentPreflight')
+    doFirst {
+        Map report = [:]
+        File reportFile = file('pm/reports/environment-health.json')
+        if (reportFile.exists()) {
+            report = (new JsonSlurper().parse(reportFile) as Map)
+        }
+        Map visibility = report?.visibility instanceof Map ? (report.visibility as Map) : [:]
+        String windowId = visibility?.terminalWindowId == null ? '' : visibility.terminalWindowId.toString()
+        String tabId = visibility?.terminalTabId == null ? '' : visibility.terminalTabId.toString()
+        String summary = "terminalWindowId=${windowId}; terminalTabId=${tabId}; visiblePids=${(visibility?.visibleSessionPids instanceof List ? (visibility.visibleSessionPids as List) : []).collect { it.toString() }.join(',')}"
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'upsert-knowledge',
+            '--db', 'pm/state/project-state.sqlite',
+            '--knowledge-id', 'KB-PM-ENV-CONSOLE-SESSION-IDENTITY',
+            '--realm', 'pm',
+            '--scope-level', 'realm',
+            '--scope-ref', 'environment.console.session.identity',
+            '--title', 'PM console session identity',
+            '--reasoning', 'Capture terminal window/tab identity for deterministic visible session tracking.',
+            '--context-snapshot', 'pm/reports/environment-health.json',
+            '--outcome-status', 'applied',
+            '--outcome-summary', summary,
+            '--confidence', '5.0',
+            '--impact-score', '4.0',
+            '--change-ref', 'pm/reports/environment-health.json'
+    }
+}
+
+tasks.register('pmConsoleSessionIdentityKnowledgeEvidence', Exec) {
+    group = 'documentation'
+    description = 'Links environment health report as evidence for session identity knowledge.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('pmConsoleSessionIdentityKnowledgeSync')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'add-knowledge-evidence',
+            '--db', 'pm/state/project-state.sqlite',
+            '--knowledge-id', 'KB-PM-ENV-CONSOLE-SESSION-IDENTITY',
+            '--artifact-path', 'pm/reports/environment-health.json',
+            '--type', 'report',
+            '--notes', 'Deterministic terminal window/tab identity for visible PM console session.'
+    }
+}
+
+tasks.register('pmConsoleCleanupStaleSessions', Exec) {
+    group = 'documentation'
+    description = 'Finds and optionally cleans stale duplicate background pmconsole live sessions.'
+    dependsOn('pmEnvironmentPreflight')
+    doFirst {
+        boolean applyCleanup = ((System.getenv('PM_CONSOLE_CLEANUP_APPLY') ?: 'false').trim().toLowerCase(Locale.ROOT) in ['1', 'true', 'yes'])
+        String stalePolicy = (System.getenv('PM_CONSOLE_STALE_POLICY') ?: 'report').trim().toLowerCase(Locale.ROOT)
+        if (stalePolicy == 'clean') {
+            applyCleanup = true
+        }
+        String warnThreshold = (System.getenv('PM_CONSOLE_STALE_WARN_THRESHOLD') ?: '2').trim()
+        List<String> cmd = [
+            'python3',
+            'tools/pm_console_cleanup.py',
+            '--pid-file', 'pm/state/pmconsole-live.pid',
+            '--output', 'pm/reports/pm-console-stale-cleanup.json',
+            '--history', 'pm/state/pm-console-stale-history.json',
+            '--warn-threshold', warnThreshold
+        ]
+        if (applyCleanup) {
+            cmd.add('--apply')
+        }
+        commandLine cmd
+    }
+}
+
+tasks.register('pmConsoleCleanupStaleSessionsApply', Exec) {
+    group = 'documentation'
+    description = 'Applies stale duplicate cleanup explicitly (equivalent to PM_CONSOLE_STALE_POLICY=clean).'
+    dependsOn('pmEnvironmentPreflight')
+    commandLine 'python3',
+        'tools/pm_console_cleanup.py',
+        '--pid-file', 'pm/state/pmconsole-live.pid',
+        '--output', 'pm/reports/pm-console-stale-cleanup.json',
+        '--history', 'pm/state/pm-console-stale-history.json',
+        '--warn-threshold', (System.getenv('PM_CONSOLE_STALE_WARN_THRESHOLD') ?: '2').trim(),
+        '--apply'
+}
+
+tasks.register('pmStaleTrendKnowledgeSync', Exec) {
+    group = 'documentation'
+    description = 'Persists stale-session warning trend context into SQL knowledge.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('pmConsoleCleanupStaleSessions')
+    doFirst {
+        Map cleanup = [:]
+        File cleanupReport = file('pm/reports/pm-console-stale-cleanup.json')
+        if (cleanupReport.exists()) {
+            cleanup = (new JsonSlurper().parse(cleanupReport) as Map)
+        }
+        String summary = "stale=${cleanup?.staleCandidateCount ?: 0}; consecutive=${cleanup?.consecutiveStaleCycles ?: 0}; warning=${cleanup?.warning ?: ''}; policy=${System.getenv('PM_CONSOLE_STALE_POLICY') ?: 'report'}"
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'upsert-knowledge',
+            '--db', 'pm/state/project-state.sqlite',
+            '--knowledge-id', 'KB-PM-ENV-CONSOLE-STALE-TREND',
+            '--realm', 'pm',
+            '--scope-level', 'realm',
+            '--scope-ref', 'environment.console.stale-trend',
+            '--title', 'PM console stale session trend',
+            '--reasoning', 'Track persistence of stale duplicate console sessions across cycles.',
+            '--context-snapshot', 'pm/reports/pm-console-stale-cleanup.json',
+            '--outcome-status', 'applied',
+            '--outcome-summary', summary,
+            '--confidence', '4.0',
+            '--impact-score', '4.0',
+            '--change-ref', 'pm/reports/pm-console-stale-cleanup.json'
+    }
+}
+
+tasks.register('pmStaleTrendKnowledgeEvidence', Exec) {
+    group = 'documentation'
+    description = 'Links stale cleanup and history artifacts to stale trend knowledge.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('pmStaleTrendKnowledgeSync')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'add-knowledge-evidence',
+            '--db', 'pm/state/project-state.sqlite',
+            '--knowledge-id', 'KB-PM-ENV-CONSOLE-STALE-TREND',
+            '--artifact-path', 'pm/state/pm-console-stale-history.json',
+            '--type', 'report',
+            '--notes', 'Stale duplicate history used for threshold warning decisions.'
+    }
+}
+
+tasks.register('pmEnvironmentDashboardReport', Exec) {
+    group = 'documentation'
+    description = 'Generates compact environment dashboard report for quick triage.'
+    dependsOn('pmConsoleVisibleCheck')
+    dependsOn('pmConsoleCleanupStaleSessions')
+    doFirst {
+        commandLine 'python3',
+            'tools/environment_dashboard_report.py',
+            '--environment-health', 'pm/reports/environment-health.json',
+            '--stale-cleanup', 'pm/reports/pm-console-stale-cleanup.json',
+            '--output', 'pm/reports/environment-dashboard.json',
+            '--policy', (System.getenv('PM_CONSOLE_STALE_POLICY') ?: 'report').trim(),
+            '--warn-threshold', (System.getenv('PM_CONSOLE_STALE_WARN_THRESHOLD') ?: '2').trim()
+    }
+}
+
+tasks.register('pmEnvironmentReady') {
+    group = 'documentation'
+    description = 'Canonical environment gate: preflight + SQL knowledge persistence for daemon and visible session.'
+    dependsOn('pmEnvironmentKnowledgeEvidence')
+    dependsOn('pmConsoleVisibilityKnowledgeEvidence')
+    dependsOn('pmConsoleSessionIdentityKnowledgeEvidence')
+    dependsOn('pmConsoleCleanupStaleSessions')
+    dependsOn('pmStaleTrendKnowledgeEvidence')
+    dependsOn('pmEnvironmentDashboardReport')
+}
+
+tasks.register('environmentHealthSchemaCheck', Exec) {
+    group = 'verification'
+    description = 'Validates pm/reports/environment-health.json schema/required fields.'
+    dependsOn('pmConsoleVisibleCheck')
+    commandLine 'python3',
+        'tools/validate_environment_health_report.py',
+        '--input', 'pm/reports/environment-health.json'
+}
+
+tasks.register('staleHistorySchemaCheck', Exec) {
+    group = 'verification'
+    description = 'Validates pm/state/pm-console-stale-history.json schema/required fields.'
+    dependsOn('pmConsoleCleanupStaleSessions')
+    commandLine 'python3',
+        'tools/validate_stale_history_report.py',
+        '--input', 'pm/state/pm-console-stale-history.json'
+}
+
+tasks.register('environmentPolicyDefaultsLint', Exec) {
+    group = 'verification'
+    description = 'Lints environment variable defaults/policy consistency across build and policy docs.'
+    commandLine 'python3',
+        'tools/lint_environment_policy_defaults.py',
+        '--gradle', 'build.gradle',
+        '--policy', 'AI-POLICY.md'
+}
+
+tasks.register('pmPersistGovernanceIdentifiers', Exec) {
+    group = 'documentation'
+    description = 'Persists human-readable governance/release identifiers for console environment rollout.'
+    dependsOn('projectStateDb')
+    commandLine 'sqlite3', 'pm/state/project-state.sqlite',
+        """insert into identifier_registry(identifier,discipline,identifier_kind,realm,scope_ref,source_table,human_ref,created_at,updated_at) values
+('GOV-EVT-2026-02-19-CONSOLE-ENV-GOV-V2-001','policy_management','governance_event_id','pm','console-environment-governance-v2','SESSION_CHANGELOG.md','Console Environment Governance | 2026-02-19 | #001',datetime('now'),datetime('now')),
+('REL-PKG-2026-02-19-CONSOLE-ENV-GOV-V2-001','release_management','release_package_id','boilerplate','2026-02-19-console-environment-governance-v2','boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-console-environment-governance-v2/package-manifest.json','Console Governance Package | 2026-02-19 | #001',datetime('now'),datetime('now'))
+on conflict(identifier,discipline,identifier_kind,realm) do update set scope_ref=excluded.scope_ref,source_table=excluded.source_table,human_ref=excluded.human_ref,updated_at=datetime('now');"""
+}
+
+
 tasks.register('pmDevAttach') {
     group = 'documentation'
     description = 'Development attach workflow: regenerate preview and show PM console status'
@@ -134,6 +503,7 @@ tasks.register('pmWorkflowExecuteApplication') {
     group = 'documentation'
     description = 'Runs normalized default application execution phase (app execution + PM console).'
     String phase = pmWorkflowDefaults.get('executeApplicationPhase')?.toString() ?: 'execute_application_with_pm_console'
+    dependsOn('pmEnvironmentReady')
     dependsOn(resolvePmWorkflowTasks(phase))
 }
 
@@ -987,6 +1357,7 @@ tasks.register('versionControlLedger', Exec) {
 tasks.register('identifierRegistryReport', Exec) {
     group = 'documentation'
     description = 'Generates pm/reports/identifier-registry.json from SQLite project state.'
+    dependsOn('pmPersistGovernanceIdentifiers')
     dependsOn('projectStateDb')
     doFirst {
         def sourceSets = project(':pm-tools').sourceSets
@@ -1491,6 +1862,9 @@ tasks.register('documentationManifest') {
     dependsOn('versionControlLedger')
     dependsOn('issuesLogTickle')
     dependsOn('issuesEffectivenessReport')
+    dependsOn('environmentHealthSchemaCheck')
+    dependsOn('staleHistorySchemaCheck')
+    dependsOn('environmentPolicyDefaultsLint')
     dependsOn('policyRulesReport')
     dependsOn('policyRulesLint')
     dependsOn('dataDictionaryReport')
@@ -1501,6 +1875,7 @@ tasks.register('documentationManifest') {
     dependsOn('crossRealmActionTokenSearch')
     dependsOn('stateInventoryCsv')
     dependsOn('identifierRegistryReport')
+    dependsOn('pmPersistGovernanceIdentifiers')
     dependsOn('projectPlanWorkbook')
     dependsOn('policyGovernanceWorkbook')
     dependsOn('boilerplateSyncWorkbook')
@@ -1527,6 +1902,9 @@ tasks.register('documentationManifest') {
             file('pm/reports/remanifest-drill.json'),
             file('pm/reports/issues-log-tickle.json'),
             file('pm/reports/issues-effectiveness.json'),
+            file('pm/reports/environment-health.json'),
+            file('pm/reports/pm-console-stale-cleanup.json'),
+            file('pm/reports/environment-dashboard.json'),
             file('pm/reports/policy-rules.json'),
             file('pm/reports/policy-rules-lint.json'),
             file('pm/reports/presentation-ref-lint.json'),
@@ -1573,6 +1951,8 @@ tasks.register('documentationManifest') {
             file('pm/state/boilerplate-realm.sqlite'),
             file('pm/state/realm-policy-snapshot.json'),
             file('pm/state/action-sla-history.json'),
+            file('pm/state/pm-console-stale-history.json'),
+            file('pm/reports/environment-dashboard.json'),
             file('pm/reports/version.json'),
             file('VERSION')
         ]
@@ -1639,6 +2019,9 @@ tasks.register('publishCiArtifacts') {
             file('pm/reports/remanifest-drill.json'),
             file('pm/reports/issues-log-tickle.json'),
             file('pm/reports/issues-effectiveness.json'),
+            file('pm/reports/environment-health.json'),
+            file('pm/reports/pm-console-stale-cleanup.json'),
+            file('pm/reports/environment-dashboard.json'),
             file('pm/reports/policy-rules.json'),
             file('pm/reports/policy-rules-lint.json'),
             file('pm/reports/presentation-ref-lint.json'),
@@ -1686,6 +2069,7 @@ tasks.register('publishCiArtifacts') {
             file('pm/state/boilerplate-realm.sqlite'),
             file('pm/state/realm-policy-snapshot.json'),
             file('pm/state/action-sla-history.json'),
+            file('pm/state/pm-console-stale-history.json'),
             file('pm/reports/version.json'),
             file('docs/fidelity-corpus.txt'),
             file('docs/project-plan.md'),
@@ -1746,6 +2130,28 @@ tasks.register('enforceCiArtifactIndexIncludesPolicyLints') {
         List<String> missing = required.findAll { !text.contains(it) }
         if (!missing.isEmpty()) {
             throw new GradleException("CI artifact index missing required lint reports: " + missing.join(', '))
+        }
+    }
+}
+
+tasks.register('enforceCiArtifactIndexIncludesEnvironmentReports') {
+    group = 'verification'
+    description = 'Fails when CI artifact index omits environment health and stale cleanup reports.'
+    dependsOn('publishCiArtifacts')
+    doLast {
+        File index = file('preview/ci-artifacts/latest/index.json')
+        if (!index.exists()) {
+            throw new GradleException("Missing CI artifact index: " + index.path)
+        }
+        String text = index.getText('UTF-8')
+        List<String> required = [
+            "pm/reports/environment-health.json",
+            "pm/reports/pm-console-stale-cleanup.json",
+            "pm/reports/environment-dashboard.json"
+        ]
+        List<String> missing = required.findAll { !text.contains(it) }
+        if (!missing.isEmpty()) {
+            throw new GradleException("CI artifact index missing required environment reports: " + missing.join(', '))
         }
     }
 }
@@ -2185,6 +2591,7 @@ tasks.register('enforceNamespaceRoot') {
 tasks.register('prodBuild') {
     group = 'build'
     description = 'Production build path without test compilation/execution; assumes a prepared runtime/resource environment'
+    dependsOn('pmEnvironmentReady')
     dependsOn('realmSourcesExport')
     dependsOn(':afp-api:jar')
     dependsOn(':afp-engine:jar')
@@ -2201,6 +2608,10 @@ tasks.register('realmPolicySyncPyTests', Exec) {
 tasks.register('qualityGate') {
     group = 'verification'
     description = 'Runs tests, fidelity gate, and documentation manifest generation as a release readiness gate'
+    dependsOn('pmEnvironmentReady')
+    dependsOn('environmentHealthSchemaCheck')
+    dependsOn('staleHistorySchemaCheck')
+    dependsOn('environmentPolicyDefaultsLint')
     dependsOn('enforceProjectBoundaries')
     dependsOn('enforceManagedTooling')
     dependsOn('enforcePmApplicationRealmSeparation')
@@ -2217,6 +2628,7 @@ tasks.register('qualityGate') {
     dependsOn('documentationManifest')
     dependsOn('publishCiArtifacts')
     dependsOn('enforceCiArtifactIndexIncludesPolicyLints')
+    dependsOn('enforceCiArtifactIndexIncludesEnvironmentReports')
 }
 
 subprojects {

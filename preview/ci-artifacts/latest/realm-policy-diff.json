@@ -1,28 +1,28 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T19:51:18Z",
+  "generatedAt": "2026-02-19T20:43:09Z",
   "snapshot": "pm/state/realm-policy-snapshot.json",
   "overallSeverity": "none",
   "realms": {
     "application": {
-      "currentCount": 45,
-      "previousCount": 45,
+      "currentCount": 60,
+      "previousCount": 60,
       "added": [],
       "removed": [],
       "changed": [],
       "severity": "none"
     },
     "pm": {
-      "currentCount": 43,
-      "previousCount": 43,
+      "currentCount": 58,
+      "previousCount": 58,
       "added": [],
       "removed": [],
       "changed": [],
       "severity": "none"
     },
     "boilerplate": {
-      "currentCount": 47,
-      "previousCount": 47,
+      "currentCount": 62,
+      "previousCount": 62,
       "added": [],
       "removed": [],
       "changed": [],

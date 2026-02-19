@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T19:51:01Z",
+  "generatedAt": "2026-02-19T20:42:52Z",
   "source": "sqlite",
   "sourceTable": "pm_data_dictionary",
   "requiredCount": 21,
-  "presentCount": 37,
+  "presentCount": 41,
   "missingCount": 0,
   "requiredObjects": [
     "issues",

@@ -47,6 +47,12 @@ jobs:
         run: tools/recovery_quick_check.sh
       - name: Production build
         run: ./gradlew --no-daemon prodBuild
+      - name: Environment health schema check
+        run: ./gradlew --no-daemon environmentHealthSchemaCheck
+      - name: Stale history schema check
+        run: ./gradlew --no-daemon staleHistorySchemaCheck
+      - name: Environment policy defaults lint
+        run: ./gradlew --no-daemon environmentPolicyDefaultsLint
       - name: Documentation manifest
         run: ./gradlew --no-daemon documentationManifest
       - name: Upload recovery artifacts
@@ -59,8 +65,11 @@ jobs:
             pm/reports/project-plan-progress-data.json
             pm/reports/issues-log-tickle.json
             pm/reports/issues-effectiveness.json
+            pm/reports/environment-health.json
+            pm/reports/pm-console-stale-cleanup.json
             pm/reports/recovery-status.json
             pm/state/critical-db-sha256.txt
+            pm/state/pm-console-stale-history.json
 
   remanifest-drill:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'

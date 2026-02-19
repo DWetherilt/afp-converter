@@ -6,7 +6,7 @@
     {
       "id": "execute_application_with_pm_console",
       "title": "Execute Application + PM Console",
-      "description": "Runs application preview execution followed by PM console status.",
+      "description": "Runs environment-first PM preflight + visibility verification + SQL knowledge persistence, then application preview execution and PM console status.",
       "intent": "development",
       "tags": ["application", "pm", "default-execution"]
     },
@@ -37,8 +37,8 @@
       "command": ["./gradlew"],
       "phaseTaskMap": {
         "execute_application_with_pm_console": [
+          "pmEnvironmentReady",
           "previewManifest",
-          "pmConsoleEnsureLive",
           "pmConsoleStatus"
         ],
         "pm_refresh_and_reports": [

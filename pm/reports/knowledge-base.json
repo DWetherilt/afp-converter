@@ -1,20 +1,132 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T19:51:17Z",
+  "generatedAt": "2026-02-19T20:43:08Z",
   "source": "sqlite",
   "sourceTable": "knowledge_entries",
-  "entryCount": 4,
+  "entryCount": 8,
   "byRealm": {
-    "pm": 2,
+    "pm": 6,
     "boilerplate": 1,
     "application": 1
   },
   "byOutcomeStatus": {
+    "applied": 5,
     "validated": 2,
-    "applied": 1,
     "open": 1
   },
   "knowledge": [
+    {
+      "knowledgeId": "KB-PM-ENV-CONSOLE-STALE-TREND",
+      "knowledgeRef": "Knowledge | 2026-02-19 | #001",
+      "realm": "pm",
+      "scopeLevel": "realm",
+      "scopeRef": "environment.console.stale-trend",
+      "title": "PM console stale session trend",
+      "reasoning": "Track persistence of stale duplicate console sessions across cycles.",
+      "contextSnapshot": "pm/reports/pm-console-stale-cleanup.json",
+      "outcomeStatus": "applied",
+      "outcomeSummary": "stale=0; consecutive=0; warning=; policy=report",
+      "confidence": 4.0,
+      "impactScore": 4.0,
+      "changeRef": "pm/reports/pm-console-stale-cleanup.json",
+      "createdAt": "2026-02-19T20:38:55Z",
+      "updatedAt": "2026-02-19T20:41:56Z",
+      "evidence": [
+        {
+          "artifactPath": "pm/state/pm-console-stale-history.json",
+          "artifactSha256": "28e39854e040d355572a615cb2aad6d5044aef6362a4520acc5ca9e2b7f3371b",
+          "artifactSizeBytes": 1095,
+          "type": "report",
+          "notes": "Stale duplicate history used for threshold warning decisions.",
+          "capturedAt": "2026-02-19T20:41:56Z"
+        }
+      ],
+      "decisionLinks": []
+    },
+    {
+      "knowledgeId": "KB-PM-ENV-CONSOLE-HEALTH",
+      "knowledgeRef": "Knowledge | 2026-02-19 | #001",
+      "realm": "pm",
+      "scopeLevel": "realm",
+      "scopeRef": "environment",
+      "title": "PM console environment health preflight",
+      "reasoning": "Environment-first governance requires live PM console status checks before workflow execution.",
+      "contextSnapshot": "pm/reports/environment-health.json",
+      "outcomeStatus": "applied",
+      "outcomeSummary": "Recorded console daemon + visibility state (mode=strict, ci=false) for this cycle.",
+      "confidence": 5.0,
+      "impactScore": 5.0,
+      "changeRef": "pm/reports/environment-health.json",
+      "createdAt": "2026-02-19T19:58:53Z",
+      "updatedAt": "2026-02-19T20:41:55Z",
+      "evidence": [
+        {
+          "artifactPath": "pm/reports/environment-health.json",
+          "artifactSha256": "f53f823d0b6ef5d3035a51d7518fa8d27971f11bab8cda9b523f75b19e580884",
+          "artifactSizeBytes": 1404,
+          "type": "report",
+          "notes": "Environment preflight status including PID and running state.",
+          "capturedAt": "2026-02-19T20:41:56Z"
+        }
+      ],
+      "decisionLinks": []
+    },
+    {
+      "knowledgeId": "KB-PM-ENV-CONSOLE-VISIBLE",
+      "knowledgeRef": "Knowledge | 2026-02-19 | #001",
+      "realm": "pm",
+      "scopeLevel": "realm",
+      "scopeRef": "environment.console.visibility",
+      "title": "PM console visible session context",
+      "reasoning": "Visible desktop PM console presence is required for environment readiness in local development flows.",
+      "contextSnapshot": "pm/reports/environment-health.json",
+      "outcomeStatus": "applied",
+      "outcomeSummary": "visiblePids=48494; terminalWindowId=tty:ttys001; visible=true; status=PASS",
+      "confidence": 5.0,
+      "impactScore": 5.0,
+      "changeRef": "pm/reports/environment-health.json",
+      "createdAt": "2026-02-19T20:10:17Z",
+      "updatedAt": "2026-02-19T20:41:54Z",
+      "evidence": [
+        {
+          "artifactPath": "pm/reports/environment-health.json",
+          "artifactSha256": "f53f823d0b6ef5d3035a51d7518fa8d27971f11bab8cda9b523f75b19e580884",
+          "artifactSizeBytes": 1404,
+          "type": "report",
+          "notes": "Visibility context report including visible session PIDs and terminal window ID.",
+          "capturedAt": "2026-02-19T20:41:55Z"
+        }
+      ],
+      "decisionLinks": []
+    },
+    {
+      "knowledgeId": "KB-PM-ENV-CONSOLE-SESSION-IDENTITY",
+      "knowledgeRef": "Knowledge | 2026-02-19 | #001",
+      "realm": "pm",
+      "scopeLevel": "realm",
+      "scopeRef": "environment.console.session.identity",
+      "title": "PM console session identity",
+      "reasoning": "Capture terminal window/tab identity for deterministic visible session tracking.",
+      "contextSnapshot": "pm/reports/environment-health.json",
+      "outcomeStatus": "applied",
+      "outcomeSummary": "terminalWindowId=tty:ttys001; terminalTabId=pid:48494; visiblePids=48494",
+      "confidence": 5.0,
+      "impactScore": 4.0,
+      "changeRef": "pm/reports/environment-health.json",
+      "createdAt": "2026-02-19T20:27:44Z",
+      "updatedAt": "2026-02-19T20:41:53Z",
+      "evidence": [
+        {
+          "artifactPath": "pm/reports/environment-health.json",
+          "artifactSha256": "f53f823d0b6ef5d3035a51d7518fa8d27971f11bab8cda9b523f75b19e580884",
+          "artifactSizeBytes": 1404,
+          "type": "report",
+          "notes": "Deterministic terminal window/tab identity for visible PM console session.",
+          "capturedAt": "2026-02-19T20:41:54Z"
+        }
+      ],
+      "decisionLinks": []
+    },
     {
       "knowledgeId": "KB-PM-2026-02-19-002",
       "knowledgeRef": "Knowledge | 2026-02-19 | #002",

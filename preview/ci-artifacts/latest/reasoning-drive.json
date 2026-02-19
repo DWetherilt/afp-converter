@@ -1,20 +1,20 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T19:51:18+00:00",
+  "generatedAt": "2026-02-19T20:43:09+00:00",
   "source": "reasoning-sync",
   "experience": {
     "db": "/Users/dal/IdeaProjects/afp-converter/pm/state/reasoning-experience.sqlite",
-    "eventCount": 4,
-    "decisionLinkCoveragePct": 100.0,
+    "eventCount": 8,
+    "decisionLinkCoveragePct": 50.0,
     "heuristicCount": 4,
     "topHeuristics": [
       {
         "heuristicKey": "closure_ratio::global",
         "group": "closure_ratio",
-        "score": 75.0,
-        "sampleCount": 4,
-        "signal": "positive=3,total=4",
-        "updatedAt": "2026-02-19T19:51:18+00:00"
+        "score": 87.5,
+        "sampleCount": 8,
+        "signal": "positive=7,total=8",
+        "updatedAt": "2026-02-19T20:43:09+00:00"
       },
       {
         "heuristicKey": "evidence_density::application",
@@ -22,15 +22,15 @@
         "score": 66.25,
         "sampleCount": 1,
         "signal": "avg_impact=4.500,avg_evidence=2.000",
-        "updatedAt": "2026-02-19T19:51:18+00:00"
+        "updatedAt": "2026-02-19T20:43:09+00:00"
       },
       {
         "heuristicKey": "evidence_density::pm",
         "group": "evidence_density",
         "score": 61.25,
-        "sampleCount": 2,
-        "signal": "avg_impact=4.300,avg_evidence=1.500",
-        "updatedAt": "2026-02-19T19:51:18+00:00"
+        "sampleCount": 6,
+        "signal": "avg_impact=4.433,avg_evidence=1.167",
+        "updatedAt": "2026-02-19T20:43:09+00:00"
       },
       {
         "heuristicKey": "evidence_density::boilerplate",
@@ -38,7 +38,7 @@
         "score": 60.0,
         "sampleCount": 1,
         "signal": "avg_impact=4.000,avg_evidence=2.000",
-        "updatedAt": "2026-02-19T19:51:18+00:00"
+        "updatedAt": "2026-02-19T20:43:09+00:00"
       }
     ]
   },
@@ -50,13 +50,13 @@
         "insightId": "insight::pm::2",
         "realm": "pm",
         "type": "realm_signal",
-        "statement": "Realm 'pm' has avg impact 4.30, avg confidence 4.45, open knowledge items 0/2.",
-        "supportScore": 98.25,
+        "statement": "Realm 'pm' has avg impact 4.43, avg confidence 4.65, open knowledge items 0/6.",
+        "supportScore": 100.0,
         "sourceRefs": [
           "experience_events::pm",
           "heuristic_scores::evidence_density"
         ],
-        "updatedAt": "2026-02-19T19:51:18+00:00"
+        "updatedAt": "2026-02-19T20:43:09+00:00"
       },
       {
         "insightId": "insight::application::1",
@@ -68,7 +68,7 @@
           "experience_events::application",
           "heuristic_scores::evidence_density"
         ],
-        "updatedAt": "2026-02-19T19:51:18+00:00"
+        "updatedAt": "2026-02-19T20:43:09+00:00"
       },
       {
         "insightId": "insight::boilerplate::3",
@@ -80,7 +80,7 @@
           "experience_events::boilerplate",
           "heuristic_scores::evidence_density"
         ],
-        "updatedAt": "2026-02-19T19:51:18+00:00"
+        "updatedAt": "2026-02-19T20:43:09+00:00"
       }
     ]
   }

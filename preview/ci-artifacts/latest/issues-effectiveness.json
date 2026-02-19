@@ -1,14 +1,14 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T19:51:09Z",
+  "generatedAt": "2026-02-19T20:43:01Z",
   "summary": {
-    "openIssueCount": 6,
+    "triggeredIssueCount": 7,
+    "highSeverityOpenCount": 4,
+    "openIssueCount": 7,
     "averageTaskPercentComplete": 84.5,
-    "issueCount": 6,
+    "issueCount": 7,
     "requiresIssuesLogUpdate": false,
-    "taskCount": 34,
-    "triggeredIssueCount": 6,
-    "highSeverityOpenCount": 3
+    "taskCount": 34
   },
   "fidelity": {
     "fidelityScore": 0.952575,
@@ -30,9 +30,7 @@
       "matchedComponents": [
         "build.gradle",
         "docs/project-plan-progress.xlsx",
-        "pm/reports/project-plan-progress-data.json",
-        "tools/export_project_plan_progress_json.py",
-        "tools/update_project_plan_workbook.py"
+        "pm/reports/project-plan-progress-data.json"
       ]
     },
     {
@@ -40,9 +38,7 @@
       "status": "Open",
       "title": "Workbook repair/corruption when managed sheets are added by XML updater without synchronizing docProps/app.xml sheet metadata",
       "matchedComponents": [
-        "docs/project-plan-progress.xlsx",
-        "tools/run_excel_workbook_refresh.py",
-        "tools/update_project_plan_workbook.py"
+        "docs/project-plan-progress.xlsx"
       ]
     },
     {
@@ -50,8 +46,7 @@
       "status": "Open",
       "title": "Excel automation unavailable in headless/agent context (Apple event connection invalid), strict Excel-required mode fails as designed",
       "matchedComponents": [
-        "build.gradle",
-        "tools/run_excel_workbook_refresh.py"
+        "build.gradle"
       ]
     },
     {
@@ -67,13 +62,12 @@
       "status": "Open",
       "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
       "matchedComponents": [
+        "AI-POLICY.md",
         "build.gradle",
         "docs/boilerplate-sync-candidates.xlsx",
         "docs/project-plan-progress.xlsx",
         "pm/state/boilerplate-state.sqlite",
-        "pm/state/project-state.sqlite",
-        "tools/run_excel_workbook_refresh.py",
-        "tools/update_project_plan_workbook.py"
+        "pm/state/project-state.sqlite"
       ]
     },
     {
@@ -81,49 +75,41 @@
       "status": "Open",
       "title": "Policy-governance sequence drift when updating constitutional/policy text without full checklist sequencing",
       "matchedComponents": [
+        "AI-POLICY.md",
+        "SESSION_CHANGELOG.md",
         "build.gradle",
         "docs/issues-log.csv",
-        "docs/policy-governance-events.csv",
         "docs/policy-governance-events.xlsx",
         "pm/reports/documentation-manifest.json",
         "pm/reports/governance-alerts.json",
         "pm/reports/version-control-ledger.json",
         "pm/state/project-state.sqlite",
-        "tools/action_owner_summary.py",
-        "tools/action_sla_trend.py",
-        "tools/check_action_ingest_strict.py",
-        "tools/check_critical_db_hashes.sh",
-        "tools/export_boilerplate_package.sh",
-        "tools/export_project_plan_progress_json.py",
-        "tools/fake-afp-engine.sh",
-        "tools/init_update_package.sh",
-        "tools/install_git_hooks.sh",
-        "tools/issues_effectiveness_report.py",
-        "tools/issues_log_tickle.py",
-        "tools/manifest_from_sql.py",
-        "tools/manifest_from_sql.sh",
-        "tools/minimal_snapshot.sh",
-        "tools/minimal_snapshot_guard.sh",
-        "tools/pm_console_live_daemon.sh",
-        "tools/pm_workflow.py",
-        "tools/presentation_ref_lint.py",
-        "tools/realm_drift_verify.sh",
-        "tools/realm_policy_diff.py",
-        "tools/realm_policy_sync.py",
-        "tools/reasoning_sync.py",
-        "tools/recovery_doctor.sh",
-        "tools/recovery_quick_check.sh",
-        "tools/remanifest_drill.py",
-        "tools/restore_binary_artifacts.sh",
-        "tools/restore_recovery_checkpoint.sh",
-        "tools/rollback_manager.py",
-        "tools/run_excel_workbook_refresh.py",
-        "tools/sql_code_workflow.sh",
-        "tools/sql_drift_summary.py",
-        "tools/sql_upsert_text_files.sh",
-        "tools/update_project_plan_workbook.py",
-        "tools/validate_boilerplate_package.sh",
-        "tools/versioning.py"
+        "tools/environment_dashboard_report.py",
+        "tools/environment_health_check.py",
+        "tools/lint_environment_policy_defaults.py",
+        "tools/pm_console_cleanup.py",
+        "tools/tests/test_environment_health_check.py",
+        "tools/tests/test_pm_console_cleanup.py",
+        "tools/tests/test_pm_environment_ready_chain.py",
+        "tools/tests/test_validate_stale_history_report.py",
+        "tools/validate_environment_health_report.py",
+        "tools/validate_stale_history_report.py"
+      ]
+    },
+    {
+      "id": "ISSUE-007",
+      "status": "Open",
+      "title": "Environment readiness drift: daemon-only checks missed visible console verification",
+      "matchedComponents": [
+        "AI-POLICY.md",
+        "build.gradle",
+        "pm/policy/policy-rule-tables.sql",
+        "pm/reports/environment-health.json",
+        "pm/reports/pm-console-stale-cleanup.json",
+        "pm/state/project-state.sqlite",
+        "pm/workflow/workflow-manifest.json",
+        "tools/environment_health_check.py",
+        "tools/pm_console_cleanup.py"
       ]
     }
   ],
@@ -143,6 +129,12 @@
     {
       "id": "ISSUE-005",
       "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
+      "owner": "Human+AI",
+      "last_reviewed": "2026-02-19"
+    },
+    {
+      "id": "ISSUE-007",
+      "title": "Environment readiness drift: daemon-only checks missed visible console verification",
       "owner": "Human+AI",
       "last_reviewed": "2026-02-19"
     }

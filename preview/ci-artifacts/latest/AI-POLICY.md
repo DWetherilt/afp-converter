@@ -134,7 +134,10 @@ Use this file as the first-read operational contract before making changes.
 - Diagnostics and metadata are first-class outputs and must be kept in sync with renderer behavior.
 - Default execution coupling:
   - Unless a human explicitly defines otherwise, any request to execute/run the application must include PM console launch in the same flow.
-  - Standard default sequence is: application execution first, ensure persistent PM console live daemon (`pmConsoleEnsureLive` / `tools/pm_console_live_daemon.sh start`), then PM console status (`pmConsoleStatus` / `pmconsole status`).
+  - Environment health tasks are highest-priority and must execute before application workflow phases.
+  - Standard default sequence is: environment readiness gate (`pmEnvironmentReady`) that ensures persistent PM console live daemon, verifies PID/log + visible session health (`pmConsoleVisibleCheck`), persists environment/visibility knowledge and evidence, then application execution (`previewManifest`), then PM console status (`pmConsoleStatus` / `pmconsole status`).
+  - Governance mode is controlled by `ENV_GOVERNANCE_MODE` (`strict` default, `relaxed` optional).
+  - Optional visible-console fallback launch is controlled by `PM_CONSOLE_AUTOLAUNCH` (`true` local default, `false` in CI/headless).
 
 ## Standard Development Cycle
 When implementing any meaningful change:
@@ -166,6 +169,18 @@ When implementing any meaningful change:
 - `prodBuild` assumes runtime resources/environment are already correctly provisioned.
 - `prodBuild` must remain application-only (`afp-api`, `afp-engine`, `afp-cli`) and must not package PM modules (`pm-tools`, `pm-console`).
 - `qualityGate` is the canonical readiness command.
+- `pmEnvironmentReady` is the canonical environment gate and must run before non-environment workflow phases.
+- `pmConsoleVisibleCheck` enforces visible desktop console verification locally and writes `pm/reports/environment-health.json` (CI-safe visibility behavior).
+- `pmConsoleVisibleLaunch` is the explicit manual recovery command to open a visible desktop PM console session.
+- `pmConsoleCleanupStaleSessions` detects/optionally cleans stale duplicate background `pmconsole live` sessions and writes `pm/reports/pm-console-stale-cleanup.json`.
+- `pmConsoleCleanupStaleSessionsApply` is the explicit cleanup command for stale duplicates.
+- stale-session policy:
+  - `PM_CONSOLE_STALE_POLICY=report|clean` (default `report`)
+  - `PM_CONSOLE_STALE_WARN_THRESHOLD=<n>` controls warning trigger for consecutive stale cycles.
+- `environmentHealthSchemaCheck` must validate `pm/reports/environment-health.json` before publication/quality gates.
+- `staleHistorySchemaCheck` must validate `pm/state/pm-console-stale-history.json` before publication/quality gates.
+- `environmentPolicyDefaultsLint` must enforce env var default/policy consistency.
+- `pmEnvironmentDashboardReport` must publish `pm/reports/environment-dashboard.json` for compact triage status.
 - `enforceProjectBoundaries` is mandatory in `qualityGate` and must fail when `afp-api`, `afp-engine`, or `afp-cli` reference project-management tooling/state (`pm-tools`, governance/project tracker sources, or management SQLite paths).
 - `enforceManagedTooling` is mandatory in `qualityGate` and must fail when project-management tooling files under `tools/` or `pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools` are untracked.
 - `enforcePmApplicationRealmSeparation` is mandatory in `qualityGate` and must fail when PM artifacts are written under `preview/` or PM databases are written outside `pm/state/`.

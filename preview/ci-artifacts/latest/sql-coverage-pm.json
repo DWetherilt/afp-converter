@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T19:51:13Z",
+  "generatedAt": "2026-02-19T20:43:04Z",
   "realm": "pm",
-  "expectedManagedFileCount": 80,
-  "indexedManagedFileCount": 80,
+  "expectedManagedFileCount": 90,
+  "indexedManagedFileCount": 90,
   "missingCount": 0,
   "extraCount": 0,
   "coverageRatio": 1.0,

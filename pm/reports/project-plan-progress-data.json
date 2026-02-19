@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T19:51:12Z",
+  "generatedAt": "2026-02-19T20:43:03Z",
   "source": "sqlite",
   "taskCount": 34,
   "tasks": [
@@ -313,8 +313,8 @@
   ],
   "followUps": [
     {
-      "id": "restored-workbook-content-review",
       "status": "pending",
+      "id": "restored-workbook-content-review",
       "note": "Circle back and review restored workbook content against JSON/CSV sources."
     }
   ]

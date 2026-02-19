@@ -62,6 +62,8 @@ public final class PmConsoleMain implements Callable<Integer> {
     private static final Path ACTION_SLA_TREND = Path.of("pm/reports/action-sla-trend.json");
     private static final Path ACTION_INGEST_STRICT = Path.of("pm/reports/action-ingest-strict.json");
     private static final Path ACTION_SUGGESTIONS = Path.of("pm/reports/action-decision-suggestions.json");
+    private static final Path ENVIRONMENT_HEALTH = Path.of("pm/reports/environment-health.json");
+    private static final Path PM_CONSOLE_STALE_CLEANUP = Path.of("pm/reports/pm-console-stale-cleanup.json");
     private static final Path REALM_KNOWLEDGE_SYNC = Path.of("pm/reports/realm-knowledge-sync.json");
     private static final Path REALM_KNOWLEDGE_LINK_GATE = Path.of("pm/reports/realm-knowledge-link-gate.json");
     private static final Path AI_INBOX = Path.of("pm/state/assistant-inbox.ndjson");
@@ -537,6 +539,8 @@ public final class PmConsoleMain implements Callable<Integer> {
             Path knowledge = Path.of("pm/reports/knowledge-base.json");
             Path reasoning = Path.of("pm/reports/reasoning-drive.json");
             Path actions = Path.of("pm/reports/action-items.json");
+            JsonObject env = readJson(ENVIRONMENT_HEALTH);
+            JsonObject stale = readJson(PM_CONSOLE_STALE_CLEANUP);
 
             System.out.println("Report summary:");
             System.out.println("  - issues effectiveness: " + describePath(issues));
@@ -548,6 +552,36 @@ public final class PmConsoleMain implements Callable<Integer> {
             System.out.println("  - action items: " + describePath(actions));
             System.out.println("  - action owner summary: " + describePath(ACTION_OWNER_SUMMARY));
             System.out.println("  - action SLA trend: " + describePath(ACTION_SLA_TREND));
+            String stalePolicy = text(System.getenv("PM_CONSOLE_STALE_POLICY"));
+            if (stalePolicy.isBlank()) {
+                stalePolicy = "report";
+            }
+            String staleThreshold = text(System.getenv("PM_CONSOLE_STALE_WARN_THRESHOLD"));
+            if (staleThreshold.isBlank()) {
+                staleThreshold = "2";
+            }
+            System.out.println("  - stale policy: mode=" + stalePolicy + " | warn-threshold=" + staleThreshold);
+            if (env != null) {
+                JsonObject visibility = env.has("visibility") && env.get("visibility").isJsonObject()
+                    ? env.getAsJsonObject("visibility")
+                    : new JsonObject();
+                JsonObject duplicates = env.has("duplicates") && env.get("duplicates").isJsonObject()
+                    ? env.getAsJsonObject("duplicates")
+                    : new JsonObject();
+                System.out.println("  - environment gate: status=" + str(env, "status", "UNKNOWN")
+                    + " | visible=" + str(visibility, "visibleRunning", "false")
+                    + " | terminal-window-id=" + str(visibility, "terminalWindowId", "")
+                    + " | terminal-tab-id=" + str(visibility, "terminalTabId", ""));
+                System.out.println("  - duplicate sessions: stale=" + str(duplicates, "staleCandidateCount", "0"));
+            } else {
+                System.out.println("  - environment gate: missing (" + ENVIRONMENT_HEALTH + ")");
+            }
+            if (stale != null) {
+                System.out.println("  - stale cleanup report: status=" + str(stale, "status", "UNKNOWN")
+                    + " | warning=" + str(stale, "warning", ""));
+            } else {
+                System.out.println("  - stale cleanup report: missing (" + PM_CONSOLE_STALE_CLEANUP + ")");
+            }
         }
     }
 

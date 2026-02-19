@@ -689,3 +689,28 @@ This changelog is reconstructed from repository artifacts and our current thread
   - wired `enforceNamespaceRoot` into `qualityGate`,
   - added SQL policy rule `PM-NS-001` in `pm/policy/policy-rule-tables.sql`.
 - Added boilerplate promotion package `2026-02-19-namespace-root-solutions-pointzero-symphony` under `boilerplate/update-packages/pz-boilerplate-intelliJ/` to carry the namespace mandate into the boilerplate framework.
+- Enforced environment-first execution governance for PM workflows:
+  - added `tools/environment_health_check.py` to emit `pm/reports/environment-health.json` from PM console PID/log state,
+  - added Gradle tasks `pmEnvironmentPreflight`, `pmEnvironmentKnowledgeSync`, and `pmEnvironmentKnowledgeEvidence`,
+  - updated normalized execute phase mapping to run `pmEnvironmentKnowledgeEvidence` before preview execution,
+  - updated SQL rules (`PM-EXEC-001`, `PM-ENV-001`, `PM-ENV-002`) and `AI-POLICY.md` default sequence to prioritize environment checks before any non-environment work.
+- Implemented mandatory visible-console environment governance and blocking gates:
+  - Added `pmConsoleVisibleCheck` and canonical gate `pmEnvironmentReady` with strict/relaxed mode (`ENV_GOVERNANCE_MODE`) and CI-safe visibility behavior.
+  - Added optional auto-launch-and-verify fallback (`PM_CONSOLE_AUTOLAUNCH`) for missing visible console sessions.
+  - Extended `tools/environment_health_check.py` output (`pm/reports/environment-health.json`) with visibility state, visible session PIDs/TTYs, terminal window ID, and duplicate stale-session detection.
+  - Added visibility-focused SQL knowledge persistence tasks (`pmConsoleVisibilityKnowledgeSync`, `pmConsoleVisibilityKnowledgeEvidence`) and retained daemon health knowledge/evidence.
+  - Added stale duplicate cleanup tooling/task (`tools/pm_console_cleanup.py`, `pmConsoleCleanupStaleSessions`) with dry-run default and optional apply mode.
+  - Gated non-environment execution paths with environment readiness (`pmWorkflowRun`, `pmWorkflowExecuteApplication`, `qualityGate`, `prodBuild`).
+  - Updated workflow manifest, policy SQL rules (`PM-CONSOLE-004/005`, `PM-ENV-003/004/005`), and policy text to codify environment-first visible-console governance.
+  - Logged governance incident as `ISSUE-007` in `docs/issues-log.csv` for ongoing monitoring.
+- Completed follow-on console governance hardening bundle (10-task sprint):
+  - Added explicit visible console launcher task `pmConsoleVisibleLaunch`.
+  - Added strict/relaxed + report/clean stale policy controls (`ENV_GOVERNANCE_MODE`, `PM_CONSOLE_STALE_POLICY`, `PM_CONSOLE_STALE_WARN_THRESHOLD`).
+  - Added environment health schema validator script + Gradle task (`tools/validate_environment_health_report.py`, `environmentHealthSchemaCheck`).
+  - Added deterministic terminal identity capture (window/tab IDs) in environment health payload and persisted dedicated SQL knowledge (`KB-PM-ENV-CONSOLE-SESSION-IDENTITY`).
+  - Added stale session history tracking with warning threshold in `tools/pm_console_cleanup.py` (`pm/state/pm-console-stale-history.json`).
+  - Extended PM console status dashboard with environment-gate and stale-cleanup summaries.
+  - Added Python unit tests for environment health and stale cleanup tooling.
+  - Updated CI workflow to run environment schema check and publish environment/stale artifacts.
+  - Added CI artifact index enforcement for environment reports.
+  - Added boilerplate roll-up package `boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-console-environment-governance-v2`.
