@@ -1,18 +1,18 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T18:22:37Z",
+  "generatedAt": "2026-02-19T18:57:48Z",
   "source": "sqlite",
   "repo": {
-    "gitHead": "0ed6b4f2586dabf309b5be0ad6e24c453fbc4551",
+    "gitHead": "9171d91d4a7ea384c698584a4ee7072d72c3d823",
     "gitBranch": "chore/ci-prodbuild-boilerplate-kickoff",
     "isDirty": true,
-    "trackedCount": 561,
-    "modifiedCount": 37,
-    "untrackedCount": 8,
+    "trackedCount": 608,
+    "modifiedCount": 114,
+    "untrackedCount": 0,
     "deletedCount": 0,
-    "updatedAt": "2026-02-19T18:22:25Z"
+    "updatedAt": "2026-02-19T18:57:31Z"
   },
-  "fileCount": 569,
+  "fileCount": 608,
   "files": [
     {
       "path": ".github/CODEOWNERS",
@@ -1239,6 +1239,38 @@
       "sha256": "ead884b7c45ed5d6d7fcc773f85aa3c8aefca371047b5207c88310ac8e24ac20"
     },
     {
+      "path": "boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-queue-normalization-knowledge-link-gate/README.md",
+      "tracked": true,
+      "statusCode": "A",
+      "existsOnDisk": true,
+      "sizeBytes": 594,
+      "sha256": "4a3b6ac7f1176c39ae17dcd6c54e6a49c8246e2428974280384e34c1fdaf9249"
+    },
+    {
+      "path": "boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-queue-normalization-knowledge-link-gate/apply-checklist.md",
+      "tracked": true,
+      "statusCode": "A",
+      "existsOnDisk": true,
+      "sizeBytes": 343,
+      "sha256": "05fa5d074f0416bf31254d6f15fb075e5ce73a232656aa1edbbd46efdc2865ce"
+    },
+    {
+      "path": "boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-queue-normalization-knowledge-link-gate/fresh-session-prompt.md",
+      "tracked": true,
+      "statusCode": "A",
+      "existsOnDisk": true,
+      "sizeBytes": 190,
+      "sha256": "f9b3b9391f569cc4b84a5df34f7e19202965f04e59220f4f5e6bd9d9d1bbbe16"
+    },
+    {
+      "path": "boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-queue-normalization-knowledge-link-gate/package-manifest.json",
+      "tracked": true,
+      "statusCode": "A",
+      "existsOnDisk": true,
+      "sizeBytes": 1682,
+      "sha256": "7e831f232b2c23278c7b1f6652d048ea5cecb92cba36ba46bf5b8d432fe6cba4"
+    },
+    {
       "path": "boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-recovery-ci-sql-integrity.zip",
       "tracked": true,
       "statusCode": "",
@@ -1291,8 +1323,8 @@
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 84974,
-      "sha256": "7d92f05c68c1234ed85d9044c7c86a63d4a4c81dae4c10a487261f4041f8306c"
+      "sizeBytes": 87224,
+      "sha256": "45cb1d7a6db1f3dcb99ce858ea9b5d52e3faedb1aebf2f2cb36dd60fa0c30f3c"
     },
     {
       "path": "docs/API.md",
@@ -1323,16 +1355,16 @@
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 10725,
-      "sha256": "72ae636b5ad647e49bf26ade07d33b79fb4b423a7ae8a9e6799696e57c5aa57a"
+      "sizeBytes": 11309,
+      "sha256": "e893ae25e5c8426436077688f1dd1077ea834c2d942d5f3de078ba773c096c16"
     },
     {
       "path": "docs/boilerplate-sync-candidates.xlsx",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 8981,
-      "sha256": "2772695527d1dd7446632292114dd862d6e049207d089355a20be1e6885c5ca6"
+      "sizeBytes": 9171,
+      "sha256": "a1484dfd704c3d3893309280694a707f599512345f7ed50cf4607d307f50b929"
     },
     {
       "path": "docs/fidelity-corpus.txt",
@@ -1355,8 +1387,8 @@
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 6654,
-      "sha256": "8fd1f6873581ecab9d50c56888dcc9ab3be3abd7862e22ea65dac97a8ae6de05"
+      "sizeBytes": 6933,
+      "sha256": "0f8b47694daaca206c6ec525101229e270b9fe45013dd8f71c3817f15da7191f"
     },
     {
       "path": "docs/policy-governance-events.csv",
@@ -1371,24 +1403,24 @@
       "tracked": true,
       "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 4347,
-      "sha256": "e3122f3ce9d210b4c576197a3582ef22dbb6e10df05a9d3567468554bafdb5a0"
+      "sizeBytes": 4348,
+      "sha256": "ba16b89a7e69eac6a63702a7bd3e741e41e9c8bd8c1b1c01cf5e9a706c0757e6"
     },
     {
       "path": "docs/project-plan-progress.csv",
       "tracked": true,
       "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 8478,
-      "sha256": "c4c503ae423225c5b9d9be9fad2685189854d8db2c4381fef8959b2fae0850b4"
+      "sizeBytes": 8658,
+      "sha256": "6c3aa6820d8391d8f93cb32304a8cf4244f6634553ac729a1197a77c0bdca07c"
     },
     {
       "path": "docs/project-plan-progress.xlsx",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 6832,
-      "sha256": "eb46897be647c0a6fe12f6890fdc7eceec8821bc280427777a02afe79bc6b9a5"
+      "sizeBytes": 13341,
+      "sha256": "b50e4ddf0589a1dbae3359297a47505f24c9b4ea6d4bc5e635fa2f384d659b12"
     },
     {
       "path": "docs/project-plan.md",
@@ -1451,16 +1483,16 @@
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 59985,
-      "sha256": "4435844de130f1ef29223c75718befa39b135fe46d32e5b5d51d12010e5eb0ac"
+      "sizeBytes": 68349,
+      "sha256": "76d913e3293610d0612106db1d204305aa3e003ac351b827d1d900e183a12ec7"
     },
     {
-      "path": "pm-console/src/test/",
-      "tracked": false,
-      "statusCode": "??",
+      "path": "pm-console/src/test/java/solutions/pointzero/symphony/pm/console/PmConsoleMainTest.java",
+      "tracked": true,
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 96,
-      "sha256": ""
+      "sizeBytes": 2051,
+      "sha256": "bd182ae773106da8d2aad9fdc8f492bcff556e5b725b84c3b8ea4da4151aba76"
     },
     {
       "path": "pm-tools/build.gradle",
@@ -3337,23 +3369,23 @@
     {
       "path": "pm/policy/policy-rule-tables.sql",
       "tracked": true,
-      "statusCode": "M",
+      "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 17215,
-      "sha256": "b81b36de59a15a3e04c67c07f402a9678e7c5be34034e0c92444059dda5f57a6"
+      "sizeBytes": 18480,
+      "sha256": "f5d28fdefcc05d6fbaf457bbcb0badb26f6716376f48afd766ec92f12d8abd56"
     },
     {
       "path": "pm/reports/action-decision-suggestions.json",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 2387,
-      "sha256": "6b9cae978aa9f9e452414f5b955b5cdc9ac2f99f718d3e1f49f1cd4739d436ab"
+      "sizeBytes": 2390,
+      "sha256": "d9d4727e57a7829b373ab6e73d3f2d3ff980adf2b6decdb294e86f16814c0486"
     },
     {
       "path": "pm/reports/action-ingest-strict.json",
       "tracked": true,
-      "statusCode": "M",
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 254,
       "sha256": "da1b17b3014922d27753aece1193073b662fb729c26a4643f978827578999384"
@@ -3363,32 +3395,32 @@
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 1393,
-      "sha256": "a23d61f3827175ca384b3d8b534e2ac162953c0b8a02e3e81d0b01cae17ee7b2"
+      "sizeBytes": 1870,
+      "sha256": "d7fac8f9c4c30872a9a7b5ecd052ffa8ec684316f1f881dcef2f6def75308ba9"
     },
     {
       "path": "pm/reports/action-owner-summary.json",
-      "tracked": false,
-      "statusCode": "??",
+      "tracked": true,
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 284,
-      "sha256": "c47998b3891ac8850b7edd43a23d9439ec04b035fce987add8abad6fce41ed1d"
+      "sizeBytes": 282,
+      "sha256": "4a0b5bcf20450153ac6aa8a90ccd0ed670bbef5128007928cd980dfd36f42e1c"
     },
     {
       "path": "pm/reports/action-sla-trend.json",
-      "tracked": false,
-      "statusCode": "??",
+      "tracked": true,
+      "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 476,
-      "sha256": "fe3e9ee12fb0260a3c9f074db406d2dcdb4d41b900158bbf87cafea372b74ca9"
+      "sha256": "61af4cc1b8b2ac7fa0b01ee02682a29448b65493204f341b4cb7ea7fe3344340"
     },
     {
       "path": "pm/reports/application-realm-policy.json",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 14680,
-      "sha256": "b535fb30841d000207d008b07862deea8605ff131800bd716bca41972b619d26"
+      "sizeBytes": 15934,
+      "sha256": "15d27fd5cb5124238d8f5df6a66e0bbe7b4d1084f8f332fb244abc659d5ccc5c"
     },
     {
       "path": "pm/reports/application-realm-token-search.json",
@@ -3401,26 +3433,26 @@
     {
       "path": "pm/reports/boilerplate-package-files-with-context.csv",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 26507,
-      "sha256": "f52020a50a01d88d1fbd97e89b16244dfa79e57da61c2369ccb415e420994be0"
+      "sizeBytes": 29299,
+      "sha256": "a5d67cf55ff983731ff00ea82d631ff8f679ef60b9ed0d3ed632d06930b3d653"
     },
     {
       "path": "pm/reports/boilerplate-promotion-status.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 10621,
-      "sha256": "46126bc1965b58df2e3f267871bd198a6c2b5040a3dbb233987fa0f4f30d5efc"
+      "sizeBytes": 11198,
+      "sha256": "47ae4ae172eab39f511e6cbb2ce4211bc7e23fae423e9cd787b98a1685f9da49"
     },
     {
       "path": "pm/reports/boilerplate-realm-policy.json",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 15645,
-      "sha256": "0d21ce4df929afcfeef71622efcdb4a3993569e80af6611dd1f287c8817deb66"
+      "sizeBytes": 16899,
+      "sha256": "acf65cb55789ca8f56cb24e4881223332a3752802bdaf1ae52f81ac3e8dffa22"
     },
     {
       "path": "pm/reports/cross-realm-action-token-search.json",
@@ -3428,15 +3460,15 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 122,
-      "sha256": "2a1b9db14b8323fc056d3866c81754e484258c9fdcd109811d000a6cb95177c0"
+      "sha256": "5b7d85c09a1d2cc8ea5dd0affe5f3f2b26b9867c1aec2670b2bbd51d6453ed1d"
     },
     {
       "path": "pm/reports/cross-realm-token-search.json",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 43847,
-      "sha256": "2b9de4cd5320b1cd3f9148a7fa2e0d6da30a4591dfc767f2f35a803d622ff160"
+      "sizeBytes": 44445,
+      "sha256": "a3126dc56953230d4ee570efe887875d05e2f4147a5c7e4a81422bc66e52f0b0"
     },
     {
       "path": "pm/reports/data-dictionary-lint.json",
@@ -3444,15 +3476,15 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 795,
-      "sha256": "91b4d518f8f8e0990dab2706b1ce9c6260a49ac7100d139d33daa5ff1f03e1f1"
+      "sha256": "45d2d18f16a975ef32d0c12569b5fc49893a8d7b45b792df685d0918af8eaeab"
     },
     {
       "path": "pm/reports/data-dictionary.json",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 11038,
-      "sha256": "dff2223dabed502de0e460ef22f7fb4d46f2661ccbe609875254c0a09a196475"
+      "sizeBytes": 11816,
+      "sha256": "4893577097eeb17f0becdfb50e361d23f83d8ec82c6378353af577bd076eec27"
     },
     {
       "path": "pm/reports/decision-priority-queue.json",
@@ -3460,15 +3492,15 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 3539,
-      "sha256": "b2574bf40c0c04379fe88f44fba83655f76f817cb77af150bdaa087a84175bd6"
+      "sha256": "7e9aa26b28566e35acb7b5fb67d58a80f39083768c987e7dfc5d66b7720b5a87"
     },
     {
       "path": "pm/reports/documentation-manifest.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 10614,
-      "sha256": "a4d0fb9d3e7d909450eca6620ccfecdbb0b4444012648da7d75a5ca10a22b72b"
+      "sizeBytes": 15369,
+      "sha256": "4d84c95b089f15f75c2bfb3ee41db57f8161c586377f4d8e9be8bae3f4097a5c"
     },
     {
       "path": "pm/reports/governance-alerts.json",
@@ -3476,39 +3508,39 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 3278,
-      "sha256": "ec77afa206dd8964dd199cf2d1e26ae870f992932dc4f36dbc1f471fcc58df96"
+      "sha256": "d1bf5c4506b7e767f7144240408a9dca6f44d28a101e1d96caeba4f62699e78c"
     },
     {
       "path": "pm/reports/issues-effectiveness.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 1853,
-      "sha256": "f82c32c3b5a766f241cf5966d5b555b684ea2750656913d67a5b5a1d0fc144f8"
+      "sizeBytes": 3528,
+      "sha256": "9d43c9415551073f6cfc148e135d2bb2a3b8d5e64cb88278be1bbabd9f879689"
     },
     {
       "path": "pm/reports/issues-log-tickle.json",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 1808,
-      "sha256": "0825186b84a399ec2218fcc53079b7626cc90c6fa0fa93d201bc1fc766e9ba3f"
+      "sizeBytes": 2467,
+      "sha256": "73ab8ea6127288df53c51a3e4fd8b06e89911ff97ef3479a36ed876b789e9421"
     },
     {
       "path": "pm/reports/knowledge-base.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 3760,
-      "sha256": "cc3d6c1d2a54a27692137bdc1c9aa441edd258e70c7ecf4779d54006088e87e1"
+      "sizeBytes": 6917,
+      "sha256": "99ec88a66319f9467cefb52bbb7957dacb7b0489259d3f6711a3a5a76c2b4b72"
     },
     {
       "path": "pm/reports/pm-realm-policy.json",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 13941,
-      "sha256": "407bdf23d4a9099a3f40feb501f9166a21c648c501a929e8a4c202b32e66d150"
+      "sizeBytes": 15195,
+      "sha256": "7d521855b46070349dca172e42d89bea8467d6e7304654bb6124742e70c7782b"
     },
     {
       "path": "pm/reports/pm-realm-token-search.json",
@@ -3521,42 +3553,58 @@
     {
       "path": "pm/reports/policy-rules-lint.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 453,
-      "sha256": "5f4b9830c1d8f32e2b37387bf83fd4b47d1efc74ac6e4d988fde439c2b8431ea"
+      "sha256": "cb7f660ee5ea3d0afb76db4aeb647df7183b7b2b772b746d72df757e88afc7d4"
     },
     {
       "path": "pm/reports/policy-rules.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 8219,
-      "sha256": "ebc3d3a0631126ee62b97f18d5ec48d6c09faea5ae946583d60bd0c52d7fc833"
+      "sizeBytes": 19362,
+      "sha256": "73d9df8be96192116c2b18bf3b34d2321bf1d53ccba88ce2c18a098d6d2f1fde"
     },
     {
       "path": "pm/reports/project-plan-next-step.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 3755,
-      "sha256": "7821512b340e5ddcb3173440fae6f0415f43c5b0444c06c2882ab841dd845d77"
+      "sizeBytes": 4603,
+      "sha256": "b90f683f7bf49c5db44669a66650dc8912d934a70bd73e20aeed1ce47c09ace6"
     },
     {
       "path": "pm/reports/project-plan-progress-data.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 14232,
-      "sha256": "78fb1ce916dfce003ff913c0b67def5a1bab29a560ece980280a4c52e1816006"
+      "sizeBytes": 14412,
+      "sha256": "15c86d84dfc0bcb14445259f4133a9d6b4493e5c6341e839f65fc06c98b2f4c4"
+    },
+    {
+      "path": "pm/reports/realm-knowledge-link-gate.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 838,
+      "sha256": "72c35d77bbe39f3d63f7776c0ab7be9d6b9c395efeeb31cecedc056544d91353"
+    },
+    {
+      "path": "pm/reports/realm-knowledge-sync.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 1077,
+      "sha256": "89884e76a0358e9106dd591567fe24011d5ec9bea6b3d8c8ffde7c93091b46d0"
     },
     {
       "path": "pm/reports/realm-policy-diff.json",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 831,
-      "sha256": "f05ba1c6c715ed2be984cd1dc5512a04e3615cec5231d9c524c45917ec1d5ee4"
+      "sizeBytes": 660,
+      "sha256": "52553f3814850332907577bcb841f0453a36aead1841d7edfdc6ba38623a1ba4"
     },
     {
       "path": "pm/reports/realm-policy-sync.json",
@@ -3564,15 +3612,15 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 456,
-      "sha256": "8f9a94e5d95e9911bb1c7870cc59ba907c6eec5276bd5496eb944ac66a0e431f"
+      "sha256": "cf0dec6137e10b382f8b58d0c5b85908df7c2baf7d6f98203fbefd16b736c46c"
     },
     {
       "path": "pm/reports/reasoning-drive.json",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 2144,
-      "sha256": "0b9be949948e6e0685cda4939655e98dfd4c4e1d19dd64c2049eeb0b9094e169"
+      "sizeBytes": 2813,
+      "sha256": "8e80fb2dc2a673d4c5d86f287751c3b8a180c642efd3ece3b8710c9166353edb"
     },
     {
       "path": "pm/reports/recovery-status.json",
@@ -3585,10 +3633,10 @@
     {
       "path": "pm/reports/repo-file-inventory-with-context.csv",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 188020,
-      "sha256": "21d3758687cdc1ebdef03a1f07090c3da9dd1180a9ef525e57dd92a65ca6b371"
+      "sizeBytes": 200287,
+      "sha256": "bd1201ef2535e5f46cdc0fbbd4b8c3bb7d96307d21e0d8f3d1378664f00365ff"
     },
     {
       "path": "pm/reports/sql-authority-application.json",
@@ -3596,7 +3644,7 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 227,
-      "sha256": "78c6a07d5362b6bf2e49fff9326334158d92e28c19eb9a292c263a33908e352c"
+      "sha256": "52b9a7e1e62ad2880d84172c2423baf866cecbfd7178d779deeb119b252b2648"
     },
     {
       "path": "pm/reports/sql-authority-boilerplate.json",
@@ -3604,7 +3652,7 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 227,
-      "sha256": "bfc1cc06265753c878c691601e36316b5cb3dcf96d81aaf07f3b47a8ed69db4f"
+      "sha256": "878b656be17ceab1cc6fc23400c86421e3422aa747c500fe1b935e44e2cd7e00"
     },
     {
       "path": "pm/reports/sql-authority-pm.json",
@@ -3612,31 +3660,31 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 218,
-      "sha256": "69ebb9773eaa33ce8d83a8fde32668bde5338e1b0e7a80f76311b2f189c1c7e9"
+      "sha256": "d9f292124b38797995b56284a4a5914be9618f0ad27cea5a88f44545b01dda6c"
     },
     {
       "path": "pm/reports/sql-coverage-application.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 330,
-      "sha256": "9a02e69b768045fb54bb86b382296c4b00d9be3c8b89468569584d02e4b0e041"
+      "sha256": "095828610bf8776eabfe1416fecfc947cb8783047f0aa6f72e1181aa99c10a8e"
     },
     {
       "path": "pm/reports/sql-coverage-boilerplate.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 330,
-      "sha256": "f16cfcf26f2927d4cc392957d8c6dfc2915811f21db97b695c55921db274f636"
+      "sha256": "c20066c655b38ad3b787bf2f92a1282c8da163155dec57334c463b14adc83629"
     },
     {
       "path": "pm/reports/sql-coverage-pm.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 321,
-      "sha256": "46df682785583b62dd6d2d2e1eb5440c022a8e341cacaf70deb945272cbc02f1"
+      "sha256": "e37696d65a0c84f928eef749b8d3a7474175c45ce1c89b027878ee56b843a0e6"
     },
     {
       "path": "pm/reports/sql-drift-summary.json",
@@ -3673,18 +3721,18 @@
     {
       "path": "pm/reports/version-control-ledger.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 176207,
-      "sha256": "710cc5b5880c579c33ac00ca130e1e9f4bb5ea5a6e77218016178a041326d2f2"
+      "sizeBytes": 187395,
+      "sha256": "6d3d7058a20b8bb3d86ae3a37f7185bea19dd3effc33d3e003e3a51d22d98a08"
     },
     {
       "path": "pm/reports/version.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 103,
-      "sha256": "58ce567f7ae5d538812ffa404311b5c956706685e4b9af2c3b202cc997d9af2e"
+      "sha256": "ef1c9d2378272d0fef4d2659e4101ca96ae2583619439cc80186a981b8376639"
     },
     {
       "path": "pm/reports/workbook-refresh-status.json",
@@ -3704,27 +3752,27 @@
     },
     {
       "path": "pm/state/action-sla-history.json",
-      "tracked": false,
-      "statusCode": "??",
+      "tracked": true,
+      "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 297,
-      "sha256": "be0e28c4f98af62beb3f4ce305209adaa36388c4f3a78f9c553d92bc74e83e7f"
+      "sha256": "be174b0b0acf2a950ecd785f787ad2768523297a979ae4c0dc0a56c9badaa627"
     },
     {
       "path": "pm/state/application-realm.sqlite",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 4407296,
-      "sha256": "d4285494457a53fd5558f3b3ed6ec4ba4bf416c8082718c966c32465183707ed"
+      "sizeBytes": 4452352,
+      "sha256": "320ca40036e265dbe49d890a2b40a6a69950afa8f9b8bdf23d7671e6af055ec8"
     },
     {
       "path": "pm/state/boilerplate-realm.sqlite",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 2252800,
-      "sha256": "0f610ab0855e1733673703e4427997f833670628159e1968c62ab9660690e58f"
+      "sizeBytes": 2383872,
+      "sha256": "25213ed1f4d61ba510ccfad1112ee3ffac37e4f6ffc1b37e5e80167046199126"
     },
     {
       "path": "pm/state/boilerplate-state.sqlite",
@@ -3732,7 +3780,7 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 57344,
-      "sha256": "440cb3776b5115e708c40bf68cf5a3c313075c56fd4338e4c8e7a2d4c002b151"
+      "sha256": "86493af8ac9a0dadfae50f182376fbc9cff33c30fcdf3775f27f00c12ad50a8e"
     },
     {
       "path": "pm/state/critical-db-sha256.txt",
@@ -3740,7 +3788,7 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 690,
-      "sha256": "af67b7a933eb12bca560fd99be17e65673ce914658ef0753e0bda4fe07e1e6a1"
+      "sha256": "d29aa55bc329445a81d187f0d53bd6b0ae5ab30a046fe045f8c80a0523aeb538"
     },
     {
       "path": "pm/state/pm-realm.sqlite",
@@ -3748,23 +3796,23 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 24350720,
-      "sha256": "2ff7b7fb59c83974dc284c0f2c8a8a49ab960d8b2aa72e70b6338ac2edff0202"
+      "sha256": "1d0301a8fe0f5d4ee4f02f72dad94b6f111b543f5756b12d5097eaa92127a004"
     },
     {
       "path": "pm/state/project-state.sqlite",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 397312,
-      "sha256": "5e34235395fd8d8f6b8244f727cbf2669e58d112aa5b38d711a69a680311611c"
+      "sizeBytes": 405504,
+      "sha256": "da974eee258e004c6c5634e4363ca5164724bbd12fbb99b33379090f7ef642d4"
     },
     {
       "path": "pm/state/realm-policy-snapshot.json",
       "tracked": true,
       "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 49059,
-      "sha256": "6daa5f674d8923536dc952b051b0910c6778a83e419efa4edd3b768a35757925"
+      "sizeBytes": 53181,
+      "sha256": "47319a5b7dc0ff69e49f03e35e8055971ea426c77ed18d29fd7873fbf8bba62a"
     },
     {
       "path": "pm/state/reasoning-derived.sqlite",
@@ -3772,7 +3820,7 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 24576,
-      "sha256": "1e66a2480d2b7f93601242b2f6794ed02cdefedc2e9c4a230590d1d0d71b1af2"
+      "sha256": "ccf27b5ff844bb00cef8a24cf1b386ba1c6e9cdeec8b4a0b0d09fc8be524533a"
     },
     {
       "path": "pm/state/reasoning-experience.sqlite",
@@ -3780,7 +3828,7 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 28672,
-      "sha256": "ec9a4a5ff2d08268be8ae328c4ef79eec48a9ccfac18844899db4c165b832fba"
+      "sha256": "22b4f0ff0888edc121506ac3cd2eea37546dd56b260cdd6217d3a67b5b38b5ca"
     },
     {
       "path": "pm/workflow/binary-artifact-policy.txt",
@@ -3809,10 +3857,10 @@
     {
       "path": "pm/workflow/workflow-manifest.json",
       "tracked": true,
-      "statusCode": "M",
+      "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 2430,
-      "sha256": "045d408780f699bfd4a125e678f8d3940918518ffea61deed70a6ced4c9ceb38"
+      "sizeBytes": 2498,
+      "sha256": "524ce946337388101c09209456e8182fdb97d14ba07343e139173609bc1ba5b2"
     },
     {
       "path": "preview/afp-diag.json",
@@ -3844,15 +3892,15 @@
       "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 1957,
-      "sha256": "8bef2448297cd04a22a1b8e8022cc39a6b18b1ef57426c910cef3100790c9e0a"
+      "sha256": "92eaacec7e53fd8eda3f820deff63581f916e7f2a2edb6920025ac4b2ead9d50"
     },
     {
       "path": "preview/ci-artifacts/latest/AI-POLICY.md",
       "tracked": true,
       "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 20331,
-      "sha256": "85e084a1b754b66e1cec8a991603f97abdd022f4355f1fe255643e97bb671c92"
+      "sizeBytes": 20439,
+      "sha256": "c0371c8da8f7400053e61bba568b06f13210b7c6c43c226841bdb233167df7b4"
     },
     {
       "path": "preview/ci-artifacts/latest/NATIVE_RENDERER_PLAN.md",
@@ -3867,8 +3915,8 @@
       "tracked": true,
       "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 60284,
-      "sha256": "ae528f89b4ffb448d8249da9489f57f393dc19ad9e1a1a106a3fd73263bcf2be"
+      "sizeBytes": 61382,
+      "sha256": "7c87b7b004fadc531ada582cd1d6bcdbf9e7f3afee847128ec393675d6b0a7b9"
     },
     {
       "path": "preview/ci-artifacts/latest/VERSION",
@@ -3877,6 +3925,54 @@
       "existsOnDisk": true,
       "sizeBytes": 13,
       "sha256": "214374e4ab6ceb79d5fa5ff001fe9bbcbea31c3fd8c6bd42d48e7efaf6b2ce9f"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/action-decision-suggestions.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 2390,
+      "sha256": "d9d4727e57a7829b373ab6e73d3f2d3ff980adf2b6decdb294e86f16814c0486"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/action-ingest-strict.json",
+      "tracked": true,
+      "statusCode": "",
+      "existsOnDisk": true,
+      "sizeBytes": 254,
+      "sha256": "da1b17b3014922d27753aece1193073b662fb729c26a4643f978827578999384"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/action-items.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 1870,
+      "sha256": "d7fac8f9c4c30872a9a7b5ecd052ffa8ec684316f1f881dcef2f6def75308ba9"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/action-owner-summary.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 282,
+      "sha256": "4a0b5bcf20450153ac6aa8a90ccd0ed670bbef5128007928cd980dfd36f42e1c"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/action-sla-history.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 297,
+      "sha256": "be174b0b0acf2a950ecd785f787ad2768523297a979ae4c0dc0a56c9badaa627"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/action-sla-trend.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 476,
+      "sha256": "61af4cc1b8b2ac7fa0b01ee02682a29448b65493204f341b4cb7ea7fe3344340"
     },
     {
       "path": "preview/ci-artifacts/latest/afp-diag.json",
@@ -3903,44 +3999,124 @@
       "sha256": "f9028529313a32541fadf1c16ac3deb8f209a6970046bbe83a2805afa186ef9b"
     },
     {
+      "path": "preview/ci-artifacts/latest/afp-output.pdf",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 1957,
+      "sha256": "92eaacec7e53fd8eda3f820deff63581f916e7f2a2edb6920025ac4b2ead9d50"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/application-realm-policy.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 15934,
+      "sha256": "15d27fd5cb5124238d8f5df6a66e0bbe7b4d1084f8f332fb244abc659d5ccc5c"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/application-realm.sqlite",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 4452352,
+      "sha256": "320ca40036e265dbe49d890a2b40a6a69950afa8f9b8bdf23d7671e6af055ec8"
+    },
+    {
       "path": "preview/ci-artifacts/latest/boilerplate-package-files-with-context.csv",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 24278,
-      "sha256": "f4eafed4ea5d14834460f338130b48339f325e5287cd725d936a7641ce59e482"
+      "sizeBytes": 29299,
+      "sha256": "a5d67cf55ff983731ff00ea82d631ff8f679ef60b9ed0d3ed632d06930b3d653"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/boilerplate-promotion-status.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 11198,
+      "sha256": "47ae4ae172eab39f511e6cbb2ce4211bc7e23fae423e9cd787b98a1685f9da49"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/boilerplate-realm-policy.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 16899,
+      "sha256": "acf65cb55789ca8f56cb24e4881223332a3752802bdaf1ae52f81ac3e8dffa22"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/boilerplate-realm.sqlite",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 2383872,
+      "sha256": "25213ed1f4d61ba510ccfad1112ee3ffac37e4f6ffc1b37e5e80167046199126"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/boilerplate-state.sqlite",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 57344,
+      "sha256": "86493af8ac9a0dadfae50f182376fbc9cff33c30fcdf3775f27f00c12ad50a8e"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/boilerplate-sync-candidates.xlsx",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 9171,
+      "sha256": "a1484dfd704c3d3893309280694a707f599512345f7ed50cf4607d307f50b929"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/cross-realm-action-token-search.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 122,
+      "sha256": "5b7d85c09a1d2cc8ea5dd0affe5f3f2b26b9867c1aec2670b2bbd51d6453ed1d"
     },
     {
       "path": "preview/ci-artifacts/latest/cross-realm-token-search.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 35393,
-      "sha256": "8fd586d23aeaedae56e0b27374179821cd976bbfa5bde651d39f3faf54881516"
+      "sizeBytes": 44445,
+      "sha256": "a3126dc56953230d4ee570efe887875d05e2f4147a5c7e4a81422bc66e52f0b0"
     },
     {
       "path": "preview/ci-artifacts/latest/data-dictionary-lint.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 686,
-      "sha256": "cf497fd1494cf34273319e16741d99093ad60e99227345f21f6ce1cf63634225"
+      "sizeBytes": 795,
+      "sha256": "45d2d18f16a975ef32d0c12569b5fc49893a8d7b45b792df685d0918af8eaeab"
     },
     {
       "path": "preview/ci-artifacts/latest/data-dictionary.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 5739,
-      "sha256": "8f422acf441c88be34e19d7479f1091fc126addd51faf68b8a43915bec3a4342"
+      "sizeBytes": 11816,
+      "sha256": "4893577097eeb17f0becdfb50e361d23f83d8ec82c6378353af577bd076eec27"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/decision-priority-queue.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 3539,
+      "sha256": "7e9aa26b28566e35acb7b5fb67d58a80f39083768c987e7dfc5d66b7720b5a87"
     },
     {
       "path": "preview/ci-artifacts/latest/documentation-manifest.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 10614,
-      "sha256": "2cc35482dcf35bac1732966dd4d5835284aea17a2e7b04e8fd5e673aaf9344fc"
+      "sizeBytes": 15369,
+      "sha256": "4d84c95b089f15f75c2bfb3ee41db57f8161c586377f4d8e9be8bae3f4097a5c"
     },
     {
       "path": "preview/ci-artifacts/latest/fidelity-corpus.txt",
@@ -3956,39 +4132,63 @@
       "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 2384,
-      "sha256": "3effb1680365977f2d97cc188f06801b28e879d633deb4f21451f4dbfcff4355"
+      "sha256": "408e68ed8adca82fda648483ba98e1a3cdb51a83c5fc9f4eb96637b1d18bb52b"
     },
     {
       "path": "preview/ci-artifacts/latest/governance-alerts.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 3278,
-      "sha256": "111bc378346308591d2b6a8639ef7ba7e6226b260dfe3aea3c05877625938589"
+      "sha256": "d1bf5c4506b7e767f7144240408a9dca6f44d28a101e1d96caeba4f62699e78c"
     },
     {
       "path": "preview/ci-artifacts/latest/index.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 10096,
-      "sha256": "f09427ca4578d82cefee3e07ee7091a2cf4851e611d4a1874c963745f10f7514"
+      "sizeBytes": 14768,
+      "sha256": "a80558fffdf458192f8af66545f9a48aa5f38bba2d3929747d7aae2b4f829025"
     },
     {
       "path": "preview/ci-artifacts/latest/issues-effectiveness.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 2746,
-      "sha256": "e91b3dc73c3aa04c875c8d347e774a7018512662827e3181737ef28a06da8426"
+      "sizeBytes": 3528,
+      "sha256": "9d43c9415551073f6cfc148e135d2bb2a3b8d5e64cb88278be1bbabd9f879689"
     },
     {
       "path": "preview/ci-artifacts/latest/issues-log-tickle.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 1730,
-      "sha256": "d8de7381cf2ab1274741b9d0a7b4f74a63b9b11b32e64999e03fee7571e00e42"
+      "sizeBytes": 2467,
+      "sha256": "73ab8ea6127288df53c51a3e4fd8b06e89911ff97ef3479a36ed876b789e9421"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/knowledge-base.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 6917,
+      "sha256": "99ec88a66319f9467cefb52bbb7957dacb7b0489259d3f6711a3a5a76c2b4b72"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/pm-realm-policy.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 15195,
+      "sha256": "7d521855b46070349dca172e42d89bea8467d6e7304654bb6124742e70c7782b"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/pm-realm.sqlite",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 24350720,
+      "sha256": "1d0301a8fe0f5d4ee4f02f72dad94b6f111b543f5756b12d5097eaa92127a004"
     },
     {
       "path": "preview/ci-artifacts/latest/policy-governance-events.csv",
@@ -3999,116 +4199,204 @@
       "sha256": "2d467921ce88a08b270c72a87a0149aa0948e976e1aff13ea13f5858a9b68ea5"
     },
     {
-      "path": "preview/ci-artifacts/latest/policy-rule-tables.sql",
+      "path": "preview/ci-artifacts/latest/policy-governance-events.xlsx",
       "tracked": true,
       "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 8745,
-      "sha256": "f355a6dfaa86b6625e9bb089b3e14ed5f67ddce127f9361296d4e8e4abcc3a36"
+      "sizeBytes": 4348,
+      "sha256": "ba16b89a7e69eac6a63702a7bd3e741e41e9c8bd8c1b1c01cf5e9a706c0757e6"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/policy-rule-tables.sql",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 18480,
+      "sha256": "f5d28fdefcc05d6fbaf457bbcb0badb26f6716376f48afd766ec92f12d8abd56"
     },
     {
       "path": "preview/ci-artifacts/latest/policy-rules-lint.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 453,
-      "sha256": "e09aedfd4b6bed0c1316142b59aa10e3d8f71410366ddf12805e47faac23b7cd"
+      "sha256": "cb7f660ee5ea3d0afb76db4aeb647df7183b7b2b772b746d72df757e88afc7d4"
     },
     {
       "path": "preview/ci-artifacts/latest/policy-rules.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 8219,
-      "sha256": "4f999de3a7591034f9b57b014c20dbd238438532f6ba5f48e78984053614b6a4"
+      "sizeBytes": 19362,
+      "sha256": "73d9df8be96192116c2b18bf3b34d2321bf1d53ccba88ce2c18a098d6d2f1fde"
     },
     {
       "path": "preview/ci-artifacts/latest/project-plan-next-step.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 3755,
-      "sha256": "4726f7b7ca3062dea21c5bdc070b54b9127bb78a897e63162559d2bcc1a87920"
+      "sizeBytes": 4603,
+      "sha256": "b90f683f7bf49c5db44669a66650dc8912d934a70bd73e20aeed1ce47c09ace6"
     },
     {
       "path": "preview/ci-artifacts/latest/project-plan-progress-data.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 11198,
-      "sha256": "da0804b3ee5a7304e25d467b7d9cee8a2835a4ff39637a200f7a833d4aef1d08"
+      "sizeBytes": 14412,
+      "sha256": "15c86d84dfc0bcb14445259f4133a9d6b4493e5c6341e839f65fc06c98b2f4c4"
     },
     {
       "path": "preview/ci-artifacts/latest/project-plan-progress.csv",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 6740,
-      "sha256": "19503640e8257b8fee54a8ab8be629c783876bc52ffcf08387befeea1571fc13"
+      "sizeBytes": 8658,
+      "sha256": "6c3aa6820d8391d8f93cb32304a8cf4244f6634553ac729a1197a77c0bdca07c"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/project-plan-progress.xlsx",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 13341,
+      "sha256": "b50e4ddf0589a1dbae3359297a47505f24c9b4ea6d4bc5e635fa2f384d659b12"
     },
     {
       "path": "preview/ci-artifacts/latest/project-plan.md",
       "tracked": true,
       "statusCode": "",
       "existsOnDisk": true,
-      "sizeBytes": 6891,
-      "sha256": "4e7f6e95637a345803f098d4f00ed37560ff4141830230ce2f998fd16e93061e"
+      "sizeBytes": 8014,
+      "sha256": "f083dbbd4de816cced5cad003f90769ceb1a7d2f984e1693735c73e7019039c7"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/project-state.sqlite",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 405504,
+      "sha256": "da974eee258e004c6c5634e4363ca5164724bbd12fbb99b33379090f7ef642d4"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/realm-knowledge-link-gate.json",
+      "tracked": true,
+      "statusCode": "A",
+      "existsOnDisk": true,
+      "sizeBytes": 838,
+      "sha256": "72c35d77bbe39f3d63f7776c0ab7be9d6b9c395efeeb31cecedc056544d91353"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/realm-knowledge-sync.json",
+      "tracked": true,
+      "statusCode": "A",
+      "existsOnDisk": true,
+      "sizeBytes": 1077,
+      "sha256": "89884e76a0358e9106dd591567fe24011d5ec9bea6b3d8c8ffde7c93091b46d0"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/realm-policy-diff.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 660,
+      "sha256": "52553f3814850332907577bcb841f0453a36aead1841d7edfdc6ba38623a1ba4"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/realm-policy-snapshot.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 53181,
+      "sha256": "47319a5b7dc0ff69e49f03e35e8055971ea426c77ed18d29fd7873fbf8bba62a"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/realm-policy-sync.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 456,
+      "sha256": "cf0dec6137e10b382f8b58d0c5b85908df7c2baf7d6f98203fbefd16b736c46c"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/reasoning-derived.sqlite",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 24576,
+      "sha256": "ccf27b5ff844bb00cef8a24cf1b386ba1c6e9cdeec8b4a0b0d09fc8be524533a"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/reasoning-drive.json",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 2813,
+      "sha256": "8e80fb2dc2a673d4c5d86f287751c3b8a180c642efd3ece3b8710c9166353edb"
+    },
+    {
+      "path": "preview/ci-artifacts/latest/reasoning-experience.sqlite",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 28672,
+      "sha256": "22b4f0ff0888edc121506ac3cd2eea37546dd56b260cdd6217d3a67b5b38b5ca"
     },
     {
       "path": "preview/ci-artifacts/latest/repo-file-inventory-with-context.csv",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 185989,
-      "sha256": "c23519c09efc2f3d2beb1e67695e97d0b387ee4b25f8ad204d6003f227f1a18c"
+      "sizeBytes": 200287,
+      "sha256": "bd1201ef2535e5f46cdc0fbbd4b8c3bb7d96307d21e0d8f3d1378664f00365ff"
     },
     {
       "path": "preview/ci-artifacts/latest/sql-authority-application.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 227,
-      "sha256": "df44a69016177025523cb96e147f1405bf1f43084d43759f6351b9b310881816"
+      "sha256": "52b9a7e1e62ad2880d84172c2423baf866cecbfd7178d779deeb119b252b2648"
     },
     {
       "path": "preview/ci-artifacts/latest/sql-authority-boilerplate.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 227,
-      "sha256": "fac70b29aeabc4e730833a85e7356998c7219937cf6eeb70dfac7e2e9d20e9f4"
+      "sha256": "878b656be17ceab1cc6fc23400c86421e3422aa747c500fe1b935e44e2cd7e00"
     },
     {
       "path": "preview/ci-artifacts/latest/sql-authority-pm.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 218,
-      "sha256": "571adde95bba2b7534afd34bed8294840a86abf8fc47fc09c82c26b2644e7156"
+      "sha256": "d9f292124b38797995b56284a4a5914be9618f0ad27cea5a88f44545b01dda6c"
     },
     {
       "path": "preview/ci-artifacts/latest/sql-coverage-application.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 330,
-      "sha256": "a031282bd04879bee13b52676b69487c49b8c3bc2e413426785d6c2d27a6289d"
+      "sha256": "095828610bf8776eabfe1416fecfc947cb8783047f0aa6f72e1181aa99c10a8e"
     },
     {
       "path": "preview/ci-artifacts/latest/sql-coverage-boilerplate.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 330,
-      "sha256": "65a9e4a33aa55f481c56a1494dad9f8277a0b2c497299ad95f69ee7dec2e6a6a"
+      "sha256": "c20066c655b38ad3b787bf2f92a1282c8da163155dec57334c463b14adc83629"
     },
     {
       "path": "preview/ci-artifacts/latest/sql-coverage-pm.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 321,
-      "sha256": "d07bb7ff0f4756553cde4d47bd7ad7721e9fae224064145deb0dbffc5b3d69c5"
+      "sha256": "e37696d65a0c84f928eef749b8d3a7474175c45ce1c89b027878ee56b843a0e6"
     },
     {
       "path": "preview/ci-artifacts/latest/sql-reconstruction-application.json",
@@ -4116,7 +4404,7 @@
       "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 227,
-      "sha256": "35c02e909051d10b686b7109e051d302704062eaed06fab722f5c3e6f63df771"
+      "sha256": "a894cc705405a1432335bd27f74653a5a8be3db2eb1a427843b1b5b051267991"
     },
     {
       "path": "preview/ci-artifacts/latest/sql-reconstruction-boilerplate.json",
@@ -4124,7 +4412,7 @@
       "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 227,
-      "sha256": "d54d836d330cc64ae98002758b2ea44e728fc6b88177c9efb91c2bdf9fefba31"
+      "sha256": "60bc5eea8d0cf809d84dd84af08ea06e111e675c2b823c45b7b4d981df3618fa"
     },
     {
       "path": "preview/ci-artifacts/latest/sql-reconstruction-pm.json",
@@ -4132,23 +4420,23 @@
       "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 218,
-      "sha256": "0cc44a042cb94346c7008c31bba56f70c0161f88a26838c113f6f8d4d00e7695"
+      "sha256": "f7c317630e3e293b1fd003de7231251989d3eb7bc013841655cbf41f9317bdd6"
     },
     {
       "path": "preview/ci-artifacts/latest/version-control-ledger.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
-      "sizeBytes": 174336,
-      "sha256": "9039629088f6d4eafe66f7da5e284d43b065756fe6674e3daadf3310207eb1e1"
+      "sizeBytes": 187395,
+      "sha256": "6d3d7058a20b8bb3d86ae3a37f7185bea19dd3effc33d3e003e3a51d22d98a08"
     },
     {
       "path": "preview/ci-artifacts/latest/version.json",
       "tracked": true,
-      "statusCode": "",
+      "statusCode": "M",
       "existsOnDisk": true,
       "sizeBytes": 103,
-      "sha256": "d472acb82342a136d9bc97bbc66cfd4f2bced25824d7c6c564430f8210837da4"
+      "sha256": "ef1c9d2378272d0fef4d2659e4101ca96ae2583619439cc80186a981b8376639"
     },
     {
       "path": "preview/ci-artifacts/latest/workbook-refresh-status.json",
@@ -4248,16 +4536,16 @@
     },
     {
       "path": "tools/action_owner_summary.py",
-      "tracked": false,
-      "statusCode": "??",
+      "tracked": true,
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 2054,
       "sha256": "a74e9a34ff9053dbca6cfd40d1ce5b594c0fc76605ed81c0e261edbe8ea4b199"
     },
     {
       "path": "tools/action_sla_trend.py",
-      "tracked": false,
-      "statusCode": "??",
+      "tracked": true,
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 2739,
       "sha256": "30d1836695b541be0fc4bff5067af23b1ff13f9429445cecb40ee60be7233d22"
@@ -4407,9 +4695,25 @@
       "sha256": "25a3ff67a4f52a10fac035946022416e9e0ec73430d3ef9f0c151925b167a690"
     },
     {
-      "path": "tools/realm_policy_diff.py",
+      "path": "tools/realm_knowledge_link_gate.py",
       "tracked": true,
       "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 3658,
+      "sha256": "18629e459468a9c05caba4e6b1fc2e91723cf4291d3b0a5ce2b3e286e790fa20"
+    },
+    {
+      "path": "tools/realm_knowledge_sync.py",
+      "tracked": true,
+      "statusCode": "M",
+      "existsOnDisk": true,
+      "sizeBytes": 9274,
+      "sha256": "d56b2ba96c68315099516badcd095b81fb1f746b9291047e69d737e877001a1d"
+    },
+    {
+      "path": "tools/realm_policy_diff.py",
+      "tracked": true,
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 3361,
       "sha256": "cf6925d470d60dade48839642bce500546d2c52d1375c5b30433cc19a40795a5"
@@ -4520,16 +4824,24 @@
     },
     {
       "path": "tools/tests/test_check_action_ingest_strict.py",
-      "tracked": false,
-      "statusCode": "??",
+      "tracked": true,
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 1542,
       "sha256": "3b26d902bd80a171341d828f464fe32c2a506c6899a67c97fc2e682a2135f96f"
     },
     {
+      "path": "tools/tests/test_realm_knowledge_link_gate.py",
+      "tracked": true,
+      "statusCode": "A",
+      "existsOnDisk": true,
+      "sizeBytes": 2105,
+      "sha256": "6f3a11ac64480bbd4e1dd153d3eec1ec5a2611452e7b96da47cff83ae0d6f690"
+    },
+    {
       "path": "tools/tests/test_realm_policy_diff.py",
-      "tracked": false,
-      "statusCode": "??",
+      "tracked": true,
+      "statusCode": "",
       "existsOnDisk": true,
       "sizeBytes": 2207,
       "sha256": "af813c95e0390461dfd92108d49418fa6987f7dbe18d6f00d069ee1d95ce5724"

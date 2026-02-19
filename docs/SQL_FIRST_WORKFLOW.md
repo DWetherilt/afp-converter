@@ -418,6 +418,9 @@ Action view filters:
 
 ```bash
 pm-console/build/install/pmconsole/bin/pmconsole actions --top 20 --priority high --stale-only
+pm-console/build/install/pmconsole/bin/pmconsole actions --top 20 --owner ai-agent --open-only
+pm-console/build/install/pmconsole/bin/pmconsole apply-suggestion --action-id action::db59f0535ec0
+pm-console/build/install/pmconsole/bin/pmconsole report --request "realm knowledge status"
 ```
 
 Authorized DB aliases:

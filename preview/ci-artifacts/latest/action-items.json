@@ -1,53 +1,67 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T18:22:33Z",
+  "generatedAt": "2026-02-19T18:57:43Z",
   "source": "sqlite",
   "sourceTable": "action_items",
   "itemCount": 2,
   "byStatus": {
-    "open": 2
+    "in_progress": 2
   },
   "byPriority": {
     "high": 2
   },
   "actions": [
     {
+      "actionId": "action::db59f0535ec0",
+      "realm": "application",
+      "source": "pmconsole-live",
+      "title": "Close high-completion rendering tasks (A/F/D/B)",
+      "status": "in_progress",
+      "priority": "high",
+      "impliedBy": "human-question",
+      "owner": "ai-agent",
+      "decisionId": "APP-RENDER-001",
+      "knowledgeId": "",
+      "notes": "Replaced placeholder action with concrete app-render closure objective.",
+      "createdAt": "2026-02-19T17:40:29Z",
+      "updatedAt": "2026-02-19T18:41:57Z",
+      "ageDays": 0,
+      "staleAfterDays": 3,
+      "isStale": false,
+      "decisionLinks": [
+        {
+          "realm": "application",
+          "decisionId": "APP-RENDER-001",
+          "relation": "implements",
+          "linkedAt": "2026-02-19T18:41:57Z"
+        }
+      ]
+    },
+    {
       "actionId": "action::d0caf0185bf1",
       "realm": "pm",
       "source": "pmconsole-live",
-      "title": "<please report on your current workstreams with a brief summary of what they are and estimated completion>",
-      "status": "open",
+      "title": "Publish and maintain concise workstream status summary",
+      "status": "in_progress",
       "priority": "high",
       "impliedBy": "human-question",
-      "owner": "",
-      "decisionId": "",
+      "owner": "ai-agent",
+      "decisionId": "PM-DEC-QUEUE-001",
       "knowledgeId": "",
-      "notes": "auto-ingested from assistant inbox",
+      "notes": "Normalized from generic prompt to tracked PM deliverable.",
       "createdAt": "2026-02-19T18:19:01Z",
-      "updatedAt": "2026-02-19T18:19:01Z",
+      "updatedAt": "2026-02-19T18:41:56Z",
       "ageDays": 0,
       "staleAfterDays": 3,
       "isStale": false,
-      "decisionLinks": []
-    },
-    {
-      "actionId": "action::db59f0535ec0",
-      "realm": "pm",
-      "source": "pmconsole-live",
-      "title": "hello-from-live",
-      "status": "open",
-      "priority": "high",
-      "impliedBy": "human-question",
-      "owner": "",
-      "decisionId": "",
-      "knowledgeId": "",
-      "notes": "auto-ingested from assistant inbox",
-      "createdAt": "2026-02-19T17:40:29Z",
-      "updatedAt": "2026-02-19T17:40:29Z",
-      "ageDays": 0,
-      "staleAfterDays": 3,
-      "isStale": false,
-      "decisionLinks": []
+      "decisionLinks": [
+        {
+          "realm": "pm",
+          "decisionId": "PM-DEC-QUEUE-001",
+          "relation": "implements",
+          "linkedAt": "2026-02-19T18:41:56Z"
+        }
+      ]
     }
   ]
 }

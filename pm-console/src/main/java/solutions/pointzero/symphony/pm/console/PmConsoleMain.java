@@ -42,6 +42,7 @@ import java.util.concurrent.Callable;
         PmConsoleMain.StatusCommand.class,
         PmConsoleMain.DecisionsCommand.class,
         PmConsoleMain.ActionsCommand.class,
+        PmConsoleMain.ApplySuggestionCommand.class,
         PmConsoleMain.ReportCommand.class,
         PmConsoleMain.RefreshCommand.class,
         PmConsoleMain.DbCommand.class,
@@ -75,7 +76,7 @@ public final class PmConsoleMain implements Callable<Integer> {
 
     @Override
     public Integer call() {
-        System.out.println("pmconsole: use subcommands status | decisions | actions | report | refresh | db | tools | live");
+        System.out.println("pmconsole: use subcommands status | decisions | actions | apply-suggestion | report | refresh | db | tools | live");
         return 0;
     }
 
@@ -93,7 +94,8 @@ public final class PmConsoleMain implements Callable<Integer> {
                 "Primary console commands:",
                 "  - pmconsole status",
                 "  - pmconsole decisions --top 10",
-                "  - pmconsole actions --top 10",
+                "  - pmconsole actions --top 10 --owner ai-agent --open-only",
+                "  - pmconsole apply-suggestion --action-id action::xxxx",
                 "  - pmconsole report --request \"current workstream status\"",
                 "  - pmconsole report --request \"reasoning drive\"",
                 "  - pmconsole refresh --phase pm_refresh_and_reports",
@@ -186,9 +188,30 @@ public final class PmConsoleMain implements Callable<Integer> {
         @Option(names = "--stale-only", description = "Show only stale action rows.")
         boolean staleOnly;
 
+        @Option(names = "--owner", description = "Optional owner filter (exact match).")
+        String owner;
+
+        @Option(names = "--open-only", description = "Show only open/in_progress/blocked action rows.")
+        boolean openOnly;
+
         @Override
         public Integer call() {
-            return printActionItems(Math.max(1, top), priority, staleOnly);
+            return printActionItems(Math.max(1, top), priority, staleOnly, owner, openOnly);
+        }
+    }
+
+    @Command(name = "apply-suggestion", description = "Applies the top action->decision suggestion from action suggestion report.")
+    static final class ApplySuggestionCommand implements Callable<Integer> {
+
+        @Option(names = "--action-id", description = "Optional action ID; defaults to first actionable suggestion.")
+        String actionId;
+
+        @Option(names = "--dry-run", description = "Preview selected suggestion without writing changes.")
+        boolean dryRun;
+
+        @Override
+        public Integer call() throws Exception {
+            return applyTopSuggestion(actionId, dryRun);
         }
     }
 
@@ -319,7 +342,16 @@ public final class PmConsoleMain implements Callable<Integer> {
                 }
                 if (lower.startsWith("actions")) {
                     LiveActionSelection parsed = parseLiveActionsSelection(normalized);
-                    printActionItems(parsed.top, parsed.priority, parsed.staleOnly);
+                    printActionItems(parsed.top, parsed.priority, parsed.staleOnly, parsed.owner, parsed.openOnly);
+                    System.out.println();
+                    continue;
+                }
+                if (lower.startsWith("apply-suggestion")) {
+                    String[] parts = normalized.split("\\s+");
+                    String actionId = parts.length >= 2 ? parts[1].trim() : "";
+                    boolean dryRun = lower.contains("dry-run");
+                    int exit = applyTopSuggestion(actionId, dryRun);
+                    System.out.println("apply-suggestion exit code: " + exit);
                     System.out.println();
                     continue;
                 }
@@ -544,7 +576,7 @@ public final class PmConsoleMain implements Callable<Integer> {
         return 0;
     }
 
-    private static int printActionItems(int top, String priorityFilter, boolean staleOnly) {
+    private static int printActionItems(int top, String priorityFilter, boolean staleOnly, String ownerFilter, boolean openOnly) {
         System.out.println("Action items:");
         JsonObject root = readJson(ACTION_ITEMS);
         if (root == null) {
@@ -553,9 +585,12 @@ public final class PmConsoleMain implements Callable<Integer> {
         }
         String count = str(root, "itemCount", "0");
         String normalizedPriority = normalizePriority(priorityFilter);
+        String owner = text(ownerFilter);
         System.out.println("  - total: " + count
             + (normalizedPriority.isBlank() ? "" : " | priority=" + normalizedPriority)
-            + (staleOnly ? " | staleOnly=true" : ""));
+            + (staleOnly ? " | staleOnly=true" : "")
+            + (owner.isBlank() ? "" : " | owner=" + owner)
+            + (openOnly ? " | openOnly=true" : ""));
         JsonElement rows = root.get("actions");
         if (rows == null || !rows.isJsonArray()) {
             return 0;
@@ -577,10 +612,18 @@ public final class PmConsoleMain implements Callable<Integer> {
             if (staleOnly && !stale) {
                 continue;
             }
+            String rowOwner = text(str(row, "owner", ""));
+            if (!owner.isBlank() && !owner.equals(rowOwner)) {
+                continue;
+            }
+            String status = text(str(row, "status", "")).toLowerCase(Locale.ROOT);
+            if (openOnly && !Set.of("open", "in_progress", "blocked").contains(status)) {
+                continue;
+            }
             System.out.println("  - [" + str(row, "priority", "medium") + "] "
                 + str(row, "actionId", "<id>") + " | "
                 + str(row, "realm", "<realm>") + " | "
-                + str(row, "status", "<status>") + " | "
+                + status + " | "
                 + str(row, "title", "")
                 + " | stale=" + stale);
             printed++;
@@ -1349,10 +1392,16 @@ public final class PmConsoleMain implements Callable<Integer> {
         int top = 10;
         String priority = "";
         boolean staleOnly = false;
+        String owner = "";
+        boolean openOnly = false;
         String[] tokens = text(command).split("\\s+");
         for (int i = 1; i < tokens.length; i++) {
             String token = text(tokens[i]).toLowerCase(Locale.ROOT);
             if (token.isBlank()) {
+                continue;
+            }
+            if ("open".equals(token) || "open-only".equals(token)) {
+                openOnly = true;
                 continue;
             }
             if ("stale".equals(token) || "stale-only".equals(token)) {
@@ -1363,13 +1412,88 @@ public final class PmConsoleMain implements Callable<Integer> {
                 priority = token;
                 continue;
             }
+            if ("owner".equals(token) && i + 1 < tokens.length) {
+                owner = text(tokens[++i]);
+                continue;
+            }
             try {
                 top = Math.max(1, Integer.parseInt(token));
             } catch (NumberFormatException ignored) {
                 // ignore non-numeric tokens.
             }
         }
-        return new LiveActionSelection(top, priority, staleOnly);
+        return new LiveActionSelection(top, priority, staleOnly, owner, openOnly);
+    }
+
+    private static int applyTopSuggestion(String actionIdFilter, boolean dryRun) throws Exception {
+        JsonObject root = readJson(ACTION_SUGGESTIONS);
+        if (root == null) {
+            System.out.println("missing suggestions report: " + ACTION_SUGGESTIONS);
+            return 1;
+        }
+        JsonElement rows = root.get("suggestions");
+        if (rows == null || !rows.isJsonArray()) {
+            System.out.println("no suggestions found.");
+            return 1;
+        }
+
+        String actionFilter = text(actionIdFilter);
+        String selectedActionId = "";
+        String selectedDecisionId = "";
+        String selectedDecisionRealm = "";
+        for (JsonElement el : rows.getAsJsonArray()) {
+            if (!el.isJsonObject()) {
+                continue;
+            }
+            JsonObject row = el.getAsJsonObject();
+            String actionId = text(str(row, "actionId", ""));
+            if (!actionFilter.isBlank() && !actionFilter.equals(actionId)) {
+                continue;
+            }
+            JsonElement suggestions = row.get("suggestions");
+            if (suggestions == null || !suggestions.isJsonArray() || suggestions.getAsJsonArray().isEmpty()) {
+                continue;
+            }
+            JsonObject top = suggestions.getAsJsonArray().get(0).getAsJsonObject();
+            selectedActionId = actionId;
+            selectedDecisionId = text(str(top, "decisionId", ""));
+            selectedDecisionRealm = text(str(top, "realm", ""));
+            break;
+        }
+
+        if (selectedActionId.isBlank() || selectedDecisionId.isBlank()) {
+            System.out.println("no applicable suggestion found" + (actionFilter.isBlank() ? "" : " for action " + actionFilter));
+            return 1;
+        }
+
+        if (dryRun) {
+            System.out.println("dry-run: action " + selectedActionId + " -> decision " + selectedDecisionId + " (realm=" + selectedDecisionRealm + ")");
+            return 0;
+        }
+
+        try (Connection conn = connect(PROJECT_DB)) {
+            try (PreparedStatement ps = conn.prepareStatement(
+                "insert or replace into action_item_decision_links(action_id, realm, decision_id, relation, linked_at) values(?,?,?,?,?)"
+            )) {
+                ps.setString(1, selectedActionId);
+                ps.setString(2, selectedDecisionRealm);
+                ps.setString(3, selectedDecisionId);
+                ps.setString(4, "implements");
+                ps.setString(5, nowIso());
+                ps.executeUpdate();
+            }
+            try (PreparedStatement ps = conn.prepareStatement(
+                "update action_items set decision_id=?, updated_at=? where action_id=?"
+            )) {
+                ps.setString(1, selectedDecisionId);
+                ps.setString(2, nowIso());
+                ps.setString(3, selectedActionId);
+                ps.executeUpdate();
+            }
+        }
+
+        System.out.println("applied suggestion: action " + selectedActionId + " -> decision " + selectedDecisionId + " (realm=" + selectedDecisionRealm + ")");
+        return 0;
     }
 
     private static void printLiveHelp() {
@@ -1377,7 +1501,8 @@ public final class PmConsoleMain implements Callable<Integer> {
         System.out.println("  - help");
         System.out.println("  - status");
         System.out.println("  - decisions [n]");
-        System.out.println("  - actions [n] [high|medium|low] [stale]");
+        System.out.println("  - actions [n] [high|medium|low] [stale] [open] [owner <name>]");
+        System.out.println("  - apply-suggestion [action-id] [dry-run]");
         System.out.println("  - report <request>  (e.g., action status)");
         System.out.println("  - refresh");
         System.out.println("  - refresh phase <id>");
@@ -1411,5 +1536,5 @@ public final class PmConsoleMain implements Callable<Integer> {
 
     private record ReportPayload(JsonObject payload, String sourcesSummary) {}
 
-    static record LiveActionSelection(int top, String priority, boolean staleOnly) {}
+    static record LiveActionSelection(int top, String priority, boolean staleOnly, String owner, boolean openOnly) {}
 }

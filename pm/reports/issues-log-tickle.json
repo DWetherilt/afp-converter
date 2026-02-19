@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T18:45:01Z",
+  "generatedAt": "2026-02-19T18:57:39Z",
   "issuesLogPath": "docs/issues-log.csv",
   "issuesLogTouchedInWorkingTree": true,
-  "changedPathCount": 34,
-  "triggeredIssueCount": 4,
+  "changedPathCount": 114,
+  "triggeredIssueCount": 6,
   "requiresIssuesLogUpdate": false,
   "triggeredIssues": [
     {
@@ -13,7 +13,16 @@
       "title": "Excel automation and workbook update fragility due Office account/licensing context",
       "matchedComponents": [
         "build.gradle",
-        "docs/project-plan-progress.csv"
+        "docs/project-plan-progress.xlsx",
+        "pm/reports/project-plan-progress-data.json"
+      ]
+    },
+    {
+      "id": "ISSUE-002",
+      "status": "Open",
+      "title": "Workbook repair/corruption when managed sheets are added by XML updater without synchronizing docProps/app.xml sheet metadata",
+      "matchedComponents": [
+        "docs/project-plan-progress.xlsx"
       ]
     },
     {
@@ -25,11 +34,21 @@
       ]
     },
     {
+      "id": "ISSUE-004",
+      "status": "Open",
+      "title": "Progress Graph sheet visual/layout quality needs tuning despite functional correctness",
+      "matchedComponents": [
+        "docs/project-plan-progress.xlsx"
+      ]
+    },
+    {
       "id": "ISSUE-005",
       "status": "Open",
       "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
       "matchedComponents": [
         "build.gradle",
+        "docs/boilerplate-sync-candidates.xlsx",
+        "docs/project-plan-progress.xlsx",
         "pm/state/boilerplate-state.sqlite",
         "pm/state/project-state.sqlite"
       ]
@@ -41,9 +60,13 @@
       "matchedComponents": [
         "build.gradle",
         "docs/issues-log.csv",
+        "pm/reports/documentation-manifest.json",
         "pm/reports/governance-alerts.json",
+        "pm/reports/version-control-ledger.json",
         "pm/state/project-state.sqlite",
-        "tools/realm_knowledge_link_gate.py"
+        "tools/realm_knowledge_link_gate.py",
+        "tools/realm_knowledge_sync.py",
+        "tools/tests/test_realm_knowledge_link_gate.py"
       ]
     }
   ],

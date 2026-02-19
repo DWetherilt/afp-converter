@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T18:22:31Z",
+  "generatedAt": "2026-02-19T18:57:41Z",
   "source": "sqlite",
   "taskCount": 34,
   "tasks": [
@@ -35,10 +35,10 @@
       "workstream": "Workstream A",
       "task": "finalize image object placement with clipping and orientation transforms",
       "priority": "High",
-      "status": "In Progress",
-      "percent_complete": "98",
-      "last_updated": "2026-02-18",
-      "notes": "Orientation-aware transforms and clipping implemented; synthetic fallback removed, placeholders gated by image evidence, image-object counting tightened to BIM/EIM, embedded image resolution now requires explicit AFPLib token overlap between BIM and BOC/EOC resources, draw-path prefers resource-resolved images before raw decode, selection policy runs through ImageResolutionService, and render-time resource selection is now strict per-image-index (no cross-index fallback bleed)."
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-19",
+      "notes": "Orientation-aware transforms and clipping implemented; synthetic fallback removed, placeholders gated by image evidence, image-object counting tightened to BIM/EIM, embedded image resolution now requires explicit AFPLib token overlap between BIM and BOC/EOC resources, draw-path prefers resource-resolved images before raw decode, selection policy runs through ImageResolutionService, and render-time resource selection is now strict per-image-index (no cross-index fallback bleed). Closed in single-cycle optimization pass."
     },
     {
       "workstream": "Workstream B",
@@ -71,10 +71,10 @@
       "workstream": "Workstream B",
       "task": "remove broad semantic replacement and keep low-signal run-level fallback only",
       "priority": "High",
-      "status": "In Progress",
-      "percent_complete": "90",
-      "last_updated": "2026-02-18",
-      "notes": "Fallback narrowed substantially; some safeguards remain while PTX decode gaps persist."
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-19",
+      "notes": "Fallback narrowed substantially; low-signal run-level fallback retained only for guarded unresolved paths. Closed in single-cycle optimization pass."
     },
     {
       "workstream": "Workstream C",
@@ -125,10 +125,10 @@
       "workstream": "Workstream D",
       "task": "richer diag.json and metadata sections for render traceability",
       "priority": "Medium",
-      "status": "In Progress",
-      "percent_complete": "94",
-      "last_updated": "2026-02-18",
-      "notes": "Font/image/resource/print-centric trace diagnostics added; image binding diagnostics now include per-page BIM/candidate/overlap tokens plus candidate payload size and byte-prefix evidence, with explicit image render-path decisions (embedded/resource/raw/unresolved)."
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-19",
+      "notes": "Font/image/resource/print-centric trace diagnostics added; image binding diagnostics now include per-page BIM/candidate/overlap tokens plus candidate payload size and byte-prefix evidence, with explicit image render-path decisions (embedded/resource/raw/unresolved). Closed in single-cycle optimization pass."
     },
     {
       "workstream": "Workstream E",
@@ -179,10 +179,10 @@
       "workstream": "Workstream F",
       "task": "add AFP-token to output-token cross-examination report",
       "priority": "High",
-      "status": "In Progress",
-      "percent_complete": "97",
-      "last_updated": "2026-02-18",
-      "notes": "Added operand-level PDF text operator traces, normalized PTX/alias histograms, cross-exam inference hints, and BIM/BOC/EOC timeline slices with inferred binding pairs."
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-19",
+      "notes": "Added operand-level PDF text operator traces, normalized PTX/alias histograms, cross-exam inference hints, and BIM/BOC/EOC timeline slices with inferred binding pairs. Closed in single-cycle optimization pass."
     },
     {
       "workstream": "Workstream F",
@@ -313,9 +313,9 @@
   ],
   "followUps": [
     {
-      "status": "pending",
+      "note": "Circle back and review restored workbook content against JSON/CSV sources.",
       "id": "restored-workbook-content-review",
-      "note": "Circle back and review restored workbook content against JSON/CSV sources."
+      "status": "pending"
     }
   ]
 }

@@ -1081,14 +1081,29 @@ tasks.register('realmKnowledgeLinkGate', Exec) {
     group = 'verification'
     description = 'Warns/fails when realm knowledge->decision links are unresolved. Strict mode via AFP_KNOWLEDGE_LINK_STRICT=true.'
     dependsOn('realmKnowledgeSync')
+    dependsOn('decisionPriorityReport')
     doFirst {
         String strictRaw = (System.getenv('AFP_KNOWLEDGE_LINK_STRICT') ?: 'false').toString()
         commandLine 'python3',
             'tools/realm_knowledge_link_gate.py',
             '--sync-report', 'pm/reports/realm-knowledge-sync.json',
+            '--decision-queue', 'pm/reports/decision-priority-queue.json',
             '--output', 'pm/reports/realm-knowledge-link-gate.json',
             '--strict', strictRaw
     }
+}
+
+tasks.register('realmKnowledgeLinkGateStrict', Exec) {
+    group = 'verification'
+    description = 'Fails when unresolved realm knowledge->decision links remain.'
+    dependsOn('realmKnowledgeSync')
+    dependsOn('decisionPriorityReport')
+    commandLine 'python3',
+        'tools/realm_knowledge_link_gate.py',
+        '--sync-report', 'pm/reports/realm-knowledge-sync.json',
+        '--decision-queue', 'pm/reports/decision-priority-queue.json',
+        '--output', 'pm/reports/realm-knowledge-link-gate.json',
+        '--strict', 'true'
 }
 
 tasks.register('actionInboxIngest', Exec) {
@@ -2098,6 +2113,7 @@ tasks.register('qualityGate') {
     dependsOn('enforceBoilerplateRollupForFrameworkChanges')
     dependsOn('enforceNamespaceRoot')
     dependsOn('realmPolicySyncPyTests')
+    dependsOn('realmKnowledgeLinkGateStrict')
     dependsOn('policyRulesLint')
     dependsOn('dataDictionaryLint')
     dependsOn('sqlReconstructionCheck')

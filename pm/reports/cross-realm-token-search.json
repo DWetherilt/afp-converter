@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T18:44:10Z",
+  "generatedAt": "2026-02-19T18:57:36Z",
   "source": "sqlite",
   "query": "render",
   "databaseCount": 3,
-  "dictionaryMatchCount": 81,
-  "fileHitCount": 145,
+  "dictionaryMatchCount": 82,
+  "fileHitCount": 147,
   "dictionaryMatches": [
     {
       "token": "renderer",
@@ -84,6 +84,10 @@
       "totalOccurrences": 5
     },
     {
+      "token": "app-render-001",
+      "totalOccurrences": 5
+    },
+    {
       "token": "afpnativepdfrenderer.imageresourcehinttrace",
       "totalOccurrences": 4
     },
@@ -129,10 +133,6 @@
     },
     {
       "token": "afpnativepdfrenderertest",
-      "totalOccurrences": 3
-    },
-    {
-      "token": "app-render-001",
       "totalOccurrences": 3
     },
     {
@@ -329,6 +329,10 @@
     },
     {
       "token": "select/render",
+      "totalOccurrences": 1
+    },
+    {
+      "token": "renders",
       "totalOccurrences": 1
     }
   ],
@@ -1183,6 +1187,14 @@
     },
     {
       "db": "pm/state/pm-realm.sqlite",
+      "token": "app-render-001",
+      "path": "tools/tests/test_realm_knowledge_link_gate.py",
+      "occurrences": 2,
+      "realm": "pm",
+      "language": "python"
+    },
+    {
+      "db": "pm/state/pm-realm.sqlite",
       "token": "rendering",
       "path": "AI-POLICY.md",
       "occurrences": 2,
@@ -1491,6 +1503,14 @@
       "path": "docs/project-plan.md",
       "occurrences": 1,
       "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "pm/state/boilerplate-realm.sqlite",
+      "token": "renders",
+      "path": "boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-queue-normalization-knowledge-link-gate/apply-checklist.md",
+      "occurrences": 1,
+      "realm": "boilerplate",
       "language": "markdown"
     }
   ]

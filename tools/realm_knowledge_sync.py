@@ -192,6 +192,7 @@ def sync_target(
 
         resolved = 0
         unresolved = 0
+        unresolved_ids: list[str] = []
         has_decision_log = bool(
             target_conn.execute("select count(*) from sqlite_master where type='table' and name='decision_log'").fetchone()[0]
         )
@@ -205,6 +206,7 @@ def sync_target(
                     resolved += 1
                 else:
                     unresolved += 1
+                    unresolved_ids.append(str(row["decision_id"]))
 
         target_conn.commit()
         return {
@@ -215,6 +217,7 @@ def sync_target(
             "decisionLinkCount": len(selected_links),
             "resolvedDecisionLinks": resolved,
             "unresolvedDecisionLinks": unresolved,
+            "unresolvedDecisionIds": sorted(set(unresolved_ids)),
         }
     finally:
         target_conn.close()

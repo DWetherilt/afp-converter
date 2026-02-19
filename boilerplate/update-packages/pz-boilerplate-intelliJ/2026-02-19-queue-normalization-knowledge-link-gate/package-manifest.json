@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1",
+  "packageId": "2026-02-19-queue-normalization-knowledge-link-gate",
+  "sourceRepo": "afp-converter",
+  "targetRepo": "pz-boilerplate-intelliJ",
+  "createdAt": "2026-02-19T00:00:00Z",
+  "summary": "Single-cycle queue normalization, realm knowledge link gate hardening, strict quality wiring, and console action/knowledge UX updates.",
+  "files": [
+    { "path": "build.gradle", "changeType": "update" },
+    { "path": "pm/workflow/workflow-manifest.json", "changeType": "update" },
+    { "path": "pm/policy/policy-rule-tables.sql", "changeType": "update" },
+    { "path": "docs/SQL_FIRST_WORKFLOW.md", "changeType": "update" },
+    { "path": "pm-console/src/main/java/solutions/pointzero/symphony/pm/console/PmConsoleMain.java", "changeType": "update" },
+    { "path": "pm-console/src/test/java/solutions/pointzero/symphony/pm/console/PmConsoleMainTest.java", "changeType": "update" },
+    { "path": "tools/realm_knowledge_link_gate.py", "changeType": "add" },
+    { "path": "tools/realm_knowledge_sync.py", "changeType": "update" },
+    { "path": "tools/tests/test_realm_knowledge_link_gate.py", "changeType": "add" },
+    { "path": "docs/project-plan-progress.csv", "changeType": "update" },
+    { "path": "docs/issues-log.csv", "changeType": "update" }
+  ],
+  "validation": [
+    "./gradlew --no-daemon :pm-console:test realmKnowledgeLinkGateStrict actionItemsReport actionDecisionSuggestionReport actionOwnerSummaryReport actionSlaTrendReport",
+    "pm-console/build/install/pmconsole/bin/pmconsole actions --top 10 --owner ai-agent --open-only",
+    "pm-console/build/install/pmconsole/bin/pmconsole report --request \"realm knowledge status\""
+  ]
+}
