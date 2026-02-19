@@ -50,6 +50,7 @@ import javax.imageio.ImageIO;
 
 final class AfpNativePdfRenderer {
     private static final ImageResolutionService IMAGE_RESOLUTION = new ImageResolutionService();
+    private static volatile ImageResourceHintTrace LAST_IMAGE_RESOURCE_HINT_TRACE = ImageResourceHintTrace.empty();
     private static final boolean SEMANTIC_LAYOUT_OPT_IN =
         Boolean.parseBoolean(System.getProperty("afp.render.semanticLayout", "false"));
     private static final int PTOCA_CS_INTRODUCER = 0x2B;
@@ -101,9 +102,9 @@ final class AfpNativePdfRenderer {
         List<List<ImageObjectEvidence>> pageImageEvidence = collectPageImageEvidence(interpretation.fields());
         List<List<BufferedImage>> pageDecodedImages = decodePageImages(pageImageEvidence);
         List<List<byte[]>> pageRawImagePayloads = extractPageImagePayloads(pageImageEvidence);
-        List<List<String>> pageImageResourceHints = extractPageImageResourceHints(pageImageEvidence);
         List<List<BufferedImage>> pageEmbeddedResourceImages = resolvePageEmbeddedResourceImages(interpretation.rawAfpBytes(), pageImageEvidence);
-        List<List<BufferedImage>> pageResolvedResourceImages = resolvePageResourceImages(pageImageResourceHints, resourceContext);
+        List<List<BufferedImage>> pageResolvedResourceImages = resolvePageResourceImages(pageImageEvidence, resourceContext);
+        LAST_IMAGE_RESOURCE_HINT_TRACE = computeImageResourceHintTrace(pageImageEvidence, pageResolvedResourceImages);
         List<List<BufferedImage>> pageResolvedImages = mergeResolvedResourceImages(pageEmbeddedResourceImages, pageResolvedResourceImages);
 
         try (PDDocument document = new PDDocument()) {
@@ -151,6 +152,10 @@ final class AfpNativePdfRenderer {
             }
             document.save(outputPath.toFile());
         }
+    }
+
+    static ImageResourceHintTrace lastImageResourceHintTrace() {
+        return LAST_IMAGE_RESOURCE_HINT_TRACE;
     }
 
     private static boolean shouldPreferSemanticLayout(AfpInterpretation interpretation) {
@@ -628,37 +633,37 @@ final class AfpNativePdfRenderer {
             }
             switch (fn) {
                 case PTOCA_FN_AMI -> {
-                    Integer v = decodeSigned16(data);
+                    Integer v = decodeSignedDisplacement(data);
                     if (v != null) {
                         state.inline = v;
                     }
                 }
                 case PTOCA_FN_RMI -> {
-                    Integer v = decodeSigned16(data);
+                    Integer v = decodeSignedDisplacement(data);
                     if (v != null) {
                         state.inline += v;
                     }
                 }
                 case PTOCA_FN_AMB -> {
-                    Integer v = decodeSigned16(data);
+                    Integer v = decodeSignedDisplacement(data);
                     if (v != null) {
                         state.baseline = v;
                     }
                 }
                 case PTOCA_FN_RMB -> {
-                    Integer v = decodeSigned16(data);
+                    Integer v = decodeSignedDisplacement(data);
                     if (v != null) {
                         state.baseline += v;
                     }
                 }
                 case PTOCA_FN_SBI -> {
-                    Integer v = decodeSigned16(data);
+                    Integer v = decodeSignedDisplacement(data);
                     if (v != null && v != 0) {
                         state.baselineIncrement = v;
                     }
                 }
                 case PTOCA_FN_SVI -> {
-                    Integer v = decodeSigned16(data);
+                    Integer v = decodeSignedDisplacement(data);
                     if (v != null && v != 0) {
                         state.inlineIncrement = v;
                     }
@@ -730,9 +735,12 @@ final class AfpNativePdfRenderer {
         return null;
     }
 
-    private static Integer decodeSigned16(byte[] data) {
-        if (data == null || data.length < 2) {
+    private static Integer decodeSignedDisplacement(byte[] data) {
+        if (data == null || data.length == 0) {
             return null;
+        }
+        if (data.length == 1) {
+            return (int) data[0];
         }
         int raw = ((data[0] & 0xFF) << 8) | (data[1] & 0xFF);
         if ((raw & 0x8000) != 0) {
@@ -2062,38 +2070,81 @@ final class AfpNativePdfRenderer {
         return byPage;
     }
 
-    private static List<List<String>> extractPageImageResourceHints(List<List<ImageObjectEvidence>> pageEvidence) {
-        List<List<String>> byPage = new ArrayList<>();
-        if (pageEvidence == null) {
-            return byPage;
-        }
-        for (List<ImageObjectEvidence> page : pageEvidence) {
-            List<String> hints = new ArrayList<>();
-            if (page != null) {
-                for (ImageObjectEvidence evidence : page) {
-                    if (evidence == null || evidence.resourceHints == null) {
-                        continue;
-                    }
-                    hints.addAll(evidence.resourceHints);
-                }
-            }
-            byPage.add(hints);
-        }
-        return byPage;
-    }
-
-    private static List<List<BufferedImage>> resolvePageResourceImages(List<List<String>> pageImageResourceHints,
+    private static List<List<BufferedImage>> resolvePageResourceImages(List<List<ImageObjectEvidence>> pageImageEvidence,
                                                                        ResourceContext resourceContext) {
-        if (pageImageResourceHints == null || pageImageResourceHints.isEmpty()) {
+        if (pageImageEvidence == null || pageImageEvidence.isEmpty()) {
             return List.of();
         }
-        List<List<BufferedImage>> resolved = new ArrayList<>(pageImageResourceHints.size());
-        for (List<String> hints : pageImageResourceHints) {
-            List<BufferedImage> pageResolved = new ArrayList<>(1);
-            pageResolved.add(resolveImageByHints(hints, resourceContext).orElse(null));
+        List<List<BufferedImage>> resolved = new ArrayList<>(pageImageEvidence.size());
+        for (List<ImageObjectEvidence> page : pageImageEvidence) {
+            if (page == null || page.isEmpty()) {
+                resolved.add(List.of());
+                continue;
+            }
+            List<BufferedImage> pageResolved = new ArrayList<>(page.size());
+            for (ImageObjectEvidence evidence : page) {
+                List<String> hints = evidence == null ? List.of() : evidence.resourceHints;
+                pageResolved.add(resolveImageByHints(hints, resourceContext).orElse(null));
+            }
             resolved.add(pageResolved);
         }
         return resolved;
+    }
+
+    private static ImageResourceHintTrace computeImageResourceHintTrace(List<List<ImageObjectEvidence>> pageImageEvidence,
+                                                                        List<List<BufferedImage>> pageResolvedResourceImages) {
+        if (pageImageEvidence == null || pageImageEvidence.isEmpty()) {
+            return ImageResourceHintTrace.empty();
+        }
+        int totalImages = 0;
+        int hintedImages = 0;
+        int resolvedHintedImages = 0;
+        int unresolvedHintedImages = 0;
+        int filteredFontHintImages = 0;
+        List<String> unresolvedHintPreview = new ArrayList<>();
+        for (int pageIndex = 0; pageIndex < pageImageEvidence.size(); pageIndex++) {
+            List<ImageObjectEvidence> page = pageImageEvidence.get(pageIndex);
+            List<BufferedImage> resolvedPage =
+                pageResolvedResourceImages != null && pageIndex < pageResolvedResourceImages.size()
+                    ? pageResolvedResourceImages.get(pageIndex)
+                    : List.of();
+            if (page == null || page.isEmpty()) {
+                continue;
+            }
+            for (int imageIndex = 0; imageIndex < page.size(); imageIndex++) {
+                ImageObjectEvidence evidence = page.get(imageIndex);
+                totalImages++;
+                List<String> hints = evidence == null || evidence.resourceHints == null ? List.of() : evidence.resourceHints;
+                if (hints.isEmpty()) {
+                    continue;
+                }
+                hintedImages++;
+                if (containsLikelyFontHints(hints)) {
+                    filteredFontHintImages++;
+                }
+                BufferedImage resolved = imageIndex < resolvedPage.size() ? resolvedPage.get(imageIndex) : null;
+                if (resolved != null) {
+                    resolvedHintedImages++;
+                } else {
+                    unresolvedHintedImages++;
+                    if (unresolvedHintPreview.size() < 20) {
+                        unresolvedHintPreview.add(
+                            "page=" + (pageIndex + 1)
+                                + ",image=" + (imageIndex + 1)
+                                + ",hints=" + String.join("|", hints)
+                        );
+                    }
+                }
+            }
+        }
+        return new ImageResourceHintTrace(
+            totalImages,
+            hintedImages,
+            resolvedHintedImages,
+            unresolvedHintedImages,
+            filteredFontHintImages,
+            unresolvedHintPreview
+        );
     }
 
     private static List<List<BufferedImage>> mergeResolvedResourceImages(List<List<BufferedImage>> primary,
@@ -2672,6 +2723,33 @@ final class AfpNativePdfRenderer {
             this.rawRasterPayload = rawRasterPayload == null ? null : rawRasterPayload.clone();
             this.resourceHints = resourceHints == null ? List.of() : List.copyOf(resourceHints);
             this.hasRasterEvidence = hasRasterEvidence;
+        }
+    }
+
+    static final class ImageResourceHintTrace {
+        final int totalImageObjects;
+        final int hintedImageObjects;
+        final int resolvedHintedImageObjects;
+        final int unresolvedHintedImageObjects;
+        final int filteredFontHintImageObjects;
+        final List<String> unresolvedHintPreview;
+
+        private ImageResourceHintTrace(int totalImageObjects,
+                                       int hintedImageObjects,
+                                       int resolvedHintedImageObjects,
+                                       int unresolvedHintedImageObjects,
+                                       int filteredFontHintImageObjects,
+                                       List<String> unresolvedHintPreview) {
+            this.totalImageObjects = Math.max(0, totalImageObjects);
+            this.hintedImageObjects = Math.max(0, hintedImageObjects);
+            this.resolvedHintedImageObjects = Math.max(0, resolvedHintedImageObjects);
+            this.unresolvedHintedImageObjects = Math.max(0, unresolvedHintedImageObjects);
+            this.filteredFontHintImageObjects = Math.max(0, filteredFontHintImageObjects);
+            this.unresolvedHintPreview = unresolvedHintPreview == null ? List.of() : List.copyOf(unresolvedHintPreview);
+        }
+
+        static ImageResourceHintTrace empty() {
+            return new ImageResourceHintTrace(0, 0, 0, 0, 0, List.of());
         }
     }
 

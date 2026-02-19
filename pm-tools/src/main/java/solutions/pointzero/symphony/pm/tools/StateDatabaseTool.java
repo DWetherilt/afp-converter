@@ -51,13 +51,27 @@ public final class StateDatabaseTool {
     private static final List<String> GOVERNANCE_COLUMNS = List.of(
         "event_id", "event_date", "phase", "status", "checkpoint_id", "issue_id", "summary", "evidence", "updated_by"
     );
+    private static final List<String> REQUIRED_DICTIONARY_OBJECTS = List.of(
+        "issues",
+        "plan_tasks",
+        "governance_events",
+        "repo_vcs_snapshot",
+        "repo_file_state",
+        "policy_rule_catalog",
+        "pm_data_dictionary",
+        "pm_workflow_manifest",
+        "pm_workflow_phase_task_map",
+        "pm_workflow_defaults",
+        "package_candidates",
+        "package_files"
+    );
     private static final DateTimeFormatter ISO = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
     private StateDatabaseTool() {}
 
     public static void main(String[] args) throws Exception {
         if (args.length == 0) {
-            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-policy-rules");
+            throw new IllegalArgumentException("Missing command. Use: sync-project|sync-boilerplate|sync-policy-rules|export-progress-json|issues-tickle|issues-effectiveness|governance-alerts|version-control-ledger|export-project-file-inventory|export-boilerplate-package-inventory|export-policy-rules|export-data-dictionary|lint-data-dictionary");
         }
         String command = args[0];
         Map<String, String> cli = parseArgs(args, 1);
@@ -73,6 +87,8 @@ public final class StateDatabaseTool {
             case "export-project-file-inventory" -> runExportProjectFileInventory(cli);
             case "export-boilerplate-package-inventory" -> runExportBoilerplatePackageInventory(cli);
             case "export-policy-rules" -> runExportPolicyRules(cli);
+            case "export-data-dictionary" -> runExportDataDictionary(cli);
+            case "lint-data-dictionary" -> runLintDataDictionary(cli);
             default -> throw new IllegalArgumentException("Unsupported command: " + command);
         };
         if (exit != 0) {
@@ -608,6 +624,102 @@ public final class StateDatabaseTool {
         payload.put("rules", rules);
         writeJson(jsonPath, payload);
         return 0;
+    }
+
+    private static int runExportDataDictionary(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        Path jsonPath = requiredPath(cli, "--json");
+        ensureParent(jsonPath);
+
+        List<Map<String, Object>> entries = new ArrayList<>();
+        try (Connection conn = connect(dbPath);
+             PreparedStatement ps = conn.prepareStatement(
+                 "select object_name, object_type, realm, definition, source_ref, naming_pattern, updated_at " +
+                     "from pm_data_dictionary order by realm asc, object_type asc, object_name asc"
+             );
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                Map<String, Object> row = new LinkedHashMap<>();
+                row.put("objectName", text(rs.getString(1)));
+                row.put("objectType", text(rs.getString(2)));
+                row.put("realm", text(rs.getString(3)));
+                row.put("definition", text(rs.getString(4)));
+                row.put("sourceRef", text(rs.getString(5)));
+                row.put("namingPattern", text(rs.getString(6)));
+                row.put("updatedAt", text(rs.getString(7)));
+                entries.add(row);
+            }
+        }
+
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("schemaVersion", "1");
+        payload.put("generatedAt", nowIso());
+        payload.put("source", "sqlite");
+        payload.put("sourceTable", "pm_data_dictionary");
+        payload.put("entryCount", entries.size());
+        payload.put("entries", entries);
+        writeJson(jsonPath, payload);
+        return 0;
+    }
+
+    private static int runLintDataDictionary(Map<String, String> cli) throws Exception {
+        Path dbPath = requiredPath(cli, "--db");
+        Path outputPath = requiredPath(cli, "--output");
+        ensureParent(outputPath);
+
+        List<String> required = parseRequiredDictionaryObjects(cli.get("--required"));
+        Set<String> present = new LinkedHashSet<>();
+        try (Connection conn = connect(dbPath);
+             PreparedStatement ps = conn.prepareStatement("select object_name from pm_data_dictionary");
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                String name = text(rs.getString(1));
+                if (!name.isBlank()) {
+                    present.add(name);
+                }
+            }
+        }
+
+        List<String> missing = new ArrayList<>();
+        for (String key : required) {
+            if (!present.contains(key)) {
+                missing.add(key);
+            }
+        }
+
+        Map<String, Object> payload = new LinkedHashMap<>();
+        payload.put("schemaVersion", "1");
+        payload.put("generatedAt", nowIso());
+        payload.put("source", "sqlite");
+        payload.put("sourceTable", "pm_data_dictionary");
+        payload.put("requiredCount", required.size());
+        payload.put("presentCount", present.size());
+        payload.put("missingCount", missing.size());
+        payload.put("requiredObjects", required);
+        payload.put("missingObjects", missing);
+        payload.put("ok", missing.isEmpty());
+        payload.put("message", missing.isEmpty()
+            ? "Data dictionary lint passed."
+            : "Data dictionary lint failed: missing required objects.");
+        writeJson(outputPath, payload);
+        return missing.isEmpty() ? 0 : 2;
+    }
+
+    private static List<String> parseRequiredDictionaryObjects(String raw) {
+        if (raw == null || raw.isBlank()) {
+            return REQUIRED_DICTIONARY_OBJECTS;
+        }
+        LinkedHashSet<String> keys = new LinkedHashSet<>();
+        for (String part : raw.split(",")) {
+            String key = text(part).trim();
+            if (!key.isBlank()) {
+                keys.add(key);
+            }
+        }
+        if (keys.isEmpty()) {
+            return REQUIRED_DICTIONARY_OBJECTS;
+        }
+        return List.copyOf(keys);
     }
 
     private static Connection connect(Path dbPath) throws SQLException {

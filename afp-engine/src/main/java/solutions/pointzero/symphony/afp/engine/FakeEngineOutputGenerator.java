@@ -99,7 +99,8 @@ public final class FakeEngineOutputGenerator {
         DiagnosticsPolicy diagnosticsPolicy = options == null ? new DiagnosticsPolicy("standard") : options.diagnosticsPolicy();
         FontResolutionSummary fontResolution = extractFontResolution(interpretation);
         ImageDecodeSummary imageDecode = extractImageDecodeSummary(interpretation);
-        ResourceResolutionSummary resourceResolution = extractResourceResolution(fontResolution, imageDecode);
+        ResourceResolutionSummary resourceResolution;
+        AfpNativePdfRenderer.ImageResourceHintTrace imageHintTrace = AfpNativePdfRenderer.lastImageResourceHintTrace();
         List<String> ptxTripletHistogram = extractPtxTripletHistogram(interpretation);
         List<String> ptxRawFunctionHistogram = extractPtxRawFunctionHistogram(interpretation.fields());
         AfpCodePageProfile fallbackProfile = new AfpCodePageProfile(
@@ -113,10 +114,12 @@ public final class FakeEngineOutputGenerator {
         String pdfRenderMode = "native";
         try {
             renderNativePdf(pdf, interpretation, renderPolicy, resourceContext);
+            imageHintTrace = AfpNativePdfRenderer.lastImageResourceHintTrace();
         } catch (Exception e) {
             pdfWriter.writeHtmlPdf(pdf, html);
             pdfRenderMode = "html-fallback";
         }
+        resourceResolution = extractResourceResolution(fontResolution, imageDecode, imageHintTrace);
         AfpPrintCentricTraceEngine.Summary printCentricTrace = AfpPrintCentricTraceEngine.analyze(
             interpretation,
             pdf,
@@ -144,6 +147,7 @@ public final class FakeEngineOutputGenerator {
                 "  \"fontResolution\": " + fontResolutionJson(fontResolution, false) + ",\n" +
                 "  \"imageDecode\": " + imageDecodeJson(imageDecode, false) + ",\n" +
                 "  \"resourceResolution\": " + resourceResolutionJson(resourceResolution, false) + ",\n" +
+                "  \"imageResourceHintTrace\": " + imageResourceHintTraceJson(imageHintTrace, false) + ",\n" +
                 "  \"printCentricTrace\": " + printCentricTraceJson(printCentricTrace, false) + ",\n" +
                 "  \"semanticFallback\": " + semanticFallbackJson(semanticFallback) + ",\n" +
                 "  \"afpStructure\": " + afpStructureJson(interpretation, styleMode) + "\n" +
@@ -187,6 +191,7 @@ public final class FakeEngineOutputGenerator {
                 "    \"fontResolution\": " + fontResolutionJson(fontResolution, true) + ",\n" +
                 "    \"imageDecode\": " + imageDecodeJson(imageDecode, true) + ",\n" +
                 "    \"resourceResolution\": " + resourceResolutionJson(resourceResolution, true) + ",\n" +
+                "    \"imageResourceHintTrace\": " + imageResourceHintTraceJson(imageHintTrace, true) + ",\n" +
                 "    \"printCentricTrace\": " + printCentricTraceJson(printCentricTrace, true) + ",\n" +
                 "    \"semanticFallback\": " + semanticFallbackJson(semanticFallback) + ",\n" +
                 "    \"decodeWarnings\": " + stringPreviewJson(interpretation.semantics().decodeWarnings(), limitByVerbosity(diagnosticsPolicy.verbosity(), 10, 20, 60)) + ",\n" +
@@ -1277,7 +1282,9 @@ public final class FakeEngineOutputGenerator {
         return sb.toString().toUpperCase(Locale.ROOT);
     }
 
-    private static ResourceResolutionSummary extractResourceResolution(FontResolutionSummary fontResolution, ImageDecodeSummary imageDecode) {
+    private static ResourceResolutionSummary extractResourceResolution(FontResolutionSummary fontResolution,
+                                                                       ImageDecodeSummary imageDecode,
+                                                                       AfpNativePdfRenderer.ImageResourceHintTrace imageHintTrace) {
         List<ResourceResolutionEvent> events = new ArrayList<>();
         int resolved = fontResolution.scopedResolvedUsageCount;
         int missing = fontResolution.scopedUnresolvedUsageCount;
@@ -1303,7 +1310,41 @@ public final class FakeEngineOutputGenerator {
                 events.add(new ResourceResolutionEvent("image", "embedded-payload", "missing", "decode-failed"));
             }
         }
+        if (imageHintTrace != null) {
+            if (imageHintTrace.resolvedHintedImageObjects > 0) {
+                resolved += imageHintTrace.resolvedHintedImageObjects;
+            }
+            if (imageHintTrace.unresolvedHintedImageObjects > 0) {
+                missing += imageHintTrace.unresolvedHintedImageObjects;
+                events.add(new ResourceResolutionEvent(
+                    "image",
+                    "hint-based-resource",
+                    "missing",
+                    "resource-hint-unresolved"
+                ));
+            }
+        }
         return new ResourceResolutionSummary(resolved, missing, substituted, events);
+    }
+
+    private static String imageResourceHintTraceJson(AfpNativePdfRenderer.ImageResourceHintTrace trace, boolean verbose) {
+        AfpNativePdfRenderer.ImageResourceHintTrace v = trace == null
+            ? AfpNativePdfRenderer.ImageResourceHintTrace.empty()
+            : trace;
+        StringBuilder sb = new StringBuilder();
+        sb.append("{")
+            .append("\"totalImageObjects\": ").append(v.totalImageObjects).append(", ")
+            .append("\"hintedImageObjects\": ").append(v.hintedImageObjects).append(", ")
+            .append("\"resolvedHintedImageObjects\": ").append(v.resolvedHintedImageObjects).append(", ")
+            .append("\"unresolvedHintedImageObjects\": ").append(v.unresolvedHintedImageObjects).append(", ")
+            .append("\"filteredFontHintImageObjects\": ").append(v.filteredFontHintImageObjects);
+        if (verbose) {
+            sb.append(", \"unresolvedHintPreview\": ").append(stringPreviewJson(v.unresolvedHintPreview, Integer.MAX_VALUE));
+        } else {
+            sb.append(", \"unresolvedHintPreview\": ").append(stringPreviewJson(v.unresolvedHintPreview, 12));
+        }
+        sb.append("}");
+        return sb.toString();
     }
 
     private static String resourceResolutionJson(ResourceResolutionSummary summary, boolean verbose) {
