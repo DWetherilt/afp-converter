@@ -86,6 +86,7 @@ public final class PmConsoleMain implements Callable<Integer> {
                 "  - pmconsole status",
                 "  - pmconsole decisions --top 10",
                 "  - pmconsole report --request \"current workstream status\"",
+                "  - pmconsole report --request \"reasoning drive\"",
                 "  - pmconsole refresh --phase pm_refresh_and_reports",
                 "  - pmconsole refresh --tasks projectStateDb,decisionPriorityReport",
                 "  - pmconsole db --list",
@@ -476,6 +477,7 @@ public final class PmConsoleMain implements Callable<Integer> {
             Path policyRules = Path.of("pm/reports/policy-rules.json");
             Path policyLint = Path.of("pm/reports/policy-rules-lint.json");
             Path knowledge = Path.of("pm/reports/knowledge-base.json");
+            Path reasoning = Path.of("pm/reports/reasoning-drive.json");
 
             System.out.println("Report summary:");
             System.out.println("  - issues effectiveness: " + describePath(issues));
@@ -483,6 +485,7 @@ public final class PmConsoleMain implements Callable<Integer> {
             System.out.println("  - policy rules: " + describePath(policyRules));
             System.out.println("  - policy rules lint: " + describePath(policyLint));
             System.out.println("  - knowledge base: " + describePath(knowledge));
+            System.out.println("  - reasoning drive: " + describePath(reasoning));
         }
     }
 
@@ -581,6 +584,40 @@ public final class PmConsoleMain implements Callable<Integer> {
             }
             return;
         }
+        if ("reasoning_drive".equals(screenId)) {
+            JsonArray heuristics = data.getAsJsonArray("topHeuristics");
+            JsonArray insights = data.getAsJsonArray("topInsights");
+
+            System.out.println();
+            System.out.println("Top heuristics:");
+            if (heuristics != null) {
+                for (JsonElement el : heuristics) {
+                    if (!el.isJsonObject()) {
+                        continue;
+                    }
+                    JsonObject row = el.getAsJsonObject();
+                    System.out.println("  - " + str(row, "heuristicKey", "")
+                        + " | score=" + str(row, "score", "0")
+                        + " | samples=" + str(row, "sampleCount", "0")
+                        + " | " + str(row, "signal", ""));
+                }
+            }
+
+            System.out.println();
+            System.out.println("Top derived insights:");
+            if (insights != null) {
+                for (JsonElement el : insights) {
+                    if (!el.isJsonObject()) {
+                        continue;
+                    }
+                    JsonObject row = el.getAsJsonObject();
+                    System.out.println("  - " + str(row, "realm", "")
+                        + " | support=" + str(row, "supportScore", "0")
+                        + " | " + str(row, "statement", ""));
+                }
+            }
+            return;
+        }
 
         System.out.println();
         System.out.println(GSON.toJson(payload));
@@ -591,12 +628,16 @@ public final class PmConsoleMain implements Callable<Integer> {
         if (normalized.contains("workstream") && normalized.contains("status")) {
             return buildWorkstreamStatusPayload(request, aliases);
         }
+        if (normalized.contains("reasoning") && (normalized.contains("drive") || normalized.contains("status") || normalized.contains("signal"))) {
+            return buildReasoningDrivePayload(request, aliases);
+        }
 
         JsonObject data = new JsonObject();
         JsonArray intents = new JsonArray();
         intents.add("current workstream status");
+        intents.add("reasoning drive");
         data.add("supportedRequests", intents);
-        data.addProperty("message", "Request was not recognized. Try: 'current workstream status'.");
+        data.addProperty("message", "Request was not recognized. Try: 'current workstream status' or 'reasoning drive'.");
         JsonObject payload = buildScreenPayload("unsupported_request", request, aliases, data);
         return new ReportPayload(payload, aliases.toString());
     }
@@ -688,6 +729,58 @@ public final class PmConsoleMain implements Callable<Integer> {
         return new ReportPayload(payload, aliases.toString());
     }
 
+    private static ReportPayload buildReasoningDrivePayload(String request, List<String> aliases) throws Exception {
+        Map<String, AuthorizedDb> auth = authorizedDbMap();
+        AuthorizedDb exp = requireAlias(auth, aliases, "reasoning_experience");
+        AuthorizedDb drv = requireAlias(auth, aliases, "reasoning_derived");
+
+        JsonArray topHeuristics = new JsonArray();
+        JsonArray topInsights = new JsonArray();
+
+        try (Connection conn = connect(Path.of(exp.path))) {
+            if (tableExists(conn, "heuristic_scores")) {
+                try (PreparedStatement ps = conn.prepareStatement(
+                    "select heuristic_key, heuristic_group, score, sample_count, signal from heuristic_scores order by score desc, heuristic_key asc limit 10"
+                ); ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        JsonObject row = new JsonObject();
+                        row.addProperty("heuristicKey", text(rs.getString(1)));
+                        row.addProperty("group", text(rs.getString(2)));
+                        row.addProperty("score", round2(rs.getDouble(3)));
+                        row.addProperty("sampleCount", rs.getInt(4));
+                        row.addProperty("signal", text(rs.getString(5)));
+                        topHeuristics.add(row);
+                    }
+                }
+            }
+        }
+
+        try (Connection conn = connect(Path.of(drv.path))) {
+            if (tableExists(conn, "derived_insights")) {
+                try (PreparedStatement ps = conn.prepareStatement(
+                    "select insight_id, realm, insight_type, statement, support_score from derived_insights order by support_score desc, insight_id asc limit 10"
+                ); ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        JsonObject row = new JsonObject();
+                        row.addProperty("insightId", text(rs.getString(1)));
+                        row.addProperty("realm", text(rs.getString(2)));
+                        row.addProperty("type", text(rs.getString(3)));
+                        row.addProperty("statement", text(rs.getString(4)));
+                        row.addProperty("supportScore", round2(rs.getDouble(5)));
+                        topInsights.add(row);
+                    }
+                }
+            }
+        }
+
+        JsonObject data = new JsonObject();
+        data.add("topHeuristics", topHeuristics);
+        data.add("topInsights", topInsights);
+
+        JsonObject payload = buildScreenPayload("reasoning_drive", request, aliases, data);
+        return new ReportPayload(payload, aliases.toString());
+    }
+
     private static JsonObject buildScreenPayload(String screenId, String request, List<String> aliases, JsonObject data) {
         JsonObject payload = new JsonObject();
         payload.addProperty("schemaVersion", "1");
@@ -707,7 +800,7 @@ public final class PmConsoleMain implements Callable<Integer> {
     private static List<String> resolveAliases(String raw) {
         List<String> parsed = splitCsv(raw);
         if (parsed.isEmpty()) {
-            return List.of("project", "pm_realm", "boilerplate_realm");
+            return List.of("project", "pm_realm", "boilerplate_realm", "reasoning_experience", "reasoning_derived");
         }
         return parsed;
     }
@@ -748,6 +841,8 @@ public final class PmConsoleMain implements Callable<Integer> {
         dbs.add(dbAsJson(new AuthorizedDb("application_realm", "pm/state/application-realm.sqlite", true, true, "Application realm SQL authority")));
         dbs.add(dbAsJson(new AuthorizedDb("pm_realm", "pm/state/pm-realm.sqlite", true, true, "PM realm SQL authority")));
         dbs.add(dbAsJson(new AuthorizedDb("boilerplate_realm", "pm/state/boilerplate-realm.sqlite", true, true, "Boilerplate realm SQL authority")));
+        dbs.add(dbAsJson(new AuthorizedDb("reasoning_experience", "pm/state/reasoning-experience.sqlite", true, true, "Empirical reasoning event database")));
+        dbs.add(dbAsJson(new AuthorizedDb("reasoning_derived", "pm/state/reasoning-derived.sqlite", true, true, "Derived insight database")));
         root.add("databases", dbs);
         Files.writeString(AUTHORIZED_DBS, GSON.toJson(root) + "\n", StandardCharsets.UTF_8);
     }

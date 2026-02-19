@@ -1,0 +1,66 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-19T17:30:23+00:00",
+  "source": "reasoning-sync",
+  "experience": {
+    "db": "/Users/dal/IdeaProjects/afp-converter/pm/state/reasoning-experience.sqlite",
+    "eventCount": 2,
+    "heuristicCount": 3,
+    "topHeuristics": [
+      {
+        "heuristicKey": "evidence_density::application",
+        "group": "evidence_density",
+        "score": 66.25,
+        "sampleCount": 1,
+        "signal": "avg_impact=4.500,avg_evidence=2.000",
+        "updatedAt": "2026-02-19T17:30:23+00:00"
+      },
+      {
+        "heuristicKey": "evidence_density::boilerplate",
+        "group": "evidence_density",
+        "score": 60.0,
+        "sampleCount": 1,
+        "signal": "avg_impact=4.000,avg_evidence=2.000",
+        "updatedAt": "2026-02-19T17:30:23+00:00"
+      },
+      {
+        "heuristicKey": "closure_ratio::global",
+        "group": "closure_ratio",
+        "score": 50.0,
+        "sampleCount": 2,
+        "signal": "positive=1,total=2",
+        "updatedAt": "2026-02-19T17:30:23+00:00"
+      }
+    ]
+  },
+  "derived": {
+    "db": "/Users/dal/IdeaProjects/afp-converter/pm/state/reasoning-derived.sqlite",
+    "insightCount": 2,
+    "topInsights": [
+      {
+        "insightId": "insight::application::1",
+        "realm": "application",
+        "type": "realm_signal",
+        "statement": "Realm 'application' has avg impact 4.50, avg confidence 4.00, open knowledge items 1/1.",
+        "supportScore": 96.25,
+        "sourceRefs": [
+          "experience_events::application",
+          "heuristic_scores::evidence_density"
+        ],
+        "updatedAt": "2026-02-19T17:30:23+00:00"
+      },
+      {
+        "insightId": "insight::boilerplate::2",
+        "realm": "boilerplate",
+        "type": "realm_signal",
+        "statement": "Realm 'boilerplate' has avg impact 4.00, avg confidence 4.50, open knowledge items 0/1.",
+        "supportScore": 95.0,
+        "sourceRefs": [
+          "experience_events::boilerplate",
+          "heuristic_scores::evidence_density"
+        ],
+        "updatedAt": "2026-02-19T17:30:23+00:00"
+      }
+    ]
+  }
+}

@@ -1029,6 +1029,18 @@ tasks.register('knowledgeBaseReport', Exec) {
     }
 }
 
+tasks.register('reasoningDatabases', Exec) {
+    group = 'documentation'
+    description = 'Builds reasoning experience/derived SQLite databases and exports reasoning-drive report.'
+    dependsOn('projectStateDb')
+    commandLine 'python3',
+        'tools/reasoning_sync.py',
+        '--project-db', 'pm/state/project-state.sqlite',
+        '--experience-db', 'pm/state/reasoning-experience.sqlite',
+        '--derived-db', 'pm/state/reasoning-derived.sqlite',
+        '--report', 'pm/reports/reasoning-drive.json'
+}
+
 tasks.register('stateInventoryCsv') {
     group = 'documentation'
     description = 'Exports DB-backed project/boilerplate file inventories with maintenance context.'
@@ -1037,6 +1049,7 @@ tasks.register('stateInventoryCsv') {
     dependsOn('boilerplatePromotionReport')
     dependsOn('decisionPriorityReport')
     dependsOn('knowledgeBaseReport')
+    dependsOn('reasoningDatabases')
 }
 
 tasks.register('boilerplateSyncWorkbook', Exec) {
@@ -1199,8 +1212,11 @@ tasks.register('documentationManifest') {
             file('pm/reports/boilerplate-promotion-status.json'),
             file('pm/reports/decision-priority-queue.json'),
             file('pm/reports/knowledge-base.json'),
+            file('pm/reports/reasoning-drive.json'),
             file('pm/state/project-state.sqlite'),
             file('pm/state/boilerplate-state.sqlite'),
+            file('pm/state/reasoning-experience.sqlite'),
+            file('pm/state/reasoning-derived.sqlite'),
             file('pm/state/application-realm.sqlite'),
             file('pm/state/pm-realm.sqlite'),
             file('pm/state/boilerplate-realm.sqlite'),
@@ -1286,11 +1302,14 @@ tasks.register('publishCiArtifacts') {
             file('pm/reports/boilerplate-promotion-status.json'),
             file('pm/reports/decision-priority-queue.json'),
             file('pm/reports/knowledge-base.json'),
+            file('pm/reports/reasoning-drive.json'),
             file('pm/reports/documentation-manifest.json'),
             file('pm/reports/project-plan-next-step.json'),
             file('pm/reports/workbook-refresh-status.json'),
             file('pm/state/project-state.sqlite'),
             file('pm/state/boilerplate-state.sqlite'),
+            file('pm/state/reasoning-experience.sqlite'),
+            file('pm/state/reasoning-derived.sqlite'),
             file('pm/state/application-realm.sqlite'),
             file('pm/state/pm-realm.sqlite'),
             file('pm/state/boilerplate-realm.sqlite'),

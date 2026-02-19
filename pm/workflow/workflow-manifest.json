@@ -46,6 +46,7 @@
           "policyRulesReport",
           "decisionPriorityReport",
           "knowledgeBaseReport",
+          "reasoningDatabases",
           "stateInventoryCsv",
           "documentationManifest"
         ],

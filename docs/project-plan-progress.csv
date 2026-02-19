@@ -32,3 +32,4 @@ Workstream G,seed initial decisions for active workstreams with smallest-change-
 Workstream G,stand up SQL knowledge base for reasoning outcomes and artifact context,High,In Progress,70,2026-02-19,"Added project-state knowledge tables and commands for entries/evidence/decision links."
 Workstream G,publish knowledge-base report in PM refresh cycle,High,In Progress,60,2026-02-19,"Added knowledgeBaseReport task and workflow wiring; now needs broader seeding coverage."
 Workstream G,refactor PM console to granular refresh and exchange-format report generation,High,In Progress,65,2026-02-19,"Added intent-style report command, screen payload format, DB allowlist auth, and granular refresh options."
+Workstream G,stand up dedicated experience/derived reasoning databases and feed default PM cycle,High,In Progress,70,2026-02-19,"Added reasoning sync pipeline, dual reasoning DBs, and reasoning-drive report with workflow integration."

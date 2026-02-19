@@ -299,6 +299,7 @@ Intent-style report output:
 
 ```bash
 pm-console/build/install/pmconsole/bin/pmconsole report --request "current workstream status"
+pm-console/build/install/pmconsole/bin/pmconsole report --request "reasoning drive"
 ```
 
 JSON payload output (exchange format `pm-console-screen@1`):
@@ -322,6 +323,12 @@ Authorized DB aliases:
 ```bash
 pm-console/build/install/pmconsole/bin/pmconsole db --list
 ```
+
+Reasoning databases and report are rebuilt in PM refresh:
+
+- `pm/state/reasoning-experience.sqlite`
+- `pm/state/reasoning-derived.sqlite`
+- `pm/reports/reasoning-drive.json`
 
 ### CI Quick Check
 

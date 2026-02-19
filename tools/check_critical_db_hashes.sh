@@ -10,6 +10,8 @@ critical=(
   "pm/state/boilerplate-realm.sqlite"
   "pm/state/project-state.sqlite"
   "pm/state/boilerplate-state.sqlite"
+  "pm/state/reasoning-experience.sqlite"
+  "pm/state/reasoning-derived.sqlite"
 )
 
 write_baseline() {

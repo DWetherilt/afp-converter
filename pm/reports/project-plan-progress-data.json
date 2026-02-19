@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T16:59:07Z",
+  "generatedAt": "2026-02-19T17:30:24Z",
   "source": "sqlite",
-  "taskCount": 32,
+  "taskCount": 34,
   "tasks": [
     {
       "workstream": "Workstream A",
@@ -291,12 +291,30 @@
       "percent_complete": "60",
       "last_updated": "2026-02-19",
       "notes": "Added knowledgeBaseReport task and workflow wiring; now needs broader seeding coverage."
+    },
+    {
+      "workstream": "Workstream G",
+      "task": "refactor PM console to granular refresh and exchange-format report generation",
+      "priority": "High",
+      "status": "In Progress",
+      "percent_complete": "65",
+      "last_updated": "2026-02-19",
+      "notes": "Added intent-style report command, screen payload format, DB allowlist auth, and granular refresh options."
+    },
+    {
+      "workstream": "Workstream G",
+      "task": "stand up dedicated experience/derived reasoning databases and feed default PM cycle",
+      "priority": "High",
+      "status": "In Progress",
+      "percent_complete": "70",
+      "last_updated": "2026-02-19",
+      "notes": "Added reasoning sync pipeline, dual reasoning DBs, and reasoning-drive report with workflow integration."
     }
   ],
   "followUps": [
     {
-      "id": "restored-workbook-content-review",
       "note": "Circle back and review restored workbook content against JSON/CSV sources.",
+      "id": "restored-workbook-content-review",
       "status": "pending"
     }
   ]

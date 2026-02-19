@@ -37,6 +37,20 @@
       "enabled": true,
       "readOnly": true,
       "description": "Boilerplate realm SQL authority"
+    },
+    {
+      "alias": "reasoning_experience",
+      "path": "pm/state/reasoning-experience.sqlite",
+      "enabled": true,
+      "readOnly": true,
+      "description": "Empirical reasoning event database"
+    },
+    {
+      "alias": "reasoning_derived",
+      "path": "pm/state/reasoning-derived.sqlite",
+      "enabled": true,
+      "readOnly": true,
+      "description": "Derived knowledge/insight database"
     }
   ]
 }
