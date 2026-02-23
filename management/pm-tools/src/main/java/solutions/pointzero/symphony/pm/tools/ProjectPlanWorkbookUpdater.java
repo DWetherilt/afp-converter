@@ -5,11 +5,13 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.apache.poi.ooxml.POIXMLProperties;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.xmlbeans.XmlCursor;
 import org.openxmlformats.schemas.officeDocument.x2006.docPropsVTypes.CTVector;
 import org.openxmlformats.schemas.officeDocument.x2006.docPropsVTypes.CTVariant;
 import org.openxmlformats.schemas.officeDocument.x2006.extendedProperties.CTProperties;
@@ -35,6 +37,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+import javax.xml.namespace.QName;
 
 public final class ProjectPlanWorkbookUpdater {
 
@@ -57,14 +60,16 @@ public final class ProjectPlanWorkbookUpdater {
 
         List<Map<String, String>> rows = readCsv(csvPath);
         prepareWorkbookPath(xlsxPath, templatePath);
+        List<String[]> existingHistory = readHistoryRows(xlsxPath);
 
-        try (Workbook workbook = openWorkbook(xlsxPath)) {
+        try (Workbook workbook = new XSSFWorkbook()) {
             Sheet current = ensureSheet(workbook, SHEET_CURRENT);
             Sheet history = ensureSheet(workbook, SHEET_HISTORY);
             Sheet trend = ensureSheet(workbook, SHEET_TREND);
             Sheet graph = ensureSheet(workbook, SHEET_GRAPH);
 
             updateCurrent(current, rows);
+            seedHistory(history, existingHistory);
             appendStatusHistory(history, rows);
             rebuildTrend(trend, history);
             rebuildGraph(graph, trend);
@@ -74,6 +79,37 @@ public final class ProjectPlanWorkbookUpdater {
                 workbook.write(os);
             }
         }
+    }
+
+    private static List<String[]> readHistoryRows(Path xlsxPath) throws IOException {
+        List<String[]> rows = new ArrayList<>();
+        if (!Files.exists(xlsxPath)) {
+            return rows;
+        }
+        try (Workbook workbook = openWorkbook(xlsxPath)) {
+            Sheet history = workbook.getSheet(SHEET_HISTORY);
+            if (history == null) {
+                return rows;
+            }
+            for (int r = 1; r <= history.getLastRowNum(); r++) {
+                Row row = history.getRow(r);
+                if (row == null) {
+                    continue;
+                }
+                String[] values = new String[11];
+                boolean hasContent = false;
+                for (int c = 0; c < values.length; c++) {
+                    values[c] = getCell(row, c).trim();
+                    if (!values[c].isEmpty()) {
+                        hasContent = true;
+                    }
+                }
+                if (hasContent) {
+                    rows.add(values);
+                }
+            }
+        }
+        return rows;
     }
 
     private static Map<String, String> parseArgs(String[] args) {
@@ -190,11 +226,18 @@ public final class ProjectPlanWorkbookUpdater {
     }
 
     private static void setCell(Row row, int idx, String value) {
+        String normalized = value == null ? "" : value;
         Cell c = row.getCell(idx);
         if (c == null) {
             c = row.createCell(idx);
+            c.setCellValue(normalized);
+            return;
         }
-        c.setCellValue(value == null ? "" : value);
+        if (c.getCellType() == CellType.STRING
+            && normalized.equals(c.getStringCellValue())) {
+            return;
+        }
+        c.setCellValue(normalized);
     }
 
     private static String getCell(Row row, int idx) {
@@ -258,7 +301,21 @@ public final class ProjectPlanWorkbookUpdater {
         };
         Row hr = history.getRow(0);
         for (int i = 0; i < headers.length; i++) {
-            setCell(hr, i, headers[i]);
+            Cell c = hr.getCell(i);
+            if (c == null || getCell(hr, i).trim().isEmpty()) {
+                setCell(hr, i, headers[i]);
+            }
+        }
+    }
+
+    private static void seedHistory(Sheet history, List<String[]> existingRows) {
+        ensureHistoryHeader(history);
+        int outRow = 1;
+        for (String[] values : existingRows) {
+            Row row = history.createRow(outRow++);
+            for (int i = 0; i < values.length; i++) {
+                setCell(row, i, values[i]);
+            }
         }
     }
 
@@ -510,6 +567,7 @@ public final class ProjectPlanWorkbookUpdater {
         while (headingVector.sizeOfVariantArray() > 0) {
             headingVector.removeVariant(0);
         }
+        setVectorBaseType(headingVector, "variant");
         headingVector.setSize(2);
 
         CTVariant v1 = headingVector.addNewVariant();
@@ -524,9 +582,16 @@ public final class ProjectPlanWorkbookUpdater {
         while (titles.sizeOfLpstrArray() > 0) {
             titles.removeLpstr(0);
         }
+        setVectorBaseType(titles, "lpstr");
         for (String name : sheetNames) {
             titles.addLpstr(name);
         }
         titles.setSize(sheetNames.size());
+    }
+
+    private static void setVectorBaseType(CTVector vector, String baseTypeValue) {
+        try (XmlCursor cursor = vector.newCursor()) {
+            cursor.setAttributeText(new QName("baseType"), baseTypeValue);
+        }
     }
 }
