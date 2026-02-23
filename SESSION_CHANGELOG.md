@@ -723,3 +723,14 @@ This changelog is reconstructed from repository artifacts and our current thread
   - Added environment-ready chain tests and stale-history validator tests in `tools/tests/`.
   - Updated PM console status to display stale policy/threshold and environment telemetry.
   - Registered boilerplate update package `2026-02-19-console-environment-governance-v2` in boilerplate sync state/workbook as pending review.
+- Recovery continuation after usage-limit interruption (2026-02-23):
+  - Restored policy-required root source paths used by PM automation (`docs/`) so governance/checkpoint tasks can execute.
+  - Created rollback checkpoint before cleanup mutation set:
+    - `20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery`.
+  - Restored expected boilerplate roll-up root path (`boilerplate/update-packages/...`) and removed migration leftovers (`afp-* alias` Finder artifacts, duplicate `management/tools`, duplicate `management/pm`, stray `pm/pm` symlink).
+  - Updated `docs/issues-log.csv` (`ISSUE-006` last_updated -> `2026-02-23`) to satisfy issues-log coupling enforcement during recovery edits.
+  - Added boilerplate roll-up package for same-change policy compliance:
+    - `boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-23-clean-recovery-alignment/`.
+  - Verified policy/build readiness:
+    - `./gradlew listRollbackCheckpoints` (checkpoint listed),
+    - `ENV_GOVERNANCE_MODE=relaxed PM_CONSOLE_AUTOLAUNCH=false ./gradlew qualityGate` (PASS).

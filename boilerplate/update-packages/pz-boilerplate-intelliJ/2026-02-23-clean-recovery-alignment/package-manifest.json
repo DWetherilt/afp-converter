@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1",
+  "packageId": "2026-02-23-clean-recovery-alignment",
+  "title": "Clean Recovery Alignment",
+  "summary": "Recovery-cycle package to preserve policy/build/governance alignment after interrupted realm migration and clean-state restoration.",
+  "createdAt": "2026-02-23T17:36:00Z",
+  "sourceRepo": "afp-converter",
+  "applyOrder": [
+    "AI-POLICY.md",
+    "build.gradle",
+    "settings.gradle",
+    "docs/issues-log.csv",
+    "pm/workflow/workflow-manifest.json",
+    "pm/policy/policy-rule-tables.sql"
+  ],
+  "notes": [
+    "Use this package as the governance mirror for recovery-driven framework/process edits.",
+    "Keep this package pending review until migration finalization is committed and validated."
+  ]
+}
