@@ -1,1 +1,0 @@
-Promote package `2026-02-19-pm-live-actions-governance-automation` into the boilerplate repo. Preserve SQL-first realm boundaries and ensure default execution always keeps persistent PM live console checks active.

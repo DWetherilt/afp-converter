@@ -43,4 +43,4 @@ body:
     id: artifacts
     attributes:
       label: Relevant artifacts/logs
-      description: Link files from preview/ and docs/issues-log.csv entries where relevant.
+      description: Link files from product/afp-converter/preview/ and management/docs/issues-log.csv entries where relevant.

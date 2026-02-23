@@ -1,0 +1,12 @@
+{
+  "schemaVersion": "1",
+  "description": "Canonical resolver contract for critical PM/core state paths.",
+  "paths": {
+    "projectStateDb": "management/pm/state/project-state.sqlite",
+    "boilerplateStateDb": "management/pm/state/boilerplate-state.sqlite",
+    "applicationRealmDb": "management/pm/state/application-realm.sqlite",
+    "pmRealmDb": "management/pm/state/pm-realm.sqlite",
+    "boilerplateRealmDb": "management/pm/state/boilerplate-realm.sqlite",
+    "coreRealmDb": "management/pm/state/core-realm.sqlite"
+  }
+}

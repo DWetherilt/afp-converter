@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-23T22:26:31Z",
+  "csvPath": "management/docs/project-plan-progress.csv",
+  "enforce": true,
+  "autofixMissingNotCommitted": false,
+  "completedCount": 44,
+  "committedCount": 0,
+  "notCommittedCount": 44,
+  "missingCount": 0,
+  "fixedCount": 0,
+  "missingRows": [],
+  "status": "PASS",
+  "rule": "Completed rows must include [github:committed] or [github:not-committed]."
+}

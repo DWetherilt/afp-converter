@@ -10,11 +10,11 @@
 
 ## Recovery Evidence
 
-- [ ] `tools/recovery_quick_check.sh` PASS
-- [ ] `tools/recovery_doctor.sh` PASS (if full recovery path was touched)
-- [ ] `tools/realm_drift_verify.sh` PASS
-- [ ] `tools/check_critical_db_hashes.sh check` PASS
-- [ ] `pm/reports/sql-drift-summary.json` updated
+- [ ] `management/tools/recovery_quick_check.sh` PASS
+- [ ] `management/tools/recovery_doctor.sh` PASS (if full recovery path was touched)
+- [ ] `management/tools/realm_drift_verify.sh` PASS
+- [ ] `management/tools/check_critical_db_hashes.sh check` PASS
+- [ ] `management/pm/reports/sql-drift-summary.json` updated
 
 ## SQL Authority
 
@@ -29,4 +29,4 @@
 ## Boilerplate Promotion
 
 - [ ] Boilerplate package created/updated when framework/process changes are present
-- [ ] Package validated (`tools/validate_boilerplate_package.sh <id>`)
+- [ ] Package validated (`management/tools/validate_boilerplate_package.sh <id>`)

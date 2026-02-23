@@ -1,0 +1,71 @@
+{
+  "schemaVersion": "1",
+  "description": "SQL-first realm-managed source roots and endpoints.",
+  "realms": {
+    "application": {
+      "database": "management/pm/state/application-realm.sqlite",
+      "repositoryUrl": "https://github.com/pointzerosolutions/afp-converter",
+      "roots": [
+        "product/afp-converter/afp-api/src",
+        "product/afp-converter/afp-engine/src",
+        "product/afp-converter/afp-cli/src",
+        "product/afp-converter/afp-api/build.gradle",
+        "product/afp-converter/afp-engine/build.gradle",
+        "product/afp-converter/afp-cli/build.gradle",
+        "product/afp-converter/preview/fidelity-report.json",
+        "product/afp-converter/sampleOutput/sample.html"
+      ]
+    },
+    "pm": {
+      "database": "management/pm/state/pm-realm.sqlite",
+      "roots": [
+        "management/pm/policy",
+        "management/pm/security",
+        "management/pm/workflow",
+        "management/pm-management/tools/src/main/java",
+        "management/pm-management/tools/src/test/java",
+        "management/pm-console/src/main/java",
+        "tools",
+        "build.gradle",
+        "settings.gradle",
+        "management/pm-management/tools/build.gradle",
+        "management/pm-console/build.gradle",
+        "gradle/wrapper/gradle-wrapper.properties",
+        "gradlew",
+        "gradlew.bat",
+        ".github/CODEOWNERS",
+        ".github/pull_request_template.md",
+        ".github/ISSUE_TEMPLATE/bug_report.yml",
+        ".github/ISSUE_TEMPLATE/config.yml",
+        ".github/ISSUE_TEMPLATE/feature_request.yml",
+        ".github/workflows/ci.yml",
+        ".gitignore",
+        "AI-POLICY.md",
+        "README.md",
+        "SESSION_CHANGELOG.md",
+        "VERSION",
+        "management/docs/API.md",
+        "management/docs/SQL_FIRST_WORKFLOW.md",
+        "management/docs/NEW_MACHINE_BOOTSTRAP.md",
+        "management/docs/CORE_DERIVATIVE_MODEL.md",
+        "management/docs/fidelity-corpus.txt",
+        "management/docs/issues-log-template.csv",
+        "management/docs/issues-log.csv",
+        "management/docs/policy-governance-events.csv",
+        "management/docs/project-plan-progress.csv",
+        "management/docs/project-plan.md",
+        "management/docs/update-packages/README.md"
+      ]
+    },
+    "boilerplate": {
+      "database": "management/pm/state/boilerplate-realm.sqlite",
+      "repositoryUrl": "https://github.com/pointzerosolutions/pz-boilerplate-intelliJ",
+      "inheritsFromCore": "pzAiCore",
+      "inheritsViaProject": "afp-converter",
+      "roots": [
+        "product/boilerplate/update-packages/README.md",
+        "product/boilerplate/update-packages/pz-boilerplate-intelliJ"
+      ]
+    }
+  }
+}

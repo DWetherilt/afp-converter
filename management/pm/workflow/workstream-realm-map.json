@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1",
+  "description": "Canonical mapping of workstream UIDs to internal project realms for per-realm project-plan reporting.",
+  "realms": {
+    "application": {
+      "workstreamUids": [
+        "WS-A",
+        "WS-B",
+        "WS-C",
+        "WS-D",
+        "WS-F"
+      ]
+    },
+    "pm": {
+      "workstreamUids": [
+        "WS-E",
+        "WS-G",
+        "WS-H",
+        "WS-I",
+        "WS-J"
+      ]
+    },
+    "boilerplate": {
+      "workstreamUids": [
+        "WS-E",
+        "WS-G",
+        "WS-H",
+        "WS-J"
+      ]
+    }
+  }
+}

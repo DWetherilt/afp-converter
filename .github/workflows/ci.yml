@@ -32,19 +32,19 @@ jobs:
           python-version: "3.x"
       - name: Validate boilerplate packages
         run: |
-          for dir in boilerplate/update-packages/pz-boilerplate-intelliJ/*; do
+          for dir in product/boilerplate/update-packages/pz-boilerplate-intelliJ/*; do
             [ -d "$dir" ] || continue
-            tools/validate_boilerplate_package.sh "$dir"
+            management/tools/validate_boilerplate_package.sh "$dir"
           done
       - name: Validate boilerplate package checksums
         run: |
-          base="boilerplate/update-packages/pz-boilerplate-intelliJ"
+          base="product/boilerplate/update-packages/pz-boilerplate-intelliJ"
           for sumfile in "$base"/*.zip.sha256; do
             [ -f "$sumfile" ] || continue
             (cd "$base" && sha256sum -c "$(basename "$sumfile")")
           done
       - name: Recovery quick check
-        run: tools/recovery_quick_check.sh
+        run: management/tools/recovery_quick_check.sh
       - name: Production build
         run: ./gradlew --no-daemon prodBuild
       - name: Environment health schema check
@@ -61,15 +61,15 @@ jobs:
         with:
           name: recovery-artifacts
           path: |
-            pm/reports/sql-drift-summary.json
-            pm/reports/project-plan-progress-data.json
-            pm/reports/issues-log-tickle.json
-            pm/reports/issues-effectiveness.json
-            pm/reports/environment-health.json
-            pm/reports/pm-console-stale-cleanup.json
-            pm/reports/recovery-status.json
-            pm/state/critical-db-sha256.txt
-            pm/state/pm-console-stale-history.json
+            management/pm/reports/sql-drift-summary.json
+            management/pm/reports/project-plan-progress-data.json
+            management/pm/reports/issues-log-tickle.json
+            management/pm/reports/issues-effectiveness.json
+            management/pm/reports/environment-health.json
+            management/pm/reports/pm-console-stale-cleanup.json
+            management/pm/reports/recovery-status.json
+            management/pm/state/critical-db-sha256.txt
+            management/pm/state/pm-console-stale-history.json
 
   remanifest-drill:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
@@ -95,5 +95,5 @@ jobs:
         with:
           name: remanifest-drill-artifacts
           path: |
-            pm/reports/remanifest-drill.json
-            pm/state/managed-delete-manifest.txt
+            management/pm/reports/remanifest-drill.json
+            management/pm/state/managed-delete-manifest.txt

@@ -1,0 +1,20 @@
+# Binary artifact policy (SQL-first realms)
+#
+# Principle:
+# - Text/code assets are SQL-managed in realm databases.
+# - Binary assets are not inserted into code_file_content.
+# - Binaries must be restored from Git, build outputs, or external canonical source.
+#
+# Build bootstrap binary (must exist for Gradle wrapper bootstrap)
+gradle/wrapper/gradle-wrapper.jar|source=git|required=true
+# Office workbook artifacts (user-managed and/or generated)
+management/docs/project-plan-progress.xlsx|source=user_or_generator|required=conditional
+management/docs/policy-governance-events.xlsx|source=user_or_generator|required=conditional
+management/docs/boilerplate-sync-candidates.xlsx|source=user_or_generator|required=conditional
+# Reference/output artifacts
+product/afp-converter/preview/afp-output.pdf|source=generated|required=false
+product/afp-converter/preview/ibm-output.pdf|source=reference|required=conditional
+product/afp-converter/sampleOutput/sample.pdf|source=reference|required=conditional
+product/afp-converter/sampleOutput/image-heavy.pdf|source=reference|required=conditional
+product/afp-converter/sampleData/sample.afp|source=reference|required=conditional
+product/afp-converter/sampleData/image-heavy.afp|source=reference|required=conditional

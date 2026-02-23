@@ -1,0 +1,19 @@
+.DS_Store
+
+# Local IDE and Gradle caches.
+.idea/
+.gradle/
+.tmp/
+**/build/
+
+# Runtime SQLite sidecar files (databases themselves remain tracked by policy).
+*.sqlite-wal
+*.sqlite-shm
+management/pm/state/pmconsole-live.log
+management/pm/state/pmconsole-live.pid
+management/pm/checkpoints/
+
+# Transient local authenticity staging artifacts.
+policy/authenticity/REMOVE_ME_*
+policy/authenticity/*.reencrypted-*.json.enc
+policy/authenticity/*.reencrypted-*.json.enc.meta.json
