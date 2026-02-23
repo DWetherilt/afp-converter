@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0",
+  "artifacts": [
+    {
+      "issuedAtUtc": "2026-02-20T01:31:31Z",
+      "artifact": "policy/authenticity/lead-developer-mission-token-20260220T013131Z.reencrypted-20260223T213136Z.json.enc",
+      "purpose": "Lead Developer authenticity + full-session brain dump",
+      "metadata": "policy/authenticity/lead-developer-mission-token-20260220T013131Z.reencrypted-20260223T213136Z.json.enc.meta.json",
+      "encryption": "aes-256-cbc+pbkdf2",
+      "tokenRefHash": "sha256:001e0597cc2b89d89def89e12a08d572423c71e3c2f639c452a932c8f23c0a61"
+    }
+  ]
+}
