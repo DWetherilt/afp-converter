@@ -1,20 +1,15 @@
 .gradle/9.0.0/checksums/checksums.lock
-.gradle/9.0.0/fileHashes/fileHashes.bin
 .gradle/9.0.0/fileHashes/fileHashes.lock
 .gradle/buildOutputCleanup/buildOutputCleanup.lock
-.idea/workspace.xml
-README.md
-build.gradle
-build/reports/problems/problems-report.html
-management/docs/boilerplate-sync-candidates.xlsx
 management/docs/issues-log.csv
+management/docs/project-plan-progress.csv
+management/docs/project-plan-progress.xlsx
 management/docs/project-plan.md
 management/pm/reports/action-decision-suggestions.json
 management/pm/reports/action-items.json
 management/pm/reports/action-owner-summary.json
 management/pm/reports/action-sla-trend.json
 management/pm/reports/application-realm-policy.json
-management/pm/reports/boilerplate-package-files-with-context.csv
 management/pm/reports/boilerplate-promotion-status.json
 management/pm/reports/boilerplate-realm-policy.json
 management/pm/reports/cross-realm-action-token-search.json
@@ -22,7 +17,6 @@ management/pm/reports/cross-realm-token-search.json
 management/pm/reports/data-dictionary-lint.json
 management/pm/reports/data-dictionary.json
 management/pm/reports/decision-priority-queue.json
-management/pm/reports/documentation-manifest.json
 management/pm/reports/environment-health.json
 management/pm/reports/governance-alerts.json
 management/pm/reports/hardcoded-critical-path-gate.json
@@ -46,8 +40,6 @@ management/pm/reports/realm-policy-diff.json
 management/pm/reports/realm-policy-sync.json
 management/pm/reports/reasoning-drive.json
 management/pm/reports/repo-file-inventory-with-context.csv
-management/pm/reports/slice-manifests/slice-management-paths.txt
-management/pm/reports/slice-manifests/slice-product-paths.txt
 management/pm/reports/sql-authority-application.json
 management/pm/reports/sql-authority-boilerplate.json
 management/pm/reports/sql-authority-pm.json
@@ -58,7 +50,6 @@ management/pm/reports/tool-argument-compliance.json
 management/pm/reports/topology-structure-drift.json
 management/pm/reports/version-control-ledger.json
 management/pm/reports/version.json
-management/pm/reports/workstream-j-slice-evidence.json
 management/pm/reports/workstream-knowledge-sync.json
 management/pm/reports/workstream-presentation-index.json
 management/pm/state/action-sla-history.json
@@ -72,5 +63,4 @@ management/pm/state/project-state.sqlite
 management/pm/state/realm-policy-snapshot.json
 management/pm/state/reasoning-derived.sqlite
 management/pm/state/reasoning-experience.sqlite
-management/tools/tests/test_workstream_presentation_index.py
-management/tools/workstream_presentation_index.py
+management/pm/workflow/workstream-realm-map.json

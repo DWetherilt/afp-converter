@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T22:57:17Z",
+  "generatedAt": "2026-02-23T23:01:21Z",
   "source": "sqlite",
   "realm": "application",
   "realmMapPath": "management/pm/workflow/workstream-realm-map.json",
@@ -9,9 +9,10 @@
     "WS-B",
     "WS-C",
     "WS-D",
-    "WS-F"
+    "WS-F",
+    "WS-2026-001"
   ],
-  "taskCount": 18,
+  "taskCount": 21,
   "filteredCompletedCommittedCount": 8,
   "completedCommittedRule": "Rows with status=complete/completed/done and notes marker '[github:committed]' are excluded.",
   "tasks": [
@@ -230,6 +231,42 @@
       "percent_complete": "100",
       "last_updated": "2026-02-20",
       "notes": "Extended PTX alias normalization and image evidence diagnostics, filtered non-raster BIM payloads, switched to deterministic matching, surfaced token+payload binding evidence (sample shows JPEG candidate payload with zero BIM token overlap), implemented evidence-driven resource-first image selection with dedicated image-resolution policy service, and added confidence-aware embedded-resource matching (token/sequence/size heuristics) with strict per-object fallback behavior. Closed in single-pass closeout after full qualityGate/documentationManifest validation and cross-realm sync. [github:not-committed]"
+    },
+    {
+      "workstream_uid": "WS-2026-001",
+      "workstream_label": "Renderer Continuation 2026-02-23",
+      "workstream_priority_rank": "11",
+      "workstream": "Renderer Continuation 2026-02-23",
+      "task": "Implement structured-field scope graph baseline for renderer continuation",
+      "priority": "High",
+      "status": "In Progress",
+      "percent_complete": "15",
+      "last_updated": "2026-02-23",
+      "notes": "New active internal workstream formalized with unique UID; presentation alias should appear as Workstream A."
+    },
+    {
+      "workstream_uid": "WS-2026-001",
+      "workstream_label": "Renderer Continuation 2026-02-23",
+      "workstream_priority_rank": "11",
+      "workstream": "Renderer Continuation 2026-02-23",
+      "task": "Add deterministic paint-order assertions for overlay/text/image interleave cases",
+      "priority": "High",
+      "status": "Not Started",
+      "percent_complete": "0",
+      "last_updated": "2026-02-23",
+      "notes": "Pending implementation after scope graph baseline."
+    },
+    {
+      "workstream_uid": "WS-2026-001",
+      "workstream_label": "Renderer Continuation 2026-02-23",
+      "workstream_priority_rank": "11",
+      "workstream": "Renderer Continuation 2026-02-23",
+      "task": "Publish updated fidelity diagnostics and next-step deltas for continuation slice",
+      "priority": "Medium",
+      "status": "Not Started",
+      "percent_complete": "0",
+      "last_updated": "2026-02-23",
+      "notes": "Planned closeout task for first continuation slice."
     }
   ]
 }

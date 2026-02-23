@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T22:57:23+00:00",
+  "generatedAt": "2026-02-23T23:01:37+00:00",
   "source": "reasoning-sync",
   "experience": {
     "db": "/Users/dal/IdeaProjects/pzAiCore/management/pm/state/reasoning-experience.sqlite",
@@ -14,7 +14,7 @@
         "score": 77.778,
         "sampleCount": 9,
         "signal": "positive=7,total=9",
-        "updatedAt": "2026-02-23T22:57:23+00:00"
+        "updatedAt": "2026-02-23T23:01:37+00:00"
       },
       {
         "heuristicKey": "evidence_density::application",
@@ -22,7 +22,7 @@
         "score": 66.25,
         "sampleCount": 1,
         "signal": "avg_impact=4.500,avg_evidence=2.000",
-        "updatedAt": "2026-02-23T22:57:23+00:00"
+        "updatedAt": "2026-02-23T23:01:37+00:00"
       },
       {
         "heuristicKey": "evidence_density::pm",
@@ -30,7 +30,7 @@
         "score": 64.583,
         "sampleCount": 6,
         "signal": "avg_impact=4.433,avg_evidence=1.833",
-        "updatedAt": "2026-02-23T22:57:23+00:00"
+        "updatedAt": "2026-02-23T23:01:37+00:00"
       },
       {
         "heuristicKey": "evidence_density::boilerplate",
@@ -38,7 +38,7 @@
         "score": 60.0,
         "sampleCount": 1,
         "signal": "avg_impact=4.000,avg_evidence=2.000",
-        "updatedAt": "2026-02-23T22:57:23+00:00"
+        "updatedAt": "2026-02-23T23:01:37+00:00"
       },
       {
         "heuristicKey": "evidence_density::policy",
@@ -46,7 +46,7 @@
         "score": 16.875,
         "sampleCount": 1,
         "signal": "avg_impact=0.950,avg_evidence=1.000",
-        "updatedAt": "2026-02-23T22:57:23+00:00"
+        "updatedAt": "2026-02-23T23:01:37+00:00"
       }
     ]
   },
@@ -64,7 +64,7 @@
           "experience_events::pm",
           "heuristic_scores::evidence_density"
         ],
-        "updatedAt": "2026-02-23T22:57:23+00:00"
+        "updatedAt": "2026-02-23T23:01:37+00:00"
       },
       {
         "insightId": "insight::application::1",
@@ -76,7 +76,7 @@
           "experience_events::application",
           "heuristic_scores::evidence_density"
         ],
-        "updatedAt": "2026-02-23T22:57:23+00:00"
+        "updatedAt": "2026-02-23T23:01:37+00:00"
       },
       {
         "insightId": "insight::boilerplate::3",
@@ -88,7 +88,7 @@
           "experience_events::boilerplate",
           "heuristic_scores::evidence_density"
         ],
-        "updatedAt": "2026-02-23T22:57:23+00:00"
+        "updatedAt": "2026-02-23T23:01:37+00:00"
       },
       {
         "insightId": "insight::policy::4",
@@ -100,7 +100,7 @@
           "experience_events::policy",
           "heuristic_scores::evidence_density"
         ],
-        "updatedAt": "2026-02-23T22:57:23+00:00"
+        "updatedAt": "2026-02-23T23:01:37+00:00"
       }
     ]
   }

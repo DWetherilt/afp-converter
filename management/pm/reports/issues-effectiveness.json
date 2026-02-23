@@ -1,14 +1,14 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T22:57:15Z",
+  "generatedAt": "2026-02-23T23:01:29Z",
   "summary": {
-    "requiresIssuesLogUpdate": false,
-    "taskCount": 45,
-    "triggeredIssueCount": 5,
     "highSeverityOpenCount": 4,
     "openIssueCount": 7,
-    "averageTaskPercentComplete": 100.0,
-    "issueCount": 7
+    "averageTaskPercentComplete": 94.06,
+    "issueCount": 7,
+    "requiresIssuesLogUpdate": false,
+    "taskCount": 48,
+    "triggeredIssueCount": 4
   },
   "fidelity": {
     "fidelityScore": 0.952575,
@@ -27,16 +27,8 @@
       "status": "Open",
       "title": "Excel automation and workbook update fragility due Office account/licensing context",
       "matchedComponents": [
-        "build.gradle",
+        "management/docs/project-plan-progress.csv",
         "management/pm/reports/project-plan-progress-data.json"
-      ]
-    },
-    {
-      "id": "ISSUE-003",
-      "status": "Open",
-      "title": "Excel automation unavailable in headless/agent context (Apple event connection invalid), strict Excel-required mode fails as designed",
-      "matchedComponents": [
-        "build.gradle"
       ]
     },
     {
@@ -44,10 +36,6 @@
       "status": "Open",
       "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
       "matchedComponents": [
-        "AI-POLICY.md",
-        "README.md",
-        "build.gradle",
-        "management/docs/boilerplate-sync-candidates.xlsx",
         "management/pm/state/boilerplate-state.sqlite",
         "management/pm/state/project-state.sqlite"
       ]
@@ -57,16 +45,9 @@
       "status": "Open",
       "title": "Policy-governance sequence drift when updating constitutional/policy text without full checklist sequencing",
       "matchedComponents": [
-        "AI-POLICY.md",
-        "README.md",
-        "build.gradle",
         "management/docs/issues-log.csv",
-        "management/pm/reports/documentation-manifest.json",
         "management/pm/reports/governance-alerts.json",
-        "management/pm/reports/version-control-ledger.json",
-        "management/pm/state/project-state.sqlite",
-        "management/tools/tests/test_workstream_presentation_index.py",
-        "management/tools/workstream_presentation_index.py"
+        "management/pm/state/project-state.sqlite"
       ]
     },
     {
@@ -74,10 +55,7 @@
       "status": "Open",
       "title": "Environment readiness drift: daemon-only checks missed visible console verification",
       "matchedComponents": [
-        "AI-POLICY.md",
-        "build.gradle",
         "management/pm/reports/environment-health.json",
-        "management/pm/reports/pm-console-stale-cleanup.json",
         "management/pm/state/project-state.sqlite"
       ]
     }
