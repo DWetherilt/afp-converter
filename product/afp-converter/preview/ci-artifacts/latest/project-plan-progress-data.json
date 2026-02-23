@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:01:21Z",
+  "generatedAt": "2026-02-23T23:07:33Z",
   "source": "sqlite",
-  "taskCount": 40,
-  "filteredCompletedCommittedCount": 8,
+  "taskCount": 39,
+  "filteredCompletedCommittedCount": 9,
   "completedCommittedRule": "Rows with status=complete/completed/done and notes marker '[github:committed]' are excluded.",
   "tasks": [
     {
@@ -455,24 +455,12 @@
       "workstream_label": "Renderer Continuation 2026-02-23",
       "workstream_priority_rank": "11",
       "workstream": "Renderer Continuation 2026-02-23",
-      "task": "Implement structured-field scope graph baseline for renderer continuation",
-      "priority": "High",
-      "status": "In Progress",
-      "percent_complete": "15",
-      "last_updated": "2026-02-23",
-      "notes": "New active internal workstream formalized with unique UID; presentation alias should appear as Workstream A."
-    },
-    {
-      "workstream_uid": "WS-2026-001",
-      "workstream_label": "Renderer Continuation 2026-02-23",
-      "workstream_priority_rank": "11",
-      "workstream": "Renderer Continuation 2026-02-23",
       "task": "Add deterministic paint-order assertions for overlay/text/image interleave cases",
       "priority": "High",
-      "status": "Not Started",
-      "percent_complete": "0",
+      "status": "In Progress",
+      "percent_complete": "20",
       "last_updated": "2026-02-23",
-      "notes": "Pending implementation after scope graph baseline."
+      "notes": "Activated next slice after scope graph baseline completion; implementing targeted ordering assertions."
     },
     {
       "workstream_uid": "WS-2026-001",

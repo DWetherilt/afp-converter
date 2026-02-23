@@ -55,6 +55,33 @@ class AfpInterpreterTest {
         assertTrue(interpretation.semantics().codePageResolutionSource().contains("mixed-run"), "expected mixed-run source annotation");
     }
 
+    @Test
+    void recordsScopeGraphWarningsAndSummary() {
+        byte[] afp = concat(
+            sf("D3A9CE", new byte[0]), // EMO underflow
+            sf("D3A8D9", new byte[0]), // BRS
+            sf("D3A8CE", new byte[0]), // BMO
+            sf("D3A8AF", new byte[0]), // BPG
+            sf("D3A9AF", new byte[0]), // EPG
+            sf("D3A9CE", new byte[0])  // EMO (closes overlay)
+            // missing ERS leaves resource scope unclosed
+        );
+        AfpInterpretation interpretation = new AfpInterpreter().interpret(afp, "scope-graph.afp");
+
+        assertTrue(
+            interpretation.warnings().stream().anyMatch(s -> s.contains("overlay scope underflow")),
+            "expected overlay underflow warning"
+        );
+        assertTrue(
+            interpretation.warnings().stream().anyMatch(s -> s.contains("unclosed resource scope")),
+            "expected unclosed resource scope warning"
+        );
+        assertTrue(
+            interpretation.semantics().decodeWarnings().stream().anyMatch(s -> s.startsWith("scope-graph: transitions=")),
+            "expected scope-graph summary in decode warnings"
+        );
+    }
+
     private static byte[] sf(String sfIdHex, byte[] payload) {
         byte[] sfId = HexFormat.of().parseHex(sfIdHex);
         int length = 8 + payload.length;

@@ -1,14 +1,14 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:01:29Z",
+  "generatedAt": "2026-02-23T23:07:43Z",
   "summary": {
+    "triggeredIssueCount": 4,
     "highSeverityOpenCount": 4,
     "openIssueCount": 7,
-    "averageTaskPercentComplete": 94.06,
+    "averageTaskPercentComplete": 96.25,
     "issueCount": 7,
     "requiresIssuesLogUpdate": false,
-    "taskCount": 48,
-    "triggeredIssueCount": 4
+    "taskCount": 48
   },
   "fidelity": {
     "fidelityScore": 0.952575,
@@ -46,7 +46,9 @@
       "title": "Policy-governance sequence drift when updating constitutional/policy text without full checklist sequencing",
       "matchedComponents": [
         "management/docs/issues-log.csv",
+        "management/pm/reports/documentation-manifest.json",
         "management/pm/reports/governance-alerts.json",
+        "management/pm/reports/version-control-ledger.json",
         "management/pm/state/project-state.sqlite"
       ]
     },
@@ -56,6 +58,7 @@
       "title": "Environment readiness drift: daemon-only checks missed visible console verification",
       "matchedComponents": [
         "management/pm/reports/environment-health.json",
+        "management/pm/reports/pm-console-stale-cleanup.json",
         "management/pm/state/project-state.sqlite"
       ]
     }

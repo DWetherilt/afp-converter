@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:01:19Z",
+  "generatedAt": "2026-02-23T23:07:50Z",
   "sourceCsv": "management/docs/project-plan-progress.csv",
   "activeWorkstreamCount": 1,
   "activeWorkstreams": [
@@ -10,9 +10,8 @@
       "internalWorkstreamUid": "WS-2026-001",
       "internalWorkstreamLabel": "Renderer Continuation 2026-02-23",
       "priorityRank": 11,
-      "taskCount": 3,
+      "taskCount": 2,
       "tasks": [
-        "Implement structured-field scope graph baseline for renderer continuation",
         "Add deterministic paint-order assertions for overlay/text/image interleave cases",
         "Publish updated fidelity diagnostics and next-step deltas for continuation slice"
       ]

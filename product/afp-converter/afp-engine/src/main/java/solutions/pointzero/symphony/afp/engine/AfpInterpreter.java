@@ -32,11 +32,16 @@ public final class AfpInterpreter {
     AfpInterpretation interpret(byte[] afpBytes, String sourceLabel) {
         AfpParseResult parse = parser.parse(afpBytes);
         int pageCount = countPages(parse.fields());
+        AfpScopeGraph scopeGraph = AfpScopeGraph.analyze(parse.fields());
 
         List<String> warnings = parse.warnings();
         if (parse.fields().isEmpty()) {
             warnings = new java.util.ArrayList<>(warnings);
             warnings.add("No AFP structured fields detected (0x5A records not found).");
+        }
+        if (!scopeGraph.warnings().isEmpty()) {
+            warnings = new java.util.ArrayList<>(warnings);
+            warnings.addAll(scopeGraph.warnings());
         }
 
         return new AfpInterpretation(
@@ -47,7 +52,7 @@ public final class AfpInterpreter {
             parse.skippedBytes(),
             List.copyOf(warnings),
             parse.fields(),
-            decodeSemantics(afpBytes, parse.fields()),
+            decodeSemantics(afpBytes, parse.fields(), scopeGraph),
             afpBytes
         );
     }
@@ -66,7 +71,7 @@ public final class AfpInterpreter {
         return fields.isEmpty() ? 0 : 1;
     }
 
-    private AfpSemantics decodeSemantics(byte[] afpBytes, List<AfpStructuredField> fields) {
+    private AfpSemantics decodeSemantics(byte[] afpBytes, List<AfpStructuredField> fields, AfpScopeGraph scopeGraph) {
         AfplibSemanticPass.Result afplib = afplibSemanticPass.decode(afpBytes);
 
         int bdt = 0;
@@ -108,6 +113,7 @@ public final class AfpInterpreter {
             ptxControlSequences = Math.max(ptxControlSequences, afplib.ptxControlSequenceCount());
         }
         decodeWarnings.addAll(afplib.warnings());
+        decodeWarnings.add(scopeGraph.summaryLine());
         List<String> afplibFragments = new ArrayList<>();
         for (AfplibSemanticPass.TextChunk chunk : afplib.textDataChunks()) {
             AfpCodePageProfile chunkProfile = codePage;
