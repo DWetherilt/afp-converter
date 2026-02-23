@@ -15,11 +15,25 @@ Proof-of-concept Java 21 Gradle multi-module project for:
 - `pm-console`: dev-only PM dashboard/command hub (`solutions.pointzero.symphony.pm.console`)
 - Root namespace standard for first-party Java code: `solutions.pointzero.symphony.*`
 
+## Core Derivative Topology
+
+- Base environment arbiter: `ai-core-3`
+- This repo (`afp-converter`) is a derivative project under the core Product realm.
+- Internal project realms:
+  - `application`
+  - `pm`
+  - `boilerplate`
+- Project reasoning databases should be used with core reasoning state for escalations and arbitration lineage.
+- Machine-readable topology contract: `pm/workflow/core-derivative-topology.json`
+- Bootstrap helper for new derivatives: `tools/bootstrap_core_derivative_project.sh`
+
 API documentation:
 
 - `VERSION`:
   - canonical project semantic version used by Gradle for all modules
 - `AI-POLICY.md` (agent operating policy and development-cycle rules)
+- `docs/CORE_DERIVATIVE_MODEL.md`:
+  - formal definition of the `ai-core-3` base arbiter model and derivative-project hierarchy
 - `docs/API.md`
 - `docs/project-plan.md`
 - `docs/project-plan-progress.csv` (task-level completion tracker)
@@ -60,6 +74,9 @@ API documentation:
 - `pm/workflow/workflow-manifest.json`:
   - toolchain-neutral PM workflow phase contract
   - adapters (for example Gradle) map phases to concrete execution tasks
+- `pm/workflow/core-derivative-topology.json`:
+  - machine-readable core/project hierarchy contract (`ai-core-3` -> `afp-converter`)
+  - defines internal project realms and core-link reference fields used on escalations
 - `pm/reports/policy-rules.json`:
   - generated export of SQL-backed operational PM rules from `pm/state/project-state.sqlite`
 - `pm/reports/governance-alerts.json`:
@@ -92,6 +109,8 @@ API documentation:
   - generated mechanized signal report combining issue triggers, plan progress, and fidelity metrics for debug reasoning
 - `tools/WorkbookUpdater.bas`:
    - VBA module for Excel that refreshes `Current Progress`, appends `Status History`, and rebuilds `Completion Trend` from the JSON intermediary
+- `tools/bootstrap_core_derivative_project.sh`:
+  - bootstrap helper for instantiating new derivative projects from an `ai-core-3` source path
 - `tools/run_excel_workbook_refresh.py` + `tools/run_excel_workbook_refresh.applescript`:
   - native Excel runner used by `projectPlanWorkbook` when `AFP_WORKBOOK_MODE=excel`
   - if required managed sheets are missing after Excel macro execution, auto-falls back to guarded XML updater to keep workbook structure complete

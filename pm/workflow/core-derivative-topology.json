@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1",
+  "model": "core-derivative",
+  "core": {
+    "id": "ai-core-3",
+    "role": "environment-arbiter",
+    "authorityOrder": [
+      "human_lead_developer",
+      "core_policy_realm",
+      "project_policy",
+      "project_realms"
+    ]
+  },
+  "project": {
+    "id": "afp-converter",
+    "role": "derivative-project",
+    "parentCoreId": "ai-core-3",
+    "internalRealms": [
+      "application",
+      "pm",
+      "boilerplate"
+    ],
+    "reasoningStores": {
+      "project": [
+        "pm/state/project-state.sqlite",
+        "pm/state/reasoning-experience.sqlite",
+        "pm/state/reasoning-derived.sqlite"
+      ],
+      "coreLinkMode": "reference-links"
+    }
+  },
+  "linkContracts": {
+    "coreDecisionRefField": "core_decision_ref",
+    "coreActionRefField": "core_action_ref",
+    "corePivotRefField": "core_pivot_ref",
+    "requiredOnEscalation": true
+  }
+}

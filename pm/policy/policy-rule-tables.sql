@@ -91,7 +91,9 @@ insert into policy_rule_catalog(rule_id, realm, category, rule_text, source_ref,
   ('PM-ACTION-003', 'pm', 'action-governance', 'PM refresh must publish action owner summary and SLA trend reports for prioritization and drift visibility.', 'build.gradle:actionOwnerSummaryReport;build.gradle:actionSlaTrendReport', 'human', 1, current_timestamp),
   ('PM-REALM-GOV-001', 'application', 'realm-governance', 'Each realm database should publish governance policy exports using realm_policy_catalog report outputs.', 'build.gradle:applicationRealmPolicyReport', 'human', 1, current_timestamp),
   ('PM-REALM-GOV-002', 'pm', 'realm-governance', 'Each realm database should publish governance policy exports using realm_policy_catalog report outputs.', 'build.gradle:pmRealmPolicyReport', 'human', 1, current_timestamp),
-  ('PM-REALM-GOV-003', 'boilerplate', 'realm-governance', 'Each realm database should publish governance policy exports using realm_policy_catalog report outputs.', 'build.gradle:boilerplateRealmPolicyReport', 'human', 1, current_timestamp);
+  ('PM-REALM-GOV-003', 'boilerplate', 'realm-governance', 'Each realm database should publish governance policy exports using realm_policy_catalog report outputs.', 'build.gradle:boilerplateRealmPolicyReport', 'human', 1, current_timestamp),
+  ('PM-CORE-001', 'pm', 'core-derivative-governance', 'ai-core-3 is the base environment arbiter and derivative projects must inherit its authority hierarchy.', 'docs/CORE_DERIVATIVE_MODEL.md', 'human', 1, current_timestamp),
+  ('PM-CORE-002', 'pm', 'core-derivative-governance', 'Derivative projects must publish machine-readable core/project topology and core-link contracts.', 'pm/workflow/core-derivative-topology.json', 'human', 1, current_timestamp);
 
 insert into pm_data_dictionary(object_name, object_type, realm, definition, source_ref, naming_pattern, updated_at) values
   ('issues', 'table', 'pm', 'Issue log records loaded from docs/issues-log.csv for governance tickle/effectiveness workflows.', 'pm-tools:StateDatabaseTool/initProjectSchema', 'snake_case', current_timestamp),
@@ -133,5 +135,7 @@ insert into pm_data_dictionary(object_name, object_type, realm, definition, sour
   ('pm_workflow_manifest', 'manifest', 'pm', 'Normalized PM workflow phase/adapter mapping manifest.', 'pm/workflow/workflow-manifest.json', 'snake_case', current_timestamp),
   ('pm_workflow_phase_task_map', 'adapter_map', 'pm', 'Gradle adapter phaseTaskMap binding phase IDs to executable task lists.', 'pm/workflow/workflow-manifest.json#adapters.gradle.phaseTaskMap', 'snake_case', current_timestamp),
   ('pm_workflow_defaults', 'adapter_defaults', 'pm', 'Default workflow phase selection for normalized PM execution.', 'pm/workflow/workflow-manifest.json#defaults', 'snake_case', current_timestamp),
+  ('core_derivative_topology', 'contract', 'pm', 'Machine-readable hierarchy and link contract between ai-core-3 and derivative project realms.', 'pm/workflow/core-derivative-topology.json', 'snake_case', current_timestamp),
+  ('core_derivative_bootstrap', 'script', 'pm', 'Bootstrap helper for instantiating new derivative projects from ai-core-3.', 'tools/bootstrap_core_derivative_project.sh', 'snake_case', current_timestamp),
   ('package_candidates', 'table', 'boilerplate', 'Boilerplate update package candidate registry synced from boilerplate/update-packages.', 'pm-tools:StateDatabaseTool/initBoilerplateSchema', 'snake_case', current_timestamp),
   ('package_files', 'table', 'boilerplate', 'Per-package file inventory for boilerplate payload audit/reporting.', 'pm-tools:StateDatabaseTool/initBoilerplateSchema', 'snake_case', current_timestamp);

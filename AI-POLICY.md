@@ -47,6 +47,22 @@ Use this file as the first-read operational contract before making changes.
 - Mutable operational rule tables should be maintained in SQL (`pm/policy/policy-rule-tables.sql`) and synchronized into SQLite state, instead of repeated structural edits to this policy document.
 - Workflow sequencing should be maintained in normalized manifest form (`pm/workflow/workflow-manifest.json`) with toolchain adapters (Gradle, etc.) consuming that contract.
 
+## Core Arbiter Derivation Model
+- `ai-core-3` is the base environment arbiter model.
+- This repository is a derivative project that operates under that core model.
+- The core arbitration hierarchy is:
+  - Human Lead Developer
+  - Core Policy Realm (`ai-core-3`)
+  - Project policy/governance
+  - Project internal realms
+- This project's internal realms are:
+  - `application`
+  - `pm`
+  - `boilerplate`
+- Project reasoning state must be linkable to core reasoning state so arbitration/escalation decisions remain traceable across levels.
+- New projects should be instantiated as derivatives of `ai-core-3` instead of ad-hoc policy bootstraps.
+- Topology contract for this model is defined in `pm/workflow/core-derivative-topology.json`.
+
 ## Filesystem Canonicality (Fundamental)
 - Day-1 workspace shape must present a clean manifested layout with canonical realms:
   - `policy/`

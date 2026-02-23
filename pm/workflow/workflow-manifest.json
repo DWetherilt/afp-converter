@@ -18,6 +18,13 @@
       "tags": ["pm", "state", "reports"]
     },
     {
+      "id": "core_derivative_governance_sync",
+      "title": "Core-Derivative Governance Sync",
+      "description": "Publishes core-derivative topology and policy-rule exports required for ai-core-3 alignment.",
+      "intent": "governance",
+      "tags": ["core", "derivative", "governance"]
+    },
+    {
       "id": "quality_gate",
       "title": "Quality Gate",
       "description": "Runs full quality gates including PM boundary enforcement.",
@@ -61,6 +68,11 @@
           "realmPolicyDiffReport",
           "reasoningDatabases",
           "stateInventoryCsv",
+          "documentationManifest"
+        ],
+        "core_derivative_governance_sync": [
+          "projectStateDb",
+          "policyRulesReport",
           "documentationManifest"
         ],
         "quality_gate": [

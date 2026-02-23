@@ -16,6 +16,24 @@ Managed roots are defined in:
 - Filesystem endpoints are materialized from realm DBs before build.
 - Drift checks fail in strict mode when managed filesystem files differ from SQL.
 
+## Core-Derivative Model
+
+- `ai-core-3` is the base environment arbiter model.
+- This repository is a derivative project instance with internal realms:
+  - `application`
+  - `pm`
+  - `boilerplate`
+- Core/project hierarchy and realm-link contracts are defined in:
+  - `pm/workflow/core-derivative-topology.json`
+- New derivative projects should be bootstrapped from core using:
+  - `tools/bootstrap_core_derivative_project.sh`
+
+Bootstrap example:
+
+```bash
+tools/bootstrap_core_derivative_project.sh /path/to/ai-core-3 new-project-id
+```
+
 ## Core Commands
 
 Use helper:
