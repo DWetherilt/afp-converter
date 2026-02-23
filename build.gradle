@@ -106,21 +106,20 @@ tasks.register('pmConsoleLiveStatus', Exec) {
     commandLine 'bash', 'tools/pm_console_live_daemon.sh', 'status'
 }
 
-tasks.register('pmConsoleVisibleLaunch') {
+tasks.register('pmConsoleVisibleLaunch', Exec) {
     group = 'documentation'
     description = 'Launches a visible desktop terminal PM console session (skips on CI/headless).'
     dependsOn(':pm-console:installDist')
-    doLast {
+    onlyIf {
         if (isCiEnvironment) {
             logger.lifecycle('pmConsoleVisibleLaunch: skipping visible launch in CI/headless mode')
-            return
+            return false
         }
-        exec {
-            commandLine 'osascript', '-e',
-                'tell application "Terminal" to activate\n' +
-                'tell application "Terminal" to do script "cd ' + project.rootDir.absolutePath.replace('"', '\\"') + ' && ./pm-console/build/install/pmconsole/bin/pmconsole live"'
-        }
+        return true
     }
+    commandLine 'osascript', '-e',
+        'tell application "Terminal" to activate\n' +
+            'tell application "Terminal" to do script "cd ' + project.rootDir.absolutePath.replace('"', '\\"') + ' && ./pm-console/build/install/pmconsole/bin/pmconsole live"'
 }
 
 tasks.register('pmConsoleVisibleCheck', Exec) {

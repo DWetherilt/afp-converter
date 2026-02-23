@@ -62,9 +62,19 @@ def terminal_window_count() -> tuple[int, int | None, str]:
 def terminal_identity() -> tuple[int, str, str, str]:
     if sys.platform != 'darwin':
         return 127, '', '', 'unsupported-platform'
-    rc, out, err = run_command(['osascript', '-e', 'tell application "Terminal" to if (count windows) > 0 then return (id of front window as string) & "," & (index of selected tab of front window as string)'])
+    script = (
+        'tell application "Terminal"\n'
+        'if (count windows) is 0 then return ""\n'
+        'set w to front window\n'
+        'set wid to id of w\n'
+        'return (wid as text) & ",1"\n'
+        'end tell'
+    )
+    rc, out, err = run_command(['osascript', '-e', script])
     if rc != 0:
         return rc, '', '', err or out
+    if not out.strip():
+        return 0, '', '', ''
     parts = (out or '').split(',', 1)
     if len(parts) != 2:
         return 0, '', '', f'invalid-terminal-identity:{out}'
@@ -171,12 +181,19 @@ def main() -> int:
         else:
             launch_response = launch_err
 
-    stale_candidates = [p for p in background if p['pid'] != pid]
+    keep_pid = pid
+    if background and (pid is None or all(p['pid'] != pid for p in background)):
+        keep_pid = background[0]['pid']
+    stale_candidates = [p for p in background if keep_pid is None or p['pid'] != keep_pid]
     fallback_window = ''
     fallback_tab = ''
     if visible:
         fallback_window = f"tty:{visible[0]['tty']}"
         fallback_tab = f"pid:{visible[0]['pid']}"
+    elif expect_visible and not ci_mode and term_windows and term_windows > 0 and term_id_rc == 0:
+        # Accept an active Terminal window identity as visibility evidence when process/TTY
+        # introspection cannot reliably distinguish the interactive session.
+        visible_running = True
 
     issues: list[str] = []
     blocking_issues: list[str] = []

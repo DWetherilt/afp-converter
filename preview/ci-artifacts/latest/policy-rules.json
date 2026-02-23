@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T20:43:02Z",
+  "generatedAt": "2026-02-23T17:49:15Z",
   "source": "sqlite",
   "sourceTable": "policy_rule_catalog",
   "ruleCount": 64,
@@ -13,7 +13,7 @@
       "sourceRef": "build.gradle:applicationRealmPolicyReport",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "realm_policy_catalog"
       ]
@@ -26,7 +26,7 @@
       "sourceRef": "build.gradle:prodBuild",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -37,7 +37,7 @@
       "sourceRef": "pm-tools:StateDatabaseTool/decision_log",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "decision_log"
       ]
@@ -50,7 +50,7 @@
       "sourceRef": "build.gradle:boilerplatePromotionReport",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -61,7 +61,7 @@
       "sourceRef": "build.gradle:boilerplateRealmPolicyReport",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "realm_policy_catalog"
       ]
@@ -74,7 +74,7 @@
       "sourceRef": "pm-tools:StateDatabaseTool/package_candidates.realm",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "package_candidates"
       ]
@@ -87,7 +87,7 @@
       "sourceRef": "build.gradle:actionInboxIngest;build.gradle:actionItemsReport",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "action_items"
       ]
@@ -100,7 +100,7 @@
       "sourceRef": "pm-tools:StateDatabaseTool/action_item_decision_links",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "action_item_decision_links"
       ]
@@ -113,7 +113,7 @@
       "sourceRef": "build.gradle:actionOwnerSummaryReport;build.gradle:actionSlaTrendReport",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -124,7 +124,7 @@
       "sourceRef": "build.gradle:enforceBoilerplateRollupForFrameworkChanges",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -135,7 +135,7 @@
       "sourceRef": ".github/workflows/ci.yml",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -146,7 +146,7 @@
       "sourceRef": ".github/workflows/ci.yml",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -157,7 +157,7 @@
       "sourceRef": ".github/workflows/ci.yml;tools/validate_boilerplate_package.sh;tools/export_boilerplate_package.sh",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -168,7 +168,7 @@
       "sourceRef": "pm/policy/policy-rule-tables.sql",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "policy_rule_catalog",
         "pm_data_dictionary"
@@ -182,7 +182,7 @@
       "sourceRef": "docs/PM_CONSOLE_EXCHANGE_FORMAT.md",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -193,7 +193,7 @@
       "sourceRef": "pm-console:PmConsoleMain.LiveCommand",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -204,7 +204,7 @@
       "sourceRef": "osascript Terminal launch workflow",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -215,7 +215,7 @@
       "sourceRef": "build.gradle:pmConsoleVisibleCheck",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -226,7 +226,7 @@
       "sourceRef": "tools/pm_console_cleanup.py;build.gradle:pmConsoleCleanupStaleSessions",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "pm_console_stale_cleanup_report"
       ]
@@ -239,7 +239,7 @@
       "sourceRef": "build.gradle:pmConsoleVisibleLaunch",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -250,7 +250,7 @@
       "sourceRef": "build.gradle:decisionPriorityReport",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -261,7 +261,7 @@
       "sourceRef": "build.gradle:documentationManifest",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -272,7 +272,7 @@
       "sourceRef": "build.gradle:pmEnvironmentPreflight",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -283,7 +283,7 @@
       "sourceRef": "build.gradle:pmEnvironmentKnowledgeSync;build.gradle:pmEnvironmentKnowledgeEvidence",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -294,7 +294,7 @@
       "sourceRef": "build.gradle:pmConsoleVisibilityKnowledgeSync;build.gradle:pmConsoleVisibilityKnowledgeEvidence",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -305,7 +305,7 @@
       "sourceRef": "build.gradle:pmConsoleVisibleCheck",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -316,7 +316,7 @@
       "sourceRef": "build.gradle:pmConsoleVisibleCheck",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -327,7 +327,7 @@
       "sourceRef": "build.gradle:environmentHealthSchemaCheck;.github/workflows/ci.yml",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -338,7 +338,7 @@
       "sourceRef": "build.gradle:pmConsoleSessionIdentityKnowledgeSync",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -349,7 +349,7 @@
       "sourceRef": "tools/pm_console_cleanup.py --warn-threshold",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "pm_console_stale_cleanup_report"
       ]
@@ -362,7 +362,7 @@
       "sourceRef": "build.gradle:staleHistorySchemaCheck;.github/workflows/ci.yml",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -373,7 +373,7 @@
       "sourceRef": "build.gradle:environmentPolicyDefaultsLint",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -384,7 +384,7 @@
       "sourceRef": "build.gradle:pmEnvironmentDashboardReport",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -395,7 +395,7 @@
       "sourceRef": "build.gradle:pmPersistGovernanceIdentifiers",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "identifier_registry"
       ]
@@ -408,7 +408,7 @@
       "sourceRef": "build.gradle:pmEnvironmentPreflight;build.gradle:pmEnvironmentKnowledgeEvidence;AI-POLICY.md#Default execution coupling",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -419,7 +419,7 @@
       "sourceRef": "pm-tools:StateDatabaseTool/identifier_registry",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "identifier_registry"
       ]
@@ -432,7 +432,7 @@
       "sourceRef": "build.gradle:identifierRegistryReport",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "identifier_registry_report"
       ]
@@ -445,7 +445,7 @@
       "sourceRef": "pm-tools:StateDatabaseTool/knowledge_entries",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "knowledge_entries"
       ]
@@ -458,7 +458,7 @@
       "sourceRef": "build.gradle:knowledgeBaseReport",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -469,7 +469,7 @@
       "sourceRef": "build.gradle:realmKnowledgeSync",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -480,7 +480,7 @@
       "sourceRef": "build.gradle:realmKnowledgeLinkGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -491,7 +491,7 @@
       "sourceRef": "build.gradle:enforceNamespaceRoot",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -502,7 +502,7 @@
       "sourceRef": "pm-tools:StateDatabaseTool/humanReadableRef;build.gradle:versionStamp",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "human_readable_ref",
         "release_name"
@@ -516,7 +516,7 @@
       "sourceRef": "pm-tools:StateDatabaseTool/humanReadableRef;build.gradle:versionStamp",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "human_readable_ref",
         "release_name"
@@ -530,7 +530,7 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -541,7 +541,7 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -552,7 +552,7 @@
       "sourceRef": "build.gradle:qualityGate",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -563,7 +563,7 @@
       "sourceRef": "build.gradle:pmRealmPolicyReport",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "realm_policy_catalog"
       ]
@@ -576,7 +576,7 @@
       "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -587,7 +587,7 @@
       "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -598,7 +598,7 @@
       "sourceRef": "build.gradle:reasoningDatabases",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -609,7 +609,7 @@
       "sourceRef": "tools/reasoning_sync.py",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "experience_events",
         "heuristic_scores",
@@ -625,7 +625,7 @@
       "sourceRef": "tools/recovery_doctor.sh#RECOVERY_CHECKPOINT_RETENTION_COUNT",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -636,7 +636,7 @@
       "sourceRef": "tools/recovery_doctor.sh#RECOVERY_SKIP_BASELINE_REFRESH",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -647,7 +647,7 @@
       "sourceRef": "pm/security/authorized-databases.json",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -658,7 +658,7 @@
       "sourceRef": "pm-console:DbCommand --human-approved",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -669,7 +669,7 @@
       "sourceRef": "build.gradle:realmCodeDatabases",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -680,7 +680,7 @@
       "sourceRef": "build.gradle:realmTokenSearch",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -691,7 +691,7 @@
       "sourceRef": "build.gradle:realmSourcesExport",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -702,7 +702,7 @@
       "sourceRef": "build.gradle:sqlAuthorityDriftCheck",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -713,7 +713,7 @@
       "sourceRef": "build.gradle:sqlCoverageReport",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -724,7 +724,7 @@
       "sourceRef": "build.gradle:sqlReconstructionCheck",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     },
     {
@@ -735,7 +735,7 @@
       "sourceRef": "pm/workflow/workflow-manifest.json",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": [
         "pm_workflow_manifest"
       ]
@@ -748,7 +748,7 @@
       "sourceRef": "build.gradle:pmWorkflowRun",
       "mutableBy": "human",
       "enabled": true,
-      "updatedAt": "2026-02-19 20:42:51",
+      "updatedAt": "2026-02-23 17:49:03",
       "dictionaryRefs": []
     }
   ]

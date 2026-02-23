@@ -1,0 +1,378 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-23T17:34:16Z",
+  "source": "sqlite",
+  "sourceTable": "pm_data_dictionary",
+  "entryCount": 41,
+  "entries": [
+    {
+      "objectName": "package_candidates",
+      "objectType": "table",
+      "realm": "boilerplate",
+      "definition": "Boilerplate update package candidate registry synced from boilerplate/update-packages.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initBoilerplateSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "package_files",
+      "objectType": "table",
+      "realm": "boilerplate",
+      "definition": "Per-package file inventory for boilerplate payload audit/reporting.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initBoilerplateSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "pm_workflow_defaults",
+      "objectType": "adapter_defaults",
+      "realm": "pm",
+      "definition": "Default workflow phase selection for normalized PM execution.",
+      "sourceRef": "pm/workflow/workflow-manifest.json#defaults",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "pm_workflow_phase_task_map",
+      "objectType": "adapter_map",
+      "realm": "pm",
+      "definition": "Gradle adapter phaseTaskMap binding phase IDs to executable task lists.",
+      "sourceRef": "pm/workflow/workflow-manifest.json#adapters.gradle.phaseTaskMap",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "pm_workflow_manifest",
+      "objectType": "manifest",
+      "realm": "pm",
+      "definition": "Normalized PM workflow phase/adapter mapping manifest.",
+      "sourceRef": "pm/workflow/workflow-manifest.json",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "release_name",
+      "objectType": "presentation_field",
+      "realm": "pm",
+      "definition": "Human-friendly release label emitted in pm/reports/version.json.",
+      "sourceRef": "build.gradle:versionStamp",
+      "namingPattern": "title_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "human_readable_ref",
+      "objectType": "presentation_pattern",
+      "realm": "pm",
+      "definition": "Human-friendly reference format for presentation outputs: <what> | <YYYY-MM-DD> | #<occurrence>.",
+      "sourceRef": "pm-tools:StateDatabaseTool/humanReadableRef",
+      "namingPattern": "title_case_pipe",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "action_owner_summary_report",
+      "objectType": "report",
+      "realm": "pm",
+      "definition": "Owner-centric action rollup exported to pm/reports/action-owner-summary.json.",
+      "sourceRef": "tools/action_owner_summary.py",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "action_sla_trend_report",
+      "objectType": "report",
+      "realm": "pm",
+      "definition": "Rolling SLA breach trend exported to pm/reports/action-sla-trend.json with history under pm/state/action-sla-history.json.",
+      "sourceRef": "tools/action_sla_trend.py",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "environment_dashboard_report",
+      "objectType": "report",
+      "realm": "pm",
+      "definition": "Compact triage report for environment readiness, visibility, stale-session warning, and policy threshold context.",
+      "sourceRef": "tools/environment_dashboard_report.py",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "environment_health_report",
+      "objectType": "report",
+      "realm": "pm",
+      "definition": "Environment readiness report including daemon state, visible session telemetry, and duplicate-session diagnostics.",
+      "sourceRef": "tools/environment_health_check.py",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "identifier_registry_report",
+      "objectType": "report",
+      "realm": "pm",
+      "definition": "Audit export of all persisted identifiers generated to pm/reports/identifier-registry.json.",
+      "sourceRef": "build.gradle:identifierRegistryReport",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "pm_console_stale_cleanup_report",
+      "objectType": "report",
+      "realm": "pm",
+      "definition": "Stale session detection/cleanup report with warning threshold and consecutive-cycle signals.",
+      "sourceRef": "tools/pm_console_cleanup.py",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "realm_knowledge_link_gate_report",
+      "objectType": "report",
+      "realm": "pm",
+      "definition": "Knowledge link gate status report showing unresolved per-realm decision references with warn/fail semantics.",
+      "sourceRef": "tools/realm_knowledge_link_gate.py",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "realm_knowledge_sync_report",
+      "objectType": "report",
+      "realm": "pm",
+      "definition": "Cross-realm knowledge mirroring diagnostics showing per-realm knowledge/evidence/link counts and decision-link resolution.",
+      "sourceRef": "tools/realm_knowledge_sync.py",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "pm_console_stale_history",
+      "objectType": "state_file",
+      "realm": "pm",
+      "definition": "History of stale session counts used for warning threshold evaluation across cycles.",
+      "sourceRef": "tools/pm_console_cleanup.py --history",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "action_inbox_events",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Deduplicated event capture for prompt-derived action ingestion.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initProjectSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "action_item_decision_links",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Links action items to one or more decision IDs for traceable execution.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initProjectSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "action_items",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Actionable work ledger with status/priority and optional knowledge/decision linkage.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initProjectSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "code_file_content",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Canonical realm-managed source content for SQL-first materialization to filesystem endpoints.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initCodeIndexSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "code_files",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Realm-scoped file index for SQL-managed code search and traceability.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initCodeIndexSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "code_tokens",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Token postings list mapping indexed tokens to files and occurrence counts.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initCodeIndexSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "decision_dependency",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Dependency edges between decisions in the same realm database.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initCodeIndexSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "decision_log",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Realm-local prioritized decision ledger with scope granularity and impact scoring for smallest-change/biggest-reward execution.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initCodeIndexSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "derived_insights",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Second-order insights synthesized from experience heuristics and support signals.",
+      "sourceRef": "tools/reasoning_sync.py",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "experience_events",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Empirical reasoning event store derived from knowledge outcomes and decision link counts.",
+      "sourceRef": "tools/reasoning_sync.py",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "governance_events",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Policy/governance event history loaded from docs/policy-governance-events.csv.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initProjectSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "heuristic_scores",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Derived heuristic scores computed from experience events for prioritization guidance.",
+      "sourceRef": "tools/reasoning_sync.py",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "identifier_registry",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Cross-discipline persisted identifier ledger (project/policy/version-control/code) including human-readable references.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initProjectSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "insight_edges",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Directed relationships between derived insights for traceable reasoning chains.",
+      "sourceRef": "tools/reasoning_sync.py",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "issues",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Issue log records loaded from docs/issues-log.csv for governance tickle/effectiveness workflows.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initProjectSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "knowledge_decision_links",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Cross-reference map linking knowledge entries to decision IDs across realms.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initProjectSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "knowledge_entries",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Knowledge base entries that capture reasoning context, outcomes, and change references for decisions.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initProjectSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "knowledge_evidence",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Artifact evidence linked to knowledge entries with path, hash, and capture metadata.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initProjectSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "plan_tasks",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Project plan task rows loaded from docs/project-plan-progress.csv.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initProjectSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "pm_data_dictionary",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Data dictionary of PM governance/state objects and naming conventions.",
+      "sourceRef": "pm/policy/policy-rule-tables.sql",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "policy_rule_catalog",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "SQL-backed mutable policy rule catalog exported to pm/reports/policy-rules.json.",
+      "sourceRef": "pm/policy/policy-rule-tables.sql",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "realm_policy_catalog",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Realm-local governance rules exported from each realm database for governance visibility.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initCodeIndexSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "repo_file_state",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Per-path repository state mirror used for file-discipline reporting.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initProjectSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "repo_vcs_snapshot",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Repository-level VCS state mirror (head/branch/dirty counts).",
+      "sourceRef": "pm-tools:StateDatabaseTool/initProjectSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    },
+    {
+      "objectName": "token_dictionary",
+      "objectType": "table",
+      "realm": "pm",
+      "definition": "Realm-scoped token dictionary derived from indexed source files for keyword swatch search.",
+      "sourceRef": "pm-tools:StateDatabaseTool/initCodeIndexSchema",
+      "namingPattern": "snake_case",
+      "updatedAt": "2026-02-19 20:42:51"
+    }
+  ]
+}

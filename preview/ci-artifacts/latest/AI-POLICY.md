@@ -47,6 +47,15 @@ Use this file as the first-read operational contract before making changes.
 - Mutable operational rule tables should be maintained in SQL (`pm/policy/policy-rule-tables.sql`) and synchronized into SQLite state, instead of repeated structural edits to this policy document.
 - Workflow sequencing should be maintained in normalized manifest form (`pm/workflow/workflow-manifest.json`) with toolchain adapters (Gradle, etc.) consuming that contract.
 
+## Filesystem Canonicality (Fundamental)
+- Day-1 workspace shape must present a clean manifested layout with canonical realms:
+  - `policy/`
+  - `management/`
+  - `product/`
+- Root-level compatibility links/shims (especially symlinks like legacy realm aliases) are not default behavior and must not persist in normal handoff state.
+- Temporary compatibility paths are allowed only when explicitly required for migration/debug and must be removed before completion handoff.
+- Filesystem cleanup is mandatory after migration/debug work so the workspace returns to a just-manifested look and feel.
+
 ## Project-Level Change Control
 - Project-level operations (policy/process/build/workbook/plan/versioning changes) must follow the same control model as product code changes:
   - issue linkage (existing issue or create a new issue entry),

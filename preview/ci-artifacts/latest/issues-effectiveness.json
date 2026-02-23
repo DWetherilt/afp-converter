@@ -1,14 +1,14 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T20:43:01Z",
+  "generatedAt": "2026-02-23T17:49:14Z",
   "summary": {
-    "triggeredIssueCount": 7,
-    "highSeverityOpenCount": 4,
-    "openIssueCount": 7,
-    "averageTaskPercentComplete": 84.5,
+    "averageTaskPercentComplete": 100.0,
     "issueCount": 7,
     "requiresIssuesLogUpdate": false,
-    "taskCount": 34
+    "taskCount": 37,
+    "triggeredIssueCount": 7,
+    "highSeverityOpenCount": 4,
+    "openIssueCount": 7
   },
   "fidelity": {
     "fidelityScore": 0.952575,
@@ -19,7 +19,6 @@
   "signals": [
     "Average pixel diff ratio above target (0.03).",
     "Token recall below target (0.98).",
-    "Average plan task completion below 85%.",
     "High-severity issues remain open."
   ],
   "triggeredIssues": [
@@ -29,6 +28,7 @@
       "title": "Excel automation and workbook update fragility due Office account/licensing context",
       "matchedComponents": [
         "build.gradle",
+        "docs/project-plan-progress.csv",
         "docs/project-plan-progress.xlsx",
         "pm/reports/project-plan-progress-data.json"
       ]
@@ -46,7 +46,9 @@
       "status": "Open",
       "title": "Excel automation unavailable in headless/agent context (Apple event connection invalid), strict Excel-required mode fails as designed",
       "matchedComponents": [
-        "build.gradle"
+        "build.gradle",
+        "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/ProjectPlanWorkbookUpdater.java",
+        "pm/reports/workbook-refresh-status.json"
       ]
     },
     {
@@ -54,7 +56,8 @@
       "status": "Open",
       "title": "Progress Graph sheet visual/layout quality needs tuning despite functional correctness",
       "matchedComponents": [
-        "docs/project-plan-progress.xlsx"
+        "docs/project-plan-progress.xlsx",
+        "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/ProjectPlanWorkbookUpdater.java"
       ]
     },
     {
@@ -66,6 +69,9 @@
         "build.gradle",
         "docs/boilerplate-sync-candidates.xlsx",
         "docs/project-plan-progress.xlsx",
+        "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/BoilerplateSyncWorkbookUpdater.java",
+        "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/ProjectPlanWorkbookUpdater.java",
+        "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/StateDatabaseTool.java",
         "pm/state/boilerplate-state.sqlite",
         "pm/state/project-state.sqlite"
       ]
@@ -76,24 +82,15 @@
       "title": "Policy-governance sequence drift when updating constitutional/policy text without full checklist sequencing",
       "matchedComponents": [
         "AI-POLICY.md",
-        "SESSION_CHANGELOG.md",
         "build.gradle",
         "docs/issues-log.csv",
-        "docs/policy-governance-events.xlsx",
+        "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/PolicyGovernanceWorkbookUpdater.java",
+        "pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/StateDatabaseTool.java",
         "pm/reports/documentation-manifest.json",
         "pm/reports/governance-alerts.json",
         "pm/reports/version-control-ledger.json",
         "pm/state/project-state.sqlite",
-        "tools/environment_dashboard_report.py",
-        "tools/environment_health_check.py",
-        "tools/lint_environment_policy_defaults.py",
-        "tools/pm_console_cleanup.py",
-        "tools/tests/test_environment_health_check.py",
-        "tools/tests/test_pm_console_cleanup.py",
-        "tools/tests/test_pm_environment_ready_chain.py",
-        "tools/tests/test_validate_stale_history_report.py",
-        "tools/validate_environment_health_report.py",
-        "tools/validate_stale_history_report.py"
+        "tools/environment_health_check.py"
       ]
     },
     {
@@ -103,13 +100,10 @@
       "matchedComponents": [
         "AI-POLICY.md",
         "build.gradle",
-        "pm/policy/policy-rule-tables.sql",
         "pm/reports/environment-health.json",
         "pm/reports/pm-console-stale-cleanup.json",
         "pm/state/project-state.sqlite",
-        "pm/workflow/workflow-manifest.json",
-        "tools/environment_health_check.py",
-        "tools/pm_console_cleanup.py"
+        "tools/environment_health_check.py"
       ]
     }
   ],
@@ -136,7 +130,7 @@
       "id": "ISSUE-007",
       "title": "Environment readiness drift: daemon-only checks missed visible console verification",
       "owner": "Human+AI",
-      "last_reviewed": "2026-02-19"
+      "last_reviewed": "2026-02-23"
     }
   ]
 }

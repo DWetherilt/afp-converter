@@ -1,23 +1,24 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T20:43:08Z",
+  "generatedAt": "2026-02-23T17:49:21Z",
   "source": "sqlite",
   "sourceTable": "knowledge_entries",
-  "entryCount": 8,
+  "entryCount": 9,
   "byRealm": {
     "pm": 6,
+    "policy": 1,
     "boilerplate": 1,
     "application": 1
   },
   "byOutcomeStatus": {
-    "applied": 5,
+    "applied": 6,
     "validated": 2,
     "open": 1
   },
   "knowledge": [
     {
       "knowledgeId": "KB-PM-ENV-CONSOLE-STALE-TREND",
-      "knowledgeRef": "Knowledge | 2026-02-19 | #001",
+      "knowledgeRef": "Knowledge | 2026-02-23 | #001",
       "realm": "pm",
       "scopeLevel": "realm",
       "scopeRef": "environment.console.stale-trend",
@@ -25,27 +26,27 @@
       "reasoning": "Track persistence of stale duplicate console sessions across cycles.",
       "contextSnapshot": "pm/reports/pm-console-stale-cleanup.json",
       "outcomeStatus": "applied",
-      "outcomeSummary": "stale=0; consecutive=0; warning=; policy=report",
+      "outcomeSummary": "stale=3; consecutive=6; warning=stale-duplicates-persisting:6-cycles; policy=report",
       "confidence": 4.0,
       "impactScore": 4.0,
       "changeRef": "pm/reports/pm-console-stale-cleanup.json",
       "createdAt": "2026-02-19T20:38:55Z",
-      "updatedAt": "2026-02-19T20:41:56Z",
+      "updatedAt": "2026-02-23T17:38:17Z",
       "evidence": [
         {
           "artifactPath": "pm/state/pm-console-stale-history.json",
-          "artifactSha256": "28e39854e040d355572a615cb2aad6d5044aef6362a4520acc5ca9e2b7f3371b",
-          "artifactSizeBytes": 1095,
+          "artifactSha256": "a0df065eb04be4dd24922921670d11d9911951a8b8ffb222162831e87077cac7",
+          "artifactSizeBytes": 2059,
           "type": "report",
           "notes": "Stale duplicate history used for threshold warning decisions.",
-          "capturedAt": "2026-02-19T20:41:56Z"
+          "capturedAt": "2026-02-23T17:38:18Z"
         }
       ],
       "decisionLinks": []
     },
     {
       "knowledgeId": "KB-PM-ENV-CONSOLE-HEALTH",
-      "knowledgeRef": "Knowledge | 2026-02-19 | #001",
+      "knowledgeRef": "Knowledge | 2026-02-23 | #001",
       "realm": "pm",
       "scopeLevel": "realm",
       "scopeRef": "environment",
@@ -53,27 +54,27 @@
       "reasoning": "Environment-first governance requires live PM console status checks before workflow execution.",
       "contextSnapshot": "pm/reports/environment-health.json",
       "outcomeStatus": "applied",
-      "outcomeSummary": "Recorded console daemon + visibility state (mode=strict, ci=false) for this cycle.",
+      "outcomeSummary": "Recorded console daemon + visibility state (mode=relaxed, ci=false) for this cycle.",
       "confidence": 5.0,
       "impactScore": 5.0,
       "changeRef": "pm/reports/environment-health.json",
       "createdAt": "2026-02-19T19:58:53Z",
-      "updatedAt": "2026-02-19T20:41:55Z",
+      "updatedAt": "2026-02-23T17:38:16Z",
       "evidence": [
         {
           "artifactPath": "pm/reports/environment-health.json",
-          "artifactSha256": "f53f823d0b6ef5d3035a51d7518fa8d27971f11bab8cda9b523f75b19e580884",
-          "artifactSizeBytes": 1404,
+          "artifactSha256": "4b0ae4fa7aa40d9b4dac91c4f522515d81d7376d61bd82b5c95bbcc76a27918d",
+          "artifactSizeBytes": 1348,
           "type": "report",
           "notes": "Environment preflight status including PID and running state.",
-          "capturedAt": "2026-02-19T20:41:56Z"
+          "capturedAt": "2026-02-23T17:38:17Z"
         }
       ],
       "decisionLinks": []
     },
     {
       "knowledgeId": "KB-PM-ENV-CONSOLE-VISIBLE",
-      "knowledgeRef": "Knowledge | 2026-02-19 | #001",
+      "knowledgeRef": "Knowledge | 2026-02-23 | #001",
       "realm": "pm",
       "scopeLevel": "realm",
       "scopeRef": "environment.console.visibility",
@@ -81,27 +82,27 @@
       "reasoning": "Visible desktop PM console presence is required for environment readiness in local development flows.",
       "contextSnapshot": "pm/reports/environment-health.json",
       "outcomeStatus": "applied",
-      "outcomeSummary": "visiblePids=48494; terminalWindowId=tty:ttys001; visible=true; status=PASS",
+      "outcomeSummary": "visiblePids=; terminalWindowId=; visible=false; status=WARN",
       "confidence": 5.0,
       "impactScore": 5.0,
       "changeRef": "pm/reports/environment-health.json",
       "createdAt": "2026-02-19T20:10:17Z",
-      "updatedAt": "2026-02-19T20:41:54Z",
+      "updatedAt": "2026-02-23T17:38:16Z",
       "evidence": [
         {
           "artifactPath": "pm/reports/environment-health.json",
-          "artifactSha256": "f53f823d0b6ef5d3035a51d7518fa8d27971f11bab8cda9b523f75b19e580884",
-          "artifactSizeBytes": 1404,
+          "artifactSha256": "4b0ae4fa7aa40d9b4dac91c4f522515d81d7376d61bd82b5c95bbcc76a27918d",
+          "artifactSizeBytes": 1348,
           "type": "report",
           "notes": "Visibility context report including visible session PIDs and terminal window ID.",
-          "capturedAt": "2026-02-19T20:41:55Z"
+          "capturedAt": "2026-02-23T17:38:16Z"
         }
       ],
       "decisionLinks": []
     },
     {
       "knowledgeId": "KB-PM-ENV-CONSOLE-SESSION-IDENTITY",
-      "knowledgeRef": "Knowledge | 2026-02-19 | #001",
+      "knowledgeRef": "Knowledge | 2026-02-23 | #001",
       "realm": "pm",
       "scopeLevel": "realm",
       "scopeRef": "environment.console.session.identity",
@@ -109,20 +110,48 @@
       "reasoning": "Capture terminal window/tab identity for deterministic visible session tracking.",
       "contextSnapshot": "pm/reports/environment-health.json",
       "outcomeStatus": "applied",
-      "outcomeSummary": "terminalWindowId=tty:ttys001; terminalTabId=pid:48494; visiblePids=48494",
+      "outcomeSummary": "terminalWindowId=; terminalTabId=; visiblePids=",
       "confidence": 5.0,
       "impactScore": 4.0,
       "changeRef": "pm/reports/environment-health.json",
       "createdAt": "2026-02-19T20:27:44Z",
-      "updatedAt": "2026-02-19T20:41:53Z",
+      "updatedAt": "2026-02-23T17:38:15Z",
       "evidence": [
         {
           "artifactPath": "pm/reports/environment-health.json",
-          "artifactSha256": "f53f823d0b6ef5d3035a51d7518fa8d27971f11bab8cda9b523f75b19e580884",
-          "artifactSizeBytes": 1404,
+          "artifactSha256": "4b0ae4fa7aa40d9b4dac91c4f522515d81d7376d61bd82b5c95bbcc76a27918d",
+          "artifactSizeBytes": 1348,
           "type": "report",
           "notes": "Deterministic terminal window/tab identity for visible PM console session.",
-          "capturedAt": "2026-02-19T20:41:54Z"
+          "capturedAt": "2026-02-23T17:38:16Z"
+        }
+      ],
+      "decisionLinks": []
+    },
+    {
+      "knowledgeId": "KNW-20260220T015926Z-AUTH-TOKEN-001",
+      "knowledgeRef": "Knowledge | 2026-02-20 | #001",
+      "realm": "policy",
+      "scopeLevel": "realm",
+      "scopeRef": "lead_developer_continuity",
+      "title": "Lead Developer authenticity token must be SQL-backed constitutional evidence",
+      "reasoning": "Token-only file storage is insufficient for constitutional continuity because workflow memory is SQL-centric; governance + identifier + evidence linkage is required for deterministic resumption.",
+      "contextSnapshot": "{\"tokenId\":\"LD-AUTH-20260220T013131Z-08ACCE4CCD18463BB70E3B2F318C2824\",\"artifact\":\"policy/authenticity/lead-developer-mission-token-20260220T013131Z.json\",\"index\":\"policy/authenticity/index.json\"}",
+      "outcomeStatus": "applied",
+      "outcomeSummary": "Token has been promoted into constitutional SQL state and linked as governance evidence.",
+      "confidence": 0.99,
+      "impactScore": 0.95,
+      "changeRef": "GOV-EVT-20260220T015926Z-AUTH-TOKEN-001",
+      "createdAt": "2026-02-20 01:59:26",
+      "updatedAt": "2026-02-20 01:59:26",
+      "evidence": [
+        {
+          "artifactPath": "policy/authenticity/lead-developer-mission-token-20260220T013131Z.json",
+          "artifactSha256": "f314a4c91061af8295a1f7663afbfb0a0e0ffe9e74dd1f400d8e58c61a360d64",
+          "artifactSizeBytes": 5076,
+          "type": "authenticity_token",
+          "notes": "Lead Developer mission token payload and continuity anchor.",
+          "capturedAt": "2026-02-20 01:59:26"
         }
       ],
       "decisionLinks": []

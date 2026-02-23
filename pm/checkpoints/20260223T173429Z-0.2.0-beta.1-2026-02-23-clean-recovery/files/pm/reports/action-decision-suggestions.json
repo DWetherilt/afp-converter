@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-23T17:34:25Z",
+  "source": {
+    "actions": "pm/reports/action-items.json",
+    "decisions": "pm/reports/decision-priority-queue.json"
+  },
+  "itemCount": 0,
+  "suggestions": []
+}

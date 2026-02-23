@@ -140,6 +140,17 @@ Deliver near-IBM parity rendering for AFP input by implementing true AFP object/
   - each realm has live decision records with scope granularity.
   - PM reports include ranked cross-realm decision queue and knowledge base output that explain current execution drive and evidence context.
 
+### Workstream H: Realm Reorganization (Policy/Management/Product)
+- Objectives:
+  - move workspace to canonical realm layout with clear boundaries.
+  - preserve compatibility while migrating build/tooling/reporting paths.
+- Tasks:
+  - migrate folders to `policy/`, `management/`, `product/` and update module mappings.
+  - normalize policy/security/manifests and SQL realm tokens to canonical realm names.
+  - update quality gates/tests/report paths for new realm structure and validate full gate pass.
+- Exit criteria:
+  - canonical realm layout is active and quality gate passes under the migrated structure.
+
 ## Milestones
 ### Milestone 1: Composition Correctness
 - Deliver:

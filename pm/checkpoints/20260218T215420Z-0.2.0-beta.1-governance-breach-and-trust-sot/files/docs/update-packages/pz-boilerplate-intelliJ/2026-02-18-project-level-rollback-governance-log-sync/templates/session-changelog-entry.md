@@ -1,4 +1,0 @@
-- Project-level rollback governance hardening:
-  - Enforced project-level change control parity with product changes (issue linkage + checkpoint + validation + rollback readiness).
-  - Added rollback preflight requirement for high-risk process/build/policy/workbook mutations.
-  - Standardized mutation safety flow documentation (`createRollbackCheckpoint` -> validate -> `listRollbackCheckpoints`).

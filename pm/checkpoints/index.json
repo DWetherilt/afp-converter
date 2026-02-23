@@ -2,84 +2,12 @@
   "schemaVersion": "1",
   "checkpoints": [
     {
-      "id": "20260218T180055Z-0.2.0-beta.1-initial-versioning-rollback",
-      "createdAt": "2026-02-18T18:00:55+00:00",
+      "id": "20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery",
+      "createdAt": "2026-02-23T17:34:29+00:00",
       "version": "0.2.0-beta.1",
-      "label": "initial-versioning-rollback",
-      "fileCount": 22,
-      "gitHead": ""
-    },
-    {
-      "id": "20260218T214353Z-0.2.0-beta.1-policy-first-principles-governance-fix",
-      "createdAt": "2026-02-18T21:43:53+00:00",
-      "version": "0.2.0-beta.1",
-      "label": "policy-first-principles-governance-fix",
-      "fileCount": 50,
-      "gitHead": "077cdb0f37cb37262f5d27ccf7ea9060a692b6dc"
-    },
-    {
-      "id": "20260218T214702Z-0.2.0-beta.1-governance-events-workbook",
-      "createdAt": "2026-02-18T21:47:02+00:00",
-      "version": "0.2.0-beta.1",
-      "label": "governance-events-workbook",
-      "fileCount": 50,
-      "gitHead": "077cdb0f37cb37262f5d27ccf7ea9060a692b6dc"
-    },
-    {
-      "id": "20260218T215420Z-0.2.0-beta.1-governance-breach-and-trust-sot",
-      "createdAt": "2026-02-18T21:54:20+00:00",
-      "version": "0.2.0-beta.1",
-      "label": "governance-breach-and-trust-sot",
-      "fileCount": 55,
-      "gitHead": "077cdb0f37cb37262f5d27ccf7ea9060a692b6dc"
-    },
-    {
-      "id": "20260218T223616Z-0.2.0-beta.1-tooling-registration-first-principle",
-      "createdAt": "2026-02-18T22:36:16+00:00",
-      "version": "0.2.0-beta.1",
-      "label": "tooling-registration-first-principle",
-      "fileCount": 69,
-      "gitHead": "1be0f03fc402fabaec12c733304b9e72e1f9152f"
-    },
-    {
-      "id": "20260219T012907Z-0.2.0-beta.1-pre-sql-materialization",
-      "createdAt": "2026-02-19T01:29:07+00:00",
-      "version": "0.2.0-beta.1",
-      "label": "pre-sql-materialization",
-      "fileCount": 41,
-      "gitHead": "242ad0f388bb569e2d9b734fe6dd1415b4c69ed2"
-    },
-    {
-      "id": "20260219T014536Z-0.2.0-beta.1-pre-sql-materialization",
-      "createdAt": "2026-02-19T01:45:36+00:00",
-      "version": "0.2.0-beta.1",
-      "label": "pre-sql-materialization",
-      "fileCount": 52,
-      "gitHead": "334fa72c3d0cc7455b1ca9aa8751b7bc6a6dc5c2"
-    },
-    {
-      "id": "20260219T192515Z-0.2.0-beta.1-checkpoint",
-      "createdAt": "2026-02-19T19:25:15+00:00",
-      "version": "0.2.0-beta.1",
-      "label": "",
-      "fileCount": 77,
-      "gitHead": "d041c3cf9ab73a54bffed273ca8b35825d833ff0"
-    },
-    {
-      "id": "20260219T194452Z-0.2.0-beta.1-checkpoint",
-      "createdAt": "2026-02-19T19:44:52+00:00",
-      "version": "0.2.0-beta.1",
-      "label": "",
-      "fileCount": 78,
-      "gitHead": "994b235317bca52c2a32e6086ba02aec5ebeb4d8"
-    },
-    {
-      "id": "20260219T195123Z-0.2.0-beta.1-checkpoint",
-      "createdAt": "2026-02-19T19:51:23+00:00",
-      "version": "0.2.0-beta.1",
-      "label": "",
-      "fileCount": 78,
-      "gitHead": "994b235317bca52c2a32e6086ba02aec5ebeb4d8"
+      "label": "2026-02-23-clean-recovery",
+      "fileCount": 80,
+      "gitHead": "9e3e4153bb006457ab19a8410e4de19031c29919"
     }
   ]
 }

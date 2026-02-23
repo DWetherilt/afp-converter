@@ -1,0 +1,88 @@
+{
+    "schemaVersion": "1",
+    "generatedAt": "2026-02-23T17:34:21Z",
+    "planPath": "docs/project-plan.md",
+    "actionCount": 8,
+    "nextInstruction": {
+        "title": "Immediate Next Step",
+        "task": "stand up and use SQL decision intelligence (`decision_log` per realm + cross-realm priority report) as the default execution driver.",
+        "source": "## Proposed Immediate Next Execution Sequence"
+    },
+    "actions": [
+        {
+            "title": "Workstream A: Object & Overlay Composition (highest impact)",
+            "tasks": [
+                "formalize page object graph with scope stack (`BMO/EMO`, resource begin/end scopes).",
+                "implement deterministic paint order per AFP semantics.",
+                "complete graphics object rendering beyond placeholders (rules, boxes, strokes/fills).",
+                "finalize image object placement with clipping and orientation transforms."
+            ]
+        },
+        {
+            "title": "Workstream B: Font & Text Fidelity",
+            "tasks": [
+                "coded font resolution from AFP resources (`CFI` + resource objects).",
+                "code page mapping matrix with SBCS/DBCS mixed-run handling.",
+                "metric-compatible substitutions and kerning/advance tuning.",
+                "remove broad semantic replacement; keep low-signal run-level fallback only."
+            ]
+        },
+        {
+            "title": "Workstream C: Image/IOCA Decode Completeness",
+            "tasks": [
+                "implement IOCA decoding adapters for common AFP image variants.",
+                "add validation/fallback pipeline with confidence scoring and diagnostics.",
+                "add per-format decode tests from real sample corpus."
+            ]
+        },
+        {
+            "title": "Workstream D: API/CLI/Diagnostics Integration",
+            "tasks": [
+                "API additions for render/fidelity/resource policies.",
+                "CLI flags and help/docs.",
+                "richer `diag.json` and metadata sections for render traceability."
+            ]
+        },
+        {
+            "title": "Workstream E: Hardening, Corpus, and CI",
+            "tasks": [
+                "build corpus matrix (forms, statements, mixed-language, heavy overlays).",
+                "per-feature integration tests.",
+                "CI gates with artifact publishing (`fidelity-report.json`, diff images, diagnostics)."
+            ]
+        },
+        {
+            "title": "Workstream F: Print-Centric Reverse Engineering (pivot)",
+            "tasks": [
+                "implement a dedicated print-centric byte-walk engine (separate from native layout renderer).",
+                "emit sequential token trace: structured fields, PTX control codes, and per-byte evidence.",
+                "add cross-examination report between AFP stream tokens and output operator/token stream.",
+                "use trace findings to back-port proven control-code handling into the native fidelity renderer."
+            ]
+        },
+        {
+            "title": "Workstream G: SQL Decision Intelligence (dedicated)",
+            "tasks": [
+                "add `decision_log` and `decision_dependency` tables to each realm database.",
+                "add commands to upsert/link decisions and export a cross-realm decision priority queue.",
+                "wire decision-priority reporting into PM refresh/report pipeline and artifacts.",
+                "add project-state SQL knowledge base (`knowledge_entries`, `knowledge_evidence`, `knowledge_decision_links`) to preserve reasoning context against artifacts and decision links.",
+                "seed active workstream decisions with smallest-change/biggest-reward impact scoring."
+            ]
+        },
+        {
+            "title": "Workstream H: Realm Reorganization (Policy/Management/Product)",
+            "tasks": [
+                "migrate folders to `policy/`, `management/`, `product/` and update module mappings.",
+                "normalize policy/security/manifests and SQL realm tokens to canonical realm names.",
+                "update quality gates/tests/report paths for new realm structure and validate full gate pass."
+            ]
+        }
+    ],
+    "immediateSequence": [
+        "stand up and use SQL decision intelligence (`decision_log` per realm + cross-realm priority report) as the default execution driver.",
+        "keep SQLite-backed project/boilerplate state stores current (`projectStateDb`, `boilerplateStateDb`) and route workflow/reporting outputs through them by default.",
+        "strengthen per-image resource binding in `sample.afp`: pair each `BIM` object with candidate embedded resources using token overlap + placement/size heuristics, then only promote page-level fallback when object-level binding confidence is below threshold.",
+        "extend print-centric cross-exam output to include `BIM`/`BOC` token timeline slices and inferred binding decisions so renderer back-ports are directly evidence-linked."
+    ]
+}

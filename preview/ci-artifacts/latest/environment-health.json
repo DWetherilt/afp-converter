@@ -1,6 +1,6 @@
 {
   "schemaVersion": "2",
-  "generatedAt": "2026-02-19T20:42:58Z",
+  "generatedAt": "2026-02-23T17:49:11Z",
   "governanceMode": "strict",
   "ci": false,
   "expectRunning": true,
@@ -8,7 +8,7 @@
   "autoLaunchIfMissing": true,
   "console": {
     "pidFile": "pm/state/pmconsole-live.pid",
-    "pid": 42522,
+    "pid": 52797,
     "running": true,
     "runningInferredFromBackgroundSessions": false,
     "logFile": "pm/state/pmconsole-live.log",
@@ -16,38 +16,29 @@
   },
   "visibility": {
     "terminalWindowQueryRc": 0,
-    "terminalWindowCount": 2,
+    "terminalWindowCount": 7,
     "terminalWindowQueryError": "",
-    "terminalIdentityQueryRc": 1,
-    "terminalIdentityQueryError": "147:153: execution error: Can\u2019t make index of \u00abclass tcnt\u00bb of window 1 of application \"Terminal\" into type string. (-1700)",
+    "terminalIdentityQueryRc": 0,
+    "terminalIdentityQueryError": "",
     "visibleRunning": true,
-    "visibleSessionCount": 1,
-    "visibleSessionPids": [
-      48494
-    ],
-    "visibleSessionTtys": [
-      "ttys001"
-    ],
-    "terminalWindowId": "tty:ttys001",
-    "terminalTabId": "pid:48494",
-    "autoLaunchTriggered": false,
-    "autoLaunchResponse": ""
+    "visibleSessionCount": 0,
+    "visibleSessionPids": [],
+    "visibleSessionTtys": [],
+    "terminalWindowId": "32020",
+    "terminalTabId": "1",
+    "autoLaunchTriggered": true,
+    "autoLaunchResponse": "tab 1 of window id 32020"
   },
   "duplicates": {
-    "liveProcessCount": 2,
+    "liveProcessCount": 1,
     "backgroundSessionCount": 1,
     "backgroundSessionPids": [
-      51100
+      38446
     ],
-    "staleCandidateCount": 1,
-    "staleCandidatePids": [
-      51100
-    ]
+    "staleCandidateCount": 0,
+    "staleCandidatePids": []
   },
-  "issues": [
-    "duplicate-stale-background-sessions-detected",
-    "terminal-identity-query-failed"
-  ],
+  "issues": [],
   "blockingIssues": [],
   "status": "PASS"
 }

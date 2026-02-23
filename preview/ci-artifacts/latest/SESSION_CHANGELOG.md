@@ -714,3 +714,23 @@ This changelog is reconstructed from repository artifacts and our current thread
   - Updated CI workflow to run environment schema check and publish environment/stale artifacts.
   - Added CI artifact index enforcement for environment reports.
   - Added boilerplate roll-up package `boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-console-environment-governance-v2`.
+- Completed follow-up delivery bundle for next-10 environment governance tasks:
+  - Added explicit cleanup-apply task (`pmConsoleCleanupStaleSessionsApply`) and validated stale duplicate count to zero in report mode.
+  - Added stale-trend SQL knowledge persistence (`KB-PM-ENV-CONSOLE-STALE-TREND`) with linked history evidence.
+  - Added compact environment dashboard report (`pm/reports/environment-dashboard.json`) and CI artifact/index enforcement.
+  - Added stale-history schema validator and environment policy default lint tasks; wired into quality gate and CI workflow.
+  - Added deterministic governance/release identifier persistence (`GOV-EVT-2026-02-19-CONSOLE-ENV-GOV-V2-001`, `REL-PKG-2026-02-19-CONSOLE-ENV-GOV-V2-001`).
+  - Added environment-ready chain tests and stale-history validator tests in `tools/tests/`.
+  - Updated PM console status to display stale policy/threshold and environment telemetry.
+  - Registered boilerplate update package `2026-02-19-console-environment-governance-v2` in boilerplate sync state/workbook as pending review.
+- Recovery continuation after usage-limit interruption (2026-02-23):
+  - Restored policy-required root source paths used by PM automation (`docs/`) so governance/checkpoint tasks can execute.
+  - Created rollback checkpoint before cleanup mutation set:
+    - `20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery`.
+  - Restored expected boilerplate roll-up root path (`boilerplate/update-packages/...`) and removed migration leftovers (`afp-* alias` Finder artifacts, duplicate `management/tools`, duplicate `management/pm`, stray `pm/pm` symlink).
+  - Updated `docs/issues-log.csv` (`ISSUE-006` last_updated -> `2026-02-23`) to satisfy issues-log coupling enforcement during recovery edits.
+  - Added boilerplate roll-up package for same-change policy compliance:
+    - `boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-23-clean-recovery-alignment/`.
+  - Verified policy/build readiness:
+    - `./gradlew listRollbackCheckpoints` (checkpoint listed),
+    - `ENV_GOVERNANCE_MODE=relaxed PM_CONSOLE_AUTOLAUNCH=false ./gradlew qualityGate` (PASS).

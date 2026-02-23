@@ -1,8 +1,8 @@
 {
     "schemaVersion": "1",
-    "generatedAt": "2026-02-19T20:43:03Z",
+    "generatedAt": "2026-02-23T17:49:16Z",
     "planPath": "docs/project-plan.md",
-    "actionCount": 7,
+    "actionCount": 8,
     "nextInstruction": {
         "title": "Immediate Next Step",
         "task": "stand up and use SQL decision intelligence (`decision_log` per realm + cross-realm priority report) as the default execution driver.",
@@ -68,6 +68,14 @@
                 "wire decision-priority reporting into PM refresh/report pipeline and artifacts.",
                 "add project-state SQL knowledge base (`knowledge_entries`, `knowledge_evidence`, `knowledge_decision_links`) to preserve reasoning context against artifacts and decision links.",
                 "seed active workstream decisions with smallest-change/biggest-reward impact scoring."
+            ]
+        },
+        {
+            "title": "Workstream H: Realm Reorganization (Policy/Management/Product)",
+            "tasks": [
+                "migrate folders to `policy/`, `management/`, `product/` and update module mappings.",
+                "normalize policy/security/manifests and SQL realm tokens to canonical realm names.",
+                "update quality gates/tests/report paths for new realm structure and validate full gate pass."
             ]
         }
     ],

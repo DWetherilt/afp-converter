@@ -1,19 +1,21 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T20:42:33Z",
-  "status": "PASS",
-  "governanceMode": "strict",
-  "visibleRunning": true,
-  "visibleSessionCount": 1,
-  "terminalWindowId": "tty:ttys001",
-  "terminalTabId": "pid:48494",
-  "staleCandidateCount": 0,
-  "staleWarning": "",
+  "generatedAt": "2026-02-23T17:38:16Z",
+  "status": "WARN",
+  "governanceMode": "relaxed",
+  "visibleRunning": false,
+  "visibleSessionCount": 0,
+  "terminalWindowId": "",
+  "terminalTabId": "",
+  "staleCandidateCount": 3,
+  "staleWarning": "stale-duplicates-persisting:6-cycles",
   "stalePolicy": "report",
   "staleWarnThreshold": "2",
   "issues": [
-    "duplicate-stale-background-sessions-detected",
-    "terminal-identity-query-failed"
+    "visible-console-not-running",
+    "duplicate-stale-background-sessions-detected"
   ],
-  "blockingIssues": []
+  "blockingIssues": [
+    "visible-console-not-running"
+  ]
 }

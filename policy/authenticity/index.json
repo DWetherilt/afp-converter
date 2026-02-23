@@ -1,0 +1,11 @@
+{
+  "schemaVersion": "1.0",
+  "artifacts": [
+    {
+      "tokenId": "LD-AUTH-20260220T013131Z-08ACCE4CCD18463BB70E3B2F318C2824",
+      "issuedAtUtc": "2026-02-20T01:31:31Z",
+      "artifact": "policy/authenticity/lead-developer-mission-token-20260220T013131Z.json",
+      "purpose": "Lead Developer authenticity + full-session brain dump"
+    }
+  ]
+}

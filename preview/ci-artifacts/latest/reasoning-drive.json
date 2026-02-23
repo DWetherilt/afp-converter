@@ -1,20 +1,20 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-19T20:43:09+00:00",
+  "generatedAt": "2026-02-23T17:49:22+00:00",
   "source": "reasoning-sync",
   "experience": {
     "db": "/Users/dal/IdeaProjects/afp-converter/pm/state/reasoning-experience.sqlite",
-    "eventCount": 8,
-    "decisionLinkCoveragePct": 50.0,
-    "heuristicCount": 4,
+    "eventCount": 9,
+    "decisionLinkCoveragePct": 44.444,
+    "heuristicCount": 5,
     "topHeuristics": [
       {
         "heuristicKey": "closure_ratio::global",
         "group": "closure_ratio",
-        "score": 87.5,
-        "sampleCount": 8,
-        "signal": "positive=7,total=8",
-        "updatedAt": "2026-02-19T20:43:09+00:00"
+        "score": 77.778,
+        "sampleCount": 9,
+        "signal": "positive=7,total=9",
+        "updatedAt": "2026-02-23T17:49:22+00:00"
       },
       {
         "heuristicKey": "evidence_density::application",
@@ -22,7 +22,7 @@
         "score": 66.25,
         "sampleCount": 1,
         "signal": "avg_impact=4.500,avg_evidence=2.000",
-        "updatedAt": "2026-02-19T20:43:09+00:00"
+        "updatedAt": "2026-02-23T17:49:22+00:00"
       },
       {
         "heuristicKey": "evidence_density::pm",
@@ -30,7 +30,7 @@
         "score": 61.25,
         "sampleCount": 6,
         "signal": "avg_impact=4.433,avg_evidence=1.167",
-        "updatedAt": "2026-02-19T20:43:09+00:00"
+        "updatedAt": "2026-02-23T17:49:22+00:00"
       },
       {
         "heuristicKey": "evidence_density::boilerplate",
@@ -38,13 +38,21 @@
         "score": 60.0,
         "sampleCount": 1,
         "signal": "avg_impact=4.000,avg_evidence=2.000",
-        "updatedAt": "2026-02-19T20:43:09+00:00"
+        "updatedAt": "2026-02-23T17:49:22+00:00"
+      },
+      {
+        "heuristicKey": "evidence_density::policy",
+        "group": "evidence_density",
+        "score": 16.875,
+        "sampleCount": 1,
+        "signal": "avg_impact=0.950,avg_evidence=1.000",
+        "updatedAt": "2026-02-23T17:49:22+00:00"
       }
     ]
   },
   "derived": {
     "db": "/Users/dal/IdeaProjects/afp-converter/pm/state/reasoning-derived.sqlite",
-    "insightCount": 3,
+    "insightCount": 4,
     "topInsights": [
       {
         "insightId": "insight::pm::2",
@@ -56,7 +64,7 @@
           "experience_events::pm",
           "heuristic_scores::evidence_density"
         ],
-        "updatedAt": "2026-02-19T20:43:09+00:00"
+        "updatedAt": "2026-02-23T17:49:22+00:00"
       },
       {
         "insightId": "insight::application::1",
@@ -68,7 +76,7 @@
           "experience_events::application",
           "heuristic_scores::evidence_density"
         ],
-        "updatedAt": "2026-02-19T20:43:09+00:00"
+        "updatedAt": "2026-02-23T17:49:22+00:00"
       },
       {
         "insightId": "insight::boilerplate::3",
@@ -80,7 +88,19 @@
           "experience_events::boilerplate",
           "heuristic_scores::evidence_density"
         ],
-        "updatedAt": "2026-02-19T20:43:09+00:00"
+        "updatedAt": "2026-02-23T17:49:22+00:00"
+      },
+      {
+        "insightId": "insight::policy::4",
+        "realm": "policy",
+        "type": "realm_signal",
+        "statement": "Realm 'policy' has avg impact 0.95, avg confidence 0.99, open knowledge items 0/1.",
+        "supportScore": 21.775,
+        "sourceRefs": [
+          "experience_events::policy",
+          "heuristic_scores::evidence_density"
+        ],
+        "updatedAt": "2026-02-23T17:49:22+00:00"
       }
     ]
   }

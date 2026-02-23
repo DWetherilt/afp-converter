@@ -5,7 +5,7 @@
     "inbox": "pm/state/assistant-inbox.ndjson",
     "sourceFilter": "pmconsole-live"
   },
-  "expectedCount": 2,
+  "expectedCount": 0,
   "missingCount": 0,
   "missing": [],
   "status": "PASS"

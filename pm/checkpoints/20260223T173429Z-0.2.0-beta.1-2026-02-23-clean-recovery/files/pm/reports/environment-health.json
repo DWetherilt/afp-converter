@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "2",
+  "generatedAt": "2026-02-23T17:34:16Z",
+  "governanceMode": "relaxed",
+  "ci": false,
+  "expectRunning": true,
+  "expectVisible": true,
+  "autoLaunchIfMissing": false,
+  "console": {
+    "pidFile": "pm/state/pmconsole-live.pid",
+    "pid": 52797,
+    "running": true,
+    "runningInferredFromBackgroundSessions": false,
+    "logFile": "pm/state/pmconsole-live.log",
+    "logExists": true
+  },
+  "visibility": {
+    "terminalWindowQueryRc": 0,
+    "terminalWindowCount": 0,
+    "terminalWindowQueryError": "",
+    "terminalIdentityQueryRc": 0,
+    "terminalIdentityQueryError": "invalid-terminal-identity:",
+    "visibleRunning": false,
+    "visibleSessionCount": 0,
+    "visibleSessionPids": [],
+    "visibleSessionTtys": [],
+    "terminalWindowId": "",
+    "terminalTabId": "",
+    "autoLaunchTriggered": false,
+    "autoLaunchResponse": ""
+  },
+  "duplicates": {
+    "liveProcessCount": 4,
+    "backgroundSessionCount": 4,
+    "backgroundSessionPids": [
+      19328,
+      33913,
+      52802,
+      91814
+    ],
+    "staleCandidateCount": 4,
+    "staleCandidatePids": [
+      19328,
+      33913,
+      52802,
+      91814
+    ]
+  },
+  "issues": [
+    "visible-console-not-running",
+    "duplicate-stale-background-sessions-detected"
+  ],
+  "blockingIssues": [
+    "visible-console-not-running"
+  ],
+  "status": "WARN"
+}

@@ -1,5 +1,0 @@
-- Consolidated framework sync applied from `afp-converter`:
-  - project-level rollback governance hardening
-  - workbook change-driven update guard (`AFP_FORCE_WORKBOOK_UPDATE` override)
-  - boilerplate sync triage workbook framework (`boilerplateSyncWorkbook`)
-  - external package workflow helper and guidance updates
