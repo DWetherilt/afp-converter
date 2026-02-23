@@ -1,11 +1,11 @@
 {
     "schemaVersion": "1",
-    "generatedAt": "2026-02-23T22:39:03Z",
+    "generatedAt": "2026-02-23T22:45:08Z",
     "planPath": "management/docs/project-plan.md",
     "actionCount": 9,
     "nextInstruction": {
         "title": "Immediate Next Step",
-        "task": "execute Workstream J as the active stabilization driver: make enforcement deterministic, reduce working-tree noise, and align plan/report signals with real open actions.",
+        "task": "execute Workstream A as the active fidelity driver: prioritize deterministic object/overlay composition to reduce structural rendering drift.",
         "source": "## Proposed Immediate Next Execution Sequence"
     },
     "actions": [
@@ -90,9 +90,9 @@
         }
     ],
     "immediateSequence": [
-        "execute Workstream J as the active stabilization driver: make enforcement deterministic, reduce working-tree noise, and align plan/report signals with real open actions.",
-        "update `enforceBoilerplateRollupForFrameworkChanges` to include staged (`git diff --cached --name-only`) plus unstaged/untracked deltas before deciding roll-up compliance.",
-        "normalize transient local artifacts and indexing discipline so quality gates evaluate intentional source changes only.",
-        "rerun `qualityGate` and PM refresh/report phases, then publish updated next-step guidance from refreshed artifacts."
+        "execute Workstream A as the active fidelity driver: prioritize deterministic object/overlay composition to reduce structural rendering drift.",
+        "formalize page object graph and scope stack handling (`BMO/EMO`, resource begin/end scopes) in `afp-engine` interpretation.",
+        "implement deterministic paint ordering and close remaining graphics object placeholders (rules, boxes, strokes/fills).",
+        "rerun `qualityGate` and PM refresh/report phases, then publish updated fidelity diagnostics and next-step guidance."
     ]
 }

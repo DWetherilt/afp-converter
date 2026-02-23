@@ -296,6 +296,11 @@ When implementing any meaningful change:
   - validation commands run,
   - rollback command that would be used if reversion is required.
 
+## Response Closure Policy
+- Every user-facing response must end with a `Todo List` section.
+- The `Todo List` section must reflect the current actionable backlog, including `none` when no tasks remain.
+- Do not omit this section, even for brief status/checkpoint replies.
+
 ## Fidelity and Regression Discipline
 - Primary KPI file: `product/afp-converter/preview/fidelity-report.json`.
 - Quality gate enforces minimum thresholds; do not relax without explicit direction.

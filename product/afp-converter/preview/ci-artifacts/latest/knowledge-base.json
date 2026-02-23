@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T22:39:08Z",
+  "generatedAt": "2026-02-23T22:45:25Z",
   "source": "sqlite",
   "sourceTable": "knowledge_entries",
   "entryCount": 9,
@@ -17,42 +17,6 @@
   },
   "knowledge": [
     {
-      "knowledgeId": "KB-PM-ENV-CONSOLE-STALE-TREND",
-      "knowledgeRef": "Knowledge | 2026-02-23 | #001",
-      "realm": "pm",
-      "scopeLevel": "realm",
-      "scopeRef": "environment.console.stale-trend",
-      "title": "PM console stale session trend",
-      "reasoning": "Track persistence of stale duplicate console sessions across cycles.",
-      "contextSnapshot": "management/pm/reports/pm-console-stale-cleanup.json",
-      "outcomeStatus": "applied",
-      "outcomeSummary": "stale=0; consecutive=0; warning=; policy=report",
-      "confidence": 4.0,
-      "impactScore": 4.0,
-      "changeRef": "management/pm/reports/pm-console-stale-cleanup.json",
-      "createdAt": "2026-02-19T20:38:55Z",
-      "updatedAt": "2026-02-23T22:33:47Z",
-      "evidence": [
-        {
-          "artifactPath": "management/pm/state/pm-console-stale-history.json",
-          "artifactSha256": "3256d4a40bc05b6b9620ddafae411993f19ce387e902090df0a52cfc0784e29a",
-          "artifactSizeBytes": 3624,
-          "type": "report",
-          "notes": "Stale duplicate history used for threshold warning decisions.",
-          "capturedAt": "2026-02-23T22:33:48Z"
-        },
-        {
-          "artifactPath": "pm/state/pm-console-stale-history.json",
-          "artifactSha256": "b77ae360ec5e3cee9b86167c258bde4a45b9ea02463585037da2d85c760a3912",
-          "artifactSizeBytes": 610,
-          "type": "report",
-          "notes": "Stale duplicate history used for threshold warning decisions.",
-          "capturedAt": "2026-02-23T20:58:57Z"
-        }
-      ],
-      "decisionLinks": []
-    },
-    {
       "knowledgeId": "KB-PM-ENV-CONSOLE-HEALTH",
       "knowledgeRef": "Knowledge | 2026-02-23 | #001",
       "realm": "pm",
@@ -67,15 +31,15 @@
       "impactScore": 5.0,
       "changeRef": "management/pm/reports/environment-health.json",
       "createdAt": "2026-02-19T19:58:53Z",
-      "updatedAt": "2026-02-23T22:33:46Z",
+      "updatedAt": "2026-02-23T22:39:12Z",
       "evidence": [
         {
           "artifactPath": "management/pm/reports/environment-health.json",
-          "artifactSha256": "cf7d0bd5471d1bafe3e0dfc711c45c1d90e31f4da486ebfc799a1ad77a15dfa6",
+          "artifactSha256": "96796459441067fc3b758fe8e76191c26ac0867809974107d08bfa5a32504e67",
           "artifactSizeBytes": 1164,
           "type": "report",
           "notes": "Environment preflight status including PID and running state.",
-          "capturedAt": "2026-02-23T22:33:47Z"
+          "capturedAt": "2026-02-23T22:39:12Z"
         },
         {
           "artifactPath": "pm/reports/environment-health.json",
@@ -84,6 +48,42 @@
           "type": "report",
           "notes": "Environment preflight status including PID and running state.",
           "capturedAt": "2026-02-23T20:58:56Z"
+        }
+      ],
+      "decisionLinks": []
+    },
+    {
+      "knowledgeId": "KB-PM-ENV-CONSOLE-STALE-TREND",
+      "knowledgeRef": "Knowledge | 2026-02-23 | #001",
+      "realm": "pm",
+      "scopeLevel": "realm",
+      "scopeRef": "environment.console.stale-trend",
+      "title": "PM console stale session trend",
+      "reasoning": "Track persistence of stale duplicate console sessions across cycles.",
+      "contextSnapshot": "management/pm/reports/pm-console-stale-cleanup.json",
+      "outcomeStatus": "applied",
+      "outcomeSummary": "stale=0; consecutive=0; warning=; policy=report",
+      "confidence": 4.0,
+      "impactScore": 4.0,
+      "changeRef": "management/pm/reports/pm-console-stale-cleanup.json",
+      "createdAt": "2026-02-19T20:38:55Z",
+      "updatedAt": "2026-02-23T22:39:12Z",
+      "evidence": [
+        {
+          "artifactPath": "management/pm/state/pm-console-stale-history.json",
+          "artifactSha256": "3004d915603e38ff88e4c11b4c136c66a1421d322f5f9bc9b40abbe65b47cbe5",
+          "artifactSizeBytes": 3737,
+          "type": "report",
+          "notes": "Stale duplicate history used for threshold warning decisions.",
+          "capturedAt": "2026-02-23T22:39:13Z"
+        },
+        {
+          "artifactPath": "pm/state/pm-console-stale-history.json",
+          "artifactSha256": "b77ae360ec5e3cee9b86167c258bde4a45b9ea02463585037da2d85c760a3912",
+          "artifactSizeBytes": 610,
+          "type": "report",
+          "notes": "Stale duplicate history used for threshold warning decisions.",
+          "capturedAt": "2026-02-23T20:58:57Z"
         }
       ],
       "decisionLinks": []
@@ -103,15 +103,15 @@
       "impactScore": 5.0,
       "changeRef": "management/pm/reports/environment-health.json",
       "createdAt": "2026-02-19T20:10:17Z",
-      "updatedAt": "2026-02-23T22:33:45Z",
+      "updatedAt": "2026-02-23T22:39:11Z",
       "evidence": [
         {
           "artifactPath": "management/pm/reports/environment-health.json",
-          "artifactSha256": "cf7d0bd5471d1bafe3e0dfc711c45c1d90e31f4da486ebfc799a1ad77a15dfa6",
+          "artifactSha256": "96796459441067fc3b758fe8e76191c26ac0867809974107d08bfa5a32504e67",
           "artifactSizeBytes": 1164,
           "type": "report",
           "notes": "Visibility context report including visible session PIDs and terminal window ID.",
-          "capturedAt": "2026-02-23T22:33:46Z"
+          "capturedAt": "2026-02-23T22:39:12Z"
         },
         {
           "artifactPath": "pm/reports/environment-health.json",
@@ -139,15 +139,15 @@
       "impactScore": 4.0,
       "changeRef": "management/pm/reports/environment-health.json",
       "createdAt": "2026-02-19T20:27:44Z",
-      "updatedAt": "2026-02-23T22:33:44Z",
+      "updatedAt": "2026-02-23T22:39:10Z",
       "evidence": [
         {
           "artifactPath": "management/pm/reports/environment-health.json",
-          "artifactSha256": "cf7d0bd5471d1bafe3e0dfc711c45c1d90e31f4da486ebfc799a1ad77a15dfa6",
+          "artifactSha256": "96796459441067fc3b758fe8e76191c26ac0867809974107d08bfa5a32504e67",
           "artifactSizeBytes": 1164,
           "type": "report",
           "notes": "Deterministic terminal window/tab identity for visible PM console session.",
-          "capturedAt": "2026-02-23T22:33:45Z"
+          "capturedAt": "2026-02-23T22:39:11Z"
         },
         {
           "artifactPath": "pm/reports/environment-health.json",

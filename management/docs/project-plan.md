@@ -195,7 +195,7 @@ Deliver near-IBM parity rendering for AFP input by implementing true AFP object/
   - `fidelityScore >= 0.95` and `averagePixelDiffRatio <= 0.03` on agreed corpus.
 
 ## Proposed Immediate Next Execution Sequence
-1. execute Workstream J as the active stabilization driver: make enforcement deterministic, reduce working-tree noise, and align plan/report signals with real open actions.
-2. update `enforceBoilerplateRollupForFrameworkChanges` to include staged (`git diff --cached --name-only`) plus unstaged/untracked deltas before deciding roll-up compliance.
-3. normalize transient local artifacts and indexing discipline so quality gates evaluate intentional source changes only.
-4. rerun `qualityGate` and PM refresh/report phases, then publish updated next-step guidance from refreshed artifacts.
+1. execute Workstream A as the active fidelity driver: prioritize deterministic object/overlay composition to reduce structural rendering drift.
+2. formalize page object graph and scope stack handling (`BMO/EMO`, resource begin/end scopes) in `afp-engine` interpretation.
+3. implement deterministic paint ordering and close remaining graphics object placeholders (rules, boxes, strokes/fills).
+4. rerun `qualityGate` and PM refresh/report phases, then publish updated fidelity diagnostics and next-step guidance.
