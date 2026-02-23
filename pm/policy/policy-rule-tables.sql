@@ -96,6 +96,7 @@ insert into policy_rule_catalog(rule_id, realm, category, rule_text, source_ref,
   ('PM-CORE-002', 'pm', 'core-derivative-governance', 'Derivative projects must publish machine-readable core/project topology and core-link contracts.', 'pm/workflow/core-derivative-topology.json', 'human', 1, current_timestamp);
 
 insert into pm_data_dictionary(object_name, object_type, realm, definition, source_ref, naming_pattern, updated_at) values
+  ('product_descriptions', 'table', 'pm', 'Canonical core/derivative product registry with hierarchy and role metadata.', 'pm/state/project-state.sqlite', 'snake_case', current_timestamp),
   ('issues', 'table', 'pm', 'Issue log records loaded from docs/issues-log.csv for governance tickle/effectiveness workflows.', 'pm-tools:StateDatabaseTool/initProjectSchema', 'snake_case', current_timestamp),
   ('plan_tasks', 'table', 'pm', 'Project plan task rows loaded from docs/project-plan-progress.csv.', 'pm-tools:StateDatabaseTool/initProjectSchema', 'snake_case', current_timestamp),
   ('governance_events', 'table', 'pm', 'Policy/governance event history loaded from docs/policy-governance-events.csv.', 'pm-tools:StateDatabaseTool/initProjectSchema', 'snake_case', current_timestamp),
