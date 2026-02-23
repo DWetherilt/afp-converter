@@ -1,6 +1,6 @@
 {
   "schemaVersion": "2",
-  "generatedAt": "2026-02-23T22:33:32Z",
+  "generatedAt": "2026-02-23T22:38:58Z",
   "governanceMode": "strict",
   "ci": false,
   "expectRunning": true,
@@ -37,7 +37,7 @@
     "liveProcessCount": 2,
     "backgroundSessionCount": 1,
     "backgroundSessionPids": [
-      97013
+      98118
     ],
     "staleCandidateCount": 0,
     "staleCandidatePids": []

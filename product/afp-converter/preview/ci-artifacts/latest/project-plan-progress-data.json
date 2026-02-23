@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T22:33:37Z",
+  "generatedAt": "2026-02-23T22:38:52Z",
   "source": "sqlite",
-  "taskCount": 40,
-  "filteredCompletedCommittedCount": 5,
+  "taskCount": 37,
+  "filteredCompletedCommittedCount": 8,
   "completedCommittedRule": "Rows with status=complete/completed/done and notes marker '[github:committed]' are excluded.",
   "tasks": [
     {
@@ -449,42 +449,6 @@
       "percent_complete": "100",
       "last_updated": "2026-02-20",
       "notes": "Quality gate validation completed after migration fixes for artifact indexing, tooling guards, tests, and fidelity gate pathing. [github:not-committed]"
-    },
-    {
-      "workstream_uid": "WS-I",
-      "workstream_label": "Workstream I",
-      "workstream_priority_rank": "9",
-      "workstream": "Workstream I",
-      "task": "Stage 1 - Core identity and topology convergence",
-      "priority": "High",
-      "status": "Complete",
-      "percent_complete": "100",
-      "last_updated": "2026-02-23",
-      "notes": "Completed pzAiCore identity convergence and canonical hierarchy alignment with topology drift report baseline (management/pm/reports/topology-structure-drift.json). [github:not-committed]"
-    },
-    {
-      "workstream_uid": "WS-I",
-      "workstream_label": "Workstream I",
-      "workstream_priority_rank": "9",
-      "workstream": "Workstream I",
-      "task": "Stage 2 - Tooling governance refactor",
-      "priority": "High",
-      "status": "Complete",
-      "percent_complete": "100",
-      "last_updated": "2026-02-23",
-      "notes": "Completed managed tool inventory and critical path contract refactor with resolver-backed DB paths and governance tooling artifacts. [github:not-committed]"
-    },
-    {
-      "workstream_uid": "WS-I",
-      "workstream_label": "Workstream I",
-      "workstream_priority_rank": "9",
-      "workstream": "Workstream I",
-      "task": "Stage 3 - Enforcement and closure validation",
-      "priority": "High",
-      "status": "Complete",
-      "percent_complete": "100",
-      "last_updated": "2026-02-23",
-      "notes": "Enabled strict topology and hardcoded critical-path gates and validated full qualityGate pass with evidence pack outputs. [github:not-committed]"
     }
   ],
   "followUps": [
