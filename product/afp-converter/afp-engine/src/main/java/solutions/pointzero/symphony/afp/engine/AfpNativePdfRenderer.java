@@ -1462,6 +1462,41 @@ final class AfpNativePdfRenderer {
         return ordered;
     }
 
+    static List<String> buildPaintOrderSignatureForTest(List<int[]> textOps, List<int[]> imageOps, List<int[]> graphicOps) {
+        List<TextOp> texts = new ArrayList<>();
+        List<ImageOp> images = new ArrayList<>();
+        List<GraphicOp> graphics = new ArrayList<>();
+        if (textOps != null) {
+            for (int[] spec : textOps) {
+                boolean overlay = spec.length > 0 && spec[0] != 0;
+                int depth = spec.length > 1 ? spec[1] : 0;
+                int seq = spec.length > 2 ? spec[2] : 0;
+                texts.add(new TextOp(0, 0, "T", 0, PDType1Font.HELVETICA, 10f, overlay, depth, seq));
+            }
+        }
+        if (imageOps != null) {
+            for (int[] spec : imageOps) {
+                boolean overlay = spec.length > 0 && spec[0] != 0;
+                int depth = spec.length > 1 ? spec[1] : 0;
+                int seq = spec.length > 2 ? spec[2] : 0;
+                images.add(new ImageOp(0, 0, 1, 1, 0, overlay, depth, seq, 0));
+            }
+        }
+        if (graphicOps != null) {
+            for (int[] spec : graphicOps) {
+                boolean overlay = spec.length > 0 && spec[0] != 0;
+                int depth = spec.length > 1 ? spec[1] : 0;
+                int seq = spec.length > 2 ? spec[2] : 0;
+                graphics.add(new GraphicOp(0, 0, 1, 1, 0, overlay, depth, seq));
+            }
+        }
+        List<String> out = new ArrayList<>();
+        for (PagePaintOp op : buildPaintOrder(texts, images, graphics)) {
+            out.add(op.kind.name() + "|overlay=" + op.overlay + "|depth=" + op.resourceDepth + "|seq=" + op.sequence);
+        }
+        return out;
+    }
+
     private static boolean drawDecodedImage(PDDocument document,
                                             PDPageContentStream content,
                                             float pageWidth,

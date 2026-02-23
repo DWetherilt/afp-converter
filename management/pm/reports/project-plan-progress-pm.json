@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:07:33Z",
+  "generatedAt": "2026-02-23T23:13:15Z",
   "source": "sqlite",
   "realm": "pm",
   "realmMapPath": "management/pm/workflow/workstream-realm-map.json",
@@ -12,7 +12,7 @@
     "WS-J"
   ],
   "taskCount": 19,
-  "filteredCompletedCommittedCount": 9,
+  "filteredCompletedCommittedCount": 10,
   "completedCommittedRule": "Rows with status=complete/completed/done and notes marker '[github:committed]' are excluded.",
   "tasks": [
     {

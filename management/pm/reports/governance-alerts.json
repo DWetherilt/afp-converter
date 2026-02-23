@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:07:42Z",
+  "generatedAt": "2026-02-23T23:13:25Z",
   "source": "sqlite",
   "hasActiveGovernanceBreach": false,
   "activeBreachCount": 0,
@@ -94,7 +94,7 @@
   },
   "sqlAuthorityDrift": {
     "schemaVersion": "1",
-    "generatedAt": "2026-02-23T23:07:42Z",
+    "generatedAt": "2026-02-23T23:13:24Z",
     "realm": "pm",
     "trackedFileCount": 34,
     "mismatchCount": 0,

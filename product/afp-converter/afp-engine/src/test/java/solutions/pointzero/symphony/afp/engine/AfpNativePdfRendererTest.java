@@ -23,6 +23,59 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class AfpNativePdfRendererTest {
     @Test
+    void paintOrderSortsByDepthThenSequenceThenKind() {
+        List<String> order = AfpNativePdfRenderer.buildPaintOrderSignatureForTest(
+            List.of(
+                new int[] {0, 1, 2}, // text base depth 1 seq 2
+                new int[] {0, 0, 3}  // text base depth 0 seq 3
+            ),
+            List.of(
+                new int[] {0, 0, 1}, // image base depth 0 seq 1
+                new int[] {1, 0, 2}  // image overlay depth 0 seq 2
+            ),
+            List.of(
+                new int[] {0, 0, 1}  // graphic base depth 0 seq 1
+            )
+        );
+
+        assertEquals(
+            List.of(
+                "IMAGE|overlay=false|depth=0|seq=1",
+                "GRAPHIC|overlay=false|depth=0|seq=1",
+                "IMAGE|overlay=true|depth=0|seq=2",
+                "TEXT|overlay=false|depth=0|seq=3",
+                "TEXT|overlay=false|depth=1|seq=2"
+            ),
+            order
+        );
+    }
+
+    @Test
+    void paintOrderIsDeterministicForOverlayTextImageInterleave() {
+        List<String> order = AfpNativePdfRenderer.buildPaintOrderSignatureForTest(
+            List.of(
+                new int[] {0, 0, 10}, // base text
+                new int[] {1, 0, 12}  // overlay text
+            ),
+            List.of(
+                new int[] {0, 0, 11}, // base image between text sequences
+                new int[] {1, 0, 11}  // overlay image between overlay text sequences
+            ),
+            List.of()
+        );
+
+        assertEquals(
+            List.of(
+                "TEXT|overlay=false|depth=0|seq=10",
+                "IMAGE|overlay=false|depth=0|seq=11",
+                "IMAGE|overlay=true|depth=0|seq=11",
+                "TEXT|overlay=true|depth=0|seq=12"
+            ),
+            order
+        );
+    }
+
+    @Test
     void rendersMultiplePagesFromBpgMarkers(@TempDir Path tempDir) throws Exception {
         byte[] afp = concat(
             sf("D3A8A8", new byte[0]), // BDT

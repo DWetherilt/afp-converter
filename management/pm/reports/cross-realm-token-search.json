@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:07:39Z",
+  "generatedAt": "2026-02-23T23:13:21Z",
   "source": "sqlite",
   "query": "render",
   "databaseCount": 3,
-  "dictionaryMatchCount": 81,
-  "fileHitCount": 142,
+  "dictionaryMatchCount": 82,
+  "fileHitCount": 144,
   "dictionaryMatches": [
     {
       "token": "renderer",
@@ -104,6 +104,10 @@
       "totalOccurrences": 4
     },
     {
+      "token": "afpnativepdfrenderertest",
+      "totalOccurrences": 4
+    },
+    {
       "token": "nativepdfrenderer.render",
       "totalOccurrences": 3
     },
@@ -128,12 +132,12 @@
       "totalOccurrences": 3
     },
     {
-      "token": "afpnativepdfrenderertest",
+      "token": "renderer.",
       "totalOccurrences": 3
     },
     {
-      "token": "renderer.",
-      "totalOccurrences": 3
+      "token": "afpnativepdfrenderer.buildpaintordersignaturefortest",
+      "totalOccurrences": 2
     },
     {
       "token": "afpnativepdfrenderer.lastimageresourcehinttrace",
@@ -545,6 +549,14 @@
       "db": "management/pm/state/application-realm.sqlite",
       "token": "renderpolicy",
       "path": "product/afp-converter/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/RenderPolicy.java",
+      "occurrences": 2,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "management/pm/state/application-realm.sqlite",
+      "token": "afpnativepdfrenderer.buildpaintordersignaturefortest",
+      "path": "product/afp-converter/afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRendererTest.java",
       "occurrences": 2,
       "realm": "application",
       "language": "java"
@@ -1416,6 +1428,14 @@
     {
       "db": "management/pm/state/pm-realm.sqlite",
       "token": "render-path",
+      "path": "management/docs/project-plan-progress.csv",
+      "occurrences": 1,
+      "realm": "pm",
+      "language": "csv"
+    },
+    {
+      "db": "management/pm/state/pm-realm.sqlite",
+      "token": "afpnativepdfrenderertest",
       "path": "management/docs/project-plan-progress.csv",
       "occurrences": 1,
       "realm": "pm",

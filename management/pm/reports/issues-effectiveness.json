@@ -1,14 +1,14 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:07:43Z",
+  "generatedAt": "2026-02-23T23:13:26Z",
   "summary": {
-    "triggeredIssueCount": 4,
-    "highSeverityOpenCount": 4,
-    "openIssueCount": 7,
-    "averageTaskPercentComplete": 96.25,
     "issueCount": 7,
-    "requiresIssuesLogUpdate": false,
-    "taskCount": 48
+    "averageTaskPercentComplete": 98.54,
+    "openIssueCount": 7,
+    "highSeverityOpenCount": 4,
+    "triggeredIssueCount": 4,
+    "taskCount": 48,
+    "requiresIssuesLogUpdate": false
   },
   "fidelity": {
     "fidelityScore": 0.952575,

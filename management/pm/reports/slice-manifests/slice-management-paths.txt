@@ -2,7 +2,6 @@
 .gradle/9.0.0/fileHashes/fileHashes.bin
 .gradle/9.0.0/fileHashes/fileHashes.lock
 .gradle/buildOutputCleanup/buildOutputCleanup.lock
-.idea/workspace.xml
 build/reports/problems/problems-report.html
 management/docs/issues-log.csv
 management/docs/project-plan-progress.csv

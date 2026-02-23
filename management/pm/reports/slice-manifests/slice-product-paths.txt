@@ -1,14 +1,11 @@
-product/afp-converter/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpInterpreter.java
-product/afp-converter/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpScopeGraph.java
-product/afp-converter/afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpInterpreterTest.java
-product/afp-converter/preview/afp-diag.json
+product/afp-converter/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java
+product/afp-converter/afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRendererTest.java
 product/afp-converter/preview/afp-output.pdf
 product/afp-converter/preview/ci-artifacts/latest/action-decision-suggestions.json
 product/afp-converter/preview/ci-artifacts/latest/action-items.json
 product/afp-converter/preview/ci-artifacts/latest/action-owner-summary.json
 product/afp-converter/preview/ci-artifacts/latest/action-sla-history.json
 product/afp-converter/preview/ci-artifacts/latest/action-sla-trend.json
-product/afp-converter/preview/ci-artifacts/latest/afp-diag.json
 product/afp-converter/preview/ci-artifacts/latest/afp-output.pdf
 product/afp-converter/preview/ci-artifacts/latest/application-realm-policy.json
 product/afp-converter/preview/ci-artifacts/latest/application-realm.sqlite

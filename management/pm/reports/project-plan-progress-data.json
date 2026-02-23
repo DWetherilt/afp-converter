@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:07:33Z",
+  "generatedAt": "2026-02-23T23:13:15Z",
   "source": "sqlite",
-  "taskCount": 39,
-  "filteredCompletedCommittedCount": 9,
+  "taskCount": 38,
+  "filteredCompletedCommittedCount": 10,
   "completedCommittedRule": "Rows with status=complete/completed/done and notes marker '[github:committed]' are excluded.",
   "tasks": [
     {
@@ -455,31 +455,19 @@
       "workstream_label": "Renderer Continuation 2026-02-23",
       "workstream_priority_rank": "11",
       "workstream": "Renderer Continuation 2026-02-23",
-      "task": "Add deterministic paint-order assertions for overlay/text/image interleave cases",
-      "priority": "High",
-      "status": "In Progress",
-      "percent_complete": "20",
-      "last_updated": "2026-02-23",
-      "notes": "Activated next slice after scope graph baseline completion; implementing targeted ordering assertions."
-    },
-    {
-      "workstream_uid": "WS-2026-001",
-      "workstream_label": "Renderer Continuation 2026-02-23",
-      "workstream_priority_rank": "11",
-      "workstream": "Renderer Continuation 2026-02-23",
       "task": "Publish updated fidelity diagnostics and next-step deltas for continuation slice",
       "priority": "Medium",
-      "status": "Not Started",
-      "percent_complete": "0",
+      "status": "In Progress",
+      "percent_complete": "30",
       "last_updated": "2026-02-23",
-      "notes": "Planned closeout task for first continuation slice."
+      "notes": "Active closeout task: publish continuation diagnostics and updated next-step deltas after slice-2 commit."
     }
   ],
   "followUps": [
     {
       "note": "Circle back and review restored workbook content against JSON/CSV sources.",
-      "id": "restored-workbook-content-review",
-      "status": "pending"
+      "status": "pending",
+      "id": "restored-workbook-content-review"
     }
   ]
 }
