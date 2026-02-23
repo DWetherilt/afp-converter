@@ -1,6 +1,6 @@
 {
   "schemaVersion": "2",
-  "generatedAt": "2026-02-23T22:26:18Z",
+  "generatedAt": "2026-02-23T22:33:32Z",
   "governanceMode": "strict",
   "ci": false,
   "expectRunning": true,
@@ -23,12 +23,12 @@
     "visibleRunning": true,
     "visibleSessionCount": 1,
     "visibleSessionPids": [
-      88280
+      96372
     ],
     "visibleSessionTtys": [
       "ttys000"
     ],
-    "terminalWindowId": "32477",
+    "terminalWindowId": "32710",
     "terminalTabId": "1",
     "autoLaunchTriggered": false,
     "autoLaunchResponse": ""
@@ -37,7 +37,7 @@
     "liveProcessCount": 2,
     "backgroundSessionCount": 1,
     "backgroundSessionPids": [
-      95147
+      97013
     ],
     "staleCandidateCount": 0,
     "staleCandidatePids": []

@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T22:26:21Z",
+  "generatedAt": "2026-02-23T22:33:35Z",
   "issuesLogPath": "management/docs/issues-log.csv",
   "issuesLogTouchedInWorkingTree": true,
-  "changedPathCount": 459,
-  "triggeredIssueCount": 7,
+  "changedPathCount": 133,
+  "triggeredIssueCount": 4,
   "requiresIssuesLogUpdate": false,
   "triggeredIssues": [
     {
@@ -12,39 +12,8 @@
       "status": "Open",
       "title": "Excel automation and workbook update fragility due Office account/licensing context",
       "matchedComponents": [
-        "build.gradle",
         "management/docs/project-plan-progress.csv",
-        "management/docs/project-plan-progress.xlsx",
-        "management/pm/reports/project-plan-progress-data.json",
-        "management/tools/export_project_plan_progress_json.py",
-        "management/tools/update_project_plan_workbook.py"
-      ]
-    },
-    {
-      "id": "ISSUE-002",
-      "status": "Open",
-      "title": "Workbook repair/corruption when managed sheets are added by XML updater without synchronizing docProps/app.xml sheet metadata",
-      "matchedComponents": [
-        "management/docs/project-plan-progress.xlsx",
-        "management/tools/run_excel_workbook_refresh.py",
-        "management/tools/update_project_plan_workbook.py"
-      ]
-    },
-    {
-      "id": "ISSUE-003",
-      "status": "Open",
-      "title": "Excel automation unavailable in headless/agent context (Apple event connection invalid), strict Excel-required mode fails as designed",
-      "matchedComponents": [
-        "build.gradle",
-        "management/tools/run_excel_workbook_refresh.py"
-      ]
-    },
-    {
-      "id": "ISSUE-004",
-      "status": "Open",
-      "title": "Progress Graph sheet visual/layout quality needs tuning despite functional correctness",
-      "matchedComponents": [
-        "management/docs/project-plan-progress.xlsx"
+        "management/pm/reports/project-plan-progress-data.json"
       ]
     },
     {
@@ -52,16 +21,8 @@
       "status": "Open",
       "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
       "matchedComponents": [
-        "AI-POLICY.md",
-        "README.md",
-        "build.gradle",
-        "management/docs/boilerplate-sync-candidates.xlsx",
-        "management/docs/project-plan-progress.xlsx",
-        "management/docs/update-packages/README.md",
         "management/pm/state/boilerplate-state.sqlite",
-        "management/pm/state/project-state.sqlite",
-        "management/tools/run_excel_workbook_refresh.py",
-        "management/tools/update_project_plan_workbook.py"
+        "management/pm/state/project-state.sqlite"
       ]
     },
     {
@@ -69,84 +30,11 @@
       "status": "Open",
       "title": "Policy-governance sequence drift when updating constitutional/policy text without full checklist sequencing",
       "matchedComponents": [
-        "AI-POLICY.md",
-        "README.md",
-        "SESSION_CHANGELOG.md",
-        "build.gradle",
         "management/docs/issues-log.csv",
-        "management/docs/policy-governance-events.csv",
-        "management/docs/policy-governance-events.xlsx",
         "management/pm/reports/documentation-manifest.json",
         "management/pm/reports/governance-alerts.json",
         "management/pm/reports/version-control-ledger.json",
-        "management/pm/state/project-state.sqlite",
-        "management/tools/action_decision_suggestions.py",
-        "management/tools/action_owner_summary.py",
-        "management/tools/action_sla_trend.py",
-        "management/tools/bootstrap_core_derivative_project.sh",
-        "management/tools/check_action_ingest_strict.py",
-        "management/tools/check_critical_db_hashes.sh",
-        "management/tools/environment_dashboard_report.py",
-        "management/tools/environment_health_check.py",
-        "management/tools/export_boilerplate_package.sh",
-        "management/tools/export_project_plan_progress_json.py",
-        "management/tools/fake-afp-engine.sh",
-        "management/tools/git-hooks/pre-commit",
-        "management/tools/hardcoded_critical_path_gate.py",
-        "management/tools/init_update_package.sh",
-        "management/tools/install_git_hooks.sh",
-        "management/tools/issues_effectiveness_report.py",
-        "management/tools/issues_log_tickle.py",
-        "management/tools/lint_environment_policy_defaults.py",
-        "management/tools/managed_tool_inventory.py",
-        "management/tools/manifest_from_sql.py",
-        "management/tools/manifest_from_sql.sh",
-        "management/tools/minimal_snapshot.sh",
-        "management/tools/minimal_snapshot_guard.sh",
-        "management/tools/pm_console_cleanup.py",
-        "management/tools/pm_console_live_daemon.sh",
-        "management/tools/pm_workflow.py",
-        "management/tools/presentation_ref_lint.py",
-        "management/tools/protect_core_authenticity.sh",
-        "management/tools/realm_drift_verify.sh",
-        "management/tools/realm_knowledge_link_gate.py",
-        "management/tools/realm_knowledge_sync.py",
-        "management/tools/realm_policy_diff.py",
-        "management/tools/realm_policy_sync.py",
-        "management/tools/reasoning_sync.py",
-        "management/tools/recovery_doctor.md",
-        "management/tools/recovery_doctor.sh",
-        "management/tools/recovery_quick_check.sh",
-        "management/tools/remanifest_drill.py",
-        "management/tools/restore_binary_artifacts.sh",
-        "management/tools/restore_core_authenticity.sh",
-        "management/tools/restore_recovery_checkpoint.sh",
-        "management/tools/rollback_manager.py",
-        "management/tools/run_excel_workbook_refresh.py",
-        "management/tools/sql_code_workflow.sh",
-        "management/tools/sql_drift_summary.py",
-        "management/tools/sql_upsert_text_files.sh",
-        "management/tools/tests/test_check_action_ingest_strict.py",
-        "management/tools/tests/test_environment_health_check.py",
-        "management/tools/tests/test_pm_console_cleanup.py",
-        "management/tools/tests/test_pm_environment_ready_chain.py",
-        "management/tools/tests/test_presentation_ref_lint.py",
-        "management/tools/tests/test_realm_knowledge_link_gate.py",
-        "management/tools/tests/test_realm_policy_diff.py",
-        "management/tools/tests/test_realm_policy_sync.py",
-        "management/tools/tests/test_validate_stale_history_report.py",
-        "management/tools/tool_argument_compliance.py",
-        "management/tools/topology_structure_drift.py",
-        "management/tools/update_project_plan_workbook.py",
-        "management/tools/validate_boilerplate_package.sh",
-        "management/tools/validate_environment_health_report.py",
-        "management/tools/validate_stale_history_report.py",
-        "management/tools/versioning.py",
-        "management/tools/workstream_knowledge_distill.py",
-        "management/tools/plan_progress_commit_marker.py",
-        "management/tools/tests/test_plan_progress_commit_marker.py",
-        "management/tools/tests/test_workstream_slice_report.py",
-        "management/tools/workstream_slice_report.py"
+        "management/pm/state/project-state.sqlite"
       ]
     },
     {
@@ -154,16 +42,9 @@
       "status": "Open",
       "title": "Environment readiness drift: daemon-only checks missed visible console verification",
       "matchedComponents": [
-        "AI-POLICY.md",
-        "build.gradle",
-        "management/pm/policy/policy-rule-tables.sql",
         "management/pm/reports/environment-health.json",
         "management/pm/reports/pm-console-stale-cleanup.json",
-        "management/pm/state/project-state.sqlite",
-        "management/pm/workflow/workflow-manifest.json",
-        "management/tools/environment_health_check.py",
-        "management/tools/pm_console_cleanup.py",
-        "management/tools/pm_console_live_daemon.sh"
+        "management/pm/state/project-state.sqlite"
       ]
     }
   ],

@@ -1,2 +1,0 @@
-AI-POLICY.md
-policy/authenticity/index.json

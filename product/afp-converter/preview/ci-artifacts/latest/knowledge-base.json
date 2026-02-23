@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T22:26:28Z",
+  "generatedAt": "2026-02-23T22:33:42Z",
   "source": "sqlite",
   "sourceTable": "knowledge_entries",
   "entryCount": 9,
@@ -31,15 +31,15 @@
       "impactScore": 4.0,
       "changeRef": "management/pm/reports/pm-console-stale-cleanup.json",
       "createdAt": "2026-02-19T20:38:55Z",
-      "updatedAt": "2026-02-23T22:25:14Z",
+      "updatedAt": "2026-02-23T22:31:52Z",
       "evidence": [
         {
           "artifactPath": "management/pm/state/pm-console-stale-history.json",
-          "artifactSha256": "8ad7c95f46649948fe5dffaab470f6a690906bb3a0131a9ecfa8838375b8f299",
-          "artifactSizeBytes": 3285,
+          "artifactSha256": "7326e244a62d95b8b88437c610b8797d5f73769c1e981768ea730c8b3d06b468",
+          "artifactSizeBytes": 3511,
           "type": "report",
           "notes": "Stale duplicate history used for threshold warning decisions.",
-          "capturedAt": "2026-02-23T22:25:15Z"
+          "capturedAt": "2026-02-23T22:31:53Z"
         },
         {
           "artifactPath": "pm/state/pm-console-stale-history.json",
@@ -67,15 +67,15 @@
       "impactScore": 5.0,
       "changeRef": "management/pm/reports/environment-health.json",
       "createdAt": "2026-02-19T19:58:53Z",
-      "updatedAt": "2026-02-23T22:25:13Z",
+      "updatedAt": "2026-02-23T22:31:51Z",
       "evidence": [
         {
           "artifactPath": "management/pm/reports/environment-health.json",
-          "artifactSha256": "d6304b9e586cb994b5c31239fe7cdd31212668858b25a88e624f2e7f98c142fb",
-          "artifactSizeBytes": 1164,
+          "artifactSha256": "2872fb8bf2791cbb39f5f9a04770595663273a309064dad41d9fbc4730cc3aff",
+          "artifactSizeBytes": 1187,
           "type": "report",
           "notes": "Environment preflight status including PID and running state.",
-          "capturedAt": "2026-02-23T22:25:14Z"
+          "capturedAt": "2026-02-23T22:31:52Z"
         },
         {
           "artifactPath": "pm/reports/environment-health.json",
@@ -98,20 +98,20 @@
       "reasoning": "Visible desktop PM console presence is required for environment readiness in local development flows.",
       "contextSnapshot": "management/pm/reports/environment-health.json",
       "outcomeStatus": "applied",
-      "outcomeSummary": "visiblePids=88280; terminalWindowId=32477; visible=true; status=PASS",
+      "outcomeSummary": "visiblePids=96372; terminalWindowId=32710; visible=true; status=PASS",
       "confidence": 5.0,
       "impactScore": 5.0,
       "changeRef": "management/pm/reports/environment-health.json",
       "createdAt": "2026-02-19T20:10:17Z",
-      "updatedAt": "2026-02-23T22:25:12Z",
+      "updatedAt": "2026-02-23T22:31:51Z",
       "evidence": [
         {
           "artifactPath": "management/pm/reports/environment-health.json",
-          "artifactSha256": "d6304b9e586cb994b5c31239fe7cdd31212668858b25a88e624f2e7f98c142fb",
-          "artifactSizeBytes": 1164,
+          "artifactSha256": "2872fb8bf2791cbb39f5f9a04770595663273a309064dad41d9fbc4730cc3aff",
+          "artifactSizeBytes": 1187,
           "type": "report",
           "notes": "Visibility context report including visible session PIDs and terminal window ID.",
-          "capturedAt": "2026-02-23T22:25:13Z"
+          "capturedAt": "2026-02-23T22:31:51Z"
         },
         {
           "artifactPath": "pm/reports/environment-health.json",
@@ -134,20 +134,20 @@
       "reasoning": "Capture terminal window/tab identity for deterministic visible session tracking.",
       "contextSnapshot": "management/pm/reports/environment-health.json",
       "outcomeStatus": "applied",
-      "outcomeSummary": "terminalWindowId=32477; terminalTabId=1; visiblePids=88280",
+      "outcomeSummary": "terminalWindowId=32710; terminalTabId=1; visiblePids=96372",
       "confidence": 5.0,
       "impactScore": 4.0,
       "changeRef": "management/pm/reports/environment-health.json",
       "createdAt": "2026-02-19T20:27:44Z",
-      "updatedAt": "2026-02-23T22:25:11Z",
+      "updatedAt": "2026-02-23T22:31:50Z",
       "evidence": [
         {
           "artifactPath": "management/pm/reports/environment-health.json",
-          "artifactSha256": "d6304b9e586cb994b5c31239fe7cdd31212668858b25a88e624f2e7f98c142fb",
-          "artifactSizeBytes": 1164,
+          "artifactSha256": "2872fb8bf2791cbb39f5f9a04770595663273a309064dad41d9fbc4730cc3aff",
+          "artifactSizeBytes": 1187,
           "type": "report",
           "notes": "Deterministic terminal window/tab identity for visible PM console session.",
-          "capturedAt": "2026-02-23T22:25:12Z"
+          "capturedAt": "2026-02-23T22:31:50Z"
         },
         {
           "artifactPath": "pm/reports/environment-health.json",

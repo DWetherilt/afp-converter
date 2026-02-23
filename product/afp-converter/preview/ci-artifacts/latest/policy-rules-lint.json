@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T22:26:22Z",
+  "generatedAt": "2026-02-23T22:33:35Z",
   "source": "sqlite",
   "sourceTable": "policy_rule_catalog",
   "requiredCount": 9,
