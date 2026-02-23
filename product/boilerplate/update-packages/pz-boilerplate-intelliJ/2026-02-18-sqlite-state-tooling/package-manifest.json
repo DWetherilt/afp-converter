@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1",
+  "packageId": "2026-02-18-sqlite-state-tooling",
+  "sourceRepo": "afp-converter",
+  "targetRepo": "pz-boilerplate-intelliJ",
+  "createdAt": "2026-02-18T21:30:00Z",
+  "supersedes": [],
+  "summary": "Introduce segmented SQLite state stores and route project-management automation through database-backed tools.",
+  "files": [
+    { "path": "AI-POLICY.md", "changeType": "update" },
+    { "path": "README.md", "changeType": "update" },
+    { "path": "build.gradle", "changeType": "update" },
+    { "path": "boilerplate-management/tools/build.gradle", "changeType": "update" },
+    { "path": "boilerplate-management/tools/src/main/java/com/example/product/boilerplate/management/tools/StateDatabaseTool.java", "changeType": "add" }
+  ],
+  "validation": [
+    "./gradlew :boilerplate-tools:compileJava",
+    "./gradlew documentationManifest"
+  ]
+}

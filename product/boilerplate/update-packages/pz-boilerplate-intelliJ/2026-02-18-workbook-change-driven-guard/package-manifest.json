@@ -1,0 +1,28 @@
+{
+  "schemaVersion": "1",
+  "packageId": "pz-boilerplate-intelliJ-workbook-change-driven-guard-2026-02-18",
+  "sourceRepo": "afp-converter",
+  "targetRepo": "pz-boilerplate-intelliJ",
+  "files": [
+    {
+      "path": "README.md",
+      "sizeBytes": 763,
+      "sha256": "954309b284dc363469a56533c38a40032379fe07599e6a843fbfd189f393fb1c"
+    },
+    {
+      "path": "apply-checklist.md",
+      "sizeBytes": 1138,
+      "sha256": "3d389a818bc39e7217093091ff06c9d8097952ac5ac2d78cff756ea679456375"
+    },
+    {
+      "path": "fresh-session-prompt.md",
+      "sizeBytes": 416,
+      "sha256": "bd46a4e240bfb04f640b3d0a446e36703ce0eca84e98205c67381c69f3237493"
+    },
+    {
+      "path": "patches/0001-workbook-change-driven-guard.patch",
+      "sizeBytes": 4135,
+      "sha256": "d8b847eba7dad7516b2c6c06aeb4987c1bd2ac3b3e204b123e8a2bfc5b627103"
+    }
+  ]
+}

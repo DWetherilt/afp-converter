@@ -1,0 +1,29 @@
+{
+  "schemaVersion": "1",
+  "packageId": "2026-02-19-pm-live-actions-governance-automation",
+  "sourceRepo": "afp-converter",
+  "targetRepo": "pz-boilerplate-intelliJ",
+  "createdAt": "2026-02-19T00:00:00Z",
+  "summary": "Adds persistent PM live-console default check, action governance automation, strict ingest gate, policy diffing, and cross-realm action token search.",
+  "files": [
+    { "path": "build.gradle", "changeType": "update" },
+    { "path": "AI-POLICY.md", "changeType": "update" },
+    { "path": "management/pm/workflow/workflow-manifest.json", "changeType": "update" },
+    { "path": "management/pm/policy/policy-rule-tables.sql", "changeType": "update" },
+    { "path": "management/docs/SQL_FIRST_WORKFLOW.md", "changeType": "update" },
+    { "path": "management/pm-console/src/main/java/solutions/pointzero/symphony/management/pm/console/PmConsoleMain.java", "changeType": "update" },
+    { "path": "management/pm-management/tools/src/main/java/solutions/pointzero/symphony/management/pm/management/tools/StateDatabaseTool.java", "changeType": "update" },
+    { "path": "management/tools/pm_console_live_daemon.sh", "changeType": "add" },
+    { "path": "management/tools/realm_policy_sync.py", "changeType": "add_or_update" },
+    { "path": "management/tools/action_decision_suggestions.py", "changeType": "add" },
+    { "path": "management/tools/check_action_ingest_strict.py", "changeType": "add" },
+    { "path": "management/tools/realm_policy_diff.py", "changeType": "add" },
+    { "path": "management/tools/reasoning_sync.py", "changeType": "update" },
+    { "path": "management/tools/tests/test_realm_policy_sync.py", "changeType": "add" }
+  ],
+  "validation": [
+    "./gradlew --no-daemon :pm-console:classes :pm-tools:classes actionItemsReport actionDecisionSuggestionReport actionIngestStrictGate realmPolicySync realmPolicyDiffReport crossRealmActionTokenSearch reasoningDatabases realmPolicySyncPyTests",
+    "management/tools/pm_console_live_daemon.sh start",
+    "management/tools/pm_console_live_daemon.sh status"
+  ]
+}

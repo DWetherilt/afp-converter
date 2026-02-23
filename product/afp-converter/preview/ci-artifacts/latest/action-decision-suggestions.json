@@ -1,0 +1,158 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-23T22:26:26Z",
+  "source": {
+    "actions": "management/pm/reports/action-items.json",
+    "decisions": "management/pm/reports/decision-priority-queue.json"
+  },
+  "itemCount": 3,
+  "suggestions": [
+    {
+      "actionId": "ACT-2026-02-23-WSJ-001",
+      "actionRef": "Action | 2026-02-23 | #001",
+      "realm": "pm",
+      "title": "Execute WS-J migration slicing and SQL reconciliation",
+      "status": "in_progress",
+      "suggestions": [
+        {
+          "decisionId": "PM-DEC-WSJ-2026-02-23-001",
+          "decisionRef": "Decision | 2026-02-23 | #001",
+          "realm": "pm",
+          "title": "Stabilize gate determinism and branch slicing execution",
+          "score": 3.746,
+          "impactScore": 74.575
+        },
+        {
+          "decisionId": "PM-DEC-QUEUE-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
+          "realm": "pm",
+          "title": "Adopt SQL decision queue as default PM driver",
+          "score": 2.765,
+          "impactScore": 76.475
+        },
+        {
+          "decisionId": "APP-RENDER-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
+          "realm": "application",
+          "title": "Close Workstream A graphics semantics gap",
+          "score": 0.71,
+          "impactScore": 70.975
+        },
+        {
+          "decisionId": "APP-TEXT-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
+          "realm": "application",
+          "title": "Complete coded-font parity tuning",
+          "score": 0.655,
+          "impactScore": 65.45
+        },
+        {
+          "decisionId": "BP-DEC-SUB-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
+          "realm": "boilerplate",
+          "title": "Promote recovery/checksum package to boilerplate",
+          "score": 0.652,
+          "impactScore": 65.25
+        }
+      ]
+    },
+    {
+      "actionId": "ACT-2026-02-23-CORE-002",
+      "actionRef": "Action | 2026-02-23 | #002",
+      "realm": "pm",
+      "title": "Segment tooling by realm and enforce ownership-negotiation writes",
+      "status": "open",
+      "suggestions": [
+        {
+          "decisionId": "PM-DEC-QUEUE-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
+          "realm": "pm",
+          "title": "Adopt SQL decision queue as default PM driver",
+          "score": 2.765,
+          "impactScore": 76.475
+        },
+        {
+          "decisionId": "PM-DEC-WSJ-2026-02-23-001",
+          "decisionRef": "Decision | 2026-02-23 | #001",
+          "realm": "pm",
+          "title": "Stabilize gate determinism and branch slicing execution",
+          "score": 2.746,
+          "impactScore": 74.575
+        },
+        {
+          "decisionId": "APP-RENDER-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
+          "realm": "application",
+          "title": "Close Workstream A graphics semantics gap",
+          "score": 0.71,
+          "impactScore": 70.975
+        },
+        {
+          "decisionId": "APP-TEXT-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
+          "realm": "application",
+          "title": "Complete coded-font parity tuning",
+          "score": 0.655,
+          "impactScore": 65.45
+        },
+        {
+          "decisionId": "BP-DEC-SUB-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
+          "realm": "boilerplate",
+          "title": "Promote recovery/checksum package to boilerplate",
+          "score": 0.652,
+          "impactScore": 65.25
+        }
+      ]
+    },
+    {
+      "actionId": "ACT-2026-02-23-CORE-001",
+      "actionRef": "Action | 2026-02-23 | #003",
+      "realm": "pm",
+      "title": "Enforce DB-derived CLI argument resolution",
+      "status": "open",
+      "suggestions": [
+        {
+          "decisionId": "PM-DEC-QUEUE-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
+          "realm": "pm",
+          "title": "Adopt SQL decision queue as default PM driver",
+          "score": 2.765,
+          "impactScore": 76.475
+        },
+        {
+          "decisionId": "PM-DEC-WSJ-2026-02-23-001",
+          "decisionRef": "Decision | 2026-02-23 | #001",
+          "realm": "pm",
+          "title": "Stabilize gate determinism and branch slicing execution",
+          "score": 2.746,
+          "impactScore": 74.575
+        },
+        {
+          "decisionId": "APP-RENDER-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
+          "realm": "application",
+          "title": "Close Workstream A graphics semantics gap",
+          "score": 0.71,
+          "impactScore": 70.975
+        },
+        {
+          "decisionId": "APP-TEXT-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
+          "realm": "application",
+          "title": "Complete coded-font parity tuning",
+          "score": 0.655,
+          "impactScore": 65.45
+        },
+        {
+          "decisionId": "BP-DEC-SUB-001",
+          "decisionRef": "Decision | 2026-02-19 | #001",
+          "realm": "boilerplate",
+          "title": "Promote recovery/checksum package to boilerplate",
+          "score": 0.652,
+          "impactScore": 65.25
+        }
+      ]
+    }
+  ]
+}

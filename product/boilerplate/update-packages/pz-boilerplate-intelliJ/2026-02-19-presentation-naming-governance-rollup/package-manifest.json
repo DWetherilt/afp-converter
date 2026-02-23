@@ -1,0 +1,27 @@
+{
+  "schemaVersion": "1",
+  "packageId": "2026-02-19-presentation-naming-governance-rollup",
+  "sourceRepo": "afp-converter",
+  "targetRepo": "pz-boilerplate-intelliJ",
+  "createdAt": "2026-02-19T00:00:00Z",
+  "summary": "Promote human-friendly presentation naming governance and lint enforcement (with console display controls and migration guidance).",
+  "validation": {
+    "qualityGate": true,
+    "sqlAuthority": true,
+    "notes": "Apply and run qualityGate in target repo."
+  },
+  "files": [
+    "build.gradle",
+    "management/pm/policy/policy-rule-tables.sql",
+    "management/tools/presentation_ref_lint.py",
+    "management/tools/action_decision_suggestions.py",
+    "management/tools/tests/test_presentation_ref_lint.py",
+    "management/pm-management/tools/src/main/java/solutions/pointzero/symphony/management/pm/management/tools/StateDatabaseTool.java",
+    "management/pm-management/tools/src/test/java/solutions/pointzero/symphony/management/pm/management/tools/StateDatabaseToolTest.java",
+    "management/pm-console/src/main/java/solutions/pointzero/symphony/management/pm/console/PmConsoleMain.java",
+    "management/pm-console/src/test/java/solutions/pointzero/symphony/management/pm/console/PmConsoleMainTest.java",
+    "README.md",
+    "management/docs/SQL_FIRST_WORKFLOW.md",
+    "management/docs/PRESENTATION_ID_MIGRATION.md"
+  ]
+}

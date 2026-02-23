@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-23T22:26:24Z",
+  "realm": "application",
+  "expectedManagedFileCount": 65,
+  "indexedManagedFileCount": 65,
+  "missingCount": 0,
+  "extraCount": 0,
+  "coverageRatio": 1.0,
+  "missingFiles": [],
+  "extraFiles": [],
+  "ok": true,
+  "message": "Realm code coverage is complete."
+}

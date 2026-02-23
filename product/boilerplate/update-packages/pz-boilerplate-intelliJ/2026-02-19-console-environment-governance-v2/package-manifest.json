@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "1",
+  "packageId": "2026-02-19-console-environment-governance-v2",
+  "title": "Console Environment Governance v2",
+  "summary": "Adds visible-console gating, schema checks, stale-session policy, and deterministic session identity persistence.",
+  "createdAt": "2026-02-19T20:30:00Z",
+  "sourceRepo": "afp-converter",
+  "applyOrder": [
+    "build.gradle",
+    "management/tools/environment_health_check.py",
+    "management/tools/pm_console_cleanup.py",
+    "management/tools/validate_environment_health_report.py",
+    "management/tools/tests/test_environment_health_check.py",
+    "management/tools/tests/test_pm_console_cleanup.py",
+    "management/pm-console/src/main/java/solutions/pointzero/symphony/management/pm/console/PmConsoleMain.java",
+    "management/pm/workflow/workflow-manifest.json",
+    "management/pm/policy/policy-rule-tables.sql",
+    "AI-POLICY.md",
+    ".github/workflows/ci.yml"
+  ],
+  "notes": [
+    "Environment-first gate now verifies visible desktop console locally and CI-safe behavior in headless mode.",
+    "Stale-session tracking now supports report/clean policy and warning thresholds.",
+    "PM console status now surfaces environment/stale telemetry from reports."
+  ]
+}

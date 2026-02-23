@@ -1,0 +1,20 @@
+{
+  "schemaVersion": "1",
+  "packageId": "2026-02-18-vcs-file-discipline-ledger",
+  "sourceRepo": "afp-converter",
+  "targetRepo": "pz-boilerplate-intelliJ",
+  "createdAt": "2026-02-18T22:10:30Z",
+  "supersedes": [],
+  "summary": "Add database-backed VCS/file-discipline mirror and ledger artifact.",
+  "files": [
+    { "path": "AI-POLICY.md", "changeType": "update" },
+    { "path": "README.md", "changeType": "update" },
+    { "path": "build.gradle", "changeType": "update" },
+    { "path": "boilerplate-management/tools/src/main/java/com/example/product/boilerplate/management/tools/StateDatabaseTool.java", "changeType": "update" },
+    { "path": "product/afp-converter/preview/version-control-ledger.json", "changeType": "add" }
+  ],
+  "validation": [
+    "./gradlew :boilerplate-tools:compileJava",
+    "./gradlew documentationManifest"
+  ]
+}

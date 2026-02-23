@@ -1,0 +1,9 @@
+{
+  "packageId": "2026-02-23-workstream-i-three-stage-governance-hardening",
+  "sourceRepo": "afp-converter",
+  "targetRepo": "pz-boilerplate-intelliJ",
+  "createdAt": "2026-02-23T00:00:00Z",
+  "promotionStatus": "pending_review",
+  "summary": "Workstream I three-stage governance hardening: path-contract resolver, topology drift gate, hardcoded critical-path gate, and staged scope restructure.",
+  "supersedes": []
+}
