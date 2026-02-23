@@ -136,6 +136,7 @@ Use this file as the first-read operational contract before making changes.
 - Workstream-to-realm mapping source: `management/pm/workflow/workstream-realm-map.json`
 - Plan commit-marker lint report: `management/pm/reports/project-plan-commit-marker-lint.json`
 - Workstream slice evidence report: `management/pm/reports/workstream-j-slice-evidence.json`
+- Active workstream presentation index: `management/pm/reports/workstream-presentation-index.json`
 - Project file inventory export: `management/pm/reports/repo-file-inventory-with-context.csv`
 - Boilerplate package inventory export: `management/pm/reports/boilerplate-package-files-with-context.csv`
 - Excel macro module source: `management/tools/WorkbookUpdater.bas`
@@ -189,6 +190,10 @@ When implementing any meaningful change:
      - `[github:committed]` when the work is committed/pushed.
      - `[github:not-committed]` when completed locally but not yet committed/pushed.
    - Progress report exports must exclude only rows marked complete + `[github:committed]`.
+0.35. Workstream identity and presentation discipline:
+   - `workstream_uid` is the authoritative persistent identifier and must remain unique across project history.
+   - User-facing workstream letters (`Workstream A..Z`) are presentation aliases for active rows only and may be reassigned between cycles.
+   - Publish active alias mapping in `management/pm/reports/workstream-presentation-index.json` and include internal UID when reporting progress.
 0.5. Rollback preflight (required for high-risk project-level mutations):
    - Create checkpoint: `CHECKPOINT_LABEL=<label> ./gradlew createRollbackCheckpoint`
    - Note checkpoint label/intent in `SESSION_CHANGELOG.md` at change start.

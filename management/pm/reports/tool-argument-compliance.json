@@ -1,15 +1,15 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T22:45:25Z",
+  "generatedAt": "2026-02-23T22:57:21Z",
   "source": "static-argument-scan",
-  "rowCount": 400,
+  "rowCount": 405,
   "byClassification": {
-    "constant": 132,
+    "constant": 133,
     "db-hardcoded": 6,
     "db-path": 9,
     "env-derived": 2,
-    "input-path": 39,
-    "output-path": 212
+    "input-path": 40,
+    "output-path": 215
   },
   "rows": [
     {
@@ -511,427 +511,434 @@
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2031,
-      "argumentValue": "product/afp-converter/preview/afp-output.pdf",
-      "classification": "constant",
-      "reason": "Constant argument."
-    },
-    {
-      "sourceFile": "build.gradle",
       "line": 2032,
-      "argumentValue": "product/afp-converter/preview/afp-output.html",
+      "argumentValue": "product/afp-converter/preview/afp-output.pdf",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
       "line": 2033,
-      "argumentValue": "product/afp-converter/preview/afp-meta.json",
-      "classification": "constant",
-      "reason": "Constant argument."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2034,
-      "argumentValue": "product/afp-converter/preview/afp-diag.json",
-      "classification": "constant",
-      "reason": "Constant argument."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2035,
-      "argumentValue": "product/afp-converter/preview/fidelity-report.json",
-      "classification": "constant",
-      "reason": "Constant argument."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2068,
-      "argumentValue": "management/pm/workflow/workstream-realm-map.json",
-      "classification": "constant",
-      "reason": "Constant argument."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2070,
-      "argumentValue": "management/pm/policy/policy-rule-tables.sql",
-      "classification": "constant",
-      "reason": "Constant argument."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2096,
-      "argumentValue": "management/pm/state/realm-policy-snapshot.json",
-      "classification": "constant",
-      "reason": "Constant argument."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2097,
-      "argumentValue": "management/pm/state/action-sla-history.json",
-      "classification": "constant",
-      "reason": "Constant argument."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2098,
-      "argumentValue": "management/pm/state/pm-console-stale-history.json",
-      "classification": "constant",
-      "reason": "Constant argument."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2149,
-      "argumentValue": "product/afp-converter/preview/ci-artifacts/latest",
-      "classification": "constant",
-      "reason": "Constant argument."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2154,
-      "argumentValue": "product/afp-converter/preview/afp-output.pdf",
-      "classification": "constant",
-      "reason": "Constant argument."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2155,
       "argumentValue": "product/afp-converter/preview/afp-output.html",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2156,
+      "line": 2034,
       "argumentValue": "product/afp-converter/preview/afp-meta.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2157,
+      "line": 2035,
       "argumentValue": "product/afp-converter/preview/afp-diag.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2158,
+      "line": 2036,
       "argumentValue": "product/afp-converter/preview/fidelity-report.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2185,
+      "line": 2071,
+      "argumentValue": "management/pm/workflow/workstream-realm-map.json",
+      "classification": "constant",
+      "reason": "Constant argument."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2073,
       "argumentValue": "management/pm/policy/policy-rule-tables.sql",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2214,
+      "line": 2099,
       "argumentValue": "management/pm/state/realm-policy-snapshot.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2215,
+      "line": 2100,
       "argumentValue": "management/pm/state/action-sla-history.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2216,
+      "line": 2101,
       "argumentValue": "management/pm/state/pm-console-stale-history.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2264,
+      "line": 2152,
+      "argumentValue": "product/afp-converter/preview/ci-artifacts/latest",
+      "classification": "constant",
+      "reason": "Constant argument."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2157,
+      "argumentValue": "product/afp-converter/preview/afp-output.pdf",
+      "classification": "constant",
+      "reason": "Constant argument."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2158,
+      "argumentValue": "product/afp-converter/preview/afp-output.html",
+      "classification": "constant",
+      "reason": "Constant argument."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2159,
+      "argumentValue": "product/afp-converter/preview/afp-meta.json",
+      "classification": "constant",
+      "reason": "Constant argument."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2160,
+      "argumentValue": "product/afp-converter/preview/afp-diag.json",
+      "classification": "constant",
+      "reason": "Constant argument."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2161,
+      "argumentValue": "product/afp-converter/preview/fidelity-report.json",
+      "classification": "constant",
+      "reason": "Constant argument."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2188,
+      "argumentValue": "management/pm/policy/policy-rule-tables.sql",
+      "classification": "constant",
+      "reason": "Constant argument."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2217,
+      "argumentValue": "management/pm/state/realm-policy-snapshot.json",
+      "classification": "constant",
+      "reason": "Constant argument."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2218,
+      "argumentValue": "management/pm/state/action-sla-history.json",
+      "classification": "constant",
+      "reason": "Constant argument."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2219,
+      "argumentValue": "management/pm/state/pm-console-stale-history.json",
+      "classification": "constant",
+      "reason": "Constant argument."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2267,
       "argumentValue": "product/afp-converter/preview/ci-artifacts/latest/index.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2286,
+      "line": 2289,
       "argumentValue": "product/afp-converter/preview/ci-artifacts/latest/index.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2310,
+      "line": 2313,
       "argumentValue": "management/tools/rollback_manager.py",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2312,
+      "line": 2315,
       "argumentValue": "management/pm/checkpoints",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2328,
+      "line": 2331,
       "argumentValue": "management/tools/rollback_manager.py",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2330,
+      "line": 2333,
       "argumentValue": "management/pm/checkpoints",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2344,
+      "line": 2347,
       "argumentValue": "management/tools/rollback_manager.py",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2346,
+      "line": 2349,
       "argumentValue": "management/pm/checkpoints",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2490,
+      "line": 2486,
+      "argumentValue": "management/tools/workstream_presentation_index.py",
+      "classification": "constant",
+      "reason": "Constant argument."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2502,
       "argumentValue": "product/afp-converter/afp-api/src/main/java",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2491,
+      "line": 2503,
       "argumentValue": "product/afp-converter/afp-engine/src/main/java",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2492,
+      "line": 2504,
       "argumentValue": "product/afp-converter/afp-cli/src/main/java",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2524,
+      "line": 2536,
       "argumentValue": "product/afp-converter/afp-api/build.gradle",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2524,
+      "line": 2536,
       "argumentValue": "product/afp-converter/afp-cli/build.gradle",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2524,
+      "line": 2536,
       "argumentValue": "product/afp-converter/afp-engine/build.gradle",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2548,
+      "line": 2560,
       "argumentValue": "management/pm-management/tools/src/main/java/solutions/pointzero/symphony/management/pm/tools",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2585,
+      "line": 2597,
       "argumentValue": "product/afp-converter/preview/governance-alerts.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2586,
+      "line": 2598,
       "argumentValue": "product/afp-converter/preview/version-control-ledger.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2587,
+      "line": 2599,
       "argumentValue": "product/afp-converter/preview/issues-log-tickle.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2588,
+      "line": 2600,
       "argumentValue": "product/afp-converter/preview/issues-effectiveness.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2589,
+      "line": 2601,
       "argumentValue": "product/afp-converter/preview/project-plan-next-step.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2590,
+      "line": 2602,
       "argumentValue": "product/afp-converter/preview/project-plan-progress-data.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2591,
+      "line": 2603,
       "argumentValue": "product/afp-converter/preview/workbook-refresh-status.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2592,
+      "line": 2604,
       "argumentValue": "product/afp-converter/preview/repo-file-inventory-with-context.csv",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2593,
+      "line": 2605,
       "argumentValue": "product/afp-converter/preview/boilerplate-package-files-with-context.csv",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2594,
+      "line": 2606,
       "argumentValue": "product/afp-converter/preview/documentation-manifest.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2595,
+      "line": 2607,
       "argumentValue": "product/afp-converter/preview/version.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2654,
+      "line": 2666,
       "argumentValue": "management/pm-management/tools/",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2655,
+      "line": 2667,
       "argumentValue": "management/pm-console/",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2656,
+      "line": 2668,
       "argumentValue": "management/tools/run_excel_workbook_refresh.py",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2657,
+      "line": 2669,
       "argumentValue": "management/tools/issues_effectiveness_report.py",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2658,
+      "line": 2670,
       "argumentValue": "management/pm/policy/",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2670,
+      "line": 2682,
       "argumentValue": "product/boilerplate/update-packages/pz-boilerplate-intelliJ/",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2686,
+      "line": 2698,
       "argumentValue": "product/afp-converter/afp-api/src/main/java",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2687,
+      "line": 2699,
       "argumentValue": "product/afp-converter/afp-engine/src/main/java",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2688,
+      "line": 2700,
       "argumentValue": "product/afp-converter/afp-engine/src/test/java",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2689,
+      "line": 2701,
       "argumentValue": "product/afp-converter/afp-cli/src/main/java",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2690,
+      "line": 2702,
       "argumentValue": "management/pm-management/tools/src/main/java",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2691,
+      "line": 2703,
       "argumentValue": "management/pm-console/src/main/java",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2692,
+      "line": 2704,
       "argumentValue": "product/afp-converter/afp-cli/build.gradle",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2693,
+      "line": 2705,
       "argumentValue": "management/pm-console/build.gradle",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2741,
+      "line": 2753,
       "argumentValue": "management/tools/tests",
       "classification": "constant",
       "reason": "Constant argument."
@@ -952,28 +959,28 @@
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2091,
+      "line": 2094,
       "argumentValue": "management/pm/state/reasoning-experience.sqlite",
       "classification": "db-hardcoded",
       "reason": "Database path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2092,
+      "line": 2095,
       "argumentValue": "management/pm/state/reasoning-derived.sqlite",
       "classification": "db-hardcoded",
       "reason": "Database path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2209,
+      "line": 2212,
       "argumentValue": "management/pm/state/reasoning-experience.sqlite",
       "classification": "db-hardcoded",
       "reason": "Database path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2210,
+      "line": 2213,
       "argumentValue": "management/pm/state/reasoning-derived.sqlite",
       "classification": "db-hardcoded",
       "reason": "Database path literal found."
@@ -994,49 +1001,49 @@
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2091,
+      "line": 2094,
       "argumentValue": "management/pm/state/reasoning-experience.sqlite",
       "classification": "db-path",
       "reason": "Database path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2092,
+      "line": 2095,
       "argumentValue": "management/pm/state/reasoning-derived.sqlite",
       "classification": "db-path",
       "reason": "Database path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2209,
+      "line": 2212,
       "argumentValue": "management/pm/state/reasoning-experience.sqlite",
       "classification": "db-path",
       "reason": "Database path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2210,
+      "line": 2213,
       "argumentValue": "management/pm/state/reasoning-derived.sqlite",
       "classification": "db-path",
       "reason": "Database path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2604,
+      "line": 2616,
       "argumentValue": "product/afp-converter/preview/state/project-state.sqlite",
       "classification": "db-path",
       "reason": "Database path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2605,
+      "line": 2617,
       "argumentValue": "product/afp-converter/preview/state/boilerplate-state.sqlite",
       "classification": "db-path",
       "reason": "Database path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2607,
+      "line": 2619,
       "argumentValue": "product/boilerplate/state/boilerplate-state.sqlite",
       "classification": "db-path",
       "reason": "Database path literal found."
@@ -1232,99 +1239,106 @@
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2026,
+      "line": 2027,
       "argumentValue": "management/docs/API.md",
       "classification": "input-path",
       "reason": "Document source path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2027,
-      "argumentValue": "management/docs/PRESENTATION_ID_MIGRATION.md",
-      "classification": "input-path",
-      "reason": "Document source path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
       "line": 2028,
-      "argumentValue": "management/docs/project-plan.md",
+      "argumentValue": "management/docs/PRESENTATION_ID_MIGRATION.md",
       "classification": "input-path",
       "reason": "Document source path literal found."
     },
     {
       "sourceFile": "build.gradle",
       "line": 2029,
+      "argumentValue": "management/docs/project-plan.md",
+      "classification": "input-path",
+      "reason": "Document source path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2030,
       "argumentValue": "management/docs/boilerplate-sync-candidates.xlsx",
       "classification": "input-path",
       "reason": "Document source path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2153,
+      "line": 2156,
       "argumentValue": "management/docs/PRESENTATION_ID_MIGRATION.md",
       "classification": "input-path",
       "reason": "Document source path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2218,
+      "line": 2221,
       "argumentValue": "management/docs/fidelity-corpus.txt",
       "classification": "input-path",
       "reason": "Document source path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2219,
-      "argumentValue": "management/docs/project-plan.md",
-      "classification": "input-path",
-      "reason": "Document source path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2220,
-      "argumentValue": "management/docs/project-plan-progress.csv",
-      "classification": "input-path",
-      "reason": "Document source path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2221,
-      "argumentValue": "management/docs/project-plan-progress.xlsx",
-      "classification": "input-path",
-      "reason": "Document source path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
       "line": 2222,
-      "argumentValue": "management/docs/policy-governance-events.csv",
+      "argumentValue": "management/docs/project-plan.md",
       "classification": "input-path",
       "reason": "Document source path literal found."
     },
     {
       "sourceFile": "build.gradle",
       "line": 2223,
-      "argumentValue": "management/docs/policy-governance-events.xlsx",
+      "argumentValue": "management/docs/project-plan-progress.csv",
       "classification": "input-path",
       "reason": "Document source path literal found."
     },
     {
       "sourceFile": "build.gradle",
       "line": 2224,
+      "argumentValue": "management/docs/project-plan-progress.xlsx",
+      "classification": "input-path",
+      "reason": "Document source path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2225,
+      "argumentValue": "management/docs/policy-governance-events.csv",
+      "classification": "input-path",
+      "reason": "Document source path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2226,
+      "argumentValue": "management/docs/policy-governance-events.xlsx",
+      "classification": "input-path",
+      "reason": "Document source path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2227,
       "argumentValue": "management/docs/boilerplate-sync-candidates.xlsx",
       "classification": "input-path",
       "reason": "Document source path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2369,
+      "line": 2372,
       "argumentValue": "management/docs/project-plan.md",
       "classification": "input-path",
       "reason": "Document source path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2470,
+      "line": 2473,
       "argumentValue": "management/docs/project-plan.md",
+      "classification": "input-path",
+      "reason": "Document source path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2487,
+      "argumentValue": "management/docs/project-plan-progress.csv",
       "classification": "input-path",
       "reason": "Document source path literal found."
     },
@@ -2044,771 +2058,792 @@
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2021,
+      "line": 2022,
       "argumentValue": "management/pm/reports/documentation-manifest.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2036,
-      "argumentValue": "management/pm/reports/project-plan-progress-data.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
       "line": 2037,
-      "argumentValue": "management/pm/reports/project-plan-progress-application.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2038,
-      "argumentValue": "management/pm/reports/project-plan-progress-pm.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2039,
-      "argumentValue": "management/pm/reports/project-plan-progress-boilerplate.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2040,
-      "argumentValue": "management/pm/reports/project-plan-commit-marker-lint.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2041,
-      "argumentValue": "management/pm/reports/workstream-j-slice-evidence.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2042,
-      "argumentValue": "management/pm/reports/governance-alerts.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2043,
-      "argumentValue": "management/pm/reports/version-control-ledger.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2044,
-      "argumentValue": "management/pm/reports/identifier-registry.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2045,
-      "argumentValue": "management/pm/reports/remanifest-drill.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2046,
-      "argumentValue": "management/pm/reports/issues-log-tickle.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2047,
-      "argumentValue": "management/pm/reports/issues-effectiveness.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2048,
-      "argumentValue": "management/pm/reports/environment-health.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2049,
-      "argumentValue": "management/pm/reports/pm-console-stale-cleanup.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2050,
-      "argumentValue": "management/pm/reports/environment-dashboard.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2051,
-      "argumentValue": "management/pm/reports/policy-rules.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2052,
-      "argumentValue": "management/pm/reports/policy-rules-lint.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2053,
-      "argumentValue": "management/pm/reports/presentation-ref-lint.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2054,
-      "argumentValue": "management/pm/reports/sql-authority-application.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2055,
-      "argumentValue": "management/pm/reports/sql-authority-pm.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2056,
-      "argumentValue": "management/pm/reports/sql-authority-boilerplate.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2057,
-      "argumentValue": "management/pm/reports/sql-coverage-application.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2058,
-      "argumentValue": "management/pm/reports/sql-coverage-pm.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2059,
-      "argumentValue": "management/pm/reports/sql-coverage-boilerplate.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2060,
-      "argumentValue": "management/pm/reports/sql-reconstruction-application.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2061,
-      "argumentValue": "management/pm/reports/sql-reconstruction-pm.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2062,
-      "argumentValue": "management/pm/reports/sql-reconstruction-boilerplate.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2063,
-      "argumentValue": "management/pm/reports/cross-realm-token-search.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2064,
-      "argumentValue": "management/pm/reports/cross-realm-action-token-search.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2065,
-      "argumentValue": "management/pm/reports/data-dictionary.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2066,
-      "argumentValue": "management/pm/reports/data-dictionary-lint.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2067,
-      "argumentValue": "management/pm/reports/project-plan-next-step.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2069,
-      "argumentValue": "management/pm/reports/workbook-refresh-status.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2071,
-      "argumentValue": "management/pm/reports/repo-file-inventory-with-context.csv",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2072,
-      "argumentValue": "management/pm/reports/boilerplate-package-files-with-context.csv",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2073,
-      "argumentValue": "management/pm/reports/boilerplate-promotion-status.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2074,
-      "argumentValue": "management/pm/reports/decision-priority-queue.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2075,
-      "argumentValue": "management/pm/reports/knowledge-base.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2076,
-      "argumentValue": "management/pm/reports/realm-knowledge-sync.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2077,
-      "argumentValue": "management/pm/reports/realm-knowledge-link-gate.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2078,
-      "argumentValue": "management/pm/reports/action-items.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2079,
-      "argumentValue": "management/pm/reports/action-decision-suggestions.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2080,
-      "argumentValue": "management/pm/reports/action-owner-summary.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2081,
-      "argumentValue": "management/pm/reports/action-sla-trend.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2082,
-      "argumentValue": "management/pm/reports/action-ingest-strict.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2083,
-      "argumentValue": "management/pm/reports/realm-policy-sync.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2084,
-      "argumentValue": "management/pm/reports/realm-policy-diff.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2085,
-      "argumentValue": "management/pm/reports/application-realm-policy.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2086,
-      "argumentValue": "management/pm/reports/pm-realm-policy.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2087,
-      "argumentValue": "management/pm/reports/boilerplate-realm-policy.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2088,
-      "argumentValue": "management/pm/reports/reasoning-drive.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2099,
-      "argumentValue": "management/pm/reports/environment-dashboard.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2100,
-      "argumentValue": "management/pm/reports/version.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2159,
       "argumentValue": "management/pm/reports/project-plan-progress-data.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2160,
+      "line": 2038,
+      "argumentValue": "management/pm/reports/project-plan-progress-application.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2039,
+      "argumentValue": "management/pm/reports/project-plan-progress-pm.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2040,
+      "argumentValue": "management/pm/reports/project-plan-progress-boilerplate.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2041,
+      "argumentValue": "management/pm/reports/project-plan-commit-marker-lint.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2042,
+      "argumentValue": "management/pm/reports/workstream-j-slice-evidence.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2043,
+      "argumentValue": "management/pm/reports/workstream-presentation-index.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2044,
       "argumentValue": "management/pm/reports/governance-alerts.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2161,
+      "line": 2045,
       "argumentValue": "management/pm/reports/version-control-ledger.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2162,
+      "line": 2046,
       "argumentValue": "management/pm/reports/identifier-registry.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2163,
+      "line": 2047,
       "argumentValue": "management/pm/reports/remanifest-drill.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2164,
+      "line": 2048,
       "argumentValue": "management/pm/reports/issues-log-tickle.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2165,
+      "line": 2049,
       "argumentValue": "management/pm/reports/issues-effectiveness.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2166,
+      "line": 2050,
       "argumentValue": "management/pm/reports/environment-health.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2167,
+      "line": 2051,
       "argumentValue": "management/pm/reports/pm-console-stale-cleanup.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2168,
+      "line": 2052,
       "argumentValue": "management/pm/reports/environment-dashboard.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2169,
+      "line": 2053,
       "argumentValue": "management/pm/reports/policy-rules.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2170,
+      "line": 2054,
       "argumentValue": "management/pm/reports/policy-rules-lint.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2171,
+      "line": 2055,
       "argumentValue": "management/pm/reports/presentation-ref-lint.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2172,
+      "line": 2056,
       "argumentValue": "management/pm/reports/sql-authority-application.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2173,
+      "line": 2057,
       "argumentValue": "management/pm/reports/sql-authority-pm.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2174,
+      "line": 2058,
       "argumentValue": "management/pm/reports/sql-authority-boilerplate.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2175,
+      "line": 2059,
       "argumentValue": "management/pm/reports/sql-coverage-application.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2176,
+      "line": 2060,
       "argumentValue": "management/pm/reports/sql-coverage-pm.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2177,
+      "line": 2061,
       "argumentValue": "management/pm/reports/sql-coverage-boilerplate.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2178,
+      "line": 2062,
       "argumentValue": "management/pm/reports/sql-reconstruction-application.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2179,
+      "line": 2063,
       "argumentValue": "management/pm/reports/sql-reconstruction-pm.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2180,
+      "line": 2064,
       "argumentValue": "management/pm/reports/sql-reconstruction-boilerplate.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2181,
+      "line": 2065,
       "argumentValue": "management/pm/reports/cross-realm-token-search.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2182,
+      "line": 2066,
       "argumentValue": "management/pm/reports/cross-realm-action-token-search.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2183,
+      "line": 2067,
       "argumentValue": "management/pm/reports/data-dictionary.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2184,
+      "line": 2068,
       "argumentValue": "management/pm/reports/data-dictionary-lint.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2186,
-      "argumentValue": "management/pm/reports/repo-file-inventory-with-context.csv",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2187,
-      "argumentValue": "management/pm/reports/boilerplate-package-files-with-context.csv",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2188,
-      "argumentValue": "management/pm/reports/boilerplate-promotion-status.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2189,
-      "argumentValue": "management/pm/reports/decision-priority-queue.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2190,
-      "argumentValue": "management/pm/reports/knowledge-base.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2191,
-      "argumentValue": "management/pm/reports/realm-knowledge-sync.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2192,
-      "argumentValue": "management/pm/reports/realm-knowledge-link-gate.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2193,
-      "argumentValue": "management/pm/reports/action-items.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2194,
-      "argumentValue": "management/pm/reports/action-decision-suggestions.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2195,
-      "argumentValue": "management/pm/reports/action-owner-summary.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2196,
-      "argumentValue": "management/pm/reports/action-sla-trend.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2197,
-      "argumentValue": "management/pm/reports/action-ingest-strict.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2198,
-      "argumentValue": "management/pm/reports/realm-policy-sync.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2199,
-      "argumentValue": "management/pm/reports/realm-policy-diff.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2200,
-      "argumentValue": "management/pm/reports/application-realm-policy.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2201,
-      "argumentValue": "management/pm/reports/pm-realm-policy.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2202,
-      "argumentValue": "management/pm/reports/boilerplate-realm-policy.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2203,
-      "argumentValue": "management/pm/reports/reasoning-drive.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2204,
-      "argumentValue": "management/pm/reports/documentation-manifest.json",
-      "classification": "output-path",
-      "reason": "Report output path literal found."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2205,
+      "line": 2069,
       "argumentValue": "management/pm/reports/project-plan-next-step.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2206,
+      "line": 2070,
+      "argumentValue": "management/pm/reports/workstream-presentation-index.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2072,
       "argumentValue": "management/pm/reports/workbook-refresh-status.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2217,
-      "argumentValue": "management/pm/reports/version.json",
+      "line": 2074,
+      "argumentValue": "management/pm/reports/repo-file-inventory-with-context.csv",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2270,
-      "argumentValue": "management/pm/reports/policy-rules-lint.json",
+      "line": 2075,
+      "argumentValue": "management/pm/reports/boilerplate-package-files-with-context.csv",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2271,
-      "argumentValue": "management/pm/reports/data-dictionary-lint.json",
+      "line": 2076,
+      "argumentValue": "management/pm/reports/boilerplate-promotion-status.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2272,
-      "argumentValue": "management/pm/reports/presentation-ref-lint.json",
+      "line": 2077,
+      "argumentValue": "management/pm/reports/decision-priority-queue.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2292,
-      "argumentValue": "management/pm/reports/environment-health.json",
+      "line": 2078,
+      "argumentValue": "management/pm/reports/knowledge-base.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2293,
-      "argumentValue": "management/pm/reports/pm-console-stale-cleanup.json",
+      "line": 2079,
+      "argumentValue": "management/pm/reports/realm-knowledge-sync.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2294,
+      "line": 2080,
+      "argumentValue": "management/pm/reports/realm-knowledge-link-gate.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2081,
+      "argumentValue": "management/pm/reports/action-items.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2082,
+      "argumentValue": "management/pm/reports/action-decision-suggestions.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2083,
+      "argumentValue": "management/pm/reports/action-owner-summary.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2084,
+      "argumentValue": "management/pm/reports/action-sla-trend.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2085,
+      "argumentValue": "management/pm/reports/action-ingest-strict.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2086,
+      "argumentValue": "management/pm/reports/realm-policy-sync.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2087,
+      "argumentValue": "management/pm/reports/realm-policy-diff.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2088,
+      "argumentValue": "management/pm/reports/application-realm-policy.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2089,
+      "argumentValue": "management/pm/reports/pm-realm-policy.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2090,
+      "argumentValue": "management/pm/reports/boilerplate-realm-policy.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2091,
+      "argumentValue": "management/pm/reports/reasoning-drive.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2102,
       "argumentValue": "management/pm/reports/environment-dashboard.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2313,
+      "line": 2103,
+      "argumentValue": "management/pm/reports/version.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2162,
+      "argumentValue": "management/pm/reports/project-plan-progress-data.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2163,
+      "argumentValue": "management/pm/reports/governance-alerts.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2164,
+      "argumentValue": "management/pm/reports/version-control-ledger.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2165,
+      "argumentValue": "management/pm/reports/identifier-registry.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2166,
+      "argumentValue": "management/pm/reports/remanifest-drill.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2167,
+      "argumentValue": "management/pm/reports/issues-log-tickle.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2168,
+      "argumentValue": "management/pm/reports/issues-effectiveness.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2169,
+      "argumentValue": "management/pm/reports/environment-health.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2170,
+      "argumentValue": "management/pm/reports/pm-console-stale-cleanup.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2171,
+      "argumentValue": "management/pm/reports/environment-dashboard.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2172,
+      "argumentValue": "management/pm/reports/policy-rules.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2173,
+      "argumentValue": "management/pm/reports/policy-rules-lint.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2174,
+      "argumentValue": "management/pm/reports/presentation-ref-lint.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2175,
+      "argumentValue": "management/pm/reports/sql-authority-application.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2176,
+      "argumentValue": "management/pm/reports/sql-authority-pm.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2177,
+      "argumentValue": "management/pm/reports/sql-authority-boilerplate.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2178,
+      "argumentValue": "management/pm/reports/sql-coverage-application.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2179,
+      "argumentValue": "management/pm/reports/sql-coverage-pm.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2180,
+      "argumentValue": "management/pm/reports/sql-coverage-boilerplate.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2181,
+      "argumentValue": "management/pm/reports/sql-reconstruction-application.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2182,
+      "argumentValue": "management/pm/reports/sql-reconstruction-pm.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2183,
+      "argumentValue": "management/pm/reports/sql-reconstruction-boilerplate.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2184,
+      "argumentValue": "management/pm/reports/cross-realm-token-search.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2185,
+      "argumentValue": "management/pm/reports/cross-realm-action-token-search.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2186,
+      "argumentValue": "management/pm/reports/data-dictionary.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2187,
+      "argumentValue": "management/pm/reports/data-dictionary-lint.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2189,
+      "argumentValue": "management/pm/reports/repo-file-inventory-with-context.csv",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2190,
+      "argumentValue": "management/pm/reports/boilerplate-package-files-with-context.csv",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2191,
+      "argumentValue": "management/pm/reports/boilerplate-promotion-status.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2192,
+      "argumentValue": "management/pm/reports/decision-priority-queue.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2193,
+      "argumentValue": "management/pm/reports/knowledge-base.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2194,
+      "argumentValue": "management/pm/reports/realm-knowledge-sync.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2195,
+      "argumentValue": "management/pm/reports/realm-knowledge-link-gate.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2196,
+      "argumentValue": "management/pm/reports/action-items.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2197,
+      "argumentValue": "management/pm/reports/action-decision-suggestions.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2198,
+      "argumentValue": "management/pm/reports/action-owner-summary.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2199,
+      "argumentValue": "management/pm/reports/action-sla-trend.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2200,
+      "argumentValue": "management/pm/reports/action-ingest-strict.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2201,
+      "argumentValue": "management/pm/reports/realm-policy-sync.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2202,
+      "argumentValue": "management/pm/reports/realm-policy-diff.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2203,
+      "argumentValue": "management/pm/reports/application-realm-policy.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2204,
+      "argumentValue": "management/pm/reports/pm-realm-policy.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2205,
+      "argumentValue": "management/pm/reports/boilerplate-realm-policy.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2206,
+      "argumentValue": "management/pm/reports/reasoning-drive.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2207,
       "argumentValue": "management/pm/reports/documentation-manifest.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2370,
+      "line": 2208,
       "argumentValue": "management/pm/reports/project-plan-next-step.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2209,
+      "argumentValue": "management/pm/reports/workbook-refresh-status.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2220,
+      "argumentValue": "management/pm/reports/version.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2273,
+      "argumentValue": "management/pm/reports/policy-rules-lint.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2274,
+      "argumentValue": "management/pm/reports/data-dictionary-lint.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2275,
+      "argumentValue": "management/pm/reports/presentation-ref-lint.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2295,
+      "argumentValue": "management/pm/reports/environment-health.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2296,
+      "argumentValue": "management/pm/reports/pm-console-stale-cleanup.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2297,
+      "argumentValue": "management/pm/reports/environment-dashboard.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2316,
+      "argumentValue": "management/pm/reports/documentation-manifest.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2373,
+      "argumentValue": "management/pm/reports/project-plan-next-step.json",
+      "classification": "output-path",
+      "reason": "Report output path literal found."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2488,
+      "argumentValue": "management/pm/reports/workstream-presentation-index.json",
       "classification": "output-path",
       "reason": "Report output path literal found."
     }

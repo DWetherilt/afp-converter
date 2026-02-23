@@ -1,5 +1,5 @@
 product/afp-converter/preview/afp-output.pdf
-product/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-23-response-closure-policy-workstream-a-handoff/README.md
-product/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-23-response-closure-policy-workstream-a-handoff/apply-checklist.md
-product/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-23-response-closure-policy-workstream-a-handoff/fresh-session-prompt.md
-product/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-23-response-closure-policy-workstream-a-handoff/package-manifest.json
+product/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-23-workstream-identity-presentation-aliasing/README.md
+product/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-23-workstream-identity-presentation-aliasing/apply-checklist.md
+product/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-23-workstream-identity-presentation-aliasing/fresh-session-prompt.md
+product/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-23-workstream-identity-presentation-aliasing/package-manifest.json

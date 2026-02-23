@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T22:45:21Z",
+  "generatedAt": "2026-02-23T22:57:17Z",
   "source": "sqlite",
   "taskCount": 37,
   "filteredCompletedCommittedCount": 8,
@@ -454,8 +454,8 @@
   "followUps": [
     {
       "note": "Circle back and review restored workbook content against JSON/CSV sources.",
-      "status": "pending",
-      "id": "restored-workbook-content-review"
+      "id": "restored-workbook-content-review",
+      "status": "pending"
     }
   ]
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T22:45:25Z",
+  "generatedAt": "2026-02-23T22:57:22Z",
   "source": "sqlite",
   "sourceTable": "knowledge_entries",
   "entryCount": 9,
@@ -17,42 +17,6 @@
   },
   "knowledge": [
     {
-      "knowledgeId": "KB-PM-ENV-CONSOLE-HEALTH",
-      "knowledgeRef": "Knowledge | 2026-02-23 | #001",
-      "realm": "pm",
-      "scopeLevel": "realm",
-      "scopeRef": "environment",
-      "title": "PM console environment health preflight",
-      "reasoning": "Environment-first governance requires live PM console status checks before workflow execution.",
-      "contextSnapshot": "management/pm/reports/environment-health.json",
-      "outcomeStatus": "applied",
-      "outcomeSummary": "Recorded console daemon + visibility state (mode=strict, ci=false) for this cycle.",
-      "confidence": 5.0,
-      "impactScore": 5.0,
-      "changeRef": "management/pm/reports/environment-health.json",
-      "createdAt": "2026-02-19T19:58:53Z",
-      "updatedAt": "2026-02-23T22:39:12Z",
-      "evidence": [
-        {
-          "artifactPath": "management/pm/reports/environment-health.json",
-          "artifactSha256": "96796459441067fc3b758fe8e76191c26ac0867809974107d08bfa5a32504e67",
-          "artifactSizeBytes": 1164,
-          "type": "report",
-          "notes": "Environment preflight status including PID and running state.",
-          "capturedAt": "2026-02-23T22:39:12Z"
-        },
-        {
-          "artifactPath": "pm/reports/environment-health.json",
-          "artifactSha256": "14eba8d5ba72e92eb913476a0c62c9be65b4638109e0ccdabd886bead51a273b",
-          "artifactSizeBytes": 1127,
-          "type": "report",
-          "notes": "Environment preflight status including PID and running state.",
-          "capturedAt": "2026-02-23T20:58:56Z"
-        }
-      ],
-      "decisionLinks": []
-    },
-    {
       "knowledgeId": "KB-PM-ENV-CONSOLE-STALE-TREND",
       "knowledgeRef": "Knowledge | 2026-02-23 | #001",
       "realm": "pm",
@@ -67,15 +31,15 @@
       "impactScore": 4.0,
       "changeRef": "management/pm/reports/pm-console-stale-cleanup.json",
       "createdAt": "2026-02-19T20:38:55Z",
-      "updatedAt": "2026-02-23T22:39:12Z",
+      "updatedAt": "2026-02-23T22:45:30Z",
       "evidence": [
         {
           "artifactPath": "management/pm/state/pm-console-stale-history.json",
-          "artifactSha256": "3004d915603e38ff88e4c11b4c136c66a1421d322f5f9bc9b40abbe65b47cbe5",
-          "artifactSizeBytes": 3737,
+          "artifactSha256": "883457586f0f748e33f9e83d703f5753f817c52c90419a7234eb3b5619d88701",
+          "artifactSizeBytes": 3963,
           "type": "report",
           "notes": "Stale duplicate history used for threshold warning decisions.",
-          "capturedAt": "2026-02-23T22:39:13Z"
+          "capturedAt": "2026-02-23T22:45:31Z"
         },
         {
           "artifactPath": "pm/state/pm-console-stale-history.json",
@@ -84,6 +48,42 @@
           "type": "report",
           "notes": "Stale duplicate history used for threshold warning decisions.",
           "capturedAt": "2026-02-23T20:58:57Z"
+        }
+      ],
+      "decisionLinks": []
+    },
+    {
+      "knowledgeId": "KB-PM-ENV-CONSOLE-HEALTH",
+      "knowledgeRef": "Knowledge | 2026-02-23 | #001",
+      "realm": "pm",
+      "scopeLevel": "realm",
+      "scopeRef": "environment",
+      "title": "PM console environment health preflight",
+      "reasoning": "Environment-first governance requires live PM console status checks before workflow execution.",
+      "contextSnapshot": "management/pm/reports/environment-health.json",
+      "outcomeStatus": "applied",
+      "outcomeSummary": "Recorded console daemon + visibility state (mode=strict, ci=false) for this cycle.",
+      "confidence": 5.0,
+      "impactScore": 5.0,
+      "changeRef": "management/pm/reports/environment-health.json",
+      "createdAt": "2026-02-19T19:58:53Z",
+      "updatedAt": "2026-02-23T22:45:29Z",
+      "evidence": [
+        {
+          "artifactPath": "management/pm/reports/environment-health.json",
+          "artifactSha256": "e760bf14601437b911baa23ad58cf2e2bb009e208dadbd34c5f8db111e8b1f70",
+          "artifactSizeBytes": 1163,
+          "type": "report",
+          "notes": "Environment preflight status including PID and running state.",
+          "capturedAt": "2026-02-23T22:45:30Z"
+        },
+        {
+          "artifactPath": "pm/reports/environment-health.json",
+          "artifactSha256": "14eba8d5ba72e92eb913476a0c62c9be65b4638109e0ccdabd886bead51a273b",
+          "artifactSizeBytes": 1127,
+          "type": "report",
+          "notes": "Environment preflight status including PID and running state.",
+          "capturedAt": "2026-02-23T20:58:56Z"
         }
       ],
       "decisionLinks": []
@@ -103,15 +103,15 @@
       "impactScore": 5.0,
       "changeRef": "management/pm/reports/environment-health.json",
       "createdAt": "2026-02-19T20:10:17Z",
-      "updatedAt": "2026-02-23T22:39:11Z",
+      "updatedAt": "2026-02-23T22:45:28Z",
       "evidence": [
         {
           "artifactPath": "management/pm/reports/environment-health.json",
-          "artifactSha256": "96796459441067fc3b758fe8e76191c26ac0867809974107d08bfa5a32504e67",
-          "artifactSizeBytes": 1164,
+          "artifactSha256": "e760bf14601437b911baa23ad58cf2e2bb009e208dadbd34c5f8db111e8b1f70",
+          "artifactSizeBytes": 1163,
           "type": "report",
           "notes": "Visibility context report including visible session PIDs and terminal window ID.",
-          "capturedAt": "2026-02-23T22:39:12Z"
+          "capturedAt": "2026-02-23T22:45:29Z"
         },
         {
           "artifactPath": "pm/reports/environment-health.json",
@@ -139,15 +139,15 @@
       "impactScore": 4.0,
       "changeRef": "management/pm/reports/environment-health.json",
       "createdAt": "2026-02-19T20:27:44Z",
-      "updatedAt": "2026-02-23T22:39:10Z",
+      "updatedAt": "2026-02-23T22:45:27Z",
       "evidence": [
         {
           "artifactPath": "management/pm/reports/environment-health.json",
-          "artifactSha256": "96796459441067fc3b758fe8e76191c26ac0867809974107d08bfa5a32504e67",
-          "artifactSizeBytes": 1164,
+          "artifactSha256": "e760bf14601437b911baa23ad58cf2e2bb009e208dadbd34c5f8db111e8b1f70",
+          "artifactSizeBytes": 1163,
           "type": "report",
           "notes": "Deterministic terminal window/tab identity for visible PM console session.",
-          "capturedAt": "2026-02-23T22:39:11Z"
+          "capturedAt": "2026-02-23T22:45:28Z"
         },
         {
           "artifactPath": "pm/reports/environment-health.json",

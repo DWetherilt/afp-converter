@@ -72,6 +72,9 @@ API documentation:
   - realm-filtered project-plan report for `pm`
 - `management/pm/reports/project-plan-progress-boilerplate.json`:
   - realm-filtered project-plan report for `boilerplate`
+- `management/pm/reports/workstream-presentation-index.json`:
+  - active workstream presentation aliases (`Workstream A..Z`) mapped to persistent internal `workstream_uid` values
+  - generated from active rows only (status not in `complete/completed/done`)
 - `management/pm/workflow/workstream-realm-map.json`:
   - source mapping used to assign `workstream_uid` values to realm-specific project-plan reports
 - `management/pm/state/project-state.sqlite`:

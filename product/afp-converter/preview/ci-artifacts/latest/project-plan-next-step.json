@@ -1,11 +1,11 @@
 {
     "schemaVersion": "1",
-    "generatedAt": "2026-02-23T22:45:08Z",
+    "generatedAt": "2026-02-23T22:57:05Z",
     "planPath": "management/docs/project-plan.md",
     "actionCount": 9,
     "nextInstruction": {
         "title": "Immediate Next Step",
-        "task": "execute Workstream A as the active fidelity driver: prioritize deterministic object/overlay composition to reduce structural rendering drift.",
+        "task": "formalize the next active workstream using a new unique internal `workstream_uid` (do not reuse historical IDs such as `WS-A`).",
         "source": "## Proposed Immediate Next Execution Sequence"
     },
     "actions": [
@@ -90,9 +90,9 @@
         }
     ],
     "immediateSequence": [
-        "execute Workstream A as the active fidelity driver: prioritize deterministic object/overlay composition to reduce structural rendering drift.",
-        "formalize page object graph and scope stack handling (`BMO/EMO`, resource begin/end scopes) in `afp-engine` interpretation.",
-        "implement deterministic paint ordering and close remaining graphics object placeholders (rules, boxes, strokes/fills).",
-        "rerun `qualityGate` and PM refresh/report phases, then publish updated fidelity diagnostics and next-step guidance."
+        "formalize the next active workstream using a new unique internal `workstream_uid` (do not reuse historical IDs such as `WS-A`).",
+        "publish active presentation aliases (`Workstream A..Z`) from current active rows via `management/pm/reports/workstream-presentation-index.json`.",
+        "start implementation against the top active presentation alias while always retaining internal UID traceability in notes/reports.",
+        "rerun `qualityGate` and PM refresh/report phases, then publish updated next-step guidance."
     ]
 }

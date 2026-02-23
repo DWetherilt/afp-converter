@@ -2014,6 +2014,7 @@ tasks.register('documentationManifest') {
     dependsOn('identifierRegistryReport')
     dependsOn('pmPersistGovernanceIdentifiers')
     dependsOn('workstreamSliceReport')
+    dependsOn('workstreamPresentationIndex')
     dependsOn('projectPlanWorkbook')
     dependsOn('policyGovernanceWorkbook')
     dependsOn('boilerplateSyncWorkbook')
@@ -2039,6 +2040,7 @@ tasks.register('documentationManifest') {
             file('management/pm/reports/project-plan-progress-boilerplate.json'),
             file('management/pm/reports/project-plan-commit-marker-lint.json'),
             file('management/pm/reports/workstream-j-slice-evidence.json'),
+            file('management/pm/reports/workstream-presentation-index.json'),
             file('management/pm/reports/governance-alerts.json'),
             file('management/pm/reports/version-control-ledger.json'),
             file('management/pm/reports/identifier-registry.json'),
@@ -2065,6 +2067,7 @@ tasks.register('documentationManifest') {
             file('management/pm/reports/data-dictionary.json'),
             file('management/pm/reports/data-dictionary-lint.json'),
             file('management/pm/reports/project-plan-next-step.json'),
+            file('management/pm/reports/workstream-presentation-index.json'),
             file('management/pm/workflow/workstream-realm-map.json'),
             file('management/pm/reports/workbook-refresh-status.json'),
             file('management/pm/policy/policy-rule-tables.sql'),
@@ -2474,6 +2477,15 @@ tasks.register('projectPlanNextStep') {
             immediateSequence: immediateSequence
         ])) + '\n'
     }
+}
+
+tasks.register('workstreamPresentationIndex', Exec) {
+    group = 'documentation'
+    description = 'Generates active workstream presentation aliases (A..Z) from unique internal IDs'
+    commandLine 'python3',
+        'management/tools/workstream_presentation_index.py',
+        '--csv', 'management/docs/project-plan-progress.csv',
+        '--output', 'management/pm/reports/workstream-presentation-index.json'
 }
 
 tasks.named('build') {
