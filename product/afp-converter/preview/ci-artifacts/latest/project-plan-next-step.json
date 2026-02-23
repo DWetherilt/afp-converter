@@ -1,11 +1,11 @@
 {
     "schemaVersion": "1",
-    "generatedAt": "2026-02-23T23:13:15Z",
+    "generatedAt": "2026-02-23T23:22:23Z",
     "planPath": "management/docs/project-plan.md",
     "actionCount": 9,
     "nextInstruction": {
         "title": "Immediate Next Step",
-        "task": "execute active presentation `Workstream A` mapped to internal `WS-2026-001` (Renderer Continuation 2026-02-23).",
+        "task": "formalize the next active workstream using a new unique internal `workstream_uid` (do not reuse historical IDs such as `WS-A` or `WS-2026-001`).",
         "source": "## Proposed Immediate Next Execution Sequence"
     },
     "actions": [
@@ -90,9 +90,9 @@
         }
     ],
     "immediateSequence": [
-        "execute active presentation `Workstream A` mapped to internal `WS-2026-001` (Renderer Continuation 2026-02-23).",
-        "deliver the scope-graph baseline slice and deterministic paint-order assertion coverage for overlay/text/image interleave cases.",
-        "publish updated fidelity diagnostics and continuation deltas for the first continuation slice.",
+        "formalize the next active workstream using a new unique internal `workstream_uid` (do not reuse historical IDs such as `WS-A` or `WS-2026-001`).",
+        "publish active presentation aliases (`Workstream A..Z`) from current active rows via `management/pm/reports/workstream-presentation-index.json`.",
+        "start implementation against the top active presentation alias while retaining internal UID traceability in progress/report artifacts.",
         "rerun `qualityGate` and PM refresh/report phases, then publish updated next-step guidance."
     ]
 }

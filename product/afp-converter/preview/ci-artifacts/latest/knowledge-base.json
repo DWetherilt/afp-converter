@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:13:31Z",
+  "generatedAt": "2026-02-23T23:22:41Z",
   "source": "sqlite",
   "sourceTable": "knowledge_entries",
   "entryCount": 9,
@@ -31,15 +31,15 @@
       "impactScore": 4.0,
       "changeRef": "management/pm/reports/pm-console-stale-cleanup.json",
       "createdAt": "2026-02-19T20:38:55Z",
-      "updatedAt": "2026-02-23T23:12:52Z",
+      "updatedAt": "2026-02-23T23:13:36Z",
       "evidence": [
         {
           "artifactPath": "management/pm/state/pm-console-stale-history.json",
-          "artifactSha256": "161afbf6dc79b4bfcf6e750f059db3ff67ebf6f51c4357b65e74c59cd5243dec",
-          "artifactSizeBytes": 4641,
+          "artifactSha256": "e71fb2c3e8c0f0e852d0b03025c4e68877d03b11cc15ee5215d78631d27f874e",
+          "artifactSizeBytes": 4754,
           "type": "report",
           "notes": "Stale duplicate history used for threshold warning decisions.",
-          "capturedAt": "2026-02-23T23:12:53Z"
+          "capturedAt": "2026-02-23T23:13:37Z"
         },
         {
           "artifactPath": "pm/state/pm-console-stale-history.json",
@@ -67,15 +67,15 @@
       "impactScore": 5.0,
       "changeRef": "management/pm/reports/environment-health.json",
       "createdAt": "2026-02-19T19:58:53Z",
-      "updatedAt": "2026-02-23T23:12:51Z",
+      "updatedAt": "2026-02-23T23:13:35Z",
       "evidence": [
         {
           "artifactPath": "management/pm/reports/environment-health.json",
-          "artifactSha256": "679d05ca6f581071f8012b64a5c7887a403c11cfb1e31b7855946f9c40670437",
+          "artifactSha256": "1e554918e89f86f91a1f05956958cd6efb82967bd2e7e32ac44c5bfd83926db7",
           "artifactSizeBytes": 1164,
           "type": "report",
           "notes": "Environment preflight status including PID and running state.",
-          "capturedAt": "2026-02-23T23:12:52Z"
+          "capturedAt": "2026-02-23T23:13:36Z"
         },
         {
           "artifactPath": "pm/reports/environment-health.json",
@@ -83,6 +83,42 @@
           "artifactSizeBytes": 1127,
           "type": "report",
           "notes": "Environment preflight status including PID and running state.",
+          "capturedAt": "2026-02-23T20:58:56Z"
+        }
+      ],
+      "decisionLinks": []
+    },
+    {
+      "knowledgeId": "KB-PM-ENV-CONSOLE-VISIBLE",
+      "knowledgeRef": "Knowledge | 2026-02-23 | #001",
+      "realm": "pm",
+      "scopeLevel": "realm",
+      "scopeRef": "environment.console.visibility",
+      "title": "PM console visible session context",
+      "reasoning": "Visible desktop PM console presence is required for environment readiness in local development flows.",
+      "contextSnapshot": "management/pm/reports/environment-health.json",
+      "outcomeStatus": "applied",
+      "outcomeSummary": "visiblePids=96372; terminalWindowId=32710; visible=true; status=PASS",
+      "confidence": 5.0,
+      "impactScore": 5.0,
+      "changeRef": "management/pm/reports/environment-health.json",
+      "createdAt": "2026-02-19T20:10:17Z",
+      "updatedAt": "2026-02-23T23:13:34Z",
+      "evidence": [
+        {
+          "artifactPath": "management/pm/reports/environment-health.json",
+          "artifactSha256": "1e554918e89f86f91a1f05956958cd6efb82967bd2e7e32ac44c5bfd83926db7",
+          "artifactSizeBytes": 1164,
+          "type": "report",
+          "notes": "Visibility context report including visible session PIDs and terminal window ID.",
+          "capturedAt": "2026-02-23T23:13:35Z"
+        },
+        {
+          "artifactPath": "pm/reports/environment-health.json",
+          "artifactSha256": "14eba8d5ba72e92eb913476a0c62c9be65b4638109e0ccdabd886bead51a273b",
+          "artifactSizeBytes": 1127,
+          "type": "report",
+          "notes": "Visibility context report including visible session PIDs and terminal window ID.",
           "capturedAt": "2026-02-23T20:58:56Z"
         }
       ],
@@ -103,15 +139,15 @@
       "impactScore": 4.0,
       "changeRef": "management/pm/reports/environment-health.json",
       "createdAt": "2026-02-19T20:27:44Z",
-      "updatedAt": "2026-02-23T23:12:50Z",
+      "updatedAt": "2026-02-23T23:13:33Z",
       "evidence": [
         {
           "artifactPath": "management/pm/reports/environment-health.json",
-          "artifactSha256": "679d05ca6f581071f8012b64a5c7887a403c11cfb1e31b7855946f9c40670437",
+          "artifactSha256": "1e554918e89f86f91a1f05956958cd6efb82967bd2e7e32ac44c5bfd83926db7",
           "artifactSizeBytes": 1164,
           "type": "report",
           "notes": "Deterministic terminal window/tab identity for visible PM console session.",
-          "capturedAt": "2026-02-23T23:12:50Z"
+          "capturedAt": "2026-02-23T23:13:34Z"
         },
         {
           "artifactPath": "pm/reports/environment-health.json",
@@ -120,42 +156,6 @@
           "type": "report",
           "notes": "Deterministic terminal window/tab identity for visible PM console session.",
           "capturedAt": "2026-02-23T20:58:55Z"
-        }
-      ],
-      "decisionLinks": []
-    },
-    {
-      "knowledgeId": "KB-PM-ENV-CONSOLE-VISIBLE",
-      "knowledgeRef": "Knowledge | 2026-02-23 | #001",
-      "realm": "pm",
-      "scopeLevel": "realm",
-      "scopeRef": "environment.console.visibility",
-      "title": "PM console visible session context",
-      "reasoning": "Visible desktop PM console presence is required for environment readiness in local development flows.",
-      "contextSnapshot": "management/pm/reports/environment-health.json",
-      "outcomeStatus": "applied",
-      "outcomeSummary": "visiblePids=96372; terminalWindowId=32710; visible=true; status=PASS",
-      "confidence": 5.0,
-      "impactScore": 5.0,
-      "changeRef": "management/pm/reports/environment-health.json",
-      "createdAt": "2026-02-19T20:10:17Z",
-      "updatedAt": "2026-02-23T23:12:50Z",
-      "evidence": [
-        {
-          "artifactPath": "management/pm/reports/environment-health.json",
-          "artifactSha256": "679d05ca6f581071f8012b64a5c7887a403c11cfb1e31b7855946f9c40670437",
-          "artifactSizeBytes": 1164,
-          "type": "report",
-          "notes": "Visibility context report including visible session PIDs and terminal window ID.",
-          "capturedAt": "2026-02-23T23:12:51Z"
-        },
-        {
-          "artifactPath": "pm/reports/environment-health.json",
-          "artifactSha256": "14eba8d5ba72e92eb913476a0c62c9be65b4638109e0ccdabd886bead51a273b",
-          "artifactSizeBytes": 1127,
-          "type": "report",
-          "notes": "Visibility context report including visible session PIDs and terminal window ID.",
-          "capturedAt": "2026-02-23T20:58:56Z"
         }
       ],
       "decisionLinks": []

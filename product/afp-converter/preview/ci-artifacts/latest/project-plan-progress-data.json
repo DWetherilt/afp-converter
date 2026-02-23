@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:13:15Z",
+  "generatedAt": "2026-02-23T23:22:26Z",
   "source": "sqlite",
-  "taskCount": 38,
-  "filteredCompletedCommittedCount": 10,
+  "taskCount": 37,
+  "filteredCompletedCommittedCount": 11,
   "completedCommittedRule": "Rows with status=complete/completed/done and notes marker '[github:committed]' are excluded.",
   "tasks": [
     {
@@ -449,25 +449,13 @@
       "percent_complete": "100",
       "last_updated": "2026-02-20",
       "notes": "Quality gate validation completed after migration fixes for artifact indexing, tooling guards, tests, and fidelity gate pathing. [github:not-committed]"
-    },
-    {
-      "workstream_uid": "WS-2026-001",
-      "workstream_label": "Renderer Continuation 2026-02-23",
-      "workstream_priority_rank": "11",
-      "workstream": "Renderer Continuation 2026-02-23",
-      "task": "Publish updated fidelity diagnostics and next-step deltas for continuation slice",
-      "priority": "Medium",
-      "status": "In Progress",
-      "percent_complete": "30",
-      "last_updated": "2026-02-23",
-      "notes": "Active closeout task: publish continuation diagnostics and updated next-step deltas after slice-2 commit."
     }
   ],
   "followUps": [
     {
       "note": "Circle back and review restored workbook content against JSON/CSV sources.",
-      "status": "pending",
-      "id": "restored-workbook-content-review"
+      "id": "restored-workbook-content-review",
+      "status": "pending"
     }
   ]
 }

@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:13:26Z",
+  "generatedAt": "2026-02-23T23:22:36Z",
   "issuesLogPath": "management/docs/issues-log.csv",
   "issuesLogTouchedInWorkingTree": true,
-  "changedPathCount": 134,
+  "changedPathCount": 41,
   "triggeredIssueCount": 4,
   "requiresIssuesLogUpdate": false,
   "triggeredIssues": [
@@ -21,6 +21,7 @@
       "status": "Open",
       "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
       "matchedComponents": [
+        "management/docs/boilerplate-sync-candidates.xlsx",
         "management/pm/state/boilerplate-state.sqlite",
         "management/pm/state/project-state.sqlite"
       ]
@@ -31,9 +32,7 @@
       "title": "Policy-governance sequence drift when updating constitutional/policy text without full checklist sequencing",
       "matchedComponents": [
         "management/docs/issues-log.csv",
-        "management/pm/reports/documentation-manifest.json",
         "management/pm/reports/governance-alerts.json",
-        "management/pm/reports/version-control-ledger.json",
         "management/pm/state/project-state.sqlite"
       ]
     },
@@ -43,7 +42,6 @@
       "title": "Environment readiness drift: daemon-only checks missed visible console verification",
       "matchedComponents": [
         "management/pm/reports/environment-health.json",
-        "management/pm/reports/pm-console-stale-cleanup.json",
         "management/pm/state/project-state.sqlite"
       ]
     }

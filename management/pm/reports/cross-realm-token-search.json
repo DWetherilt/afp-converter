@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:13:21Z",
+  "generatedAt": "2026-02-23T23:22:32Z",
   "source": "sqlite",
   "query": "render",
   "databaseCount": 3,
@@ -9,7 +9,7 @@
   "dictionaryMatches": [
     {
       "token": "renderer",
-      "totalOccurrences": 61
+      "totalOccurrences": 60
     },
     {
       "token": "rendering",
@@ -1147,14 +1147,6 @@
     },
     {
       "db": "management/pm/state/pm-realm.sqlite",
-      "token": "renderer",
-      "path": "management/docs/project-plan.md",
-      "occurrences": 4,
-      "realm": "pm",
-      "language": "markdown"
-    },
-    {
-      "db": "management/pm/state/pm-realm.sqlite",
       "token": "rendered",
       "path": "management/pm-console/src/main/java/solutions/pointzero/symphony/pm/console/PmConsoleMain.java",
       "occurrences": 3,
@@ -1173,6 +1165,14 @@
       "db": "management/pm/state/pm-realm.sqlite",
       "token": "renderer",
       "path": "README.md",
+      "occurrences": 3,
+      "realm": "pm",
+      "language": "markdown"
+    },
+    {
+      "db": "management/pm/state/pm-realm.sqlite",
+      "token": "renderer",
+      "path": "management/docs/project-plan.md",
       "occurrences": 3,
       "realm": "pm",
       "language": "markdown"
