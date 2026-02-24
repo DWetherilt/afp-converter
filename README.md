@@ -174,6 +174,7 @@ This now includes `previewManifest` and regenerates:
 - `product/afp-converter/preview/afp-output.html`
 - `product/afp-converter/preview/afp-meta.json`
 - `product/afp-converter/preview/afp-diag.json`
+- `product/afp-converter/sampleOutput/*.pdf|*.html|*.meta.json|*.diag.json` for every `*.afp` in `product/afp-converter/sampleData/`
 - `management/pm/reports/documentation-manifest.json` (via `documentationManifest`)
 
 Run the full quality gate (tests + fidelity thresholds + management/docs/changelog manifest):

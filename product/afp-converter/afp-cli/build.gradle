@@ -29,6 +29,19 @@ tasks.register('cleanPreviewWorkspace', Delete) {
     )
 }
 
+tasks.register('cleanSampleOutputWorkspace', Delete) {
+    delete(
+        rootProject.file('.tmp/cache-sample-output'),
+        rootProject.file('.tmp/temp-sample-output')
+    )
+    delete fileTree(rootProject.file('product/afp-converter/sampleOutput')) {
+        include '*.pdf'
+        include '*.html'
+        include '*.meta.json'
+        include '*.diag.json'
+    }
+}
+
 tasks.register('generatePreview', JavaExec) {
     group = 'build'
     description = 'Generates preview PDF/HTML/metadata/diagnostics from product/afp-converter/sampleData/sample.afp'
@@ -48,6 +61,49 @@ tasks.register('generatePreview', JavaExec) {
         '--timeoutSeconds', '30',
         '--textFallback', 'SUBSTITUTE'
     )
+}
+
+File sampleDataDir = rootProject.file('product/afp-converter/sampleData')
+File sampleOutputDir = rootProject.file('product/afp-converter/sampleOutput')
+List<File> sampleAfpFiles = fileTree(sampleDataDir) {
+    include '*.afp'
+}.files.toList().sort { a, b -> a.name <=> b.name }
+List<TaskProvider<JavaExec>> sampleOutputTasks = []
+
+sampleAfpFiles.each { File afp ->
+    String base = afp.name.endsWith('.afp') ? afp.name.substring(0, afp.name.length() - 4) : afp.name
+    String taskName = "generateSampleOutput_" + base.replaceAll('[^A-Za-z0-9_]', '_')
+    sampleOutputTasks << tasks.register(taskName, JavaExec) {
+        group = 'build'
+        description = "Generates sample output artifacts for ${afp.name}"
+        dependsOn tasks.named('classes')
+        classpath = sourceSets.main.runtimeClasspath
+        mainClass = application.mainClass
+        workingDir = rootProject.projectDir
+        args(
+            '--in', afp.path,
+            '--out', new File(sampleOutputDir, "${base}.pdf").path,
+            '--meta', new File(sampleOutputDir, "${base}.meta.json").path,
+            '--diag', new File(sampleOutputDir, "${base}.diag.json").path,
+            '--html', new File(sampleOutputDir, "${base}.html").path,
+            '--cacheDir', rootProject.file('.tmp/cache-sample-output').path,
+            '--tempDir', rootProject.file('.tmp/temp-sample-output').path,
+            '--timeoutSeconds', '30',
+            '--textFallback', 'SUBSTITUTE'
+        )
+    }
+}
+
+tasks.register('generateSampleOutputs') {
+    group = 'build'
+    description = 'Generates sampleOutput artifacts for every AFP file in product/afp-converter/sampleData'
+    dependsOn tasks.named('cleanSampleOutputWorkspace')
+    dependsOn sampleOutputTasks
+    doFirst {
+        if (sampleOutputTasks.isEmpty()) {
+            throw new GradleException("No AFP files found under ${sampleDataDir.path}")
+        }
+    }
 }
 
 distributions {

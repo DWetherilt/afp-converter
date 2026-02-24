@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-24T16:45:26Z",
+  "generatedAt": "2026-02-24T16:52:33Z",
   "issuesLogPath": "management/docs/issues-log.csv",
   "issuesLogTouchedInWorkingTree": true,
-  "changedPathCount": 170,
-  "triggeredIssueCount": 7,
+  "changedPathCount": 52,
+  "triggeredIssueCount": 5,
   "requiresIssuesLogUpdate": false,
   "triggeredIssues": [
     {
@@ -12,18 +12,7 @@
       "status": "Open",
       "title": "Excel automation and workbook update fragility due Office account/licensing context",
       "matchedComponents": [
-        "build.gradle",
-        "management/docs/project-plan-progress.csv",
-        "management/docs/project-plan-progress.xlsx",
-        "management/pm/reports/project-plan-progress-data.json"
-      ]
-    },
-    {
-      "id": "ISSUE-002",
-      "status": "Open",
-      "title": "Workbook repair/corruption when managed sheets are added by XML updater without synchronizing docProps/app.xml sheet metadata",
-      "matchedComponents": [
-        "management/docs/project-plan-progress.xlsx"
+        "build.gradle"
       ]
     },
     {
@@ -35,23 +24,13 @@
       ]
     },
     {
-      "id": "ISSUE-004",
-      "status": "Open",
-      "title": "Progress Graph sheet visual/layout quality needs tuning despite functional correctness",
-      "matchedComponents": [
-        "management/docs/project-plan-progress.xlsx"
-      ]
-    },
-    {
       "id": "ISSUE-005",
       "status": "Open",
       "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
       "matchedComponents": [
-        "AI-POLICY.md",
         "README.md",
         "build.gradle",
         "management/docs/boilerplate-sync-candidates.xlsx",
-        "management/docs/project-plan-progress.xlsx",
         "management/pm/state/boilerplate-state.sqlite",
         "management/pm/state/project-state.sqlite"
       ]
@@ -61,16 +40,10 @@
       "status": "Open",
       "title": "Policy-governance sequence drift when updating constitutional/policy text without full checklist sequencing",
       "matchedComponents": [
-        "AI-POLICY.md",
         "README.md",
-        "SESSION_CHANGELOG.md",
         "build.gradle",
         "management/docs/issues-log.csv",
-        "management/docs/policy-governance-events.csv",
-        "management/docs/policy-governance-events.xlsx",
-        "management/pm/reports/documentation-manifest.json",
         "management/pm/reports/governance-alerts.json",
-        "management/pm/reports/version-control-ledger.json",
         "management/pm/state/project-state.sqlite"
       ]
     },
@@ -79,10 +52,8 @@
       "status": "Open",
       "title": "Environment readiness drift: daemon-only checks missed visible console verification",
       "matchedComponents": [
-        "AI-POLICY.md",
         "build.gradle",
         "management/pm/reports/environment-health.json",
-        "management/pm/reports/pm-console-stale-cleanup.json",
         "management/pm/state/project-state.sqlite"
       ]
     }

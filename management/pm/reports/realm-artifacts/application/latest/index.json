@@ -1,13 +1,13 @@
 {
     "schemaVersion": "1",
-    "generatedAt": "2026-02-24T16:45:35Z",
+    "generatedAt": "2026-02-24T16:52:49Z",
     "realm": "application",
     "artifactCount": 11,
     "files": [
         {
             "source": "product/afp-converter/preview/afp-output.pdf",
             "sizeBytes": 1957,
-            "sha256": "ef462d465145501c89ae8cb0d229781a809b1081bc084ebdc58db481bad6ab56"
+            "sha256": "bc29f726e9284f891f32346ba26ed1f960c0eae7ca678c966849c64631ebe2c7"
         },
         {
             "source": "product/afp-converter/preview/afp-output.html",
@@ -32,32 +32,32 @@
         {
             "source": "management/pm/reports/project-plan-progress-application.json",
             "sizeBytes": 11424,
-            "sha256": "03ed46b05bd5adfa9807df60f7eccdd8f069c7993ef78d6d317162b51d786b10"
+            "sha256": "db4b9a114f6abeb4bbad6f0c1fa3acbd9fd7714e8bb8334d4511d1c53b2c89ce"
         },
         {
             "source": "management/pm/reports/application-realm-policy.json",
             "sizeBytes": 26418,
-            "sha256": "9914334343bb00eacfbacea3aa427a107eff24a2d494f54fd59c3aac7373c317"
+            "sha256": "b27b7897c46bf0aabe3f06cddfa1139f2c64fce3ff1fd32ccff3a2f6516199d2"
         },
         {
             "source": "management/pm/reports/sql-authority-application.json",
             "sizeBytes": 227,
-            "sha256": "fcc0243d3ef6319cc92ab9c93d06ed8504b84937a7a228233d9c5ffe8215366c"
+            "sha256": "5da93341831ae4362610cdbeb686df043dbb822ac256535833ad3634387de773"
         },
         {
             "source": "management/pm/reports/sql-coverage-application.json",
             "sizeBytes": 330,
-            "sha256": "2f6ee4e9a1d8ee561540959d27aa276f50166953e20ad47b3649594877ef96a3"
+            "sha256": "557cd39194f63c8bae9cb0ad1d7fdd3cb011f85b41767a64a290a96ef08f5555"
         },
         {
             "source": "management/pm/reports/sql-reconstruction-application.json",
             "sizeBytes": 227,
-            "sha256": "905dad609e8f1cf8261d4fd133676327e82c8807f4c6000b7ab12321f6998af2"
+            "sha256": "e8fda73dd3ed0b67b6b8b84306f5bd347d6d00fee383d1c7e2f0a5ac08801277"
         },
         {
             "source": "management/pm/state/application-realm.sqlite",
-            "sizeBytes": 5300224,
-            "sha256": "bb773226a6b92d2994eb125680073c5102479bb7087806fb40257f59f7548591"
+            "sizeBytes": 5316608,
+            "sha256": "6f0de8e960520d4d3c57541e348b7e3160f8523013a167a5262f81a1acc9b052"
         }
     ]
 }

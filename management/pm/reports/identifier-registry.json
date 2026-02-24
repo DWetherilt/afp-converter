@@ -1,24 +1,24 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-24T16:45:26Z",
+  "generatedAt": "2026-02-24T16:52:32Z",
   "source": "sqlite",
   "sourceTable": "identifier_registry",
-  "identifierCount": 242,
+  "identifierCount": 243,
   "byDiscipline": {
     "policy_management": 80,
     "project_management": 141,
-    "version_control": 19,
+    "version_control": 20,
     "release_management": 1,
     "code": 1
   },
   "byKind": {
     "governance_event_id": 8,
     "policy_rule_id": 71,
+    "issue_id": 7,
     "plan_task_key": 114,
     "workstream_uid": 13,
     "git_branch": 1,
-    "git_commit_sha": 18,
-    "issue_id": 7,
+    "git_commit_sha": 19,
     "knowledge_id": 4,
     "release_package_id": 1,
     "decision_id": 1,
@@ -35,7 +35,7 @@
       "sourceTable": "governance_events",
       "humanRef": "Governance Event | 2026-02-18 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "GOV-2026-02-18-002",
@@ -46,7 +46,7 @@
       "sourceTable": "governance_events",
       "humanRef": "Governance Event | 2026-02-18 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "GOV-2026-02-18-003",
@@ -57,7 +57,7 @@
       "sourceTable": "governance_events",
       "humanRef": "Governance Event | 2026-02-18 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "GOV-2026-02-18-004",
@@ -68,7 +68,7 @@
       "sourceTable": "governance_events",
       "humanRef": "Governance Event | 2026-02-18 | #004",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "GOV-2026-02-19-001",
@@ -79,7 +79,7 @@
       "sourceTable": "governance_events",
       "humanRef": "Governance Event | 2026-02-19 | #001",
       "createdAt": "2026-02-19T19:50:17Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "GOV-2026-02-23-001",
@@ -90,7 +90,7 @@
       "sourceTable": "governance_events",
       "humanRef": "Governance Event | 2026-02-23 | #001",
       "createdAt": "2026-02-23T22:19:08Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "GOV-2026-02-24-001",
@@ -101,7 +101,7 @@
       "sourceTable": "governance_events",
       "humanRef": "Governance Event | 2026-02-24 | #001",
       "createdAt": "2026-02-24T16:40:56Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ACTION-001",
@@ -112,7 +112,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ACTION-002",
@@ -123,7 +123,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ACTION-003",
@@ -134,7 +134,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-BOILER-001",
@@ -145,7 +145,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-CI-001",
@@ -156,7 +156,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-CI-002",
@@ -167,7 +167,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-CI-003",
@@ -178,7 +178,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-COMMS-001",
@@ -189,7 +189,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-CONSOLE-001",
@@ -200,7 +200,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-CONSOLE-002",
@@ -211,7 +211,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-CONSOLE-003",
@@ -222,7 +222,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-CONSOLE-004",
@@ -233,7 +233,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #004",
       "createdAt": "2026-02-19T20:10:19Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-CONSOLE-005",
@@ -244,7 +244,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #005",
       "createdAt": "2026-02-19T20:10:19Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-CONSOLE-006",
@@ -255,7 +255,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #006",
       "createdAt": "2026-02-19T20:27:46Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-CORE-001",
@@ -266,7 +266,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-23T19:12:35Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-CORE-002",
@@ -277,7 +277,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #002",
       "createdAt": "2026-02-23T19:12:35Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-CORE-003",
@@ -288,7 +288,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #003",
       "createdAt": "2026-02-23T19:56:22Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-CORE-004",
@@ -299,7 +299,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #004",
       "createdAt": "2026-02-23T19:56:22Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-CORE-005",
@@ -310,7 +310,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #005",
       "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-DECISION-001",
@@ -321,7 +321,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-DECISION-002",
@@ -332,7 +332,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-DOC-001",
@@ -343,7 +343,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ENV-001",
@@ -354,7 +354,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:58:51Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ENV-002",
@@ -365,7 +365,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #002",
       "createdAt": "2026-02-19T19:58:51Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ENV-003",
@@ -376,7 +376,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #003",
       "createdAt": "2026-02-19T20:10:19Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ENV-004",
@@ -387,7 +387,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #004",
       "createdAt": "2026-02-19T20:10:19Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ENV-005",
@@ -398,7 +398,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #005",
       "createdAt": "2026-02-19T20:10:19Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ENV-006",
@@ -409,7 +409,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #006",
       "createdAt": "2026-02-19T20:27:46Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ENV-007",
@@ -420,7 +420,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #007",
       "createdAt": "2026-02-19T20:27:46Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ENV-008",
@@ -431,7 +431,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #008",
       "createdAt": "2026-02-19T20:27:46Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ENV-009",
@@ -442,7 +442,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #009",
       "createdAt": "2026-02-19T20:38:51Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ENV-010",
@@ -453,7 +453,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #010",
       "createdAt": "2026-02-19T20:38:51Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ENV-011",
@@ -464,7 +464,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #011",
       "createdAt": "2026-02-19T20:38:51Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ENV-012",
@@ -475,7 +475,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #012",
       "createdAt": "2026-02-19T20:38:51Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-EXEC-001",
@@ -486,7 +486,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-GATE-001",
@@ -497,7 +497,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-GATE-002",
@@ -508,7 +508,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-GATE-003",
@@ -519,7 +519,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ID-001",
@@ -530,7 +530,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ID-002",
@@ -541,7 +541,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-KB-001",
@@ -552,7 +552,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-KB-002",
@@ -563,7 +563,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-KB-003",
@@ -574,7 +574,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-KB-004",
@@ -585,7 +585,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #004",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-NAME-001",
@@ -596,7 +596,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-NAME-002",
@@ -607,7 +607,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-NS-001",
@@ -618,7 +618,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-PROD-001",
@@ -629,7 +629,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-REALM-001",
@@ -640,7 +640,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-REALM-002",
@@ -651,7 +651,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-REALM-003",
@@ -662,7 +662,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-REALM-GOV-001",
@@ -673,7 +673,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-REALM-GOV-002",
@@ -684,7 +684,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-REALM-GOV-003",
@@ -695,7 +695,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-REASON-001",
@@ -706,7 +706,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-REASON-002",
@@ -717,7 +717,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-REC-001",
@@ -728,7 +728,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-REC-002",
@@ -739,7 +739,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-ROLLUP-001",
@@ -750,7 +750,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-SEC-001",
@@ -761,7 +761,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-SEC-002",
@@ -772,7 +772,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-SEC-003",
@@ -783,7 +783,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #003",
       "createdAt": "2026-02-23T20:35:20Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-SEC-004",
@@ -794,7 +794,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #004",
       "createdAt": "2026-02-23T20:35:20Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-SQLCODE-001",
@@ -805,7 +805,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-SQLCODE-002",
@@ -816,7 +816,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-SQLCODE-003",
@@ -827,7 +827,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #003",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-SQLCODE-004",
@@ -838,7 +838,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #004",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-SQLCODE-005",
@@ -849,7 +849,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #005",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-SQLCODE-006",
@@ -860,7 +860,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #006",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-WF-001",
@@ -871,7 +871,7 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "PM-WF-002",
@@ -882,7 +882,84 @@
       "sourceTable": "policy_rule_catalog",
       "humanRef": "Policy Rule | 2026-02-24 | #002",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "ISSUE-001",
+      "discipline": "project_management",
+      "identifierKind": "issue_id",
+      "realm": "pm",
+      "scopeRef": "management/docs/issues-log.csv",
+      "sourceTable": "issues",
+      "humanRef": "Issue | 2026-02-24 | #001",
+      "createdAt": "2026-02-19T19:39:05Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "ISSUE-002",
+      "discipline": "project_management",
+      "identifierKind": "issue_id",
+      "realm": "pm",
+      "scopeRef": "management/docs/issues-log.csv",
+      "sourceTable": "issues",
+      "humanRef": "Issue | 2026-02-24 | #002",
+      "createdAt": "2026-02-19T19:39:05Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "ISSUE-003",
+      "discipline": "project_management",
+      "identifierKind": "issue_id",
+      "realm": "pm",
+      "scopeRef": "management/docs/issues-log.csv",
+      "sourceTable": "issues",
+      "humanRef": "Issue | 2026-02-24 | #003",
+      "createdAt": "2026-02-19T19:39:05Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "ISSUE-004",
+      "discipline": "project_management",
+      "identifierKind": "issue_id",
+      "realm": "pm",
+      "scopeRef": "management/docs/issues-log.csv",
+      "sourceTable": "issues",
+      "humanRef": "Issue | 2026-02-24 | #004",
+      "createdAt": "2026-02-19T19:39:05Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "ISSUE-005",
+      "discipline": "project_management",
+      "identifierKind": "issue_id",
+      "realm": "pm",
+      "scopeRef": "management/docs/issues-log.csv",
+      "sourceTable": "issues",
+      "humanRef": "Issue | 2026-02-24 | #005",
+      "createdAt": "2026-02-19T19:39:05Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "ISSUE-006",
+      "discipline": "project_management",
+      "identifierKind": "issue_id",
+      "realm": "pm",
+      "scopeRef": "management/docs/issues-log.csv",
+      "sourceTable": "issues",
+      "humanRef": "Issue | 2026-02-24 | #006",
+      "createdAt": "2026-02-19T19:39:05Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "ISSUE-007",
+      "discipline": "project_management",
+      "identifierKind": "issue_id",
+      "realm": "pm",
+      "scopeRef": "management/docs/issues-log.csv",
+      "sourceTable": "issues",
+      "humanRef": "Issue | 2026-02-24 | #007",
+      "createdAt": "2026-02-19T20:15:26Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-2026-001|Add deterministic paint-order assertions for overlay/text/image interleave cases",
@@ -893,7 +970,18 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-23 | #001",
       "createdAt": "2026-02-23T23:01:20Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-2026-001|Implement structured-field scope graph baseline for renderer continuation",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-2026-001",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-23 | #001",
+      "createdAt": "2026-02-23T23:01:20Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-2026-001|Publish updated fidelity diagnostics and next-step deltas for continuation slice",
@@ -904,7 +992,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-23 | #001",
       "createdAt": "2026-02-23T23:01:20Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-2026-002|Add deterministic ordering assertions for resource-depth tie cases across paint kinds",
@@ -915,7 +1003,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-23 | #001",
       "createdAt": "2026-02-23T23:27:49Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-2026-002|Add scope-graph transition diagnostics breakdown for continuation triage",
@@ -926,7 +1014,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-23 | #001",
       "createdAt": "2026-02-23T23:27:49Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-2026-002|Publish continuation diagnostics and next-step delta after slice validations",
@@ -937,7 +1025,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-23 | #001",
       "createdAt": "2026-02-23T23:27:49Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-2026-003|Enforce PM/application boundary by blocking preview ci-artifacts leakage and removing legacy leaked bundle",
@@ -948,7 +1036,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-24 | #001",
       "createdAt": "2026-02-24T16:40:56Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-2026-003|Publish policy/doc updates and refreshed next-step guidance for post-ringfence continuation",
@@ -959,7 +1047,7 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-24 | #001",
       "createdAt": "2026-02-24T16:40:56Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-2026-003|Refactor CI artifact publishing to generate realm-ringfenced indices under parent management realm only",
@@ -970,7 +1058,502 @@
       "sourceTable": "plan_tasks",
       "humanRef": "Plan Task | 2026-02-24 | #001",
       "createdAt": "2026-02-24T16:40:56Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-A|complete graphics object rendering beyond placeholders (rules, boxes, strokes/fills)",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-A",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-A|finalize image object placement with clipping and orientation transforms",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-A",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-19 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-A|formalize page object graph with scope stack (BMO/EMO, resource begin/end scopes)",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-A",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-18 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-A|implement deterministic paint order per AFP semantics",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-A",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-18 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-B|code page mapping matrix with SBCS/DBCS mixed-run handling",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-B",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-B|coded font resolution from AFP resources (CFI + resource objects)",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-B",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-B|metric-compatible substitutions and kerning/advance tuning",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-B",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-B|remove broad semantic replacement and keep low-signal run-level fallback only",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-B",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-19 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-C|add per-format decode tests from real sample corpus",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-C",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-C|add validation/fallback pipeline with confidence scoring and diagnostics",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-C",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-18 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-C|implement IOCA decoding adapters for common AFP image variants",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-C",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-D|API additions for render/fidelity/resource policies",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-D",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-18 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-D|CLI flags and help/docs",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-D",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-18 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-D|richer diag.json and metadata sections for render traceability",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-D",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-19 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-E|CI gates with artifact publishing (fidelity-report.json, diff images, diagnostics)",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-E",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-18 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-E|add database-backed file-discipline and mirrored VCS ledger reporting",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-E",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-18 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-E|add governance-breach notification and trust-grant logging to database-backed mechanics",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-E",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-18 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-E|build corpus matrix (forms, statements, mixed-language, heavy overlays)",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-E",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-E|enforce hard product-management module boundaries in build quality gate",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-E",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-18 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-E|enforce managed-tooling registration discipline in build quality gate",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-E",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-18 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-E|per-feature integration tests",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-E",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-E|stand up SQLite-backed workflow state stores for project and boilerplate automation",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-E",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-18 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-F|add AFP-token to output-token cross-examination report",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-F",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-19 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-F|emit sequential token trace (structured fields, PTX control codes, per-byte evidence)",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-F",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-18 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-F|implement dedicated print-centric byte-walk engine separate from native renderer",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-F",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-18 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-F|use trace findings to back-port proven control-code handling into native renderer",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-F",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-G|export cross-realm decision priority queue from SQL impact scoring",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-G",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-G|publish knowledge-base report in PM refresh cycle",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-G",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-G|refactor PM console to granular refresh and exchange-format report generation",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-G",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-G|seed initial decisions for active workstreams with smallest-change-biggest-reward scoring",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-G",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-G|stand up SQL knowledge base for reasoning outcomes and artifact context",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-G",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-G|stand up dedicated experience/derived reasoning databases and feed default PM cycle",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-G",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-G|stand up realm-local decision logs with granular scope for reasoning context",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-G",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-G|wire decision queue into PM refresh/report cycle and artifact manifests",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-G",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-H|migrate folders to canonical policy/management/product structure",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-H",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-H|normalize manifests/security config and realm SQL tokens to canonical names",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-H",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-H|update gates/tests/report paths and validate full quality gate on migrated structure",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-H",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-20 | #001",
+      "createdAt": "2026-02-23T20:05:34Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-I|Stage 1 - Core identity and topology convergence",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-I",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-23 | #001",
+      "createdAt": "2026-02-23T20:48:43Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-I|Stage 2 - Tooling governance refactor",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-I",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-23 | #001",
+      "createdAt": "2026-02-23T20:48:43Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-I|Stage 3 - Enforcement and closure validation",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-I",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-23 | #001",
+      "createdAt": "2026-02-23T20:48:43Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-J|Define transient-artifact hygiene policy for local/generated files without hiding governed outputs",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-J",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-23 | #001",
+      "createdAt": "2026-02-23T21:43:16Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-J|Re-run qualityGate plus PM refresh/report cycle and publish stabilization closure evidence",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-J",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-23 | #001",
+      "createdAt": "2026-02-23T21:43:16Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-J|Reconcile project plan/progress/decision artifacts so open actions are reflected in next-step guidance",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-J",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-23 | #001",
+      "createdAt": "2026-02-23T21:43:16Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-J|Split migration changes into deterministic policy/management/product slices with per-slice gate evidence",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-J",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-23 | #001",
+      "createdAt": "2026-02-23T21:43:16Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "WS-J|Stabilize roll-up gate determinism across staged/unstaged/untracked diff states",
+      "discipline": "project_management",
+      "identifierKind": "plan_task_key",
+      "realm": "pm",
+      "scopeRef": "WS-J",
+      "sourceTable": "plan_tasks",
+      "humanRef": "Plan Task | 2026-02-23 | #001",
+      "createdAt": "2026-02-23T21:43:16Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-2026-001",
@@ -981,7 +1564,7 @@
       "sourceTable": "workstreams",
       "humanRef": "Workstream | 2026-02-24 | #001",
       "createdAt": "2026-02-23T23:01:20Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-2026-002",
@@ -992,7 +1575,7 @@
       "sourceTable": "workstreams",
       "humanRef": "Workstream | 2026-02-24 | #002",
       "createdAt": "2026-02-23T23:27:49Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-2026-003",
@@ -1003,7 +1586,7 @@
       "sourceTable": "workstreams",
       "humanRef": "Workstream | 2026-02-24 | #003",
       "createdAt": "2026-02-24T16:40:56Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-A",
@@ -1014,7 +1597,7 @@
       "sourceTable": "workstreams",
       "humanRef": "Workstream | 2026-02-24 | #001",
       "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-B",
@@ -1025,7 +1608,7 @@
       "sourceTable": "workstreams",
       "humanRef": "Workstream | 2026-02-24 | #001",
       "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-C",
@@ -1036,7 +1619,7 @@
       "sourceTable": "workstreams",
       "humanRef": "Workstream | 2026-02-24 | #001",
       "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-D",
@@ -1047,7 +1630,7 @@
       "sourceTable": "workstreams",
       "humanRef": "Workstream | 2026-02-24 | #001",
       "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-E",
@@ -1058,7 +1641,7 @@
       "sourceTable": "workstreams",
       "humanRef": "Workstream | 2026-02-24 | #001",
       "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-F",
@@ -1069,7 +1652,7 @@
       "sourceTable": "workstreams",
       "humanRef": "Workstream | 2026-02-24 | #001",
       "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-G",
@@ -1080,7 +1663,7 @@
       "sourceTable": "workstreams",
       "humanRef": "Workstream | 2026-02-24 | #001",
       "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-H",
@@ -1091,7 +1674,7 @@
       "sourceTable": "workstreams",
       "humanRef": "Workstream | 2026-02-24 | #001",
       "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-I",
@@ -1102,7 +1685,7 @@
       "sourceTable": "workstreams",
       "humanRef": "Workstream | 2026-02-24 | #001",
       "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "WS-J",
@@ -1113,7 +1696,7 @@
       "sourceTable": "workstreams",
       "humanRef": "Workstream | 2026-02-24 | #001",
       "createdAt": "2026-02-23T21:43:16Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
     },
     {
       "identifier": "chore/ci-prodbuild-boilerplate-kickoff",
@@ -1124,7 +1707,62 @@
       "sourceTable": "repo_vcs_snapshot",
       "humanRef": "Branch | 2026-02-24 | #001",
       "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:18Z"
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "95ea2e37d288590a5c5c94e6856563e246810d5c",
+      "discipline": "version_control",
+      "identifierKind": "git_commit_sha",
+      "realm": "pm",
+      "scopeRef": "chore/ci-prodbuild-boilerplate-kickoff",
+      "sourceTable": "repo_vcs_snapshot",
+      "humanRef": "Commit | 2026-02-24 | #003",
+      "createdAt": "2026-02-24T16:51:50Z",
+      "updatedAt": "2026-02-24T16:52:24Z"
+    },
+    {
+      "identifier": "KB-PM-ENV-CONSOLE-HEALTH",
+      "discipline": "project_management",
+      "identifierKind": "knowledge_id",
+      "realm": "pm",
+      "scopeRef": "environment",
+      "sourceTable": "knowledge_entries",
+      "humanRef": "Knowledge | 2026-02-24 | #001",
+      "createdAt": "2026-02-19T19:58:53Z",
+      "updatedAt": "2026-02-24T16:45:38Z"
+    },
+    {
+      "identifier": "KB-PM-ENV-CONSOLE-STALE-TREND",
+      "discipline": "project_management",
+      "identifierKind": "knowledge_id",
+      "realm": "pm",
+      "scopeRef": "environment.console.stale-trend",
+      "sourceTable": "knowledge_entries",
+      "humanRef": "Knowledge | 2026-02-24 | #001",
+      "createdAt": "2026-02-19T20:38:55Z",
+      "updatedAt": "2026-02-24T16:45:38Z"
+    },
+    {
+      "identifier": "KB-PM-ENV-CONSOLE-VISIBLE",
+      "discipline": "project_management",
+      "identifierKind": "knowledge_id",
+      "realm": "pm",
+      "scopeRef": "environment.console.visibility",
+      "sourceTable": "knowledge_entries",
+      "humanRef": "Knowledge | 2026-02-24 | #001",
+      "createdAt": "2026-02-19T20:10:18Z",
+      "updatedAt": "2026-02-24T16:45:37Z"
+    },
+    {
+      "identifier": "KB-PM-ENV-CONSOLE-SESSION-IDENTITY",
+      "discipline": "project_management",
+      "identifierKind": "knowledge_id",
+      "realm": "pm",
+      "scopeRef": "environment.console.session.identity",
+      "sourceTable": "knowledge_entries",
+      "humanRef": "Knowledge | 2026-02-24 | #001",
+      "createdAt": "2026-02-19T20:27:44Z",
+      "updatedAt": "2026-02-24T16:45:36Z"
     },
     {
       "identifier": "b94f7289d39ce1cffb22989c3a0932629d8b3dd1",
@@ -1136,633 +1774,6 @@
       "humanRef": "Commit | 2026-02-24 | #002",
       "createdAt": "2026-02-24T16:40:57Z",
       "updatedAt": "2026-02-24T16:45:18Z"
-    },
-    {
-      "identifier": "ISSUE-001",
-      "discipline": "project_management",
-      "identifierKind": "issue_id",
-      "realm": "pm",
-      "scopeRef": "management/docs/issues-log.csv",
-      "sourceTable": "issues",
-      "humanRef": "Issue | 2026-02-24 | #001",
-      "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "ISSUE-002",
-      "discipline": "project_management",
-      "identifierKind": "issue_id",
-      "realm": "pm",
-      "scopeRef": "management/docs/issues-log.csv",
-      "sourceTable": "issues",
-      "humanRef": "Issue | 2026-02-24 | #002",
-      "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "ISSUE-003",
-      "discipline": "project_management",
-      "identifierKind": "issue_id",
-      "realm": "pm",
-      "scopeRef": "management/docs/issues-log.csv",
-      "sourceTable": "issues",
-      "humanRef": "Issue | 2026-02-24 | #003",
-      "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "ISSUE-004",
-      "discipline": "project_management",
-      "identifierKind": "issue_id",
-      "realm": "pm",
-      "scopeRef": "management/docs/issues-log.csv",
-      "sourceTable": "issues",
-      "humanRef": "Issue | 2026-02-24 | #004",
-      "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "ISSUE-005",
-      "discipline": "project_management",
-      "identifierKind": "issue_id",
-      "realm": "pm",
-      "scopeRef": "management/docs/issues-log.csv",
-      "sourceTable": "issues",
-      "humanRef": "Issue | 2026-02-24 | #005",
-      "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "ISSUE-006",
-      "discipline": "project_management",
-      "identifierKind": "issue_id",
-      "realm": "pm",
-      "scopeRef": "management/docs/issues-log.csv",
-      "sourceTable": "issues",
-      "humanRef": "Issue | 2026-02-24 | #006",
-      "createdAt": "2026-02-19T19:39:05Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "ISSUE-007",
-      "discipline": "project_management",
-      "identifierKind": "issue_id",
-      "realm": "pm",
-      "scopeRef": "management/docs/issues-log.csv",
-      "sourceTable": "issues",
-      "humanRef": "Issue | 2026-02-24 | #007",
-      "createdAt": "2026-02-19T20:15:26Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-2026-001|Implement structured-field scope graph baseline for renderer continuation",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-2026-001",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-23 | #001",
-      "createdAt": "2026-02-23T23:01:20Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-A|complete graphics object rendering beyond placeholders (rules, boxes, strokes/fills)",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-A",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-A|finalize image object placement with clipping and orientation transforms",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-A",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-19 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-A|formalize page object graph with scope stack (BMO/EMO, resource begin/end scopes)",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-A",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-18 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-A|implement deterministic paint order per AFP semantics",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-A",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-18 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-B|code page mapping matrix with SBCS/DBCS mixed-run handling",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-B",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-B|coded font resolution from AFP resources (CFI + resource objects)",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-B",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-B|metric-compatible substitutions and kerning/advance tuning",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-B",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-B|remove broad semantic replacement and keep low-signal run-level fallback only",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-B",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-19 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-C|add per-format decode tests from real sample corpus",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-C",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-C|add validation/fallback pipeline with confidence scoring and diagnostics",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-C",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-18 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-C|implement IOCA decoding adapters for common AFP image variants",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-C",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-D|API additions for render/fidelity/resource policies",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-D",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-18 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-D|CLI flags and help/docs",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-D",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-18 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-D|richer diag.json and metadata sections for render traceability",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-D",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-19 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-E|CI gates with artifact publishing (fidelity-report.json, diff images, diagnostics)",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-E",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-18 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-E|add database-backed file-discipline and mirrored VCS ledger reporting",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-E",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-18 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-E|add governance-breach notification and trust-grant logging to database-backed mechanics",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-E",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-18 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-E|build corpus matrix (forms, statements, mixed-language, heavy overlays)",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-E",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-E|enforce hard product-management module boundaries in build quality gate",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-E",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-18 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-E|enforce managed-tooling registration discipline in build quality gate",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-E",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-18 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-E|per-feature integration tests",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-E",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-E|stand up SQLite-backed workflow state stores for project and boilerplate automation",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-E",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-18 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-F|add AFP-token to output-token cross-examination report",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-F",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-19 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-F|emit sequential token trace (structured fields, PTX control codes, per-byte evidence)",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-F",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-18 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-F|implement dedicated print-centric byte-walk engine separate from native renderer",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-F",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-18 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-F|use trace findings to back-port proven control-code handling into native renderer",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-F",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-G|export cross-realm decision priority queue from SQL impact scoring",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-G",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-G|publish knowledge-base report in PM refresh cycle",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-G",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-G|refactor PM console to granular refresh and exchange-format report generation",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-G",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-G|seed initial decisions for active workstreams with smallest-change-biggest-reward scoring",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-G",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-G|stand up SQL knowledge base for reasoning outcomes and artifact context",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-G",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-G|stand up dedicated experience/derived reasoning databases and feed default PM cycle",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-G",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-G|stand up realm-local decision logs with granular scope for reasoning context",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-G",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-G|wire decision queue into PM refresh/report cycle and artifact manifests",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-G",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-H|migrate folders to canonical policy/management/product structure",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-H",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-H|normalize manifests/security config and realm SQL tokens to canonical names",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-H",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-H|update gates/tests/report paths and validate full quality gate on migrated structure",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-H",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-20 | #001",
-      "createdAt": "2026-02-23T20:05:34Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-I|Stage 1 - Core identity and topology convergence",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-I",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-23 | #001",
-      "createdAt": "2026-02-23T20:48:43Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-I|Stage 2 - Tooling governance refactor",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-I",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-23 | #001",
-      "createdAt": "2026-02-23T20:48:43Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-I|Stage 3 - Enforcement and closure validation",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-I",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-23 | #001",
-      "createdAt": "2026-02-23T20:48:43Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-J|Define transient-artifact hygiene policy for local/generated files without hiding governed outputs",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-J",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-23 | #001",
-      "createdAt": "2026-02-23T21:43:16Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-J|Re-run qualityGate plus PM refresh/report cycle and publish stabilization closure evidence",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-J",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-23 | #001",
-      "createdAt": "2026-02-23T21:43:16Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-J|Reconcile project plan/progress/decision artifacts so open actions are reflected in next-step guidance",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-J",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-23 | #001",
-      "createdAt": "2026-02-23T21:43:16Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-J|Split migration changes into deterministic policy/management/product slices with per-slice gate evidence",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-J",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-23 | #001",
-      "createdAt": "2026-02-23T21:43:16Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "WS-J|Stabilize roll-up gate determinism across staged/unstaged/untracked diff states",
-      "discipline": "project_management",
-      "identifierKind": "plan_task_key",
-      "realm": "pm",
-      "scopeRef": "WS-J",
-      "sourceTable": "plan_tasks",
-      "humanRef": "Plan Task | 2026-02-23 | #001",
-      "createdAt": "2026-02-23T21:43:16Z",
-      "updatedAt": "2026-02-24T16:45:17Z"
-    },
-    {
-      "identifier": "KB-PM-ENV-CONSOLE-HEALTH",
-      "discipline": "project_management",
-      "identifierKind": "knowledge_id",
-      "realm": "pm",
-      "scopeRef": "environment",
-      "sourceTable": "knowledge_entries",
-      "humanRef": "Knowledge | 2026-02-24 | #001",
-      "createdAt": "2026-02-19T19:58:53Z",
-      "updatedAt": "2026-02-24T16:43:32Z"
-    },
-    {
-      "identifier": "KB-PM-ENV-CONSOLE-STALE-TREND",
-      "discipline": "project_management",
-      "identifierKind": "knowledge_id",
-      "realm": "pm",
-      "scopeRef": "environment.console.stale-trend",
-      "sourceTable": "knowledge_entries",
-      "humanRef": "Knowledge | 2026-02-24 | #001",
-      "createdAt": "2026-02-19T20:38:55Z",
-      "updatedAt": "2026-02-24T16:43:32Z"
-    },
-    {
-      "identifier": "KB-PM-ENV-CONSOLE-VISIBLE",
-      "discipline": "project_management",
-      "identifierKind": "knowledge_id",
-      "realm": "pm",
-      "scopeRef": "environment.console.visibility",
-      "sourceTable": "knowledge_entries",
-      "humanRef": "Knowledge | 2026-02-24 | #001",
-      "createdAt": "2026-02-19T20:10:18Z",
-      "updatedAt": "2026-02-24T16:43:31Z"
-    },
-    {
-      "identifier": "KB-PM-ENV-CONSOLE-SESSION-IDENTITY",
-      "discipline": "project_management",
-      "identifierKind": "knowledge_id",
-      "realm": "pm",
-      "scopeRef": "environment.console.session.identity",
-      "sourceTable": "knowledge_entries",
-      "humanRef": "Knowledge | 2026-02-24 | #001",
-      "createdAt": "2026-02-19T20:27:44Z",
-      "updatedAt": "2026-02-24T16:43:30Z"
     },
     {
       "identifier": "0015c99e19bac7609bb2c206e0446874559f8f7c",
@@ -1784,7 +1795,7 @@
       "sourceTable": "SESSION_CHANGELOG.md",
       "humanRef": "Console Environment Governance | 2026-02-19 | #001",
       "createdAt": "2026-02-19 20:39:47",
-      "updatedAt": "2026-02-24 16:45:25"
+      "updatedAt": "2026-02-24 16:52:32"
     },
     {
       "identifier": "REL-PKG-2026-02-19-CONSOLE-ENV-GOV-V2-001",
@@ -1795,7 +1806,7 @@
       "sourceTable": "product/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-console-environment-governance-v2/package-manifest.json",
       "humanRef": "Console Governance Package | 2026-02-19 | #001",
       "createdAt": "2026-02-19 20:39:47",
-      "updatedAt": "2026-02-24 16:45:25"
+      "updatedAt": "2026-02-24 16:52:32"
     },
     {
       "identifier": "f216e8b030f8b902b90605c01cc9cd6ef8d7f848",

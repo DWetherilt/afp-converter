@@ -1,0 +1,9 @@
+{
+  "packageId": "2026-02-24-sampledata-build-ingestion",
+  "sourceRepo": "afp-converter",
+  "targetRepo": "pz-boilerplate-intelliJ",
+  "createdAt": "2026-02-24T00:00:00Z",
+  "promotionStatus": "pending_review",
+  "summary": "Ensure all AFP samples in sampleData are converted into sampleOutput during build/preview manifest execution.",
+  "supersedes": []
+}

@@ -101,6 +101,7 @@ tasks.register('previewManifest') {
     group = 'build'
     description = 'Regenerates preview artifacts under product/afp-converter/preview/ using the current converter'
     dependsOn(':afp-cli:generatePreview')
+    dependsOn(':afp-cli:generateSampleOutputs')
 }
 
 tasks.register('pmConsoleStatus', JavaExec) {
