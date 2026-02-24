@@ -1,0 +1,68 @@
+{
+    "schemaVersion": "1",
+    "generatedAt": "2026-02-24T16:45:35Z",
+    "realm": "boilerplate",
+    "artifactCount": 12,
+    "files": [
+        {
+            "source": "product/boilerplate/update-packages/README.md",
+            "sizeBytes": 1347,
+            "sha256": "e61896db374eddf2bc1e4fba72fef724572f9d8bf6db04181952513c5e28d21f"
+        },
+        {
+            "source": "product/boilerplate/update-packages/pz-boilerplate-intelliJ",
+            "sizeBytes": 0,
+            "sha256": ""
+        },
+        {
+            "source": "management/docs/boilerplate-sync-candidates.xlsx",
+            "sizeBytes": 10158,
+            "sha256": "24b1e92823fae4e5aeee1b5d8deb191bd3a1c4903c5547ee373eb36dfab6736d"
+        },
+        {
+            "source": "management/pm/reports/project-plan-progress-boilerplate.json",
+            "sizeBytes": 11684,
+            "sha256": "3a9d49682d766b70eec3d1a07a80df9b7d6576d0d3e2fe60ea78af1bd66ce77d"
+        },
+        {
+            "source": "management/pm/reports/boilerplate-package-files-with-context.csv",
+            "sizeBytes": 37502,
+            "sha256": "4a3c549481bacea48d3b4ecde1ac83a0020c3f615b950791a45cb8cdb1c663e3"
+        },
+        {
+            "source": "management/pm/reports/boilerplate-promotion-status.json",
+            "sizeBytes": 15706,
+            "sha256": "5139dc63e998c02e3614813ced22436a470bc89a235d945ea6587249b5b81036"
+        },
+        {
+            "source": "management/pm/reports/boilerplate-realm-policy.json",
+            "sizeBytes": 27402,
+            "sha256": "6d1d4b0e66ff782880cf8e67a4df07d84b86ea4ef6e2918049768c34351fb9cd"
+        },
+        {
+            "source": "management/pm/reports/sql-authority-boilerplate.json",
+            "sizeBytes": 228,
+            "sha256": "a0fb090bfc4e2e1ea0a67dc7837ccda11b9532e4240210081fb60bd7c17f0a66"
+        },
+        {
+            "source": "management/pm/reports/sql-coverage-boilerplate.json",
+            "sizeBytes": 332,
+            "sha256": "b0762e98094cf30bcf3f9cb766c23c4eb519bf985598d2d1f89d96327f63c148"
+        },
+        {
+            "source": "management/pm/reports/sql-reconstruction-boilerplate.json",
+            "sizeBytes": 228,
+            "sha256": "bc513da0e9f5f05a26702c8a7959d8e9f10d054717099be221eee76a2d663db0"
+        },
+        {
+            "source": "management/pm/state/boilerplate-state.sqlite",
+            "sizeBytes": 98304,
+            "sha256": "416968e0386408ca6ca7a048a4129922cb127485562dbcdd5858c489da23be33"
+        },
+        {
+            "source": "management/pm/state/boilerplate-realm.sqlite",
+            "sizeBytes": 3055616,
+            "sha256": "73b7893b10bab3bc7fb22d05372ea742ba86b7b2fe5c37039ebf2c60dcc795f2"
+        }
+    ]
+}

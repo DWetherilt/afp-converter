@@ -320,7 +320,10 @@ After a normal cycle, these should be current:
 - `product/afp-converter/preview/fidelity-report.json`
 - `management/pm/reports/project-plan-next-step.json`
 - `management/pm/reports/documentation-manifest.json`
-- `product/afp-converter/preview/ci-artifacts/latest/*`
+- `management/pm/reports/realm-artifacts/index.json`
+- `management/pm/reports/realm-artifacts/application/latest/index.json`
+- `management/pm/reports/realm-artifacts/pm/latest/index.json`
+- `management/pm/reports/realm-artifacts/boilerplate/latest/index.json`
 
 ## Environment Metadata Change Policy
 If environment/process metadata changes (new task, new file, renamed plan path, new gate, new artifact):

@@ -1,3 +1,0 @@
-# label|afpPath|expectedPdfPath
-sample|product/afp-converter/sampleData/sample.afp|product/afp-converter/sampleOutput/sample.pdf
-image-heavy|product/afp-converter/sampleData/image-heavy.afp|product/afp-converter/sampleOutput/image-heavy.pdf

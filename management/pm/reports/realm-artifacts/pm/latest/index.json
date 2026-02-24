@@ -1,0 +1,258 @@
+{
+    "schemaVersion": "1",
+    "generatedAt": "2026-02-24T16:45:35Z",
+    "realm": "pm",
+    "artifactCount": 50,
+    "files": [
+        {
+            "source": "AI-POLICY.md",
+            "sizeBytes": 27277,
+            "sha256": "a8e84152a8b955caa926403df935ce5d834e4fc8e09a94b7634f78133b62b900"
+        },
+        {
+            "source": "README.md",
+            "sizeBytes": 19394,
+            "sha256": "472388ab088807cde3e135e8de8d5e6c760f27dd104bc84ac7fb2cfc93683f65"
+        },
+        {
+            "source": "SESSION_CHANGELOG.md",
+            "sizeBytes": 76916,
+            "sha256": "28e06f1390e7c27e1f6063ddf10360b562b03c190f4327218cc8881be3e9e5a8"
+        },
+        {
+            "source": "management/docs/project-plan.md",
+            "sizeBytes": 9813,
+            "sha256": "d0fc4ea9bd5996aa24cbe49ef082b4b2319ab12c4f370510da57fe389da6a466"
+        },
+        {
+            "source": "management/docs/project-plan-progress.csv",
+            "sizeBytes": 18501,
+            "sha256": "023e376926d6b2bcabf1c3c94e31880ba9a2ea2130ef93a971a66723adfcc980"
+        },
+        {
+            "source": "management/docs/project-plan-progress.xlsx",
+            "sizeBytes": 25557,
+            "sha256": "01cb5cdf6adf790acda06a00f9db4b866073326077b0df30a8e79e0e35afcb7e"
+        },
+        {
+            "source": "management/docs/policy-governance-events.csv",
+            "sizeBytes": 3234,
+            "sha256": "28f04d62e797943bfa35fe3011cddadcdbc39f6397f480284b5c872cf7e9f5d8"
+        },
+        {
+            "source": "management/docs/policy-governance-events.xlsx",
+            "sizeBytes": 4846,
+            "sha256": "c472aa9cb74c623131c1d7a1e1b811392ead1c1869224aa5843d5b72e13a9372"
+        },
+        {
+            "source": "management/pm/reports/project-plan-progress-pm.json",
+            "sizeBytes": 11706,
+            "sha256": "77dbc66ee6ee3d4a32f574c716063e8c1b0ecf8dec5d814f90b9b808324f4724"
+        },
+        {
+            "source": "management/pm/reports/project-plan-progress-data.json",
+            "sizeBytes": 22615,
+            "sha256": "193ae905f8aab422eb165e894c04733072d434f62e8f78296260a0d8f491725f"
+        },
+        {
+            "source": "management/pm/reports/project-plan-next-step.json",
+            "sizeBytes": 5879,
+            "sha256": "5a5b158ba48dcaf45c2aad2bf960a6955c1cbca41a7ded12fe274eafd8ec4878"
+        },
+        {
+            "source": "management/pm/reports/documentation-manifest.json",
+            "sizeBytes": 17291,
+            "sha256": "1c9a68389d889efdac6a2bec3422f461e8eedbfc6445fa72dd01e153672cfe22"
+        },
+        {
+            "source": "management/pm/reports/governance-alerts.json",
+            "sizeBytes": 5823,
+            "sha256": "889857f14e4b7df9b2af49cd1310612fb6c1f00b39bca23d45a89dc294781878"
+        },
+        {
+            "source": "management/pm/reports/version-control-ledger.json",
+            "sizeBytes": 129493,
+            "sha256": "16f97e3799e605457ef7f7aeafbd8dc34a506dfec3d0c1b263db7b94ff8d125c"
+        },
+        {
+            "source": "management/pm/reports/identifier-registry.json",
+            "sizeBytes": 99419,
+            "sha256": "15a437ace090d20d100075465ccf730db4b427013a520621b94e1dcb1dd26279"
+        },
+        {
+            "source": "management/pm/reports/issues-log-tickle.json",
+            "sizeBytes": 3185,
+            "sha256": "9720c8c9ca33a95bd2df15817b52d24791baa24139166d0adbace6aac22b3db3"
+        },
+        {
+            "source": "management/pm/reports/issues-effectiveness.json",
+            "sizeBytes": 4392,
+            "sha256": "f88f9cad131e0435cc654b7c213c22dec3051f90bace3451c53ac3045dab8f8e"
+        },
+        {
+            "source": "management/pm/reports/environment-health.json",
+            "sizeBytes": 1164,
+            "sha256": "d0ba05e07c034a3a2af1b9f986478ffb0fddf034ba22d5c80d5d52ec5506c42a"
+        },
+        {
+            "source": "management/pm/reports/pm-console-stale-cleanup.json",
+            "sizeBytes": 450,
+            "sha256": "bb7b3ff9ed5fe78bbbeefd34beb8bf7180265f06e66d4afd3e11f4b17dada631"
+        },
+        {
+            "source": "management/pm/reports/environment-dashboard.json",
+            "sizeBytes": 373,
+            "sha256": "2aa813e2caba4a1054dc99616d79fce529d375bba4679894e56be244899c2d15"
+        },
+        {
+            "source": "management/pm/reports/policy-rules.json",
+            "sizeBytes": 32189,
+            "sha256": "cf348a8da513c0cd7131a84bd974d50c3497dca76b56a673244d1d4ff5622f50"
+        },
+        {
+            "source": "management/pm/reports/policy-rules-lint.json",
+            "sizeBytes": 487,
+            "sha256": "37da1419fa3db98c068089541d0decbd8f68ca261fc5baf9fe27007f74ee94cb"
+        },
+        {
+            "source": "management/pm/reports/presentation-ref-lint.json",
+            "sizeBytes": 453,
+            "sha256": "726da66a231642f261e1576fd00bbbb3048a0e1717510a6be26d4199a99a6bfb"
+        },
+        {
+            "source": "management/pm/reports/data-dictionary.json",
+            "sizeBytes": 19535,
+            "sha256": "6128b26d36d51d6526535fffcf2c077f9250d796134f098fab7300bf3d4441b9"
+        },
+        {
+            "source": "management/pm/reports/data-dictionary-lint.json",
+            "sizeBytes": 841,
+            "sha256": "4ca2d3844f79693acc12f842a6b85ae15da29978123e2fb7b42b88c64a3d346b"
+        },
+        {
+            "source": "management/pm/reports/cross-realm-token-search.json",
+            "sizeBytes": 47606,
+            "sha256": "f4b44ec5d42b493bc0dca0ddaaa9ccec3c10416b6ae0a2c0bed59c224963d5cc"
+        },
+        {
+            "source": "management/pm/reports/cross-realm-action-token-search.json",
+            "sizeBytes": 122,
+            "sha256": "60265eb230b4d1779f5d494b91f4117b4a68b578c613aaff01fa372bb1af55f2"
+        },
+        {
+            "source": "management/pm/reports/decision-priority-queue.json",
+            "sizeBytes": 4629,
+            "sha256": "62332a2ca6d4dea0a4451e190ce2ffa89e170ecc4bc21549a37542c2796780c4"
+        },
+        {
+            "source": "management/pm/reports/knowledge-base.json",
+            "sizeBytes": 15373,
+            "sha256": "2c4ea94728225baf12f63971357e3cf3d81cb3e84114179cced686aa07e6d7fe"
+        },
+        {
+            "source": "management/pm/reports/realm-knowledge-sync.json",
+            "sizeBytes": 1124,
+            "sha256": "1562216fd29a323c715c50c86868d49451b1ff18a6eeb11705a69a0be26f80b2"
+        },
+        {
+            "source": "management/pm/reports/realm-knowledge-link-gate.json",
+            "sizeBytes": 849,
+            "sha256": "f810c4923d68ceb172c88489b2d1121b96ccde43e3e8941b55ddc18b06701ca5"
+        },
+        {
+            "source": "management/pm/reports/action-items.json",
+            "sizeBytes": 4609,
+            "sha256": "2d3b5dbf187ddecab71c3774d1af1ccd4fe426d5de96d040aa6614338d227256"
+        },
+        {
+            "source": "management/pm/reports/action-decision-suggestions.json",
+            "sizeBytes": 5186,
+            "sha256": "62f1c8204ed52dfbf4093c0617903be62c0d28b2e3c86b9e1e9039aa52ae8f1c"
+        },
+        {
+            "source": "management/pm/reports/action-owner-summary.json",
+            "sizeBytes": 293,
+            "sha256": "8cca13907dc872ea274cca7552a9464e7968ce3fa5861f93fcf676c2023cc212"
+        },
+        {
+            "source": "management/pm/reports/action-sla-trend.json",
+            "sizeBytes": 653,
+            "sha256": "950cab4bc215aeb13f9045c5e5fbe691ac0eb4c2a72083a9866961b82891b36c"
+        },
+        {
+            "source": "management/pm/reports/action-ingest-strict.json",
+            "sizeBytes": 276,
+            "sha256": "cf0b7cabd047fcc37e7cee59efd59c0a49372d66e343ceaed02e5b3877403571"
+        },
+        {
+            "source": "management/pm/reports/realm-policy-sync.json",
+            "sizeBytes": 500,
+            "sha256": "4aa20512d9207e9644c109d0101958a355aa5bc8057d7a390b64bdc893fe4f9a"
+        },
+        {
+            "source": "management/pm/reports/realm-policy-diff.json",
+            "sizeBytes": 671,
+            "sha256": "2c7147ff0641348d538b00eac7b34e72dcc0b15e55a4eb1f683c38be5881a700"
+        },
+        {
+            "source": "management/pm/reports/pm-realm-policy.json",
+            "sizeBytes": 25679,
+            "sha256": "3b93664bc56bd582fff3bbe7317348cbe46f4ed693b864fb5d60f0f9786a4dfd"
+        },
+        {
+            "source": "management/pm/reports/sql-authority-pm.json",
+            "sizeBytes": 218,
+            "sha256": "a1c92bdf4f61d07f8e6bcd1211c7aba78ce55dc26cda028c3edcb5c67a74f26c"
+        },
+        {
+            "source": "management/pm/reports/sql-coverage-pm.json",
+            "sizeBytes": 321,
+            "sha256": "cd5bb1247fccebacb5275fc74c72c13d94cf84415002b0505dd595acdf22893e"
+        },
+        {
+            "source": "management/pm/reports/sql-reconstruction-pm.json",
+            "sizeBytes": 218,
+            "sha256": "04c9ce64d99438b87dee2ea40f56eba9071393d8270a042b545aeb03fb67db42"
+        },
+        {
+            "source": "management/pm/reports/reasoning-drive.json",
+            "sizeBytes": 3520,
+            "sha256": "708f2bd49fb70b44ee65e413bb83d99e9ccd9648e2f463544fba32e811c9e824"
+        },
+        {
+            "source": "management/pm/state/realm-policy-snapshot.json",
+            "sizeBytes": 87532,
+            "sha256": "704f510adfe08fdd880b303c716c111d7626cc6c7b2a85de3441457931aa4dbe"
+        },
+        {
+            "source": "management/pm/state/action-sla-history.json",
+            "sizeBytes": 474,
+            "sha256": "f0f4e12ebb2e1e3e69c63cc14759f3ea4f72d487501720af2d0bc1302afb9bc8"
+        },
+        {
+            "source": "management/pm/state/pm-console-stale-history.json",
+            "sizeBytes": 5771,
+            "sha256": "3c1c5ca7eaeb7a4b858b6c90b7a33cb8c980c2616888d64ede826b51141ea954"
+        },
+        {
+            "source": "management/pm/state/project-state.sqlite",
+            "sizeBytes": 610304,
+            "sha256": "669c207251a18f6bf3502450cb902de01c86f9daf0411c18757fd2c63da8da55"
+        },
+        {
+            "source": "management/pm/state/pm-realm.sqlite",
+            "sizeBytes": 24350720,
+            "sha256": "b1863259684eae2b9411a939e0b0797e2a57ad94be562ad183d31bba84927e6b"
+        },
+        {
+            "source": "management/pm/state/reasoning-experience.sqlite",
+            "sizeBytes": 28672,
+            "sha256": "ca88095a8df116783b819eb0d7448b37bd79142df5bb2686d52059aaa0f04f4e"
+        },
+        {
+            "source": "management/pm/state/reasoning-derived.sqlite",
+            "sizeBytes": 24576,
+            "sha256": "22461a2d8ab12cbf42e6adb50c3e2b918d00242a801771e10b674ac1be1198ab"
+        }
+    ]
+}

@@ -2,6 +2,29 @@
 
 This changelog is reconstructed from repository artifacts and our current thread (the repo has no git commits yet).
 
+## 2026-02-24
+
+- Formalized and completed `WS-2026-003: Realm Artifact Ringfencing 2026-02-24` in:
+  - `management/docs/project-plan-progress.csv`
+  - `management/pm/workflow/workstream-realm-map.json`
+- Refactored `publishCiArtifacts` in `build.gradle` to publish realm-private artifact indices under:
+  - `management/pm/reports/realm-artifacts/application/latest/index.json`
+  - `management/pm/reports/realm-artifacts/pm/latest/index.json`
+  - `management/pm/reports/realm-artifacts/boilerplate/latest/index.json`
+  - parent linkage: `management/pm/reports/realm-artifacts/index.json`
+- Enforced strict boundary separation:
+  - `enforcePmApplicationRealmSeparation` now fails if `product/afp-converter/preview/ci-artifacts` exists.
+  - removed legacy leaked bundle under `product/afp-converter/preview/ci-artifacts/latest/`.
+- Updated policy/docs to match new artifact contract:
+  - `AI-POLICY.md`
+  - `README.md`
+- Logged governance event for human trust-boundary instruction:
+  - `management/docs/policy-governance-events.csv` (`GOV-2026-02-24-001`)
+- Added boilerplate inheritance roll-up package:
+  - `product/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-24-realm-artifact-ringfencing/`
+- Validation:
+  - `./gradlew -q workstreamPresentationIndex projectPlanNextStep projectPlanProgressJson policyGovernanceWorkbook pmWorkflowRun -PpmPhase=pm_refresh_and_reports qualityGate` (pass)
+
 ## 2026-02-23
 
 - Created and scoped dedicated `Workstream J: Gate Determinism and Branch Stabilization` in:

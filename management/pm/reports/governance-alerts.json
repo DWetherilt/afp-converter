@@ -1,13 +1,25 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-24T16:25:14Z",
+  "generatedAt": "2026-02-24T16:45:25Z",
   "source": "sqlite",
   "hasActiveGovernanceBreach": false,
   "activeBreachCount": 0,
-  "trustEventCount": 2,
+  "trustEventCount": 3,
   "policyGovernanceEventCount": 4,
   "activeBreaches": [],
   "trustEvents": [
+    {
+      "event_id": "GOV-2026-02-24-001",
+      "event_date": "2026-02-24",
+      "phase": "Trust Governance",
+      "status": "closed",
+      "checkpoint_id": "20260224T000000Z-realm-artifact-ringfencing",
+      "issue_id": "ISSUE-006",
+      "summary": "Human instruction required strict realm ringfencing so each realm keeps private artifact manifestation with only parent-level linkage.",
+      "evidence": "build.gradle|AI-POLICY.md|README.md|management/docs/project-plan-progress.csv|management/pm/workflow/workstream-realm-map.json",
+      "updated_by": "Human+AI",
+      "event_ref": "Governance Event | 2026-02-24 | #001"
+    },
     {
       "event_id": "GOV-2026-02-18-004",
       "event_date": "2026-02-18",
@@ -84,8 +96,8 @@
     }
   ],
   "policyRuleAudit": {
-    "requiredRuleId": "PM-COMMS-001",
     "enabledPolicyRuleCount": 71,
+    "requiredRuleId": "PM-COMMS-001",
     "requiredRuleEnabled": true
   },
   "sqlAuthorityAudit": {
@@ -94,7 +106,7 @@
   },
   "sqlAuthorityDrift": {
     "schemaVersion": "1",
-    "generatedAt": "2026-02-24T16:25:13Z",
+    "generatedAt": "2026-02-24T16:45:25Z",
     "realm": "pm",
     "trackedFileCount": 34,
     "mismatchCount": 0,

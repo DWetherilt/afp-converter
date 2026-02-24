@@ -3,8 +3,14 @@
 .gradle/9.0.0/fileHashes/fileHashes.lock
 .gradle/buildOutputCleanup/buildOutputCleanup.lock
 .idea/workspace.xml
+README.md
+SESSION_CHANGELOG.md
+build.gradle
 build/reports/problems/problems-report.html
+management/docs/boilerplate-sync-candidates.xlsx
 management/docs/issues-log.csv
+management/docs/policy-governance-events.csv
+management/docs/policy-governance-events.xlsx
 management/docs/project-plan-progress.csv
 management/docs/project-plan-progress.xlsx
 management/docs/project-plan.md
@@ -13,6 +19,7 @@ management/pm/reports/action-items.json
 management/pm/reports/action-owner-summary.json
 management/pm/reports/action-sla-trend.json
 management/pm/reports/application-realm-policy.json
+management/pm/reports/boilerplate-package-files-with-context.csv
 management/pm/reports/boilerplate-promotion-status.json
 management/pm/reports/boilerplate-realm-policy.json
 management/pm/reports/cross-realm-action-token-search.json
@@ -41,6 +48,10 @@ management/pm/reports/project-plan-progress-application.json
 management/pm/reports/project-plan-progress-boilerplate.json
 management/pm/reports/project-plan-progress-data.json
 management/pm/reports/project-plan-progress-pm.json
+management/pm/reports/realm-artifacts/application/latest/index.json
+management/pm/reports/realm-artifacts/boilerplate/latest/index.json
+management/pm/reports/realm-artifacts/index.json
+management/pm/reports/realm-artifacts/pm/latest/index.json
 management/pm/reports/realm-knowledge-link-gate.json
 management/pm/reports/realm-knowledge-sync.json
 management/pm/reports/realm-policy-diff.json
@@ -48,6 +59,7 @@ management/pm/reports/realm-policy-sync.json
 management/pm/reports/reasoning-drive.json
 management/pm/reports/repo-file-inventory-with-context.csv
 management/pm/reports/slice-manifests/slice-management-paths.txt
+management/pm/reports/slice-manifests/slice-policy-paths.txt
 management/pm/reports/slice-manifests/slice-product-paths.txt
 management/pm/reports/sql-authority-application.json
 management/pm/reports/sql-authority-boilerplate.json
@@ -70,9 +82,11 @@ management/pm/state/application-realm.sqlite
 management/pm/state/boilerplate-realm.sqlite
 management/pm/state/boilerplate-state.sqlite
 management/pm/state/core-realm.sqlite
+management/pm/state/critical-db-sha256.txt
 management/pm/state/pm-console-stale-history.json
 management/pm/state/pm-realm.sqlite
 management/pm/state/project-state.sqlite
 management/pm/state/realm-policy-snapshot.json
 management/pm/state/reasoning-derived.sqlite
 management/pm/state/reasoning-experience.sqlite
+management/pm/workflow/workstream-realm-map.json

@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-24T16:25:05Z",
+  "generatedAt": "2026-02-24T16:45:31Z",
   "source": "management/pm/reports/action-items.json",
   "current": {
     "date": "2026-02-24",
-    "capturedAt": "2026-02-24T16:25:05Z",
+    "capturedAt": "2026-02-24T16:45:31Z",
     "total": 5,
     "open": 3,
     "stale": 0,
@@ -21,7 +21,7 @@
     },
     {
       "date": "2026-02-24",
-      "capturedAt": "2026-02-24T16:25:05Z",
+      "capturedAt": "2026-02-24T16:45:31Z",
       "total": 5,
       "open": 3,
       "stale": 0,

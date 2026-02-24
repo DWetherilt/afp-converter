@@ -2145,117 +2145,136 @@ tasks.register('documentationManifest') {
 
 tasks.register('publishCiArtifacts') {
     group = 'verification'
-    description = 'Publishes CI-facing artifact bundle under product/afp-converter/preview/ci-artifacts/latest'
+    description = 'Publishes realm-ringfenced artifact indices under management/pm/reports/realm-artifacts/'
     dependsOn('documentationManifest')
     dependsOn('presentationRefLint')
     doLast {
-        File outputDir = file('product/afp-converter/preview/ci-artifacts/latest')
-        outputDir.mkdirs()
-        List<File> artifacts = [
-            file('AI-POLICY.md'),
-            file('management/docs/PRESENTATION_ID_MIGRATION.md'),
-            file('product/afp-converter/preview/afp-output.pdf'),
-            file('product/afp-converter/preview/afp-output.html'),
-            file('product/afp-converter/preview/afp-meta.json'),
-            file('product/afp-converter/preview/afp-diag.json'),
-            file('product/afp-converter/preview/fidelity-report.json'),
-            file('management/pm/reports/project-plan-progress-data.json'),
-            file('management/pm/reports/governance-alerts.json'),
-            file('management/pm/reports/version-control-ledger.json'),
-            file('management/pm/reports/identifier-registry.json'),
-            file('management/pm/reports/remanifest-drill.json'),
-            file('management/pm/reports/issues-log-tickle.json'),
-            file('management/pm/reports/issues-effectiveness.json'),
-            file('management/pm/reports/environment-health.json'),
-            file('management/pm/reports/pm-console-stale-cleanup.json'),
-            file('management/pm/reports/environment-dashboard.json'),
-            file('management/pm/reports/policy-rules.json'),
-            file('management/pm/reports/policy-rules-lint.json'),
-            file('management/pm/reports/presentation-ref-lint.json'),
-            file('management/pm/reports/sql-authority-application.json'),
-            file('management/pm/reports/sql-authority-pm.json'),
-            file('management/pm/reports/sql-authority-boilerplate.json'),
-            file('management/pm/reports/sql-coverage-application.json'),
-            file('management/pm/reports/sql-coverage-pm.json'),
-            file('management/pm/reports/sql-coverage-boilerplate.json'),
-            file('management/pm/reports/sql-reconstruction-application.json'),
-            file('management/pm/reports/sql-reconstruction-pm.json'),
-            file('management/pm/reports/sql-reconstruction-boilerplate.json'),
-            file('management/pm/reports/cross-realm-token-search.json'),
-            file('management/pm/reports/cross-realm-action-token-search.json'),
-            file('management/pm/reports/data-dictionary.json'),
-            file('management/pm/reports/data-dictionary-lint.json'),
-            file('management/pm/policy/policy-rule-tables.sql'),
-            file('management/pm/reports/repo-file-inventory-with-context.csv'),
-            file('management/pm/reports/boilerplate-package-files-with-context.csv'),
-            file('management/pm/reports/boilerplate-promotion-status.json'),
-            file('management/pm/reports/decision-priority-queue.json'),
-            file('management/pm/reports/knowledge-base.json'),
-            file('management/pm/reports/realm-knowledge-sync.json'),
-            file('management/pm/reports/realm-knowledge-link-gate.json'),
-            file('management/pm/reports/action-items.json'),
-            file('management/pm/reports/action-decision-suggestions.json'),
-            file('management/pm/reports/action-owner-summary.json'),
-            file('management/pm/reports/action-sla-trend.json'),
-            file('management/pm/reports/action-ingest-strict.json'),
-            file('management/pm/reports/realm-policy-sync.json'),
-            file('management/pm/reports/realm-policy-diff.json'),
-            file('management/pm/reports/application-realm-policy.json'),
-            file('management/pm/reports/pm-realm-policy.json'),
-            file('management/pm/reports/boilerplate-realm-policy.json'),
-            file('management/pm/reports/reasoning-drive.json'),
-            file('management/pm/reports/documentation-manifest.json'),
-            file('management/pm/reports/project-plan-next-step.json'),
-            file('management/pm/reports/workbook-refresh-status.json'),
-            file(PATHS.projectStateDb),
-            file(PATHS.boilerplateStateDb),
-            file('management/pm/state/reasoning-experience.sqlite'),
-            file('management/pm/state/reasoning-derived.sqlite'),
-            file(PATHS.applicationRealmDb),
-            file(PATHS.pmRealmDb),
-            file(PATHS.boilerplateRealmDb),
-            file('management/pm/state/realm-policy-snapshot.json'),
-            file('management/pm/state/action-sla-history.json'),
-            file('management/pm/state/pm-console-stale-history.json'),
-            file('management/pm/reports/version.json'),
-            file('management/docs/fidelity-corpus.txt'),
-            file('management/docs/project-plan.md'),
-            file('management/docs/project-plan-progress.csv'),
-            file('management/docs/project-plan-progress.xlsx'),
-            file('management/docs/policy-governance-events.csv'),
-            file('management/docs/policy-governance-events.xlsx'),
-            file('management/docs/boilerplate-sync-candidates.xlsx'),
-            file('VERSION'),
-            file('SESSION_CHANGELOG.md')
-        ]
-        artifacts.each { File source ->
-            if (!source.exists()) {
-                return
-            }
-            File dest = new File(outputDir, source.name)
-            dest.bytes = source.bytes
-        }
         String generatedAt = new Date().format("yyyy-MM-dd'T'HH:mm:ssXXX")
-        List<String> fileEntries = artifacts.collect { File f ->
-            File copied = new File(outputDir, f.name)
-            if (!copied.exists()) {
-                return null
+        File baseDir = file('management/pm/reports/realm-artifacts')
+        baseDir.mkdirs()
+
+        Map<String, List<String>> realmArtifacts = [
+            application: [
+                'product/afp-converter/preview/afp-output.pdf',
+                'product/afp-converter/preview/afp-output.html',
+                'product/afp-converter/preview/afp-meta.json',
+                'product/afp-converter/preview/afp-diag.json',
+                'product/afp-converter/preview/fidelity-report.json',
+                'management/pm/reports/project-plan-progress-application.json',
+                'management/pm/reports/application-realm-policy.json',
+                'management/pm/reports/sql-authority-application.json',
+                'management/pm/reports/sql-coverage-application.json',
+                'management/pm/reports/sql-reconstruction-application.json',
+                PATHS.applicationRealmDb
+            ],
+            pm: [
+                'AI-POLICY.md',
+                'README.md',
+                'SESSION_CHANGELOG.md',
+                'management/docs/project-plan.md',
+                'management/docs/project-plan-progress.csv',
+                'management/docs/project-plan-progress.xlsx',
+                'management/docs/policy-governance-events.csv',
+                'management/docs/policy-governance-events.xlsx',
+                'management/pm/reports/project-plan-progress-pm.json',
+                'management/pm/reports/project-plan-progress-data.json',
+                'management/pm/reports/project-plan-next-step.json',
+                'management/pm/reports/documentation-manifest.json',
+                'management/pm/reports/governance-alerts.json',
+                'management/pm/reports/version-control-ledger.json',
+                'management/pm/reports/identifier-registry.json',
+                'management/pm/reports/issues-log-tickle.json',
+                'management/pm/reports/issues-effectiveness.json',
+                'management/pm/reports/environment-health.json',
+                'management/pm/reports/pm-console-stale-cleanup.json',
+                'management/pm/reports/environment-dashboard.json',
+                'management/pm/reports/policy-rules.json',
+                'management/pm/reports/policy-rules-lint.json',
+                'management/pm/reports/presentation-ref-lint.json',
+                'management/pm/reports/data-dictionary.json',
+                'management/pm/reports/data-dictionary-lint.json',
+                'management/pm/reports/cross-realm-token-search.json',
+                'management/pm/reports/cross-realm-action-token-search.json',
+                'management/pm/reports/decision-priority-queue.json',
+                'management/pm/reports/knowledge-base.json',
+                'management/pm/reports/realm-knowledge-sync.json',
+                'management/pm/reports/realm-knowledge-link-gate.json',
+                'management/pm/reports/action-items.json',
+                'management/pm/reports/action-decision-suggestions.json',
+                'management/pm/reports/action-owner-summary.json',
+                'management/pm/reports/action-sla-trend.json',
+                'management/pm/reports/action-ingest-strict.json',
+                'management/pm/reports/realm-policy-sync.json',
+                'management/pm/reports/realm-policy-diff.json',
+                'management/pm/reports/pm-realm-policy.json',
+                'management/pm/reports/sql-authority-pm.json',
+                'management/pm/reports/sql-coverage-pm.json',
+                'management/pm/reports/sql-reconstruction-pm.json',
+                'management/pm/reports/reasoning-drive.json',
+                'management/pm/state/realm-policy-snapshot.json',
+                'management/pm/state/action-sla-history.json',
+                'management/pm/state/pm-console-stale-history.json',
+                PATHS.projectStateDb,
+                PATHS.pmRealmDb,
+                'management/pm/state/reasoning-experience.sqlite',
+                'management/pm/state/reasoning-derived.sqlite'
+            ],
+            boilerplate: [
+                'product/boilerplate/update-packages/README.md',
+                'product/boilerplate/update-packages/pz-boilerplate-intelliJ',
+                'management/docs/boilerplate-sync-candidates.xlsx',
+                'management/pm/reports/project-plan-progress-boilerplate.json',
+                'management/pm/reports/boilerplate-package-files-with-context.csv',
+                'management/pm/reports/boilerplate-promotion-status.json',
+                'management/pm/reports/boilerplate-realm-policy.json',
+                'management/pm/reports/sql-authority-boilerplate.json',
+                'management/pm/reports/sql-coverage-boilerplate.json',
+                'management/pm/reports/sql-reconstruction-boilerplate.json',
+                PATHS.boilerplateStateDb,
+                PATHS.boilerplateRealmDb
+            ]
+        ]
+
+        Map<String, Object> parentIndex = [
+            schemaVersion : '1',
+            generatedAt   : generatedAt,
+            root          : 'management/pm/reports/realm-artifacts',
+            realms        : [:]
+        ]
+
+        realmArtifacts.each { String realmId, List<String> artifactPaths ->
+            File realmDir = new File(baseDir, "${realmId}/latest")
+            realmDir.mkdirs()
+            List<Map<String, Object>> files = []
+            artifactPaths.each { String path ->
+                File src = file(path)
+                if (!src.exists()) {
+                    return
+                }
+                String srcRel = projectDir.toPath().relativize(src.toPath()).toString().replace('\\', '/')
+                files.add([
+                    source   : srcRel,
+                    sizeBytes: src.isDirectory() ? 0L : src.length(),
+                    sha256   : src.isDirectory() ? '' : sha256Hex(src)
+                ])
             }
-            String originalRel = projectDir.toPath().relativize(f.toPath()).toString().replace('\\', '/')
-            String copiedRel = projectDir.toPath().relativize(copied.toPath()).toString().replace('\\', '/')
-            return "    {\"source\": \"${originalRel}\", \"artifact\": \"${copiedRel}\", \"sizeBytes\": ${copied.length()}, \"sha256\": \"${sha256Hex(copied)}\"}"
-        }.findAll { it != null }
-        String filesJson = fileEntries.join(",\n")
-        File index = new File(outputDir, 'index.json')
-        index.text =
-            "{\n" +
-                "  \"schemaVersion\": \"1\",\n" +
-                "  \"generatedAt\": \"${generatedAt}\",\n" +
-                "  \"artifactCount\": ${fileEntries.size()},\n" +
-                "  \"files\": [\n" +
-                filesJson + "\n" +
-                "  ]\n" +
-                "}\n"
+            Map<String, Object> realmIndex = [
+                schemaVersion: '1',
+                generatedAt  : generatedAt,
+                realm        : realmId,
+                artifactCount: files.size(),
+                files        : files
+            ]
+            File realmIndexFile = new File(realmDir, 'index.json')
+            realmIndexFile.text = JsonOutput.prettyPrint(JsonOutput.toJson(realmIndex)) + '\n'
+            parentIndex.realms[realmId] = [
+                artifactCount: files.size(),
+                indexPath    : projectDir.toPath().relativize(realmIndexFile.toPath()).toString().replace('\\', '/')
+            ]
+        }
+
+        File parentIndexFile = new File(baseDir, 'index.json')
+        parentIndexFile.text = JsonOutput.prettyPrint(JsonOutput.toJson(parentIndex)) + '\n'
     }
 }
 
@@ -2264,9 +2283,9 @@ tasks.register('enforceCiArtifactIndexIncludesPolicyLints') {
     description = 'Fails when CI artifact index omits policy/data dictionary/presentation-reference lint reports.'
     dependsOn('publishCiArtifacts')
     doLast {
-        File index = file('product/afp-converter/preview/ci-artifacts/latest/index.json')
+        File index = file('management/pm/reports/realm-artifacts/pm/latest/index.json')
         if (!index.exists()) {
-            throw new GradleException("Missing CI artifact index: " + index.path)
+            throw new GradleException("Missing PM realm artifact index: " + index.path)
         }
         String text = index.getText('UTF-8')
         List<String> required = [
@@ -2286,9 +2305,9 @@ tasks.register('enforceCiArtifactIndexIncludesEnvironmentReports') {
     description = 'Fails when CI artifact index omits environment health and stale cleanup reports.'
     dependsOn('publishCiArtifacts')
     doLast {
-        File index = file('product/afp-converter/preview/ci-artifacts/latest/index.json')
+        File index = file('management/pm/reports/realm-artifacts/pm/latest/index.json')
         if (!index.exists()) {
-            throw new GradleException("Missing CI artifact index: " + index.path)
+            throw new GradleException("Missing PM realm artifact index: " + index.path)
         }
         String text = index.getText('UTF-8')
         List<String> required = [
@@ -2593,6 +2612,10 @@ tasks.register('enforcePmApplicationRealmSeparation') {
     description = 'Fails when PM artifacts leak into product/afp-converter/preview/ or PM state escapes management/pm/state.'
     doLast {
         List<String> violations = []
+        File previewCiArtifactDir = file('product/afp-converter/preview/ci-artifacts')
+        if (previewCiArtifactDir.exists()) {
+            violations.add("product/afp-converter/preview/ci-artifacts: realm artifact bundles must be ringfenced under management/pm/reports/realm-artifacts/")
+        }
         List<String> forbiddenPreviewArtifacts = [
             'product/afp-converter/preview/governance-alerts.json',
             'product/afp-converter/preview/version-control-ledger.json',

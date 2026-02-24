@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-24T16:25:20Z",
+  "generatedAt": "2026-02-24T16:45:33Z",
   "source": "sqlite",
   "sourceTable": "knowledge_entries",
   "entryCount": 9,
@@ -31,15 +31,15 @@
       "impactScore": 4.0,
       "changeRef": "management/pm/reports/pm-console-stale-cleanup.json",
       "createdAt": "2026-02-19T20:38:55Z",
-      "updatedAt": "2026-02-24T16:24:34Z",
+      "updatedAt": "2026-02-24T16:43:32Z",
       "evidence": [
         {
           "artifactPath": "management/pm/state/pm-console-stale-history.json",
-          "artifactSha256": "423999e02f6f25b86666100ed906ab57a688cb017273e3bf386501c63318c08f",
-          "artifactSizeBytes": 5206,
+          "artifactSha256": "45abb7bfe0d2ebc02a738204931d50cf6c886e5bde9deeea948fff76e3a7a81e",
+          "artifactSizeBytes": 5771,
           "type": "report",
           "notes": "Stale duplicate history used for threshold warning decisions.",
-          "capturedAt": "2026-02-24T16:24:35Z"
+          "capturedAt": "2026-02-24T16:43:33Z"
         },
         {
           "artifactPath": "pm/state/pm-console-stale-history.json",
@@ -67,15 +67,15 @@
       "impactScore": 5.0,
       "changeRef": "management/pm/reports/environment-health.json",
       "createdAt": "2026-02-19T19:58:53Z",
-      "updatedAt": "2026-02-24T16:24:33Z",
+      "updatedAt": "2026-02-24T16:43:31Z",
       "evidence": [
         {
           "artifactPath": "management/pm/reports/environment-health.json",
-          "artifactSha256": "7400c02e720bf4e4681a5b13e5d24df94ba98db027f477bf742344621b15ca98",
+          "artifactSha256": "ce30493f4683cff983b487e8db39433b184e3b62249074f971f09fe8a7dbaa73",
           "artifactSizeBytes": 1164,
           "type": "report",
           "notes": "Environment preflight status including PID and running state.",
-          "capturedAt": "2026-02-24T16:24:34Z"
+          "capturedAt": "2026-02-24T16:43:32Z"
         },
         {
           "artifactPath": "pm/reports/environment-health.json",
@@ -103,15 +103,15 @@
       "impactScore": 4.0,
       "changeRef": "management/pm/reports/environment-health.json",
       "createdAt": "2026-02-19T20:27:44Z",
-      "updatedAt": "2026-02-24T16:24:32Z",
+      "updatedAt": "2026-02-24T16:43:30Z",
       "evidence": [
         {
           "artifactPath": "management/pm/reports/environment-health.json",
-          "artifactSha256": "7400c02e720bf4e4681a5b13e5d24df94ba98db027f477bf742344621b15ca98",
+          "artifactSha256": "ce30493f4683cff983b487e8db39433b184e3b62249074f971f09fe8a7dbaa73",
           "artifactSizeBytes": 1164,
           "type": "report",
           "notes": "Deterministic terminal window/tab identity for visible PM console session.",
-          "capturedAt": "2026-02-24T16:24:32Z"
+          "capturedAt": "2026-02-24T16:43:30Z"
         },
         {
           "artifactPath": "pm/reports/environment-health.json",
@@ -139,15 +139,15 @@
       "impactScore": 5.0,
       "changeRef": "management/pm/reports/environment-health.json",
       "createdAt": "2026-02-19T20:10:17Z",
-      "updatedAt": "2026-02-24T16:24:32Z",
+      "updatedAt": "2026-02-24T16:43:30Z",
       "evidence": [
         {
           "artifactPath": "management/pm/reports/environment-health.json",
-          "artifactSha256": "7400c02e720bf4e4681a5b13e5d24df94ba98db027f477bf742344621b15ca98",
+          "artifactSha256": "ce30493f4683cff983b487e8db39433b184e3b62249074f971f09fe8a7dbaa73",
           "artifactSizeBytes": 1164,
           "type": "report",
           "notes": "Visibility context report including visible session PIDs and terminal window ID.",
-          "capturedAt": "2026-02-24T16:24:33Z"
+          "capturedAt": "2026-02-24T16:43:31Z"
         },
         {
           "artifactPath": "pm/reports/environment-health.json",

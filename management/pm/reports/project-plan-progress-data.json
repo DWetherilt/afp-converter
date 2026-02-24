@@ -1,9 +1,9 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-24T16:25:04Z",
+  "generatedAt": "2026-02-24T16:45:29Z",
   "source": "sqlite",
   "taskCount": 37,
-  "filteredCompletedCommittedCount": 14,
+  "filteredCompletedCommittedCount": 17,
   "completedCommittedRule": "Rows with status=complete/completed/done and notes marker '[github:committed]' are excluded.",
   "tasks": [
     {
@@ -453,9 +453,9 @@
   ],
   "followUps": [
     {
-      "status": "pending",
+      "note": "Circle back and review restored workbook content against JSON/CSV sources.",
       "id": "restored-workbook-content-review",
-      "note": "Circle back and review restored workbook content against JSON/CSV sources."
+      "status": "pending"
     }
   ]
 }

@@ -184,11 +184,12 @@ Run the full quality gate (tests + fidelity thresholds + management/docs/changel
 
 `qualityGate` includes `enforceProjectBoundaries`, which fails if product modules (`afp-api`, `afp-engine`, `afp-cli`) reference project-management tooling/state.
 `qualityGate` also includes `enforceManagedTooling`, which fails if project-management tooling files under `management/tools/` or `management/pm-management/tools/.../tools` are untracked.
-`qualityGate` includes `enforcePmApplicationRealmSeparation`, which fails if PM artifacts appear under `product/afp-converter/preview/` or PM databases appear outside `management/pm/state/`.
+`qualityGate` includes `enforcePmApplicationRealmSeparation`, which fails if PM artifacts appear under `product/afp-converter/preview/` (including `preview/ci-artifacts`) or PM databases appear outside `management/pm/state/`.
 `qualityGate` includes `enforceBoilerplateRollupForFrameworkChanges`, which fails if framework/process files change without a same-change update under `product/boilerplate/update-packages/pz-boilerplate-intelliJ/`.
 `qualityGate` includes `enforceNamespaceRoot`, which fails if active source/build/policy scope still references legacy namespace roots (`com.upland.connect`).
 `documentationManifest` now runs `stateInventoryCsv`, which rebuilds the two inventory CSVs above from SQLite state on each run.
 `documentationManifest` also runs `policyRulesReport`, which exports SQL-backed PM rule tables into `management/pm/reports/policy-rules.json`.
+`publishCiArtifacts` now emits realm-ringfenced artifact indices only under `management/pm/reports/realm-artifacts/{application,pm,boilerplate}/latest/index.json` plus parent `management/pm/reports/realm-artifacts/index.json`.
 
 Production build (no test compilation/execution; assumes working runtime/resources):
 
