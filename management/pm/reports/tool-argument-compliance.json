@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-24T16:52:46Z",
+  "generatedAt": "2026-02-24T17:03:47Z",
   "source": "static-argument-scan",
-  "rowCount": 406,
+  "rowCount": 408,
   "byClassification": {
-    "constant": 132,
+    "constant": 134,
     "db-hardcoded": 6,
     "db-path": 9,
     "env-derived": 2,
@@ -833,105 +833,119 @@
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2690,
-      "argumentValue": "management/pm-management/tools/",
-      "classification": "constant",
-      "reason": "Constant argument."
-    },
-    {
-      "sourceFile": "build.gradle",
-      "line": 2691,
-      "argumentValue": "management/pm-console/",
+      "line": 2661,
+      "argumentValue": "management/pm/workflow/sample-output-reference-manifest.json",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
       "line": 2692,
+      "argumentValue": "product/afp-converter/sampleOutput",
+      "classification": "constant",
+      "reason": "Constant argument."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2743,
+      "argumentValue": "management/pm-management/tools/",
+      "classification": "constant",
+      "reason": "Constant argument."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2744,
+      "argumentValue": "management/pm-console/",
+      "classification": "constant",
+      "reason": "Constant argument."
+    },
+    {
+      "sourceFile": "build.gradle",
+      "line": 2745,
       "argumentValue": "management/tools/run_excel_workbook_refresh.py",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2693,
+      "line": 2746,
       "argumentValue": "management/tools/issues_effectiveness_report.py",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2694,
+      "line": 2747,
       "argumentValue": "management/pm/policy/",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2706,
+      "line": 2759,
       "argumentValue": "product/boilerplate/update-packages/pz-boilerplate-intelliJ/",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2722,
+      "line": 2775,
       "argumentValue": "product/afp-converter/afp-api/src/main/java",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2723,
+      "line": 2776,
       "argumentValue": "product/afp-converter/afp-engine/src/main/java",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2724,
+      "line": 2777,
       "argumentValue": "product/afp-converter/afp-engine/src/test/java",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2725,
+      "line": 2778,
       "argumentValue": "product/afp-converter/afp-cli/src/main/java",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2726,
+      "line": 2779,
       "argumentValue": "management/pm-management/tools/src/main/java",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2727,
+      "line": 2780,
       "argumentValue": "management/pm-console/src/main/java",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2728,
+      "line": 2781,
       "argumentValue": "product/afp-converter/afp-cli/build.gradle",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2729,
+      "line": 2782,
       "argumentValue": "management/pm-console/build.gradle",
       "classification": "constant",
       "reason": "Constant argument."
     },
     {
       "sourceFile": "build.gradle",
-      "line": 2777,
+      "line": 2830,
       "argumentValue": "management/tools/tests",
       "classification": "constant",
       "reason": "Constant argument."

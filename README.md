@@ -174,8 +174,10 @@ This now includes `previewManifest` and regenerates:
 - `product/afp-converter/preview/afp-output.html`
 - `product/afp-converter/preview/afp-meta.json`
 - `product/afp-converter/preview/afp-diag.json`
-- `product/afp-converter/sampleOutput/*.pdf|*.html|*.meta.json|*.diag.json` for every `*.afp` in `product/afp-converter/sampleData/`
+- `product/afp-converter/preview/generated-sample-output/*.pdf|*.html|*.meta.json|*.diag.json` for every `*.afp` in `product/afp-converter/sampleData/`
 - `management/pm/reports/documentation-manifest.json` (via `documentationManifest`)
+
+`product/afp-converter/sampleOutput/` is reserved for protected reference/baseline artifacts (for example IBM converter outputs) and is not a build output target.
 
 Run the full quality gate (tests + fidelity thresholds + management/docs/changelog manifest):
 
@@ -186,6 +188,7 @@ Run the full quality gate (tests + fidelity thresholds + management/docs/changel
 `qualityGate` includes `enforceProjectBoundaries`, which fails if product modules (`afp-api`, `afp-engine`, `afp-cli`) reference project-management tooling/state.
 `qualityGate` also includes `enforceManagedTooling`, which fails if project-management tooling files under `management/tools/` or `management/pm-management/tools/.../tools` are untracked.
 `qualityGate` includes `enforcePmApplicationRealmSeparation`, which fails if PM artifacts appear under `product/afp-converter/preview/` (including `preview/ci-artifacts`) or PM databases appear outside `management/pm/state/`.
+`qualityGate` includes `enforceSampleOutputReferenceIntegrity`, which fails if protected baseline files under `product/afp-converter/sampleOutput/` are modified or expanded unexpectedly.
 `qualityGate` includes `enforceBoilerplateRollupForFrameworkChanges`, which fails if framework/process files change without a same-change update under `product/boilerplate/update-packages/pz-boilerplate-intelliJ/`.
 `qualityGate` includes `enforceNamespaceRoot`, which fails if active source/build/policy scope still references legacy namespace roots (`com.upland.connect`).
 `documentationManifest` now runs `stateInventoryCsv`, which rebuilds the two inventory CSVs above from SQLite state on each run.

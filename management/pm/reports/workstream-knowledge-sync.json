@@ -1,14 +1,14 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-24T16:52:48Z",
+  "generatedAt": "2026-02-24T17:03:49Z",
   "source": "management/pm/state/project-state.sqlite::plan_tasks",
   "topologySource": "management/pm/workflow/core-derivative-topology.json",
   "targets": [
     {
       "realm": "core",
       "db": "management/pm/state/core-realm.sqlite",
-      "workstreamKnowledgeRows": 54,
-      "workstreamCount": 13,
+      "workstreamKnowledgeRows": 57,
+      "workstreamCount": 14,
       "topologyNodeCount": 11,
       "policyRuleId": "PM-CORE-003",
       "writeContract": "owner-negotiation-required",
@@ -17,8 +17,8 @@
     {
       "realm": "application",
       "db": "management/pm/state/application-realm.sqlite",
-      "workstreamKnowledgeRows": 23,
-      "workstreamCount": 9,
+      "workstreamKnowledgeRows": 24,
+      "workstreamCount": 10,
       "topologyNodeCount": 11,
       "policyRuleId": "PM-CORE-003",
       "writeContract": "owner-negotiation-required",
@@ -27,8 +27,8 @@
     {
       "realm": "pm",
       "db": "management/pm/state/pm-realm.sqlite",
-      "workstreamKnowledgeRows": 27,
-      "workstreamCount": 8,
+      "workstreamKnowledgeRows": 28,
+      "workstreamCount": 9,
       "topologyNodeCount": 11,
       "policyRuleId": "PM-CORE-003",
       "writeContract": "owner-negotiation-required",
@@ -37,8 +37,8 @@
     {
       "realm": "boilerplate",
       "db": "management/pm/state/boilerplate-realm.sqlite",
-      "workstreamKnowledgeRows": 4,
-      "workstreamCount": 4,
+      "workstreamKnowledgeRows": 5,
+      "workstreamCount": 5,
       "topologyNodeCount": 11,
       "policyRuleId": "PM-CORE-003",
       "writeContract": "owner-negotiation-required",

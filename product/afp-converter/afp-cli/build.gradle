@@ -31,10 +31,10 @@ tasks.register('cleanPreviewWorkspace', Delete) {
 
 tasks.register('cleanSampleOutputWorkspace', Delete) {
     delete(
-        rootProject.file('.tmp/cache-sample-output'),
-        rootProject.file('.tmp/temp-sample-output')
+        rootProject.file('.tmp/cache-generated-sample-output'),
+        rootProject.file('.tmp/temp-generated-sample-output')
     )
-    delete fileTree(rootProject.file('product/afp-converter/sampleOutput')) {
+    delete fileTree(rootProject.file('product/afp-converter/preview/generated-sample-output')) {
         include '*.pdf'
         include '*.html'
         include '*.meta.json'
@@ -64,7 +64,7 @@ tasks.register('generatePreview', JavaExec) {
 }
 
 File sampleDataDir = rootProject.file('product/afp-converter/sampleData')
-File sampleOutputDir = rootProject.file('product/afp-converter/sampleOutput')
+File sampleOutputDir = rootProject.file('product/afp-converter/preview/generated-sample-output')
 List<File> sampleAfpFiles = fileTree(sampleDataDir) {
     include '*.afp'
 }.files.toList().sort { a, b -> a.name <=> b.name }
@@ -86,8 +86,8 @@ sampleAfpFiles.each { File afp ->
             '--meta', new File(sampleOutputDir, "${base}.meta.json").path,
             '--diag', new File(sampleOutputDir, "${base}.diag.json").path,
             '--html', new File(sampleOutputDir, "${base}.html").path,
-            '--cacheDir', rootProject.file('.tmp/cache-sample-output').path,
-            '--tempDir', rootProject.file('.tmp/temp-sample-output').path,
+            '--cacheDir', rootProject.file('.tmp/cache-generated-sample-output').path,
+            '--tempDir', rootProject.file('.tmp/temp-generated-sample-output').path,
             '--timeoutSeconds', '30',
             '--textFallback', 'SUBSTITUTE'
         )
@@ -96,7 +96,7 @@ sampleAfpFiles.each { File afp ->
 
 tasks.register('generateSampleOutputs') {
     group = 'build'
-    description = 'Generates sampleOutput artifacts for every AFP file in product/afp-converter/sampleData'
+    description = 'Generates preview/generated-sample-output artifacts for every AFP file in product/afp-converter/sampleData'
     dependsOn tasks.named('cleanSampleOutputWorkspace')
     dependsOn sampleOutputTasks
     doFirst {

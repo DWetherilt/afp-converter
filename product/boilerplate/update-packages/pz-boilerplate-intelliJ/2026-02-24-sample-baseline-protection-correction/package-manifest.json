@@ -1,0 +1,11 @@
+{
+  "packageId": "2026-02-24-sample-baseline-protection-correction",
+  "sourceRepo": "afp-converter",
+  "targetRepo": "pz-boilerplate-intelliJ",
+  "createdAt": "2026-02-24T00:00:00Z",
+  "promotionStatus": "pending_review",
+  "summary": "Protect sampleOutput reference baselines, redirect generated sample outputs to preview, and enforce integrity in qualityGate.",
+  "supersedes": [
+    "2026-02-24-sampledata-build-ingestion"
+  ]
+}

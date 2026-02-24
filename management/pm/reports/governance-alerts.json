@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-24T16:52:32Z",
+  "generatedAt": "2026-02-24T17:03:35Z",
   "source": "sqlite",
   "hasActiveGovernanceBreach": false,
   "activeBreachCount": 0,
   "trustEventCount": 3,
-  "policyGovernanceEventCount": 4,
+  "policyGovernanceEventCount": 5,
   "activeBreaches": [],
   "trustEvents": [
     {
@@ -46,6 +46,18 @@
     }
   ],
   "policyGovernanceEvents": [
+    {
+      "event_id": "GOV-2026-02-24-002",
+      "event_date": "2026-02-24",
+      "phase": "Policy Governance",
+      "status": "closed",
+      "checkpoint_id": "20260224T000000Z-sample-baseline-protection-correction",
+      "issue_id": "ISSUE-006",
+      "summary": "Corrected sample baseline handling by restoring protected comparison artifacts and enforcing build-output separation from baseline references.",
+      "evidence": "product/afp-converter/afp-cli/build.gradle|build.gradle|management/pm/workflow/sample-output-reference-manifest.json|AI-POLICY.md|README.md|management/docs/project-plan-progress.csv",
+      "updated_by": "Human+AI",
+      "event_ref": "Governance Event | 2026-02-24 | #002"
+    },
     {
       "event_id": "GOV-2026-02-23-001",
       "event_date": "2026-02-23",
@@ -96,9 +108,9 @@
     }
   ],
   "policyRuleAudit": {
+    "requiredRuleEnabled": true,
     "requiredRuleId": "PM-COMMS-001",
-    "enabledPolicyRuleCount": 71,
-    "requiredRuleEnabled": true
+    "enabledPolicyRuleCount": 71
   },
   "sqlAuthorityAudit": {
     "driftDetected": false,
@@ -106,9 +118,9 @@
   },
   "sqlAuthorityDrift": {
     "schemaVersion": "1",
-    "generatedAt": "2026-02-24T16:52:31Z",
+    "generatedAt": "2026-02-24T17:03:34Z",
     "realm": "pm",
-    "trackedFileCount": 34,
+    "trackedFileCount": 35,
     "mismatchCount": 0,
     "ok": true,
     "mismatches": [],

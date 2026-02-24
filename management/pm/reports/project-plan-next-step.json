@@ -1,11 +1,11 @@
 {
     "schemaVersion": "1",
-    "generatedAt": "2026-02-24T16:52:41Z",
+    "generatedAt": "2026-02-24T17:03:24Z",
     "planPath": "management/docs/project-plan.md",
     "actionCount": 9,
     "nextInstruction": {
         "title": "Immediate Next Step",
-        "task": "formalize the next active workstream using a new unique internal `workstream_uid` (do not reuse historical IDs such as `WS-A`, `WS-2026-001`, `WS-2026-002`, or `WS-2026-003`).",
+        "task": "formalize the next active workstream using a new unique internal `workstream_uid` (do not reuse historical IDs such as `WS-A`, `WS-2026-001`, `WS-2026-002`, `WS-2026-003`, or `WS-2026-004`).",
         "source": "## Proposed Immediate Next Execution Sequence"
     },
     "actions": [
@@ -90,7 +90,7 @@
         }
     ],
     "immediateSequence": [
-        "formalize the next active workstream using a new unique internal `workstream_uid` (do not reuse historical IDs such as `WS-A`, `WS-2026-001`, `WS-2026-002`, or `WS-2026-003`).",
+        "formalize the next active workstream using a new unique internal `workstream_uid` (do not reuse historical IDs such as `WS-A`, `WS-2026-001`, `WS-2026-002`, `WS-2026-003`, or `WS-2026-004`).",
         "publish active presentation aliases (`Workstream A..Z`) from current active rows via `management/pm/reports/workstream-presentation-index.json`.",
         "start implementation against the top active presentation alias while retaining internal UID traceability in progress/report artifacts.",
         "rerun `qualityGate` and PM refresh/report phases, then publish updated next-step guidance."

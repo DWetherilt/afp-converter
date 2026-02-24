@@ -110,6 +110,7 @@ Use this file as the first-read operational contract before making changes.
   - `pm-console` (dev-only PM dashboard/command hub)
 - Realm boundary:
   - Application realm: `afp-*` modules and `product/afp-converter/preview/` renderer outputs only.
+  - `product/afp-converter/sampleOutput/` is protected reference/baseline evidence and must not be used as a build output target.
   - PM realm: `management/pm/` state/report/checkpoint assets and governance/planning management/docs/workbooks under `management/docs/`.
   - PM artifacts must never be emitted under `product/afp-converter/preview/`.
 
@@ -232,6 +233,7 @@ When implementing any meaningful change:
 - `enforceProjectBoundaries` is mandatory in `qualityGate` and must fail when `afp-api`, `afp-engine`, or `afp-cli` reference project-management tooling/state (`pm-tools`, governance/project tracker sources, or management SQLite paths).
 - `enforceManagedTooling` is mandatory in `qualityGate` and must fail when project-management tooling files under `management/tools/` or `management/pm-management/tools/src/main/java/solutions/pointzero/symphony/management/pm/tools` are untracked.
 - `enforcePmApplicationRealmSeparation` is mandatory in `qualityGate` and must fail when PM artifacts are written under `product/afp-converter/preview/` or PM databases are written outside `management/pm/state/`.
+- `enforceSampleOutputReferenceIntegrity` is mandatory in `qualityGate` and must fail when protected baseline files under `product/afp-converter/sampleOutput/` are modified, missing, or expanded unexpectedly.
 - `enforceBoilerplateRollupForFrameworkChanges` is mandatory in `qualityGate` and must fail when framework/process/policy/build mutations occur without an accompanying update package under `product/boilerplate/update-packages/pz-boilerplate-intelliJ/`.
 - `enforceNamespaceRoot` is mandatory in `qualityGate` and must fail when active source/build/policy scope includes legacy root namespaces (`com.upland.connect`).
 - Root namespace standard:
@@ -318,6 +320,8 @@ After a normal cycle, these should be current:
 - `product/afp-converter/preview/afp-meta.json`
 - `product/afp-converter/preview/afp-diag.json`
 - `product/afp-converter/preview/fidelity-report.json`
+- `product/afp-converter/preview/generated-sample-output/*.pdf|*.html|*.meta.json|*.diag.json` for each `*.afp` in `product/afp-converter/sampleData/`
+- Protected comparison baselines preserved under `product/afp-converter/sampleOutput/`
 - `management/pm/reports/project-plan-next-step.json`
 - `management/pm/reports/documentation-manifest.json`
 - `management/pm/reports/realm-artifacts/index.json`

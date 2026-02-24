@@ -22,6 +22,15 @@ This changelog is reconstructed from repository artifacts and our current thread
   - `management/docs/policy-governance-events.csv` (`GOV-2026-02-24-001`)
 - Added boilerplate inheritance roll-up package:
   - `product/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-24-realm-artifact-ringfencing/`
+- Formalized and completed `WS-2026-004: Sample Baseline Protection 2026-02-24`:
+  - restored `product/afp-converter/sampleOutput/` to protected baseline references (`sample.pdf`, `sample.html`, `image-heavy.pdf`) after accidental overwrite risk.
+  - redirected multi-sample generation to `product/afp-converter/preview/generated-sample-output/` via `:afp-cli:generateSampleOutputs`.
+  - added protected baseline manifest `management/pm/workflow/sample-output-reference-manifest.json`.
+  - added `enforceSampleOutputReferenceIntegrity` to `qualityGate`.
+  - added superseding boilerplate package:
+    - `product/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-24-sample-baseline-protection-correction/`
+  - governance event logged:
+    - `management/docs/policy-governance-events.csv` (`GOV-2026-02-24-002`)
 - Validation:
   - `./gradlew -q workstreamPresentationIndex projectPlanNextStep projectPlanProgressJson policyGovernanceWorkbook pmWorkflowRun -PpmPhase=pm_refresh_and_reports qualityGate` (pass)
 

@@ -1,6 +1,6 @@
 {
     "schemaVersion": "1",
-    "generatedAt": "2026-02-24T16:52:49Z",
+    "generatedAt": "2026-02-24T17:03:49Z",
     "realm": "boilerplate",
     "artifactCount": 12,
     "files": [
@@ -16,53 +16,53 @@
         },
         {
             "source": "management/docs/boilerplate-sync-candidates.xlsx",
-            "sizeBytes": 10397,
-            "sha256": "7dadea9893be41f27b104d09b67f736175947ef2ea77dceb9b98887d94535c20"
+            "sizeBytes": 10620,
+            "sha256": "d6750cd37dcf7000d05e7d451f6236990652cc0af0c140c257d23836c25aa6e0"
         },
         {
             "source": "management/pm/reports/project-plan-progress-boilerplate.json",
             "sizeBytes": 11684,
-            "sha256": "bfcd887a58c5d7cda3cfe51ca3ea1b2390f6d967101ae0ec6ac7d1bda600980e"
+            "sha256": "bf9eb5ada1c5dbbbca8966f46a231756b3d697af1ab91debb0e9729777e6096b"
         },
         {
             "source": "management/pm/reports/boilerplate-package-files-with-context.csv",
-            "sizeBytes": 38833,
-            "sha256": "cdff3f91df0e7b0423ca685f782c4fadf229bb099c6538eada232425beffad75"
+            "sizeBytes": 40236,
+            "sha256": "fc1fc60c9a9bd7f54f489f73470dfdfc5a652652ca88fd7c3f84bb809ca8319f"
         },
         {
             "source": "management/pm/reports/boilerplate-promotion-status.json",
-            "sizeBytes": 16256,
-            "sha256": "066c07b111fce0424cdc30b97d1926860fe31d766f15819d67452355334f27ac"
+            "sizeBytes": 16890,
+            "sha256": "9a5499a8243ba9e07dc49b4cf2eb59c9b93c8a0ab9741516d52c748871f276f1"
         },
         {
             "source": "management/pm/reports/boilerplate-realm-policy.json",
             "sizeBytes": 27402,
-            "sha256": "ffc6483fccdd4c8bbd52e684d090482b8d5dde3fa83ba2073c78fdcd690ff977"
+            "sha256": "8ba13114b4e4f3b3e1225f2227f1e55c1e5107ccd20d26b355c8139ca7296ce8"
         },
         {
             "source": "management/pm/reports/sql-authority-boilerplate.json",
             "sizeBytes": 228,
-            "sha256": "d01cbfbd515dab431ad7f36f1d5a635d59749d5944383923fcc7f8fda6e54453"
+            "sha256": "fc192ed2675afdadc8a50ea4e87a34b6fed53d3bf9568b8374dd12c755bac99a"
         },
         {
             "source": "management/pm/reports/sql-coverage-boilerplate.json",
             "sizeBytes": 332,
-            "sha256": "3ce5789853243904d435cda6da0034cfea59b0e41fb1c4708780aa23d8d21969"
+            "sha256": "25e78e7a3cc495cced2f6b5ad2268f960b3a5cf25ae03bbfd4662b14d73b6834"
         },
         {
             "source": "management/pm/reports/sql-reconstruction-boilerplate.json",
             "sizeBytes": 228,
-            "sha256": "5b4944d1041cecf9ba2fd5149b692afcc60863247c4fb6438ff87d5428ba7925"
+            "sha256": "a5d339361ad512182e0b037724e8064b7116638fe18aed32207aa5af733df611"
         },
         {
             "source": "management/pm/state/boilerplate-state.sqlite",
             "sizeBytes": 98304,
-            "sha256": "d5f68fdc1695e548571d378a161af7b438d3c1c9b3c9dc06b946c016c7742b75"
+            "sha256": "8c92156d1599a36930ad0b1abae1fdefb16d0f040809054b26cfe00867ebc6f4"
         },
         {
             "source": "management/pm/state/boilerplate-realm.sqlite",
-            "sizeBytes": 3096576,
-            "sha256": "5d31f1679fd0515eeb78c3c675d5c6b009ea6ed20805420cbefd7ba79e338f1e"
+            "sizeBytes": 3186688,
+            "sha256": "15d8d94c4e1c1c970af934b502e4dde0a9e576f8b7a8d361829405b8918e30f0"
         }
     ]
 }

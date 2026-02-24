@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-24T16:52:46Z",
+  "generatedAt": "2026-02-24T17:03:47Z",
   "source": "sqlite",
   "sourceTable": "package_candidates",
-  "candidateCount": 27,
+  "candidateCount": 28,
   "statusCounts": {
-    "superseded": 12,
+    "superseded": 13,
     "pending_review": 15
   },
   "candidates": [
@@ -415,6 +415,23 @@
       "recommendedAction": "Review package content and decide approve/supersede."
     },
     {
+      "candidateId": "2026-02-24-sample-baseline-protection-correction",
+      "packageId": "2026-02-24-sample-baseline-protection-correction",
+      "targetRepo": "pz-boilerplate-intelliJ",
+      "sourceRepo": "afp-converter",
+      "createdAt": "2026-02-24T17:00:44.932146668Z",
+      "packageZip": "",
+      "patchCount": 0,
+      "manifestFileCount": 0,
+      "promotionStatus": "pending_review",
+      "promotedAt": "",
+      "promotionNotes": "",
+      "supersedes": [
+        "2026-02-24-sampledata-build-ingestion"
+      ],
+      "recommendedAction": "Review package content and decide approve/supersede."
+    },
+    {
       "candidateId": "2026-02-24-sampledata-build-ingestion",
       "packageId": "2026-02-24-sampledata-build-ingestion",
       "targetRepo": "pz-boilerplate-intelliJ",
@@ -423,11 +440,11 @@
       "packageZip": "",
       "patchCount": 0,
       "manifestFileCount": 0,
-      "promotionStatus": "pending_review",
+      "promotionStatus": "superseded",
       "promotedAt": "",
       "promotionNotes": "",
       "supersedes": [],
-      "recommendedAction": "Review package content and decide approve/supersede."
+      "recommendedAction": "Archive or remove after confirming successor package is merged."
     }
   ]
 }

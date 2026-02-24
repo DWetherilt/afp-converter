@@ -2654,6 +2654,59 @@ tasks.register('enforcePmApplicationRealmSeparation') {
     }
 }
 
+tasks.register('enforceSampleOutputReferenceIntegrity') {
+    group = 'verification'
+    description = 'Fails when protected sampleOutput reference artifacts are modified or expanded.'
+    doLast {
+        File manifestFile = file('management/pm/workflow/sample-output-reference-manifest.json')
+        if (!manifestFile.exists()) {
+            throw new GradleException("Missing sample-output reference manifest: " + manifestFile.path)
+        }
+        Map manifest = new JsonSlurper().parse(manifestFile) as Map
+        List<Map> entries = manifest.entries instanceof List ? (manifest.entries as List<Map>) : []
+        if (entries.isEmpty()) {
+            throw new GradleException("Sample-output reference manifest has no entries: " + manifestFile.path)
+        }
+
+        List<String> violations = []
+        Set<String> allowed = new LinkedHashSet<>()
+        entries.each { Map entry ->
+            String path = (entry.path == null ? '' : entry.path.toString().trim())
+            String expectedSha = (entry.sha256 == null ? '' : entry.sha256.toString().trim().toLowerCase(Locale.ROOT))
+            if (path.isEmpty() || expectedSha.isEmpty()) {
+                violations.add("Invalid manifest entry (missing path/sha256): ${entry}")
+                return
+            }
+            allowed.add(path)
+            File target = file(path)
+            if (!target.exists()) {
+                violations.add("${path}: missing protected reference artifact")
+                return
+            }
+            String actualSha = sha256Hex(target).toLowerCase(Locale.ROOT)
+            if (actualSha != expectedSha) {
+                violations.add("${path}: sha256 mismatch expected=${expectedSha} actual=${actualSha}")
+            }
+        }
+
+        File sampleOutputDir = file('product/afp-converter/sampleOutput')
+        if (sampleOutputDir.exists()) {
+            fileTree(sampleOutputDir).matching {
+                include '**/*'
+            }.files.findAll { it.isFile() }.each { File f ->
+                String rel = projectDir.toPath().relativize(f.toPath()).toString().replace('\\', '/')
+                if (!allowed.contains(rel)) {
+                    violations.add("${rel}: unexpected file in protected sampleOutput directory")
+                }
+            }
+        }
+
+        if (!violations.isEmpty()) {
+            throw new GradleException("sampleOutput reference integrity violations detected:\n - " + violations.join('\n - '))
+        }
+    }
+}
+
 tasks.register('enforceBoilerplateRollupForFrameworkChanges') {
     group = 'verification'
     description = 'Fails when framework/process mutations are made without an accompanying boilerplate roll-up package update.'
@@ -2787,6 +2840,7 @@ tasks.register('qualityGate') {
     dependsOn('enforceProjectBoundaries')
     dependsOn('enforceManagedTooling')
     dependsOn('enforcePmApplicationRealmSeparation')
+    dependsOn('enforceSampleOutputReferenceIntegrity')
     dependsOn('enforceBoilerplateRollupForFrameworkChanges')
     dependsOn('enforceNamespaceRoot')
     dependsOn('realmPolicySyncPyTests')

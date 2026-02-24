@@ -1,0 +1,18 @@
+{
+  "schemaVersion": "1",
+  "description": "Reference baseline artifacts in sampleOutput used for converter comparison checks. These files are treated as protected golden outputs.",
+  "entries": [
+    {
+      "path": "product/afp-converter/sampleOutput/image-heavy.pdf",
+      "sha256": "85af77367093207e01dc2f4e2eee9569b29e37038c67f441d0d5608e046bb362"
+    },
+    {
+      "path": "product/afp-converter/sampleOutput/sample.html",
+      "sha256": "95dd15248ddb72e4f994073ddccd1c6991219cb28f9c05957f8a28610d9aefdd"
+    },
+    {
+      "path": "product/afp-converter/sampleOutput/sample.pdf",
+      "sha256": "51b8b17a229a690fff1ac252a5756e0b0f05958210920cfca1d4dd4431d2e7ed"
+    }
+  ]
+}
