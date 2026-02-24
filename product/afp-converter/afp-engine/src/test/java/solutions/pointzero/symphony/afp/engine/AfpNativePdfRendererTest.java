@@ -76,6 +76,36 @@ class AfpNativePdfRendererTest {
     }
 
     @Test
+    void paintOrderIsDeterministicForResourceDepthTiesAcrossKinds() {
+        List<String> order = AfpNativePdfRenderer.buildPaintOrderSignatureForTest(
+            List.of(
+                new int[] {0, 2, 9}, // text tie set A
+                new int[] {1, 2, 9}  // text tie set B (overlay flag differs)
+            ),
+            List.of(
+                new int[] {0, 2, 9}, // image tie set A
+                new int[] {1, 2, 9}  // image tie set B
+            ),
+            List.of(
+                new int[] {0, 2, 9}, // graphic tie set A
+                new int[] {1, 2, 9}  // graphic tie set B
+            )
+        );
+
+        assertEquals(
+            List.of(
+                "IMAGE|overlay=false|depth=2|seq=9",
+                "IMAGE|overlay=true|depth=2|seq=9",
+                "GRAPHIC|overlay=false|depth=2|seq=9",
+                "GRAPHIC|overlay=true|depth=2|seq=9",
+                "TEXT|overlay=false|depth=2|seq=9",
+                "TEXT|overlay=true|depth=2|seq=9"
+            ),
+            order
+        );
+    }
+
+    @Test
     void rendersMultiplePagesFromBpgMarkers(@TempDir Path tempDir) throws Exception {
         byte[] afp = concat(
             sf("D3A8A8", new byte[0]), // BDT

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:30:44Z",
+  "generatedAt": "2026-02-24T16:25:14Z",
   "source": "sqlite",
   "hasActiveGovernanceBreach": false,
   "activeBreachCount": 0,
@@ -84,8 +84,8 @@
     }
   ],
   "policyRuleAudit": {
-    "enabledPolicyRuleCount": 71,
     "requiredRuleId": "PM-COMMS-001",
+    "enabledPolicyRuleCount": 71,
     "requiredRuleEnabled": true
   },
   "sqlAuthorityAudit": {
@@ -94,7 +94,7 @@
   },
   "sqlAuthorityDrift": {
     "schemaVersion": "1",
-    "generatedAt": "2026-02-23T23:30:43Z",
+    "generatedAt": "2026-02-24T16:25:13Z",
     "realm": "pm",
     "trackedFileCount": 34,
     "mismatchCount": 0,

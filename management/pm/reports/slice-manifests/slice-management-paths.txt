@@ -2,6 +2,7 @@
 .gradle/9.0.0/fileHashes/fileHashes.bin
 .gradle/9.0.0/fileHashes/fileHashes.lock
 .gradle/buildOutputCleanup/buildOutputCleanup.lock
+.idea/workspace.xml
 build/reports/problems/problems-report.html
 management/docs/issues-log.csv
 management/docs/project-plan-progress.csv
@@ -75,4 +76,3 @@ management/pm/state/project-state.sqlite
 management/pm/state/realm-policy-snapshot.json
 management/pm/state/reasoning-derived.sqlite
 management/pm/state/reasoning-experience.sqlite
-management/pm/workflow/workstream-realm-map.json

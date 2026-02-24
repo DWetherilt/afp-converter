@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:30:41Z",
+  "generatedAt": "2026-02-24T16:25:11Z",
   "source": "sqlite",
   "query": "render",
   "databaseCount": 3,
@@ -84,6 +84,10 @@
       "totalOccurrences": 5
     },
     {
+      "token": "afpnativepdfrenderertest",
+      "totalOccurrences": 5
+    },
+    {
       "token": "afpnativepdfrenderer.imageresourcehinttrace",
       "totalOccurrences": 4
     },
@@ -104,8 +108,8 @@
       "totalOccurrences": 4
     },
     {
-      "token": "afpnativepdfrenderertest",
-      "totalOccurrences": 4
+      "token": "afpnativepdfrenderer.buildpaintordersignaturefortest",
+      "totalOccurrences": 3
     },
     {
       "token": "nativepdfrenderer.render",
@@ -134,10 +138,6 @@
     {
       "token": "renderer.",
       "totalOccurrences": 3
-    },
-    {
-      "token": "afpnativepdfrenderer.buildpaintordersignaturefortest",
-      "totalOccurrences": 2
     },
     {
       "token": "afpnativepdfrenderer.lastimageresourcehinttrace",
@@ -475,6 +475,14 @@
     },
     {
       "db": "management/pm/state/application-realm.sqlite",
+      "token": "afpnativepdfrenderer.buildpaintordersignaturefortest",
+      "path": "product/afp-converter/afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRendererTest.java",
+      "occurrences": 3,
+      "realm": "application",
+      "language": "java"
+    },
+    {
+      "db": "management/pm/state/application-realm.sqlite",
       "token": "rendered",
       "path": "product/afp-converter/afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRendererTest.java",
       "occurrences": 3,
@@ -549,14 +557,6 @@
       "db": "management/pm/state/application-realm.sqlite",
       "token": "renderpolicy",
       "path": "product/afp-converter/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/RenderPolicy.java",
-      "occurrences": 2,
-      "realm": "application",
-      "language": "java"
-    },
-    {
-      "db": "management/pm/state/application-realm.sqlite",
-      "token": "afpnativepdfrenderer.buildpaintordersignaturefortest",
-      "path": "product/afp-converter/afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRendererTest.java",
       "occurrences": 2,
       "realm": "application",
       "language": "java"
@@ -1219,6 +1219,14 @@
     },
     {
       "db": "management/pm/state/pm-realm.sqlite",
+      "token": "afpnativepdfrenderertest",
+      "path": "management/docs/project-plan-progress.csv",
+      "occurrences": 2,
+      "realm": "pm",
+      "language": "csv"
+    },
+    {
+      "db": "management/pm/state/pm-realm.sqlite",
       "token": "renderer",
       "path": "management/pm-console/src/main/java/solutions/pointzero/symphony/pm/console/PmConsoleMain.java",
       "occurrences": 1,
@@ -1428,14 +1436,6 @@
     {
       "db": "management/pm/state/pm-realm.sqlite",
       "token": "render-path",
-      "path": "management/docs/project-plan-progress.csv",
-      "occurrences": 1,
-      "realm": "pm",
-      "language": "csv"
-    },
-    {
-      "db": "management/pm/state/pm-realm.sqlite",
-      "token": "afpnativepdfrenderertest",
       "path": "management/docs/project-plan-progress.csv",
       "occurrences": 1,
       "realm": "pm",

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:30:52Z",
+  "generatedAt": "2026-02-24T16:25:22Z",
   "source": "git working tree",
   "sliceOrder": [
     "SLICE-POLICY",
@@ -22,10 +22,10 @@
     },
     {
       "sliceId": "SLICE-PRODUCT",
-      "pathCount": 65,
+      "pathCount": 61,
       "manifestPath": "management/pm/reports/slice-manifests/slice-product-paths.txt",
       "gitAddCommand": "git add --pathspec-from-file=management/pm/reports/slice-manifests/slice-product-paths.txt"
     }
   ],
-  "totalChangedPaths": 143
+  "totalChangedPaths": 139
 }
