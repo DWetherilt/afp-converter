@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="3a136796-a7db-4784-a41f-e738299c5b9d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.github/CODEOWNERS" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/VERSION" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-18-boilerplate-sync-triage-workbook/patches/0001-boilerplate-sync-triage-framework.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-18-consolidated-framework-sync/patches/0001-consolidated-framework-sync.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-18-pm-realm-console-sql-rules-rollup/patches/0001-pm-realm-console-sql-rules-rollup.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance-log-sync/patches/0001-log-sync-template.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-18-project-level-rollback-governance/patches/0001-policy-and-readme-rollback-governance.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-18-workbook-change-driven-guard/patches/0001-workbook-change-driven-guard.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-recovery-ci-sql-integrity.zip" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-recovery-ci-sql-integrity.zip.sha256" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/PM_CONSOLE_EXCHANGE_FORMAT.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/PRESENTATION_ID_MIGRATION.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/boilerplate-sync-candidates.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/policy-governance-events.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/project-plan-progress.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/gradlew" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/management/pm-console/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/management/pm-console/src/main/java/solutions/pointzero/symphony/pm/console/PmConsoleMain.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/management/pm-console/src/test/java/solutions/pointzero/symphony/pm/console/PmConsoleMainTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/management/pm-tools/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/management/pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/BoilerplateSyncWorkbookUpdater.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/management/pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/PolicyGovernanceWorkbookUpdater.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/management/pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/ProjectPlanWorkbookUpdater.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/management/pm-tools/src/main/java/solutions/pointzero/symphony/pm/tools/StateDatabaseTool.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/management/pm-tools/src/test/java/solutions/pointzero/symphony/pm/tools/StateDatabaseToolTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/AI-POLICY.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/SESSION_CHANGELOG.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/VERSION" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/docs/API.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/docs/NEW_MACHINE_BOOTSTRAP.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/docs/PM_CONSOLE_EXCHANGE_FORMAT.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/docs/PRESENTATION_ID_MIGRATION.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/docs/SQL_FIRST_WORKFLOW.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/docs/boilerplate-sync-candidates.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/docs/issues-log-template.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/docs/issues-log.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/docs/policy-governance-events.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/docs/policy-governance-events.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/docs/project-plan-progress.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/docs/project-plan-progress.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/docs/project-plan.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/docs/update-packages/README.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/action-decision-suggestions.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/action-ingest-strict.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/action-items.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/action-owner-summary.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/action-sla-trend.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/application-realm-policy.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/boilerplate-package-files-with-context.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/boilerplate-promotion-status.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/boilerplate-realm-policy.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/cross-realm-action-token-search.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/cross-realm-token-search.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/data-dictionary-lint.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/data-dictionary.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/decision-priority-queue.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/environment-dashboard.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/environment-health.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/governance-alerts.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/identifier-registry.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/issues-effectiveness.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/issues-log-tickle.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/knowledge-base.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/pm-console-stale-cleanup.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/pm-realm-policy.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/policy-rules-lint.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/policy-rules.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/presentation-ref-lint.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/project-plan-next-step.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/project-plan-progress-data.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/realm-knowledge-link-gate.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/realm-knowledge-sync.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/realm-policy-diff.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/realm-policy-sync.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/reasoning-drive.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/repo-file-inventory-with-context.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/sql-authority-application.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/sql-authority-boilerplate.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/sql-authority-pm.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/sql-coverage-application.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/sql-coverage-boilerplate.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/sql-coverage-pm.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/sql-reconstruction-application.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/sql-reconstruction-boilerplate.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/sql-reconstruction-pm.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/version-control-ledger.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/reports/version.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/state/action-sla-history.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/state/application-realm.sqlite" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/state/boilerplate-realm.sqlite" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/state/boilerplate-state.sqlite" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/state/pm-console-stale-history.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/state/pm-realm.sqlite" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/state/project-state.sqlite" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/state/realm-policy-snapshot.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/state/reasoning-derived.sqlite" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/pm/state/reasoning-experience.sqlite" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/preview/afp-diag.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/preview/afp-meta.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/preview/afp-output.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/preview/afp-output.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/preview/fidelity-report.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/files/settings.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/20260223T173429Z-0.2.0-beta.1-2026-02-23-clean-recovery/manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/checkpoints/index.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/action-decision-suggestions.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/action-ingest-strict.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/action-items.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/action-owner-summary.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/action-sla-trend.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/application-realm-policy.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/boilerplate-package-files-with-context.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/boilerplate-promotion-status.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/boilerplate-realm-policy.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/cross-realm-action-token-search.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/cross-realm-token-search.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/data-dictionary-lint.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/data-dictionary.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/decision-priority-queue.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/documentation-manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/environment-dashboard.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/environment-health.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/governance-alerts.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/identifier-registry.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/issues-effectiveness.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/issues-log-tickle.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/knowledge-base.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/pm-console-stale-cleanup.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/pm-realm-policy.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/policy-rules-lint.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/policy-rules.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/presentation-ref-lint.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/project-plan-next-step.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/project-plan-progress-data.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/realm-knowledge-link-gate.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/realm-knowledge-sync.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/realm-policy-diff.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/realm-policy-sync.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/reasoning-drive.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/repo-file-inventory-with-context.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/sql-authority-application.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/sql-authority-boilerplate.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/sql-authority-pm.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/sql-coverage-application.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/sql-coverage-boilerplate.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/sql-coverage-pm.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/sql-reconstruction-application.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/sql-reconstruction-boilerplate.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/sql-reconstruction-pm.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/version-control-ledger.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/reports/version.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/state/action-sla-history.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/state/managed-delete-manifest.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/state/pm-console-stale-history.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/pm/state/realm-policy-snapshot.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/policy/authenticity/index.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/policy/authenticity/lead-developer-mission-token-20260220T013131Z.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/afp-diag.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/afp-meta.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/afp-output.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/afp-output.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/AI-POLICY.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/NATIVE_RENDERER_PLAN.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/PRESENTATION_ID_MIGRATION.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/SESSION_CHANGELOG.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/VERSION" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/action-decision-suggestions.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/action-ingest-strict.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/action-items.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/action-owner-summary.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/action-sla-history.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/action-sla-trend.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/afp-diag.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/afp-meta.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/afp-output.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/afp-output.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/application-realm-policy.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/application-realm.sqlite" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/boilerplate-package-files-with-context.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/boilerplate-promotion-status.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/boilerplate-realm-policy.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/boilerplate-realm.sqlite" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/boilerplate-state.sqlite" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/boilerplate-sync-candidates.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/cross-realm-action-token-search.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/cross-realm-token-search.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/data-dictionary-lint.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/data-dictionary.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/decision-priority-queue.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/documentation-manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/environment-dashboard.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/environment-health.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/fidelity-corpus.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/fidelity-report.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/governance-alerts.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/identifier-registry.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/index.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/issues-effectiveness.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/issues-log-tickle.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/knowledge-base.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/pm-console-stale-cleanup.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/pm-console-stale-history.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/pm-realm-policy.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/pm-realm.sqlite" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/policy-governance-events.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/policy-governance-events.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/policy-rule-tables.sql" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/policy-rules-lint.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/policy-rules.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/presentation-ref-lint.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/project-plan-next-step.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/project-plan-progress-data.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/project-plan-progress.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/project-plan-progress.xlsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/project-plan.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/project-state.sqlite" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/realm-knowledge-link-gate.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/realm-knowledge-sync.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/realm-policy-diff.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/realm-policy-snapshot.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/realm-policy-sync.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/reasoning-derived.sqlite" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/reasoning-drive.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/reasoning-experience.sqlite" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/remanifest-drill.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/repo-file-inventory-with-context.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/sql-authority-application.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/sql-authority-boilerplate.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/sql-authority-pm.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/sql-coverage-application.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/sql-coverage-boilerplate.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/sql-coverage-pm.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/sql-reconstruction-application.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/sql-reconstruction-boilerplate.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/sql-reconstruction-pm.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/version-control-ledger.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/version.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ci-artifacts/latest/workbook-refresh-status.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/fidelity-report.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ibm-output.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/preview/ibm-output.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/AfpConverter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/AfpConverterConfig.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/AfpConverterFactory.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/CancellationToken.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/ConfigurationException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/ConversionException.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/ConversionOptions.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/ConversionRequest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/ConversionResult.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/ConversionWarning.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/DiagnosticsPolicy.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/FontPolicy.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/GeometryPolicy.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/Limits.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/MetadataPolicy.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/RenderPolicy.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/ResourceContext.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/Severity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/TextFallback.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-api/src/main/java/solutions/pointzero/symphony/afp/api/TextPolicy.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-cli/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-cli/src/main/java/solutions/pointzero/symphony/afp/cli/Afp2PdfMain.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/build.gradle" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpCodePageProfile.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpCodePageResolver.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpDocumentLayout.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpEngineAdapter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpHtmlRenderer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpInterpretation.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpInterpreter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpLayoutInterpreter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRenderer.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpOptionRow.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpParseResult.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpPrintCentricTraceEngine.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpSemantics.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpStructuredField.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpStructuredFieldParser.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpTextDecoders.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfplibSemanticPass.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/CliAfpEngineAdapter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/DefaultAfpConverter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/EngineIdentity.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/EngineInputs.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/EngineOutputs.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/EngineStats.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/Fingerprints.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/ImageResolutionService.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/InProcAfpEngineAdapter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/PdfBoxPdfWriter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/PdfWriter.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpGroundTruthComparisonTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpInterpreterTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpNativePdfRendererTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpPdfFidelityReportIT.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpPrintCentricTraceEngineTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpStructuredFieldParserTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/AfpTextDecodersTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/DefaultAfpConverterTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/ImageResolutionServiceTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/InProcAfpEngineAdapterTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/product/afp-engine/src/test/java/solutions/pointzero/symphony/afp/engine/PdfBoxPdfWriterTest.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sampleData/image-heavy.afp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sampleData/sample.afp" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sampleOutput/image-heavy.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sampleOutput/sample.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/sampleOutput/sample.pdf" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/WorkbookUpdater.bas" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/fake-afp-engine.ps1" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/run_excel_workbook_refresh.applescript" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/tests/test_check_action_ingest_strict.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/tests/test_check_action_ingest_strict.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/tests/test_realm_knowledge_link_gate.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/tests/test_realm_knowledge_link_gate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/tests/test_realm_policy_diff.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/tests/test_realm_policy_diff.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tools/tests/test_realm_policy_sync.py" beforeDir="false" afterPath="$PROJECT_DIR$/tools/tests/test_realm_policy_sync.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="1015" />
+  </component>
+  <component name="ExternalProjectsData">
+    <projectState path="$PROJECT_DIR$">
+      <ProjectState />
+    </projectState>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3
+}</component>
+  <component name="ProjectId" id="39wGcSgLQTeG4J5ABxB4ABTnxfW" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;chore/ci-prodbuild-boilerplate-kickoff&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-IU-253.30387.90" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="3a136796-a7db-4784-a41f-e738299c5b9d" name="Changes" comment="" />
+      <created>1771599798354</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1771599798354</updated>
+      <workItem from="1771599799366" duration="11741000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>

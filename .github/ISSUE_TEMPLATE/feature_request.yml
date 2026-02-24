@@ -25,4 +25,4 @@ body:
     id: impact
     attributes:
       label: Impacted areas
-      description: e.g. afp-engine, workbook updater, docs/build tasks
+      description: e.g. afp-engine, workbook updater, management/docs/build tasks

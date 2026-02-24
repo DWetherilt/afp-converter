@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-24T23:11:09Z",
+  "source": "management/pm/state/project-state.sqlite",
+  "targets": [
+    {
+      "realm": "application",
+      "db": "management/pm/state/application-realm.sqlite",
+      "knowledgeCount": 7,
+      "evidenceCount": 13,
+      "decisionLinkCount": 3,
+      "resolvedDecisionLinks": 2,
+      "unresolvedDecisionLinks": 1,
+      "unresolvedDecisionIds": [
+        "PM-DEC-QUEUE-001"
+      ]
+    },
+    {
+      "realm": "pm",
+      "db": "management/pm/state/pm-realm.sqlite",
+      "knowledgeCount": 6,
+      "evidenceCount": 11,
+      "decisionLinkCount": 2,
+      "resolvedDecisionLinks": 1,
+      "unresolvedDecisionLinks": 1,
+      "unresolvedDecisionIds": [
+        "APP-RENDER-001"
+      ]
+    },
+    {
+      "realm": "boilerplate",
+      "db": "management/pm/state/boilerplate-realm.sqlite",
+      "knowledgeCount": 7,
+      "evidenceCount": 13,
+      "decisionLinkCount": 3,
+      "resolvedDecisionLinks": 1,
+      "unresolvedDecisionLinks": 2,
+      "unresolvedDecisionIds": [
+        "APP-RENDER-001",
+        "PM-DEC-QUEUE-001"
+      ]
+    }
+  ]
+}

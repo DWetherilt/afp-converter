@@ -1,0 +1,9 @@
+{
+  "packageId": "2026-02-24-realm-artifact-ringfencing",
+  "sourceRepo": "afp-converter",
+  "targetRepo": "pz-boilerplate-intelliJ",
+  "createdAt": "2026-02-24T00:00:00Z",
+  "promotionStatus": "pending_review",
+  "summary": "Ringfence realm artifacts under parent-level management reports and prevent PM/boilerplate CI artifact leakage into application preview paths.",
+  "supersedes": []
+}

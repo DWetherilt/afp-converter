@@ -1,0 +1,639 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-24T23:11:09Z",
+  "source": "sqlite",
+  "sourceTable": "realm_policy_catalog",
+  "ruleCount": 63,
+  "rules": [
+    {
+      "ruleId": "PM-ACTION-001",
+      "realm": "pm",
+      "category": "action-governance",
+      "ruleText": "Human prompts that imply actionable work must be ingested into action_items and reported via management/pm/reports/action-items.json.",
+      "sourceRef": "build.gradle:actionInboxIngest;build.gradle:actionItemsReport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-ACTION-002",
+      "realm": "pm",
+      "category": "action-governance",
+      "ruleText": "Action items should link to decision IDs for traceable execution sequencing.",
+      "sourceRef": "pm-tools:StateDatabaseTool/action_item_decision_links",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-ACTION-003",
+      "realm": "pm",
+      "category": "action-governance",
+      "ruleText": "PM refresh must publish action owner summary and SLA trend reports for prioritization and drift visibility.",
+      "sourceRef": "build.gradle:actionOwnerSummaryReport;build.gradle:actionSlaTrendReport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-ROLLUP-001",
+      "realm": "pm",
+      "category": "boilerplate-promotion",
+      "ruleText": "Any framework/process/policy/build mutation must include an updated boilerplate roll-up package under product/boilerplate/update-packages/pz-boilerplate-intelliJ in the same change set.",
+      "sourceRef": "build.gradle:enforceBoilerplateRollupForFrameworkChanges",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-CI-001",
+      "realm": "pm",
+      "category": "ci-governance",
+      "ruleText": "CI must run SQL-first pre-build integrity checks (via management/tools/recovery_quick_check.sh or equivalent) before Gradle build steps.",
+      "sourceRef": ".github/workflows/ci.yml",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-CI-002",
+      "realm": "pm",
+      "category": "ci-governance",
+      "ruleText": "CI should publish recovery/integrity artifacts for troubleshooting and rollback traceability.",
+      "sourceRef": ".github/workflows/ci.yml",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-CI-003",
+      "realm": "pm",
+      "category": "ci-governance",
+      "ruleText": "CI and package workflows must block transient SQLite artifacts (.sqlite-wal/.sqlite-shm) from tracked files and exported payloads.",
+      "sourceRef": ".github/workflows/ci.yml;management/tools/validate_boilerplate_package.sh;management/tools/export_boilerplate_package.sh",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-COMMS-001",
+      "realm": "pm",
+      "category": "communication-governance",
+      "ruleText": "Assistant responses must end with a concise list of the next 10 prioritized tasks.",
+      "sourceRef": "management/pm/policy/policy-rule-tables.sql",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-CONSOLE-001",
+      "realm": "pm",
+      "category": "console-governance",
+      "ruleText": "Console screens must emit standard payload envelopes using exchange format pm-console-screen@1.",
+      "sourceRef": "management/docs/PM_CONSOLE_EXCHANGE_FORMAT.md",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-CONSOLE-002",
+      "realm": "pm",
+      "category": "console-governance",
+      "ruleText": "pmconsole live must be command-driven (REPL style) and should not auto-refresh without explicit command invocation.",
+      "sourceRef": "pm-console:PmConsoleMain.LiveCommand",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-CONSOLE-003",
+      "realm": "pm",
+      "category": "console-governance",
+      "ruleText": "When a human asks to launch/open the console, launch a visible desktop terminal session (not background daemon only) and verify launch response in the same turn.",
+      "sourceRef": "osascript Terminal launch workflow",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-CONSOLE-004",
+      "realm": "pm",
+      "category": "console-governance",
+      "ruleText": "Local execution flows must verify a visible PM console session is running (window + process) before non-environment phases proceed.",
+      "sourceRef": "build.gradle:pmConsoleVisibleCheck",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-CONSOLE-005",
+      "realm": "pm",
+      "category": "console-governance",
+      "ruleText": "Duplicate stale background pmconsole live sessions must be detected and reported each environment cycle, with cleanup task support.",
+      "sourceRef": "management/tools/pm_console_cleanup.py;build.gradle:pmConsoleCleanupStaleSessions",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-CONSOLE-006",
+      "realm": "pm",
+      "category": "console-governance",
+      "ruleText": "Visible PM console launch command must be available as an explicit task for manual recovery (`pmConsoleVisibleLaunch`).",
+      "sourceRef": "build.gradle:pmConsoleVisibleLaunch",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-CORE-001",
+      "realm": "pm",
+      "category": "core-derivative-governance",
+      "ruleText": "pzAiCore is the base environment arbiter and derivative projects must inherit its authority hierarchy.",
+      "sourceRef": "management/docs/CORE_DERIVATIVE_MODEL.md",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-CORE-002",
+      "realm": "pm",
+      "category": "core-derivative-governance",
+      "ruleText": "Derivative projects must publish machine-readable core/project topology and core-link contracts.",
+      "sourceRef": "management/pm/workflow/core-derivative-topology.json",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-CORE-003",
+      "realm": "pm",
+      "category": "core-derivative-governance",
+      "ruleText": "Implemented workstream knowledge must be distilled into distributed SQLite stores segmented by owner realm with secured write contracts.",
+      "sourceRef": "management/tools/workstream_knowledge_distill.py;build.gradle:workstreamKnowledgeDistill",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-CORE-004",
+      "realm": "pm",
+      "category": "core-derivative-governance",
+      "ruleText": "Core/project/product derivation chains must preserve policy/management/product realm lineage at each inheritance layer.",
+      "sourceRef": "management/pm/workflow/core-derivative-topology.json;management/tools/workstream_knowledge_distill.py",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-DECISION-001",
+      "realm": "pm",
+      "category": "decision-governance",
+      "ruleText": "Cross-realm prioritization must be derived from SQL-backed decision logs in each realm database and exported to management/pm/reports/decision-priority-queue.json.",
+      "sourceRef": "build.gradle:decisionPriorityReport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-DOC-001",
+      "realm": "pm",
+      "category": "documentation-cycle",
+      "ruleText": "documentationManifest must include PM state/report artifacts.",
+      "sourceRef": "build.gradle:documentationManifest",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-ENV-001",
+      "realm": "pm",
+      "category": "environment-governance",
+      "ruleText": "Environment health is top-priority and must be checked before any non-environment workflow phase.",
+      "sourceRef": "build.gradle:pmEnvironmentPreflight",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-ENV-002",
+      "realm": "pm",
+      "category": "environment-governance",
+      "ruleText": "PM console PID/running health snapshots must be persisted in SQL knowledge with evidence artifact linkage each cycle.",
+      "sourceRef": "build.gradle:pmEnvironmentKnowledgeSync;build.gradle:pmEnvironmentKnowledgeEvidence",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-ENV-003",
+      "realm": "pm",
+      "category": "environment-governance",
+      "ruleText": "PM console visibility context (visible session PIDs and terminal window IDs) must be persisted in SQL knowledge with linked evidence.",
+      "sourceRef": "build.gradle:pmConsoleVisibilityKnowledgeSync;build.gradle:pmConsoleVisibilityKnowledgeEvidence",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-ENV-004",
+      "realm": "pm",
+      "category": "environment-governance",
+      "ruleText": "Environment governance mode supports strict and relaxed behavior via ENV_GOVERNANCE_MODE; strict is default locally.",
+      "sourceRef": "build.gradle:pmConsoleVisibleCheck",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-ENV-005",
+      "realm": "pm",
+      "category": "environment-governance",
+      "ruleText": "Visible-console enforcement must be CI-safe: in CI/headless mode visibility requirement is disabled while daemon and report checks remain active.",
+      "sourceRef": "build.gradle:pmConsoleVisibleCheck",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-ENV-006",
+      "realm": "pm",
+      "category": "environment-governance",
+      "ruleText": "Environment health reports must pass schema validation in local and CI workflows before publication.",
+      "sourceRef": "build.gradle:environmentHealthSchemaCheck;.github/workflows/ci.yml",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-ENV-007",
+      "realm": "pm",
+      "category": "environment-governance",
+      "ruleText": "Console session identity (terminal window/tab) must be persisted as dedicated knowledge for deterministic session correlation.",
+      "sourceRef": "build.gradle:pmConsoleSessionIdentityKnowledgeSync",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-ENV-008",
+      "realm": "pm",
+      "category": "environment-governance",
+      "ruleText": "Stale-session persistence warnings must be computed from history with configurable thresholds.",
+      "sourceRef": "management/tools/pm_console_cleanup.py --warn-threshold",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-ENV-009",
+      "realm": "pm",
+      "category": "environment-governance",
+      "ruleText": "Stale history schema must be validated before report publication and quality gates.",
+      "sourceRef": "build.gradle:staleHistorySchemaCheck;.github/workflows/ci.yml",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-ENV-010",
+      "realm": "pm",
+      "category": "environment-governance",
+      "ruleText": "Environment policy/default definitions across build and policy docs must pass consistency linting.",
+      "sourceRef": "build.gradle:environmentPolicyDefaultsLint",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-ENV-011",
+      "realm": "pm",
+      "category": "environment-governance",
+      "ruleText": "Compact environment dashboard report must be generated each cycle for quick triage.",
+      "sourceRef": "build.gradle:pmEnvironmentDashboardReport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-ENV-012",
+      "realm": "pm",
+      "category": "environment-governance",
+      "ruleText": "Governance/release rollout identifiers must be persisted in identifier_registry with human-readable refs.",
+      "sourceRef": "build.gradle:pmPersistGovernanceIdentifiers",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-EXEC-001",
+      "realm": "pm",
+      "category": "execution-defaults",
+      "ruleText": "Environment preflight is mandatory and runs before application execution: ensure PM console live daemon, verify PID/log health, persist status to SQL knowledge, then execute preview and PM console status unless human overrides.",
+      "sourceRef": "build.gradle:pmEnvironmentPreflight;build.gradle:pmEnvironmentKnowledgeEvidence;AI-POLICY.md#Default execution coupling",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-ID-001",
+      "realm": "pm",
+      "category": "identifier-governance",
+      "ruleText": "Any identifier created across project management, policy management, version control, or code workflows must be persisted in SQL identifier_registry.",
+      "sourceRef": "pm-tools:StateDatabaseTool/identifier_registry",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-ID-002",
+      "realm": "pm",
+      "category": "identifier-governance",
+      "ruleText": "PM refresh pipeline must publish management/pm/reports/identifier-registry.json for auditability of persisted identifiers.",
+      "sourceRef": "build.gradle:identifierRegistryReport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-KB-001",
+      "realm": "pm",
+      "category": "knowledge-governance",
+      "ruleText": "Project reasoning outcomes must be captured in the SQL knowledge base with linked evidence artifacts and decision references.",
+      "sourceRef": "pm-tools:StateDatabaseTool/knowledge_entries",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-KB-002",
+      "realm": "pm",
+      "category": "knowledge-governance",
+      "ruleText": "PM refresh pipeline must publish management/pm/reports/knowledge-base.json from project-state SQLite.",
+      "sourceRef": "build.gradle:knowledgeBaseReport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-KB-003",
+      "realm": "pm",
+      "category": "knowledge-governance",
+      "ruleText": "PM refresh pipeline must mirror project knowledge into each realm DB and publish realm knowledge sync diagnostics.",
+      "sourceRef": "build.gradle:realmKnowledgeSync",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-KB-004",
+      "realm": "pm",
+      "category": "knowledge-governance",
+      "ruleText": "PM refresh pipeline must evaluate unresolved realm knowledge->decision links and publish gate status output (warn by default, fail in strict mode).",
+      "sourceRef": "build.gradle:realmKnowledgeLinkGate",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-NS-001",
+      "realm": "pm",
+      "category": "namespace-governance",
+      "ruleText": "First-party Java package roots must use solutions.pointzero.symphony and must not use com.upland.connect in active source/build/policy scope.",
+      "sourceRef": "build.gradle:enforceNamespaceRoot",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-NAME-001",
+      "realm": "pm",
+      "category": "naming-governance",
+      "ruleText": "Presentation-facing references for constitutional/governance/release artifacts must use human-friendly names and not raw internal token IDs.",
+      "sourceRef": "pm-tools:StateDatabaseTool/humanReadableRef;build.gradle:versionStamp",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-NAME-002",
+      "realm": "pm",
+      "category": "naming-governance",
+      "ruleText": "Presentation-facing event/release references must encode context in the form <what>|<when>|<occurrence> while preserving internal IDs for storage and joins.",
+      "sourceRef": "pm-tools:StateDatabaseTool/humanReadableRef;build.gradle:versionStamp",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-GATE-001",
+      "realm": "pm",
+      "category": "quality-gates",
+      "ruleText": "qualityGate must include enforceProjectBoundaries.",
+      "sourceRef": "build.gradle:qualityGate",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-GATE-002",
+      "realm": "pm",
+      "category": "quality-gates",
+      "ruleText": "qualityGate must include enforceManagedTooling.",
+      "sourceRef": "build.gradle:qualityGate",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-GATE-003",
+      "realm": "pm",
+      "category": "quality-gates",
+      "ruleText": "qualityGate must include enforcePmApplicationRealmSeparation.",
+      "sourceRef": "build.gradle:qualityGate",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-REALM-GOV-002",
+      "realm": "pm",
+      "category": "realm-governance",
+      "ruleText": "Each realm database should publish governance policy exports using realm_policy_catalog report outputs.",
+      "sourceRef": "build.gradle:pmRealmPolicyReport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-REALM-001",
+      "realm": "pm",
+      "category": "realm-separation",
+      "ruleText": "PM state databases must be under management/pm/state only.",
+      "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-REALM-002",
+      "realm": "pm",
+      "category": "realm-separation",
+      "ruleText": "PM reports must be under management/pm/reports and must not be emitted into product/afp-converter/preview/.",
+      "sourceRef": "build.gradle:enforcePmApplicationRealmSeparation",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-REASON-001",
+      "realm": "pm",
+      "category": "reasoning-governance",
+      "ruleText": "Reasoning experience and derived-knowledge databases must be rebuilt from project-state knowledge during PM refresh.",
+      "sourceRef": "build.gradle:reasoningDatabases",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-REASON-002",
+      "realm": "pm",
+      "category": "reasoning-governance",
+      "ruleText": "PM refresh pipeline must publish management/pm/reports/reasoning-drive.json as current reasoning signal output.",
+      "sourceRef": "management/tools/reasoning_sync.py",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-REC-001",
+      "realm": "pm",
+      "category": "recovery-governance",
+      "ruleText": "Recovery-doctor local checkpoints must be retained with bounded count to prevent unbounded workspace growth.",
+      "sourceRef": "management/tools/recovery_doctor.sh#RECOVERY_CHECKPOINT_RETENTION_COUNT",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-REC-002",
+      "realm": "pm",
+      "category": "recovery-governance",
+      "ruleText": "Recovery baseline refresh may be skipped only via explicit environment flag when preserving a prior checksum baseline is required.",
+      "sourceRef": "management/tools/recovery_doctor.sh#RECOVERY_SKIP_BASELINE_REFRESH",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-SEC-001",
+      "realm": "pm",
+      "category": "security-governance",
+      "ruleText": "Console database federation must be constrained to aliases in management/pm/security/authorized-databases.json.",
+      "sourceRef": "management/pm/security/authorized-databases.json",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-SEC-002",
+      "realm": "pm",
+      "category": "security-governance",
+      "ruleText": "Mutating authorized database aliases requires explicit human approval token.",
+      "sourceRef": "pm-console:DbCommand --human-approved",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-SQLCODE-001",
+      "realm": "pm",
+      "category": "sql-code-index",
+      "ruleText": "Maintain separate SQL code-index/token-dictionary databases for application, pm, and boilerplate realms.",
+      "sourceRef": "build.gradle:realmCodeDatabases",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-SQLCODE-002",
+      "realm": "pm",
+      "category": "sql-code-index",
+      "ruleText": "Cross-realm keyword swatch changes must use token-dictionary/code-token search workflows.",
+      "sourceRef": "build.gradle:realmTokenSearch",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-SQLCODE-003",
+      "realm": "pm",
+      "category": "sql-code-index",
+      "ruleText": "Build flows must materialize realm-managed source files from SQL before compilation.",
+      "sourceRef": "build.gradle:realmSourcesExport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-SQLCODE-004",
+      "realm": "pm",
+      "category": "sql-code-index",
+      "ruleText": "Direct filesystem drift from SQL-managed content must be blocked by SQL authority checks in strict mode.",
+      "sourceRef": "build.gradle:sqlAuthorityDriftCheck",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-SQLCODE-005",
+      "realm": "pm",
+      "category": "sql-code-index",
+      "ruleText": "Each realm must publish SQL coverage reports proving managed file index completeness.",
+      "sourceRef": "build.gradle:sqlCoverageReport",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-SQLCODE-006",
+      "realm": "pm",
+      "category": "sql-code-index",
+      "ruleText": "Quality gate must verify SQL reconstruction into a clean temp root before release.",
+      "sourceRef": "build.gradle:sqlReconstructionCheck",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-WF-001",
+      "realm": "pm",
+      "category": "workflow-normalization",
+      "ruleText": "PM process sequencing should be defined in management/pm/workflow/workflow-manifest.json and consumed by adapter interfaces.",
+      "sourceRef": "management/pm/workflow/workflow-manifest.json",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-WF-002",
+      "realm": "pm",
+      "category": "workflow-normalization",
+      "ruleText": "Gradle adapter must expose normalized PM workflow interface tasks that resolve phases from workflow manifest.",
+      "sourceRef": "build.gradle:pmWorkflowRun",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    },
+    {
+      "ruleId": "PM-CORE-005",
+      "realm": "pm",
+      "category": "workstream-governance",
+      "ruleText": "Workstream identity is immutable (`workstream_uid`) while label/rank are mutable for reprioritization without lineage loss.",
+      "sourceRef": "management/docs/project-plan-progress.csv;pm-tools:StateDatabaseTool/syncProgress",
+      "mutableBy": "human",
+      "enabled": true,
+      "updatedAt": "2026-02-24T23:11:06Z"
+    }
+  ]
+}

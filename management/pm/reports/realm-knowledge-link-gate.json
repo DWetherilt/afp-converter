@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-24T23:11:14Z",
+  "source": "management/pm/reports/realm-knowledge-sync.json",
+  "strict": true,
+  "overallStatus": "PASS",
+  "unresolvedTotal": 0,
+  "crossRealmResolvedTotal": 4,
+  "targets": [
+    {
+      "realm": "application",
+      "decisionLinkCount": 3,
+      "resolvedDecisionLinks": 2,
+      "unresolvedDecisionLinks": 0,
+      "crossRealmResolvedLinks": 1,
+      "status": "PASS"
+    },
+    {
+      "realm": "pm",
+      "decisionLinkCount": 2,
+      "resolvedDecisionLinks": 1,
+      "unresolvedDecisionLinks": 0,
+      "crossRealmResolvedLinks": 1,
+      "status": "PASS"
+    },
+    {
+      "realm": "boilerplate",
+      "decisionLinkCount": 3,
+      "resolvedDecisionLinks": 1,
+      "unresolvedDecisionLinks": 0,
+      "crossRealmResolvedLinks": 2,
+      "status": "PASS"
+    }
+  ]
+}

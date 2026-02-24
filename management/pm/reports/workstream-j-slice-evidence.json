@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-24T23:11:10Z",
+  "source": "git working tree",
+  "sliceOrder": [
+    "SLICE-POLICY",
+    "SLICE-MANAGEMENT",
+    "SLICE-PRODUCT"
+  ],
+  "slices": [
+    {
+      "sliceId": "SLICE-POLICY",
+      "pathCount": 0,
+      "manifestPath": "management/pm/reports/slice-manifests/slice-policy-paths.txt",
+      "gitAddCommand": "git add --pathspec-from-file=management/pm/reports/slice-manifests/slice-policy-paths.txt"
+    },
+    {
+      "sliceId": "SLICE-MANAGEMENT",
+      "pathCount": 70,
+      "manifestPath": "management/pm/reports/slice-manifests/slice-management-paths.txt",
+      "gitAddCommand": "git add --pathspec-from-file=management/pm/reports/slice-manifests/slice-management-paths.txt"
+    },
+    {
+      "sliceId": "SLICE-PRODUCT",
+      "pathCount": 21,
+      "manifestPath": "management/pm/reports/slice-manifests/slice-product-paths.txt",
+      "gitAddCommand": "git add --pathspec-from-file=management/pm/reports/slice-manifests/slice-product-paths.txt"
+    }
+  ],
+  "totalChangedPaths": 91
+}

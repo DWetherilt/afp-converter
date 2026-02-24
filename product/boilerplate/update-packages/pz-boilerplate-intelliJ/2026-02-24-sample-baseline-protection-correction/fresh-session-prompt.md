@@ -1,0 +1,1 @@
+Apply the 2026-02-24 sample-baseline-protection-correction package: restore baseline comparison artifacts in sampleOutput, redirect generated outputs to preview/generated-sample-output, and enforce sample baseline integrity in qualityGate.

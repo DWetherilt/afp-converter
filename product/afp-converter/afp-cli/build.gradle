@@ -1,0 +1,118 @@
+plugins {
+    id 'application'
+}
+
+dependencies {
+    implementation project(':afp-api')
+    implementation project(':afp-engine')
+    implementation 'info.picocli:picocli:4.7.6'
+    annotationProcessor 'info.picocli:picocli-codegen:4.7.6'
+}
+
+application {
+    applicationName = 'afp2pdf'
+    mainClass = 'solutions.pointzero.symphony.afp.cli.Afp2PdfMain'
+}
+
+tasks.named('run') {
+    workingDir = rootProject.projectDir
+}
+
+tasks.register('cleanPreviewWorkspace', Delete) {
+    delete(
+        rootProject.file('.tmp/cache-preview'),
+        rootProject.file('.tmp/temp-preview'),
+        rootProject.file('product/afp-converter/preview/afp-output.pdf'),
+        rootProject.file('product/afp-converter/preview/afp-output.html'),
+        rootProject.file('product/afp-converter/preview/afp-meta.json'),
+        rootProject.file('product/afp-converter/preview/afp-diag.json')
+    )
+}
+
+tasks.register('cleanSampleOutputWorkspace', Delete) {
+    delete(
+        rootProject.file('.tmp/cache-generated-sample-output'),
+        rootProject.file('.tmp/temp-generated-sample-output')
+    )
+    delete fileTree(rootProject.file('product/afp-converter/preview/generated-sample-output')) {
+        include '*.pdf'
+        include '*.html'
+        include '*.meta.json'
+        include '*.diag.json'
+    }
+}
+
+tasks.register('generatePreview', JavaExec) {
+    group = 'build'
+    description = 'Generates preview PDF/HTML/metadata/diagnostics from product/afp-converter/sampleData/sample.afp'
+    dependsOn tasks.named('classes')
+    dependsOn tasks.named('cleanPreviewWorkspace')
+    classpath = sourceSets.main.runtimeClasspath
+    mainClass = application.mainClass
+    workingDir = rootProject.projectDir
+    args(
+        '--in', rootProject.file('product/afp-converter/sampleData/sample.afp').path,
+        '--out', rootProject.file('product/afp-converter/preview/afp-output.pdf').path,
+        '--meta', rootProject.file('product/afp-converter/preview/afp-meta.json').path,
+        '--diag', rootProject.file('product/afp-converter/preview/afp-diag.json').path,
+        '--html', rootProject.file('product/afp-converter/preview/afp-output.html').path,
+        '--cacheDir', rootProject.file('.tmp/cache-preview').path,
+        '--tempDir', rootProject.file('.tmp/temp-preview').path,
+        '--timeoutSeconds', '30',
+        '--textFallback', 'SUBSTITUTE'
+    )
+}
+
+File sampleDataDir = rootProject.file('product/afp-converter/sampleData')
+File sampleOutputDir = rootProject.file('product/afp-converter/preview/generated-sample-output')
+List<File> sampleAfpFiles = fileTree(sampleDataDir) {
+    include '*.afp'
+}.files.toList().sort { a, b -> a.name <=> b.name }
+List<TaskProvider<JavaExec>> sampleOutputTasks = []
+
+sampleAfpFiles.each { File afp ->
+    String base = afp.name.endsWith('.afp') ? afp.name.substring(0, afp.name.length() - 4) : afp.name
+    String taskName = "generateSampleOutput_" + base.replaceAll('[^A-Za-z0-9_]', '_')
+    sampleOutputTasks << tasks.register(taskName, JavaExec) {
+        group = 'build'
+        description = "Generates sample output artifacts for ${afp.name}"
+        dependsOn tasks.named('classes')
+        classpath = sourceSets.main.runtimeClasspath
+        mainClass = application.mainClass
+        workingDir = rootProject.projectDir
+        args(
+            '--in', afp.path,
+            '--out', new File(sampleOutputDir, "${base}.pdf").path,
+            '--meta', new File(sampleOutputDir, "${base}.meta.json").path,
+            '--diag', new File(sampleOutputDir, "${base}.diag.json").path,
+            '--html', new File(sampleOutputDir, "${base}.html").path,
+            '--cacheDir', rootProject.file('.tmp/cache-generated-sample-output').path,
+            '--tempDir', rootProject.file('.tmp/temp-generated-sample-output').path,
+            '--timeoutSeconds', '30',
+            '--textFallback', 'SUBSTITUTE'
+        )
+    }
+}
+
+tasks.register('generateSampleOutputs') {
+    group = 'build'
+    description = 'Generates preview/generated-sample-output artifacts for every AFP file in product/afp-converter/sampleData'
+    dependsOn tasks.named('cleanSampleOutputWorkspace')
+    dependsOn sampleOutputTasks
+    doFirst {
+        if (sampleOutputTasks.isEmpty()) {
+            throw new GradleException("No AFP files found under ${sampleDataDir.path}")
+        }
+    }
+}
+
+distributions {
+    main {
+        contents {
+            from(rootProject.file('README.md'))
+            from(rootProject.file('tools')) {
+                into('tools')
+            }
+        }
+    }
+}

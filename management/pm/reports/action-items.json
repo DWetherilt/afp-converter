@@ -1,0 +1,138 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-24T23:11:05Z",
+  "source": "sqlite",
+  "sourceTable": "action_items",
+  "itemCount": 5,
+  "byStatus": {
+    "in_progress": 1,
+    "open": 2,
+    "done": 2
+  },
+  "byPriority": {
+    "high": 5
+  },
+  "actions": [
+    {
+      "actionId": "ACT-2026-02-23-WSJ-001",
+      "realm": "pm",
+      "source": "human-session",
+      "title": "Execute WS-J migration slicing and SQL reconciliation",
+      "status": "in_progress",
+      "priority": "high",
+      "impliedBy": "human-question",
+      "owner": "ai-agent",
+      "decisionId": "PM-DEC-WSJ-2026-02-23-001",
+      "knowledgeId": "",
+      "notes": "Perform policy/management/product slicing with per-slice evidence and refresh PM SQL reports.",
+      "actionRef": "Action | 2026-02-23 | #001",
+      "createdAt": "2026-02-23T21:56:33Z",
+      "updatedAt": "2026-02-23T21:56:33Z",
+      "ageDays": 1,
+      "staleAfterDays": 3,
+      "isStale": false,
+      "decisionLinks": [
+        {
+          "realm": "pm",
+          "decisionId": "PM-DEC-WSJ-2026-02-23-001",
+          "relation": "implements",
+          "linkedAt": "2026-02-23T21:56:33Z"
+        }
+      ]
+    },
+    {
+      "actionId": "ACT-2026-02-23-CORE-002",
+      "realm": "pm",
+      "source": "human-session",
+      "title": "Segment tooling by realm and enforce ownership-negotiation writes",
+      "status": "open",
+      "priority": "high",
+      "impliedBy": "human-question",
+      "owner": "ai-agent",
+      "decisionId": "",
+      "knowledgeId": "",
+      "notes": "Ensure realm-specific tooling boundaries and codify negotiation/owner-approval before cross-owner source-of-truth mutations.",
+      "actionRef": "Action | 2026-02-23 | #002",
+      "createdAt": "2026-02-23T19:38:03Z",
+      "updatedAt": "2026-02-23T19:38:03Z",
+      "ageDays": 1,
+      "staleAfterDays": 3,
+      "isStale": false,
+      "decisionLinks": []
+    },
+    {
+      "actionId": "ACT-2026-02-23-CORE-001",
+      "realm": "pm",
+      "source": "human-session",
+      "title": "Enforce DB-derived CLI argument resolution",
+      "status": "open",
+      "priority": "high",
+      "impliedBy": "human-question",
+      "owner": "ai-agent",
+      "decisionId": "",
+      "knowledgeId": "",
+      "notes": "Audit and refactor tooling so command path/db arguments resolve from SQL-managed configuration instead of hardcoded literals.",
+      "actionRef": "Action | 2026-02-23 | #003",
+      "createdAt": "2026-02-23T19:38:02Z",
+      "updatedAt": "2026-02-23T19:38:02Z",
+      "ageDays": 1,
+      "staleAfterDays": 3,
+      "isStale": false,
+      "decisionLinks": []
+    },
+    {
+      "actionId": "action::d0caf0185bf1",
+      "realm": "pm",
+      "source": "pmconsole-live",
+      "title": "Publish and maintain concise workstream status summary",
+      "status": "done",
+      "priority": "high",
+      "impliedBy": "human-question",
+      "owner": "ai-agent",
+      "decisionId": "PM-DEC-QUEUE-001",
+      "knowledgeId": "",
+      "notes": "User decision: Option B selected. Publish concise workstream status summaries only on material state changes. Closed in single-pass closeout on 2026-02-20 after quality gate pass.",
+      "actionRef": "Action | 2026-02-19 | #001",
+      "createdAt": "2026-02-19T18:19:01Z",
+      "updatedAt": "2026-02-20 02:25:19",
+      "ageDays": 0,
+      "staleAfterDays": 3,
+      "isStale": false,
+      "decisionLinks": [
+        {
+          "realm": "pm",
+          "decisionId": "PM-DEC-QUEUE-001",
+          "relation": "implements",
+          "linkedAt": "2026-02-19T18:41:56Z"
+        }
+      ]
+    },
+    {
+      "actionId": "action::db59f0535ec0",
+      "realm": "application",
+      "source": "pmconsole-live",
+      "title": "Close high-completion rendering tasks (A/F/D/B)",
+      "status": "done",
+      "priority": "high",
+      "impliedBy": "human-question",
+      "owner": "ai-agent",
+      "decisionId": "APP-RENDER-001",
+      "knowledgeId": "",
+      "notes": "User decision: Option B selected. Keep rendering-closure action open until IBM-parity strictness criteria are met; do not close on pragmatic thresholds. Closed in single-pass closeout on 2026-02-20 after quality gate pass.",
+      "actionRef": "Action | 2026-02-19 | #002",
+      "createdAt": "2026-02-19T17:40:29Z",
+      "updatedAt": "2026-02-20 02:25:19",
+      "ageDays": 0,
+      "staleAfterDays": 3,
+      "isStale": false,
+      "decisionLinks": [
+        {
+          "realm": "application",
+          "decisionId": "APP-RENDER-001",
+          "relation": "implements",
+          "linkedAt": "2026-02-19T18:41:57Z"
+        }
+      ]
+    }
+  ]
+}

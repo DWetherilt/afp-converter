@@ -1,0 +1,98 @@
+{
+  "schemaVersion": "1",
+  "name": "project-management-workflow",
+  "description": "Toolchain-neutral PM workflow contract with adapter-specific task bindings.",
+  "phases": [
+    {
+      "id": "execute_application_with_pm_console",
+      "title": "Execute Application + PM Console",
+      "description": "Runs environment-first PM preflight + visibility verification + SQL knowledge persistence, then application preview execution and PM console status.",
+      "intent": "development",
+      "tags": ["application", "pm", "default-execution"]
+    },
+    {
+      "id": "pm_refresh_and_reports",
+      "title": "Refresh PM State and Reports",
+      "description": "Synchronizes PM state stores and regenerates PM report artifacts.",
+      "intent": "project-management",
+      "tags": ["pm", "state", "reports"]
+    },
+    {
+      "id": "core_derivative_governance_sync",
+      "title": "Core-Derivative Governance Sync",
+      "description": "Publishes core-derivative topology and policy-rule exports required for pzAiCore alignment.",
+      "intent": "governance",
+      "tags": ["core", "derivative", "governance"]
+    },
+    {
+      "id": "quality_gate",
+      "title": "Quality Gate",
+      "description": "Runs full quality gates including PM boundary enforcement.",
+      "intent": "verification",
+      "tags": ["quality", "verification"]
+    },
+    {
+      "id": "prod_build",
+      "title": "Production Build",
+      "description": "Builds production artifacts without test compilation/execution.",
+      "intent": "release",
+      "tags": ["production", "build"]
+    }
+  ],
+  "adapters": {
+    "gradle": {
+      "command": ["./gradlew"],
+      "phaseTaskMap": {
+        "execute_application_with_pm_console": [
+          "pmEnvironmentReady",
+          "previewManifest",
+          "pmConsoleStatus"
+        ],
+        "pm_refresh_and_reports": [
+          "projectStateDb",
+          "boilerplateStateDb",
+          "policyRulesReport",
+          "workstreamKnowledgeDistill",
+          "managedToolInventoryReport",
+          "toolArgumentComplianceReport",
+          "topologyStructureDriftReport",
+          "hardcodedCriticalPathGateReport",
+          "decisionPriorityReport",
+          "knowledgeBaseReport",
+          "realmKnowledgeSync",
+          "realmKnowledgeLinkGate",
+          "actionItemsReport",
+          "actionDecisionSuggestionReport",
+          "actionOwnerSummaryReport",
+          "actionSlaTrendReport",
+          "actionIngestStrictGate",
+          "realmPolicySync",
+          "applicationRealmPolicyReport",
+          "pmRealmPolicyReport",
+          "boilerplateRealmPolicyReport",
+          "realmPolicyDiffReport",
+          "reasoningDatabases",
+          "stateInventoryCsv",
+          "documentationManifest"
+        ],
+        "core_derivative_governance_sync": [
+          "projectStateDb",
+          "workstreamKnowledgeDistill",
+          "policyRulesReport",
+          "documentationManifest"
+        ],
+        "quality_gate": [
+          "qualityGate"
+        ],
+        "prod_build": [
+          "prodBuild"
+        ]
+      }
+    }
+  },
+  "defaults": {
+    "executeApplicationPhase": "execute_application_with_pm_console",
+    "pmRefreshPhase": "pm_refresh_and_reports",
+    "gradleDefaultPhase": "pm_refresh_and_reports"
+  }
+}

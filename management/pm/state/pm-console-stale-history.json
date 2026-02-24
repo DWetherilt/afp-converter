@@ -1,0 +1,255 @@
+{
+  "schemaVersion": "1",
+  "events": [
+    {
+      "generatedAt": "2026-02-23T21:06:03Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T21:17:08Z",
+      "staleCandidateCount": 1,
+      "status": "STALE_DETECTED"
+    },
+    {
+      "generatedAt": "2026-02-23T21:18:32Z",
+      "staleCandidateCount": 1,
+      "status": "CLEANED"
+    },
+    {
+      "generatedAt": "2026-02-23T21:18:42Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T21:39:06Z",
+      "staleCandidateCount": 1,
+      "status": "STALE_DETECTED"
+    },
+    {
+      "generatedAt": "2026-02-23T21:47:28Z",
+      "staleCandidateCount": 1,
+      "status": "STALE_DETECTED"
+    },
+    {
+      "generatedAt": "2026-02-23T21:48:16Z",
+      "staleCandidateCount": 1,
+      "status": "STALE_DETECTED"
+    },
+    {
+      "generatedAt": "2026-02-23T21:50:00Z",
+      "staleCandidateCount": 1,
+      "status": "STALE_DETECTED"
+    },
+    {
+      "generatedAt": "2026-02-23T21:52:40Z",
+      "staleCandidateCount": 1,
+      "status": "STALE_DETECTED"
+    },
+    {
+      "generatedAt": "2026-02-23T21:53:20Z",
+      "staleCandidateCount": 1,
+      "status": "STALE_DETECTED"
+    },
+    {
+      "generatedAt": "2026-02-23T21:56:08Z",
+      "staleCandidateCount": 1,
+      "status": "CLEANED"
+    },
+    {
+      "generatedAt": "2026-02-23T21:57:56Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T21:58:41Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T21:59:36Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T22:06:53Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T22:07:33Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T22:12:29Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T22:13:45Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T22:14:28Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T22:19:23Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T22:22:10Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T22:25:05Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T22:26:25Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T22:31:44Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T22:33:39Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T22:39:05Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T22:44:37Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T22:45:22Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T22:56:45Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T22:57:18Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T23:01:32Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T23:06:48Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T23:07:47Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T23:12:44Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T23:13:29Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T23:22:40Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T23:29:47Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-23T23:30:48Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-24T16:24:27Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-24T16:25:19Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-24T16:41:13Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-24T16:42:00Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-24T16:42:33Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-24T16:43:26Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-24T16:45:30Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-24T16:52:43Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-24T17:01:37Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-24T17:02:28Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-24T17:03:46Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-24T23:11:05Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    }
+  ]
+}

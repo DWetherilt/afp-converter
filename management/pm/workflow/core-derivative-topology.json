@@ -1,0 +1,213 @@
+{
+  "schemaVersion": "1",
+  "model": "core-derivative",
+  "core": {
+    "id": "pzAiCore",
+    "role": "environment-arbiter",
+    "realms": [
+      "policy",
+      "management",
+      "product"
+    ],
+    "authorityOrder": [
+      "human_lead_developer",
+      "core_policy_realm",
+      "project_policy",
+      "project_realms"
+    ]
+  },
+  "project": {
+    "id": "afp-converter",
+    "role": "derivative-project",
+    "parentCoreId": "pzAiCore",
+    "repositoryUrl": "https://github.com/pointzerosolutions/afp-converter",
+    "realms": [
+      "policy",
+      "management",
+      "product"
+    ],
+    "internalRealms": [
+      "application",
+      "pm",
+      "boilerplate"
+    ],
+    "products": [
+      {
+        "id": "boilerplate",
+        "role": "product-realm-instance",
+        "inheritsFrom": "afp-converter",
+        "repositoryUrl": "https://github.com/pointzerosolutions/pz-boilerplate-intelliJ",
+        "coreInheritance": {
+          "mode": "inherited-core",
+          "coreId": "pzAiCore",
+          "baseProjectId": "afp-converter"
+        },
+        "realms": [
+          "policy",
+          "management",
+          "product"
+        ]
+      },
+      {
+        "id": "project-management",
+        "role": "product-realm-instance",
+        "inheritsFrom": "afp-converter",
+        "realms": [
+          "policy",
+          "management",
+          "product"
+        ]
+      },
+      {
+        "id": "application",
+        "role": "product-realm-instance",
+        "inheritsFrom": "afp-converter",
+        "realms": [
+          "policy",
+          "management",
+          "product"
+        ]
+      }
+    ],
+    "reasoningStores": {
+      "project": [
+        "management/pm/state/project-state.sqlite",
+        "management/pm/state/reasoning-experience.sqlite",
+        "management/pm/state/reasoning-derived.sqlite",
+        "management/pm/state/core-realm.sqlite"
+      ],
+      "coreLinkMode": "reference-links"
+    }
+  },
+  "realmDerivationGraph": {
+    "nodes": [
+      {
+        "nodeId": "core::pzAiCore",
+        "parentNodeId": "",
+        "realm": "core",
+        "layer": "core",
+        "productId": "pzAiCore",
+        "role": "environment-arbiter",
+        "lineageDepth": 0
+      },
+      {
+        "nodeId": "core::pzAiCore::policy",
+        "parentNodeId": "core::pzAiCore",
+        "realm": "policy",
+        "layer": "core-realm",
+        "productId": "pzAiCore",
+        "role": "core-policy",
+        "lineageDepth": 1
+      },
+      {
+        "nodeId": "core::pzAiCore::management",
+        "parentNodeId": "core::pzAiCore",
+        "realm": "management",
+        "layer": "core-realm",
+        "productId": "pzAiCore",
+        "role": "core-management",
+        "lineageDepth": 1
+      },
+      {
+        "nodeId": "core::pzAiCore::product",
+        "parentNodeId": "core::pzAiCore",
+        "realm": "product",
+        "layer": "core-realm",
+        "productId": "pzAiCore",
+        "role": "core-product",
+        "lineageDepth": 1
+      },
+      {
+        "nodeId": "project::afp-converter",
+        "parentNodeId": "core::pzAiCore",
+        "realm": "project",
+        "layer": "project",
+        "productId": "afp-converter",
+        "role": "derivative-project",
+        "lineageDepth": 1
+      },
+      {
+        "nodeId": "project::afp-converter::policy",
+        "parentNodeId": "project::afp-converter",
+        "realm": "policy",
+        "layer": "project-realm",
+        "productId": "afp-converter",
+        "role": "project-policy",
+        "lineageDepth": 2
+      },
+      {
+        "nodeId": "project::afp-converter::management",
+        "parentNodeId": "project::afp-converter",
+        "realm": "management",
+        "layer": "project-realm",
+        "productId": "afp-converter",
+        "role": "project-management",
+        "lineageDepth": 2
+      },
+      {
+        "nodeId": "project::afp-converter::product",
+        "parentNodeId": "project::afp-converter",
+        "realm": "product",
+        "layer": "project-realm",
+        "productId": "afp-converter",
+        "role": "project-product",
+        "lineageDepth": 2
+      },
+      {
+        "nodeId": "product::boilerplate",
+        "parentNodeId": "project::afp-converter::product",
+        "realm": "boilerplate",
+        "layer": "product-instance",
+        "productId": "boilerplate",
+        "role": "product-realm-instance",
+        "lineageDepth": 3
+      },
+      {
+        "nodeId": "product::project-management",
+        "parentNodeId": "project::afp-converter::product",
+        "realm": "pm",
+        "layer": "product-instance",
+        "productId": "project-management",
+        "role": "product-realm-instance",
+        "lineageDepth": 3
+      },
+      {
+        "nodeId": "product::application",
+        "parentNodeId": "project::afp-converter::product",
+        "realm": "application",
+        "layer": "product-instance",
+        "productId": "application",
+        "role": "product-realm-instance",
+        "lineageDepth": 3
+      }
+    ],
+    "edges": [
+      {
+        "parentNodeId": "core::pzAiCore",
+        "childNodeId": "project::afp-converter",
+        "relation": "derives"
+      },
+      {
+        "parentNodeId": "project::afp-converter::product",
+        "childNodeId": "product::boilerplate",
+        "relation": "manifests"
+      },
+      {
+        "parentNodeId": "project::afp-converter::product",
+        "childNodeId": "product::project-management",
+        "relation": "manifests"
+      },
+      {
+        "parentNodeId": "project::afp-converter::product",
+        "childNodeId": "product::application",
+        "relation": "manifests"
+      }
+    ]
+  },
+  "linkContracts": {
+    "coreDecisionRefField": "core_decision_ref",
+    "coreActionRefField": "core_action_ref",
+    "corePivotRefField": "core_pivot_ref",
+    "requiredOnEscalation": true
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "packageId": "2026-02-23-workstream-identity-presentation-aliasing",
+  "sourceRepo": "afp-converter",
+  "targetRepo": "pz-boilerplate-intelliJ",
+  "createdAt": "2026-02-23T00:00:00Z",
+  "promotionStatus": "pending_review",
+  "summary": "Introduce unique internal workstream identity discipline with active-only A..Z presentation alias indexing and next-step sequence cleanup.",
+  "supersedes": []
+}

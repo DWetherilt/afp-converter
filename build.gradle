@@ -4,6 +4,8 @@ plugins {
 
 import java.security.MessageDigest
 import groovy.json.JsonOutput
+import groovy.json.JsonSlurper
+import java.util.Locale
 
 def versionFile = file('VERSION')
 def resolvedVersion = versionFile.exists() ? versionFile.text.trim() : '0.2.0-beta.1'
@@ -11,8 +13,83 @@ if (!resolvedVersion) {
     throw new GradleException("VERSION file is empty")
 }
 
+def pmWorkflowManifestFile = file('management/pm/workflow/workflow-manifest.json')
+def pmWorkflowManifest = pmWorkflowManifestFile.exists()
+    ? (new JsonSlurper().parse(pmWorkflowManifestFile) as Map)
+    : [:]
+def pmWorkflowGradleMap = (pmWorkflowManifest?.adapters instanceof Map
+    && pmWorkflowManifest.adapters.gradle instanceof Map
+    && pmWorkflowManifest.adapters.gradle.phaseTaskMap instanceof Map)
+    ? (pmWorkflowManifest.adapters.gradle.phaseTaskMap as Map)
+    : [:]
+def pmWorkflowDefaults = (pmWorkflowManifest?.defaults instanceof Map)
+    ? (pmWorkflowManifest.defaults as Map)
+    : [:]
+def pathContractFile = file('management/pm/workflow/path-contract.json')
+def pathContract = pathContractFile.exists()
+    ? (new JsonSlurper().parse(pathContractFile) as Map)
+    : [:]
+def pathContractPaths = (pathContract?.paths instanceof Map)
+    ? (pathContract.paths as Map)
+    : [:]
+def requiredPathFromContract = { String key ->
+    Object raw = pathContractPaths.get(key)
+    String value = raw == null ? '' : raw.toString().trim()
+    if (value.isEmpty()) {
+        throw new GradleException("Missing required path-contract key '${key}' in ${pathContractFile.path}")
+    }
+    return value
+}
+def PATHS = [
+    projectStateDb      : requiredPathFromContract('projectStateDb'),
+    boilerplateStateDb  : requiredPathFromContract('boilerplateStateDb'),
+    applicationRealmDb  : requiredPathFromContract('applicationRealmDb'),
+    pmRealmDb           : requiredPathFromContract('pmRealmDb'),
+    boilerplateRealmDb  : requiredPathFromContract('boilerplateRealmDb'),
+    coreRealmDb         : requiredPathFromContract('coreRealmDb')
+]
+def envGovernanceMode = (System.getenv('ENV_GOVERNANCE_MODE') ?: 'strict').trim().toLowerCase(Locale.ROOT)
+def isCiEnvironment = (System.getenv('CI') ?: '').trim().toLowerCase(Locale.ROOT) in ['1', 'true', 'yes']
+def pmConsoleAutolaunch = (System.getenv('PM_CONSOLE_AUTOLAUNCH') ?: (isCiEnvironment ? 'false' : 'true')).trim().toLowerCase(Locale.ROOT)
+
+def realmManagedManifestFile = file('management/pm/workflow/realm-managed-manifest.json')
+def realmManagedManifest = realmManagedManifestFile.exists()
+    ? (new JsonSlurper().parse(realmManagedManifestFile) as Map)
+    : [:]
+def realmManagedRealms = (realmManagedManifest?.realms instanceof Map)
+    ? (realmManagedManifest.realms as Map)
+    : [:]
+def realmRootsCsv = { String realmId, String fallback ->
+    Object realmNode = realmManagedRealms.get(realmId)
+    if (!(realmNode instanceof Map)) {
+        return fallback
+    }
+    Object roots = ((Map) realmNode).get('roots')
+    if (!(roots instanceof List)) {
+        return fallback
+    }
+    List<String> values = ((List) roots)
+        .collect { it == null ? '' : it.toString().trim() }
+        .findAll { !it.isEmpty() }
+    return values.isEmpty() ? fallback : values.join(',')
+}
+
+def resolvePmWorkflowTasks = { String phaseId ->
+    Object raw = pmWorkflowGradleMap.get(phaseId)
+    if (!(raw instanceof List)) {
+        throw new GradleException("No Gradle phase mapping found for PM workflow phase '${phaseId}' in ${pmWorkflowManifestFile.path}")
+    }
+    List<String> tasks = (raw as List)
+        .collect { it == null ? '' : it.toString().trim() }
+        .findAll { !it.isEmpty() }
+    if (tasks.isEmpty()) {
+        throw new GradleException("Empty Gradle task list for PM workflow phase '${phaseId}' in ${pmWorkflowManifestFile.path}")
+    }
+    return tasks
+}
+
 allprojects {
-    group = 'com.upland.connect'
+    group = 'solutions.pointzero.symphony'
     version = resolvedVersion
 
     repositories {
@@ -22,8 +99,455 @@ allprojects {
 
 tasks.register('previewManifest') {
     group = 'build'
-    description = 'Regenerates preview artifacts under preview/ using the current converter'
+    description = 'Regenerates preview artifacts under product/afp-converter/preview/ using the current converter'
     dependsOn(':afp-cli:generatePreview')
+    dependsOn(':afp-cli:generateSampleOutputs')
+}
+
+tasks.register('pmConsoleStatus', JavaExec) {
+    group = 'documentation'
+    description = 'Runs the development PM console status dashboard'
+    dependsOn(':pm-console:classes')
+    dependsOn('policyRulesReport')
+    dependsOn('issuesEffectivenessReport')
+    dependsOn('governanceAlerts')
+    classpath = project(':pm-console').sourceSets.main.runtimeClasspath
+    mainClass = 'solutions.pointzero.symphony.pm.console.PmConsoleMain'
+    workingDir = rootProject.projectDir
+    args 'status'
+}
+
+tasks.register('pmConsoleEnsureLive', Exec) {
+    group = 'documentation'
+    description = 'Ensures pmconsole live dashboard is running in persistent background mode.'
+    dependsOn(':pm-console:installDist')
+    commandLine 'bash', 'management/tools/pm_console_live_daemon.sh', 'start'
+}
+
+tasks.register('pmConsoleLiveStatus', Exec) {
+    group = 'documentation'
+    description = 'Reports current persistent pmconsole live daemon status.'
+    commandLine 'bash', 'management/tools/pm_console_live_daemon.sh', 'status'
+}
+
+tasks.register('pmConsoleVisibleLaunch', Exec) {
+    group = 'documentation'
+    description = 'Launches a visible desktop terminal PM console session (skips on CI/headless).'
+    dependsOn(':pm-console:installDist')
+    onlyIf {
+        if (isCiEnvironment) {
+            logger.lifecycle('pmConsoleVisibleLaunch: skipping visible launch in CI/headless mode')
+            return false
+        }
+        return true
+    }
+    commandLine 'osascript', '-e',
+        'tell application "Terminal" to activate\n' +
+            'tell application "Terminal" to do script "cd ' + project.rootDir.absolutePath.replace('"', '\\"') + ' && ./management/pm-console/build/install/pmconsole/bin/pmconsole live"'
+}
+
+tasks.register('pmConsoleVisibleCheck', Exec) {
+    group = 'documentation'
+    description = 'Verifies visible PM console session + daemon health and emits environment health report.'
+    dependsOn('pmConsoleEnsureLive')
+    dependsOn('pmConsoleLiveStatus')
+    dependsOn(':pm-console:installDist')
+    doFirst {
+        commandLine 'python3',
+            'management/tools/environment_health_check.py',
+            '--pid-file', 'management/pm/state/pmconsole-live.pid',
+            '--log-file', 'management/pm/state/pmconsole-live.log',
+            '--output', 'management/pm/reports/environment-health.json',
+            '--expect-running', 'true',
+            '--expect-visible', (isCiEnvironment ? 'false' : 'true'),
+            '--governance-mode', envGovernanceMode,
+            '--auto-launch-if-missing', pmConsoleAutolaunch,
+            '--console-command', './management/pm-console/build/install/pmconsole/bin/pmconsole live',
+            '--ci', Boolean.toString(isCiEnvironment)
+    }
+}
+
+tasks.register('pmEnvironmentPreflight') {
+    group = 'documentation'
+    description = 'Environment-first preflight: ensure PM console daemon and visible session are healthy.'
+    dependsOn('pmConsoleVisibleCheck')
+}
+
+tasks.register('pmEnvironmentKnowledgeSync', Exec) {
+    group = 'documentation'
+    description = 'Persists PM console environment status into SQL knowledge base.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('projectStateDb')
+    dependsOn('pmEnvironmentPreflight')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'upsert-knowledge',
+            '--db', PATHS.projectStateDb,
+            '--knowledge-id', 'KB-PM-ENV-CONSOLE-HEALTH',
+            '--realm', 'pm',
+            '--scope-level', 'realm',
+            '--scope-ref', 'environment',
+            '--title', 'PM console environment health preflight',
+            '--reasoning', 'Environment-first governance requires live PM console status checks before workflow execution.',
+            '--context-snapshot', 'management/pm/reports/environment-health.json',
+            '--outcome-status', 'applied',
+            '--outcome-summary', "Recorded console daemon + visibility state (mode=${envGovernanceMode}, ci=${isCiEnvironment}) for this cycle.",
+            '--confidence', '5.0',
+            '--impact-score', '5.0',
+            '--change-ref', 'management/pm/reports/environment-health.json'
+    }
+}
+
+tasks.register('pmEnvironmentKnowledgeEvidence', Exec) {
+    group = 'documentation'
+    description = 'Links environment health report artifact as evidence to environment knowledge entry.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('pmEnvironmentKnowledgeSync')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'add-knowledge-evidence',
+            '--db', PATHS.projectStateDb,
+            '--knowledge-id', 'KB-PM-ENV-CONSOLE-HEALTH',
+            '--artifact-path', 'management/pm/reports/environment-health.json',
+            '--type', 'report',
+            '--notes', 'Environment preflight status including PID and running state.'
+    }
+}
+
+tasks.register('pmConsoleVisibilityKnowledgeSync', Exec) {
+    group = 'documentation'
+    description = 'Persists PM console visible-session PID/terminal context into SQL knowledge base.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('pmEnvironmentPreflight')
+    doFirst {
+        Map report = [:]
+        File reportFile = file('management/pm/reports/environment-health.json')
+        if (reportFile.exists()) {
+            report = (new JsonSlurper().parse(reportFile) as Map)
+        }
+        Map visibility = report?.visibility instanceof Map ? (report.visibility as Map) : [:]
+        List visiblePids = visibility?.visibleSessionPids instanceof List ? (visibility.visibleSessionPids as List) : []
+        String terminalWindow = visibility?.terminalWindowId == null ? '' : visibility.terminalWindowId.toString()
+        String summary = "visiblePids=${visiblePids.collect { it.toString() }.join(',')}; terminalWindowId=${terminalWindow}; visible=${visibility?.visibleRunning}; status=${report?.status}"
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'upsert-knowledge',
+            '--db', PATHS.projectStateDb,
+            '--knowledge-id', 'KB-PM-ENV-CONSOLE-VISIBLE',
+            '--realm', 'pm',
+            '--scope-level', 'realm',
+            '--scope-ref', 'environment.console.visibility',
+            '--title', 'PM console visible session context',
+            '--reasoning', 'Visible desktop PM console presence is required for environment readiness in local development flows.',
+            '--context-snapshot', 'management/pm/reports/environment-health.json',
+            '--outcome-status', 'applied',
+            '--outcome-summary', summary,
+            '--confidence', '5.0',
+            '--impact-score', '5.0',
+            '--change-ref', 'management/pm/reports/environment-health.json'
+    }
+}
+
+tasks.register('pmConsoleVisibilityKnowledgeEvidence', Exec) {
+    group = 'documentation'
+    description = 'Links visibility health report as evidence to visible-session knowledge entry.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('pmConsoleVisibilityKnowledgeSync')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'add-knowledge-evidence',
+            '--db', PATHS.projectStateDb,
+            '--knowledge-id', 'KB-PM-ENV-CONSOLE-VISIBLE',
+            '--artifact-path', 'management/pm/reports/environment-health.json',
+            '--type', 'report',
+            '--notes', 'Visibility context report including visible session PIDs and terminal window ID.'
+    }
+}
+
+tasks.register('pmConsoleSessionIdentityKnowledgeSync', Exec) {
+    group = 'documentation'
+    description = 'Persists deterministic terminal window/tab identity for visible PM console session.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('pmEnvironmentPreflight')
+    doFirst {
+        Map report = [:]
+        File reportFile = file('management/pm/reports/environment-health.json')
+        if (reportFile.exists()) {
+            report = (new JsonSlurper().parse(reportFile) as Map)
+        }
+        Map visibility = report?.visibility instanceof Map ? (report.visibility as Map) : [:]
+        String windowId = visibility?.terminalWindowId == null ? '' : visibility.terminalWindowId.toString()
+        String tabId = visibility?.terminalTabId == null ? '' : visibility.terminalTabId.toString()
+        String summary = "terminalWindowId=${windowId}; terminalTabId=${tabId}; visiblePids=${(visibility?.visibleSessionPids instanceof List ? (visibility.visibleSessionPids as List) : []).collect { it.toString() }.join(',')}"
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'upsert-knowledge',
+            '--db', PATHS.projectStateDb,
+            '--knowledge-id', 'KB-PM-ENV-CONSOLE-SESSION-IDENTITY',
+            '--realm', 'pm',
+            '--scope-level', 'realm',
+            '--scope-ref', 'environment.console.session.identity',
+            '--title', 'PM console session identity',
+            '--reasoning', 'Capture terminal window/tab identity for deterministic visible session tracking.',
+            '--context-snapshot', 'management/pm/reports/environment-health.json',
+            '--outcome-status', 'applied',
+            '--outcome-summary', summary,
+            '--confidence', '5.0',
+            '--impact-score', '4.0',
+            '--change-ref', 'management/pm/reports/environment-health.json'
+    }
+}
+
+tasks.register('pmConsoleSessionIdentityKnowledgeEvidence', Exec) {
+    group = 'documentation'
+    description = 'Links environment health report as evidence for session identity knowledge.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('pmConsoleSessionIdentityKnowledgeSync')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'add-knowledge-evidence',
+            '--db', PATHS.projectStateDb,
+            '--knowledge-id', 'KB-PM-ENV-CONSOLE-SESSION-IDENTITY',
+            '--artifact-path', 'management/pm/reports/environment-health.json',
+            '--type', 'report',
+            '--notes', 'Deterministic terminal window/tab identity for visible PM console session.'
+    }
+}
+
+tasks.register('pmConsoleCleanupStaleSessions', Exec) {
+    group = 'documentation'
+    description = 'Finds and optionally cleans stale duplicate background pmconsole live sessions.'
+    dependsOn('pmEnvironmentPreflight')
+    doFirst {
+        boolean applyCleanup = ((System.getenv('PM_CONSOLE_CLEANUP_APPLY') ?: 'false').trim().toLowerCase(Locale.ROOT) in ['1', 'true', 'yes'])
+        String stalePolicy = (System.getenv('PM_CONSOLE_STALE_POLICY') ?: 'report').trim().toLowerCase(Locale.ROOT)
+        if (stalePolicy == 'clean') {
+            applyCleanup = true
+        }
+        String warnThreshold = (System.getenv('PM_CONSOLE_STALE_WARN_THRESHOLD') ?: '2').trim()
+        List<String> cmd = [
+            'python3',
+            'management/tools/pm_console_cleanup.py',
+            '--pid-file', 'management/pm/state/pmconsole-live.pid',
+            '--output', 'management/pm/reports/pm-console-stale-cleanup.json',
+            '--history', 'management/pm/state/pm-console-stale-history.json',
+            '--warn-threshold', warnThreshold
+        ]
+        if (applyCleanup) {
+            cmd.add('--apply')
+        }
+        commandLine cmd
+    }
+}
+
+tasks.register('pmConsoleCleanupStaleSessionsApply', Exec) {
+    group = 'documentation'
+    description = 'Applies stale duplicate cleanup explicitly (equivalent to PM_CONSOLE_STALE_POLICY=clean).'
+    dependsOn('pmEnvironmentPreflight')
+    commandLine 'python3',
+        'management/tools/pm_console_cleanup.py',
+        '--pid-file', 'management/pm/state/pmconsole-live.pid',
+        '--output', 'management/pm/reports/pm-console-stale-cleanup.json',
+        '--history', 'management/pm/state/pm-console-stale-history.json',
+        '--warn-threshold', (System.getenv('PM_CONSOLE_STALE_WARN_THRESHOLD') ?: '2').trim(),
+        '--apply'
+}
+
+tasks.register('pmStaleTrendKnowledgeSync', Exec) {
+    group = 'documentation'
+    description = 'Persists stale-session warning trend context into SQL knowledge.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('pmConsoleCleanupStaleSessions')
+    doFirst {
+        Map cleanup = [:]
+        File cleanupReport = file('management/pm/reports/pm-console-stale-cleanup.json')
+        if (cleanupReport.exists()) {
+            cleanup = (new JsonSlurper().parse(cleanupReport) as Map)
+        }
+        String summary = "stale=${cleanup?.staleCandidateCount ?: 0}; consecutive=${cleanup?.consecutiveStaleCycles ?: 0}; warning=${cleanup?.warning ?: ''}; policy=${System.getenv('PM_CONSOLE_STALE_POLICY') ?: 'report'}"
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'upsert-knowledge',
+            '--db', PATHS.projectStateDb,
+            '--knowledge-id', 'KB-PM-ENV-CONSOLE-STALE-TREND',
+            '--realm', 'pm',
+            '--scope-level', 'realm',
+            '--scope-ref', 'environment.console.stale-trend',
+            '--title', 'PM console stale session trend',
+            '--reasoning', 'Track persistence of stale duplicate console sessions across cycles.',
+            '--context-snapshot', 'management/pm/reports/pm-console-stale-cleanup.json',
+            '--outcome-status', 'applied',
+            '--outcome-summary', summary,
+            '--confidence', '4.0',
+            '--impact-score', '4.0',
+            '--change-ref', 'management/pm/reports/pm-console-stale-cleanup.json'
+    }
+}
+
+tasks.register('pmStaleTrendKnowledgeEvidence', Exec) {
+    group = 'documentation'
+    description = 'Links stale cleanup and history artifacts to stale trend knowledge.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('pmStaleTrendKnowledgeSync')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'add-knowledge-evidence',
+            '--db', PATHS.projectStateDb,
+            '--knowledge-id', 'KB-PM-ENV-CONSOLE-STALE-TREND',
+            '--artifact-path', 'management/pm/state/pm-console-stale-history.json',
+            '--type', 'report',
+            '--notes', 'Stale duplicate history used for threshold warning decisions.'
+    }
+}
+
+tasks.register('pmEnvironmentDashboardReport', Exec) {
+    group = 'documentation'
+    description = 'Generates compact environment dashboard report for quick triage.'
+    dependsOn('pmConsoleVisibleCheck')
+    dependsOn('pmConsoleCleanupStaleSessions')
+    doFirst {
+        commandLine 'python3',
+            'management/tools/environment_dashboard_report.py',
+            '--environment-health', 'management/pm/reports/environment-health.json',
+            '--stale-cleanup', 'management/pm/reports/pm-console-stale-cleanup.json',
+            '--output', 'management/pm/reports/environment-dashboard.json',
+            '--policy', (System.getenv('PM_CONSOLE_STALE_POLICY') ?: 'report').trim(),
+            '--warn-threshold', (System.getenv('PM_CONSOLE_STALE_WARN_THRESHOLD') ?: '2').trim()
+    }
+}
+
+tasks.register('pmEnvironmentReady') {
+    group = 'documentation'
+    description = 'Canonical environment gate: preflight + SQL knowledge persistence for daemon and visible session.'
+    dependsOn('pmEnvironmentKnowledgeEvidence')
+    dependsOn('pmConsoleVisibilityKnowledgeEvidence')
+    dependsOn('pmConsoleSessionIdentityKnowledgeEvidence')
+    dependsOn('pmConsoleCleanupStaleSessions')
+    dependsOn('pmStaleTrendKnowledgeEvidence')
+    dependsOn('pmEnvironmentDashboardReport')
+}
+
+tasks.register('environmentHealthSchemaCheck', Exec) {
+    group = 'verification'
+    description = 'Validates management/pm/reports/environment-health.json schema/required fields.'
+    dependsOn('pmConsoleVisibleCheck')
+    commandLine 'python3',
+        'management/tools/validate_environment_health_report.py',
+        '--input', 'management/pm/reports/environment-health.json'
+}
+
+tasks.register('staleHistorySchemaCheck', Exec) {
+    group = 'verification'
+    description = 'Validates management/pm/state/pm-console-stale-history.json schema/required fields.'
+    dependsOn('pmConsoleCleanupStaleSessions')
+    commandLine 'python3',
+        'management/tools/validate_stale_history_report.py',
+        '--input', 'management/pm/state/pm-console-stale-history.json'
+}
+
+tasks.register('environmentPolicyDefaultsLint', Exec) {
+    group = 'verification'
+    description = 'Lints environment variable defaults/policy consistency across build and policy docs.'
+    commandLine 'python3',
+        'management/tools/lint_environment_policy_defaults.py',
+        '--gradle', 'build.gradle',
+        '--policy', 'AI-POLICY.md'
+}
+
+tasks.register('pmPersistGovernanceIdentifiers', Exec) {
+    group = 'documentation'
+    description = 'Persists human-readable governance/release identifiers for console environment rollout.'
+    dependsOn('projectStateDb')
+    commandLine 'sqlite3', PATHS.projectStateDb,
+        """insert into identifier_registry(identifier,discipline,identifier_kind,realm,scope_ref,source_table,human_ref,created_at,updated_at) values
+('GOV-EVT-2026-02-19-CONSOLE-ENV-GOV-V2-001','policy_management','governance_event_id','pm','console-environment-governance-v2','SESSION_CHANGELOG.md','Console Environment Governance | 2026-02-19 | #001',datetime('now'),datetime('now')),
+('REL-PKG-2026-02-19-CONSOLE-ENV-GOV-V2-001','release_management','release_package_id','boilerplate','2026-02-19-console-environment-governance-v2','product/boilerplate/update-packages/pz-boilerplate-intelliJ/2026-02-19-console-environment-governance-v2/package-manifest.json','Console Governance Package | 2026-02-19 | #001',datetime('now'),datetime('now'))
+on conflict(identifier,discipline,identifier_kind,realm) do update set scope_ref=excluded.scope_ref,source_table=excluded.source_table,human_ref=excluded.human_ref,updated_at=datetime('now');"""
+}
+
+
+tasks.register('pmDevAttach') {
+    group = 'documentation'
+    description = 'Development attach workflow: regenerate preview and show PM console status'
+    dependsOn('pmWorkflowExecuteApplication')
+}
+
+tasks.register('pmWorkflowList', Exec) {
+    group = 'documentation'
+    description = 'Lists normalized PM workflow phases and Gradle mappings from management/pm/workflow/workflow-manifest.json'
+    commandLine 'python3', 'management/tools/pm_workflow.py', 'list', '--adapter', 'gradle'
+}
+
+tasks.register('pmWorkflowRun') {
+    group = 'documentation'
+    description = 'Runs a normalized PM workflow phase through Gradle mapping (set -PpmPhase=<phaseId>).'
+    def phaseProvider = providers.gradleProperty('pmPhase')
+        .orElse(pmWorkflowDefaults.get('gradleDefaultPhase')?.toString() ?: 'pm_refresh_and_reports')
+    dependsOn {
+        String phase = phaseProvider.get()
+        return resolvePmWorkflowTasks(phase)
+    }
+    doFirst {
+        String phase = phaseProvider.get()
+        logger.lifecycle("pmWorkflowRun: phase='${phase}' via ${pmWorkflowManifestFile.path}")
+    }
+}
+
+tasks.register('pmWorkflowExecuteApplication') {
+    group = 'documentation'
+    description = 'Runs normalized default application execution phase (app execution + PM console).'
+    String phase = pmWorkflowDefaults.get('executeApplicationPhase')?.toString() ?: 'execute_application_with_pm_console'
+    dependsOn('pmEnvironmentReady')
+    dependsOn(resolvePmWorkflowTasks(phase))
+}
+
+tasks.register('pmConsoleInstallPath') {
+    group = 'documentation'
+    description = 'Installs pm-console launcher and prints the executable path.'
+    dependsOn(':pm-console:installDist')
+    doLast {
+        File installDir = file('management/pm-console/build/install/pmconsole')
+        File unixBin = new File(installDir, 'bin/pmconsole')
+        File winBin = new File(installDir, 'bin/pmconsole.bat')
+        if (unixBin.exists()) {
+            println unixBin.path
+            return
+        }
+        if (winBin.exists()) {
+            println winBin.path
+            return
+        }
+        throw new GradleException("pm-console launcher not found under " + installDir.path)
+    }
 }
 
 tasks.register('versionInfo') {
@@ -44,7 +568,7 @@ tasks.register('versionBump', Exec) {
         }
         String preid = (System.getenv('VERSION_PREID') ?: 'beta').trim()
         commandLine 'python3',
-            'tools/versioning.py',
+            'management/tools/versioning.py',
             '--file', 'VERSION',
             'bump',
             '--part', part,
@@ -54,38 +578,73 @@ tasks.register('versionBump', Exec) {
 
 tasks.register('versionStamp') {
     group = 'documentation'
-    description = 'Writes preview/version.json from VERSION'
+    description = 'Writes management/pm/reports/version.json from VERSION'
     doLast {
-        File out = file('preview/version.json')
+        File out = file('management/pm/reports/version.json')
         out.parentFile.mkdirs()
+        String generatedAt = new Date().format("yyyy-MM-dd'T'HH:mm:ssXXX")
+        String releaseDate = generatedAt.substring(0, 10)
+        String releaseOccurrence = '001'
+        def prereleaseMatch = (resolvedVersion =~ /.*?(\\d+)$/)
+        if (prereleaseMatch.matches()) {
+            releaseOccurrence = String.format('%03d', Integer.parseInt(prereleaseMatch.group(1)))
+        }
+        String releaseName = "Release ${resolvedVersion} (${releaseDate})"
         out.text = JsonOutput.prettyPrint(JsonOutput.toJson([
             schemaVersion: '1',
-            generatedAt  : new Date().format("yyyy-MM-dd'T'HH:mm:ssXXX"),
-            version      : resolvedVersion
+            generatedAt  : generatedAt,
+            version      : resolvedVersion,
+            releaseName  : releaseName,
+            releaseRef   : "Release | ${releaseDate} | #${releaseOccurrence}"
         ])) + '\n'
     }
 }
 
 tasks.register('projectPlanWorkbook', Exec) {
     group = 'documentation'
-    description = 'Updates docs/project-plan-progress.xlsx. Default mode is POI-based updater; set AFP_WORKBOOK_MODE=excel|xml to use legacy paths.'
+    description = 'Updates management/docs/project-plan-progress.xlsx when CSV source changes. Force with AFP_FORCE_WORKBOOK_UPDATE=true. Default mode is POI-based updater; set AFP_WORKBOOK_MODE=excel|xml to use legacy paths.'
     dependsOn('projectPlanProgressJson')
-    dependsOn(':afp-tools:classes')
+    dependsOn(':pm-tools:classes')
+    onlyIf {
+        File csv = file('management/docs/project-plan-progress.csv')
+        File xlsx = file('management/docs/project-plan-progress.xlsx')
+        String forceRaw = (System.getenv('AFP_FORCE_WORKBOOK_UPDATE') ?: '').trim().toLowerCase(Locale.ROOT)
+        boolean force = forceRaw == '1' || forceRaw == 'true' || forceRaw == 'yes'
+        if (force) {
+            logger.lifecycle("projectPlanWorkbook: running because AFP_FORCE_WORKBOOK_UPDATE is set")
+            return true
+        }
+        if (!xlsx.exists()) {
+            logger.lifecycle("projectPlanWorkbook: running because workbook is missing")
+            return true
+        }
+        if (!csv.exists()) {
+            logger.lifecycle("projectPlanWorkbook: skipping because CSV source is missing")
+            return false
+        }
+        boolean shouldRun = csv.lastModified() > xlsx.lastModified()
+        logger.lifecycle(
+            "projectPlanWorkbook: " + (shouldRun ? "running" : "skipping")
+                + " (csvLastModified=" + csv.lastModified()
+                + ", xlsxLastModified=" + xlsx.lastModified() + ")"
+        )
+        return shouldRun
+    }
     doFirst {
         String mode = ((System.getenv('AFP_WORKBOOK_MODE') ?: 'poi') as String).trim().toLowerCase()
         if (mode == 'poi') {
-            def sourceSets = project(':afp-tools').sourceSets
+            def sourceSets = project(':pm-tools').sourceSets
             String cp = sourceSets.main.runtimeClasspath.asPath
             List<String> cmd = [
                 'java',
                 '-cp', cp,
-                'com.upland.connect.afp.tools.ProjectPlanWorkbookUpdater',
-                '--csv', 'docs/project-plan-progress.csv',
-                '--xlsx', 'docs/project-plan-progress.xlsx'
+                'solutions.pointzero.symphony.pm.tools.ProjectPlanWorkbookUpdater',
+                '--csv', 'management/docs/project-plan-progress.csv',
+                '--xlsx', 'management/docs/project-plan-progress.xlsx'
             ]
-            File templateZip = file('docs/project-plan-progress.xlsx.zip')
+            File templateZip = file('management/docs/project-plan-progress.xlsx.zip')
             if (templateZip.exists()) {
-                cmd.addAll(['--template', 'docs/project-plan-progress.xlsx.zip'])
+                cmd.addAll(['--template', 'management/docs/project-plan-progress.xlsx.zip'])
             }
             commandLine cmd
             return
@@ -93,14 +652,14 @@ tasks.register('projectPlanWorkbook', Exec) {
         if (mode == 'xml') {
             List<String> cmd = [
                 'python3',
-                'tools/update_project_plan_workbook.py',
-                '--csv', 'docs/project-plan-progress.csv',
-                '--xlsx', 'docs/project-plan-progress.xlsx',
+                'management/tools/update_project_plan_workbook.py',
+                '--csv', 'management/docs/project-plan-progress.csv',
+                '--xlsx', 'management/docs/project-plan-progress.xlsx',
                 '--human-approved', 'I_HAVE_EXPLICIT_HUMAN_APPROVAL'
             ]
-            File templateZip = file('docs/project-plan-progress.xlsx.zip')
+            File templateZip = file('management/docs/project-plan-progress.xlsx.zip')
             if (templateZip.exists()) {
-                cmd.addAll(['--filter-template', 'docs/project-plan-progress.xlsx.zip'])
+                cmd.addAll(['--filter-template', 'management/docs/project-plan-progress.xlsx.zip'])
             }
             commandLine cmd
             return
@@ -109,44 +668,1312 @@ tasks.register('projectPlanWorkbook', Exec) {
             throw new GradleException("Unsupported AFP_WORKBOOK_MODE='${mode}'. Use 'poi', 'excel' or 'xml'.")
         }
         commandLine 'python3',
-            'tools/run_excel_workbook_refresh.py',
-            '--xlsx', 'docs/project-plan-progress.xlsx',
-            '--json', 'preview/project-plan-progress-data.json'
+            'management/tools/run_excel_workbook_refresh.py',
+            '--xlsx', 'management/docs/project-plan-progress.xlsx',
+            '--json', 'management/pm/reports/project-plan-progress-data.json'
+    }
+}
+
+tasks.register('policyGovernanceWorkbook', Exec) {
+    group = 'documentation'
+    description = 'Updates management/docs/policy-governance-events.xlsx from management/docs/policy-governance-events.csv.'
+    dependsOn(':pm-tools:classes')
+    onlyIf {
+        File csv = file('management/docs/policy-governance-events.csv')
+        File xlsx = file('management/docs/policy-governance-events.xlsx')
+        String forceRaw = (System.getenv('AFP_FORCE_GOVERNANCE_WORKBOOK_UPDATE') ?: '').trim().toLowerCase(Locale.ROOT)
+        boolean force = forceRaw == '1' || forceRaw == 'true' || forceRaw == 'yes'
+        if (force) {
+            logger.lifecycle("policyGovernanceWorkbook: running because AFP_FORCE_GOVERNANCE_WORKBOOK_UPDATE is set")
+            return true
+        }
+        if (!csv.exists()) {
+            logger.lifecycle("policyGovernanceWorkbook: skipping because CSV source is missing")
+            return false
+        }
+        if (!xlsx.exists()) {
+            logger.lifecycle("policyGovernanceWorkbook: running because workbook is missing")
+            return true
+        }
+        boolean shouldRun = csv.lastModified() > xlsx.lastModified()
+        logger.lifecycle(
+            "policyGovernanceWorkbook: " + (shouldRun ? "running" : "skipping")
+                + " (csvLastModified=" + csv.lastModified()
+                + ", xlsxLastModified=" + xlsx.lastModified() + ")"
+        )
+        return shouldRun
+    }
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.PolicyGovernanceWorkbookUpdater',
+            '--csv', 'management/docs/policy-governance-events.csv',
+            '--xlsx', 'management/docs/policy-governance-events.xlsx'
     }
 }
 
 tasks.register('projectPlanProgressJson', Exec) {
     group = 'documentation'
-    description = 'Exports docs/project-plan-progress.csv to preview/project-plan-progress-data.json for Excel-native workbook automation'
+    description = 'Exports project plan progress from SQLite state into global and per-realm report JSON payloads'
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-progress-json',
+            '--db', PATHS.projectStateDb,
+            '--json', 'management/pm/reports/project-plan-progress-data.json',
+            '--realm-map', 'management/pm/workflow/workstream-realm-map.json',
+            '--application-json', 'management/pm/reports/project-plan-progress-application.json',
+            '--pm-json', 'management/pm/reports/project-plan-progress-pm.json',
+            '--boilerplate-json', 'management/pm/reports/project-plan-progress-boilerplate.json'
+    }
+}
+
+tasks.register('planProgressCommitMarkerLint', Exec) {
+    group = 'verification'
+    description = 'Fails when completed project-plan rows are missing explicit GitHub commit markers.'
     commandLine 'python3',
-        'tools/export_project_plan_progress_json.py',
-        '--csv', 'docs/project-plan-progress.csv',
-        '--json', 'preview/project-plan-progress-data.json'
+        'management/tools/plan_progress_commit_marker.py',
+        '--csv', 'management/docs/project-plan-progress.csv',
+        '--output', 'management/pm/reports/project-plan-commit-marker-lint.json',
+        '--enforce', 'true'
+}
+
+tasks.register('planProgressCommitMarkerAutofix', Exec) {
+    group = 'documentation'
+    description = 'Autofixes completed plan rows missing commit markers by appending [github:not-committed].'
+    commandLine 'python3',
+        'management/tools/plan_progress_commit_marker.py',
+        '--csv', 'management/docs/project-plan-progress.csv',
+        '--output', 'management/pm/reports/project-plan-commit-marker-lint.json',
+        '--autofix-missing-not-committed', 'true',
+        '--enforce', 'true'
+}
+
+tasks.register('workstreamSliceReport', Exec) {
+    group = 'documentation'
+    description = 'Generates realm slice manifests and WS-J slice evidence from current git change state.'
+    commandLine 'python3',
+        'management/tools/workstream_slice_report.py',
+        '--output', 'management/pm/reports/workstream-j-slice-evidence.json',
+        '--manifest-dir', 'management/pm/reports/slice-manifests'
+}
+
+tasks.register('projectStateDb', Exec) {
+    group = 'documentation'
+    description = 'Builds project-state SQLite from issues/progress/fidelity sources'
+    dependsOn(':pm-tools:classes')
+    dependsOn(':afp-engine:fidelityReport')
+    commandLine 'true'
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'sync-project',
+            '--db', PATHS.projectStateDb,
+            '--issues', 'management/docs/issues-log.csv',
+            '--progress', 'management/docs/project-plan-progress.csv',
+            '--fidelity', 'product/afp-converter/preview/fidelity-report.json',
+            '--governance-events', 'management/docs/policy-governance-events.csv',
+            '--policy-sql', 'management/pm/policy/policy-rule-tables.sql'
+    }
+}
+
+tasks.register('policyRulesReport', Exec) {
+    group = 'documentation'
+    description = 'Exports SQL-backed policy rule table from SQLite state into management/pm/reports/policy-rules.json'
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-policy-rules',
+            '--db', PATHS.projectStateDb,
+            '--json', 'management/pm/reports/policy-rules.json'
+    }
+}
+
+tasks.register('policyRulesLint', Exec) {
+    group = 'verification'
+    description = 'Fails when required SQL policy rules are missing/disabled in SQLite state'
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'lint-policy-rules',
+            '--db', PATHS.projectStateDb,
+            '--output', 'management/pm/reports/policy-rules-lint.json'
+    }
+}
+
+tasks.register('presentationRefLint', Exec) {
+    group = 'verification'
+    description = 'Fails when presentation-facing PM reports omit/violate human-friendly reference naming.'
+    dependsOn('actionItemsReport')
+    dependsOn('decisionPriorityReport')
+    dependsOn('knowledgeBaseReport')
+    dependsOn('governanceAlerts')
+    dependsOn('versionStamp')
+    commandLine 'python3',
+        'management/tools/presentation_ref_lint.py',
+        '--actions', 'management/pm/reports/action-items.json',
+        '--decisions', 'management/pm/reports/decision-priority-queue.json',
+        '--knowledge', 'management/pm/reports/knowledge-base.json',
+        '--governance', 'management/pm/reports/governance-alerts.json',
+        '--version', 'management/pm/reports/version.json',
+        '--output', 'management/pm/reports/presentation-ref-lint.json'
+}
+
+tasks.register('applicationRealmCodeDb', Exec) {
+    group = 'documentation'
+    description = 'Builds SQL code index/token dictionary for application realm.'
+    dependsOn(':pm-tools:classes')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'sync-code-index',
+            '--db', PATHS.applicationRealmDb,
+            '--realm', 'application',
+            '--roots', realmRootsCsv('application', 'product/afp-converter/afp-api/src,product/afp-converter/afp-engine/src,product/afp-converter/afp-cli/src,product/afp-converter/afp-api/build.gradle,product/afp-converter/afp-engine/build.gradle,product/afp-converter/afp-cli/build.gradle')
+    }
+}
+
+tasks.register('pmRealmCodeDb', Exec) {
+    group = 'documentation'
+    description = 'Builds SQL code index/token dictionary for PM realm.'
+    dependsOn(':pm-tools:classes')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'sync-code-index',
+            '--db', PATHS.pmRealmDb,
+            '--realm', 'pm',
+            '--roots', realmRootsCsv('pm', 'management/pm/policy,management/pm/workflow,management/pm-management/tools/src/main/java,management/pm-management/tools/src/test/java,management/pm-console/src/main/java,tools,build.gradle,settings.gradle,AI-POLICY.md,README.md,management/docs/API.md,management/docs/project-plan.md')
+    }
+}
+
+tasks.register('boilerplateRealmCodeDb', Exec) {
+    group = 'documentation'
+    description = 'Builds SQL code index/token dictionary for boilerplate realm.'
+    dependsOn(':pm-tools:classes')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'sync-code-index',
+            '--db', PATHS.boilerplateRealmDb,
+            '--realm', 'boilerplate',
+            '--roots', realmRootsCsv('boilerplate', 'product/boilerplate/update-packages/pz-boilerplate-intelliJ')
+    }
+}
+
+tasks.register('realmCodeDatabases') {
+    group = 'documentation'
+    description = 'Builds SQL code index/token dictionaries for all three realms.'
+    dependsOn('applicationRealmCodeDb')
+    dependsOn('pmRealmCodeDb')
+    dependsOn('boilerplateRealmCodeDb')
+}
+
+tasks.register('applicationRealmSourceExport', Exec) {
+    group = 'build'
+    description = 'Materializes application realm source files from SQL to filesystem endpoints.'
+    dependsOn(':pm-tools:classes')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'materialize-code-realm',
+            '--db', PATHS.applicationRealmDb,
+            '--realm', 'application',
+            '--target-root', '.'
+    }
+}
+
+tasks.register('pmRealmSourceExport', Exec) {
+    group = 'build'
+    description = 'Materializes PM realm managed files from SQL to filesystem endpoints.'
+    dependsOn(':pm-tools:classes')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'materialize-code-realm',
+            '--db', PATHS.pmRealmDb,
+            '--realm', 'pm',
+            '--target-root', '.'
+    }
+}
+
+tasks.register('boilerplateRealmSourceExport', Exec) {
+    group = 'build'
+    description = 'Materializes boilerplate realm managed files from SQL to filesystem endpoints.'
+    dependsOn(':pm-tools:classes')
+    onlyIf {
+        file('product/boilerplate/update-packages/pz-boilerplate-intelliJ').exists()
+    }
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'materialize-code-realm',
+            '--db', PATHS.boilerplateRealmDb,
+            '--realm', 'boilerplate',
+            '--target-root', '.'
+    }
+}
+
+tasks.register('applicationRealmSqlAuthorityCheck', Exec) {
+    group = 'verification'
+    description = 'Verifies application realm files have not drifted from SQL-managed content.'
+    dependsOn(':pm-tools:classes')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        String strictRaw = (System.getenv('AFP_SQL_AUTH_STRICT') ?: 'true').trim().toLowerCase(Locale.ROOT)
+        boolean strict = !(strictRaw in ['0', 'false', 'no'])
+        List<String> cmd = [
+            'java', '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'verify-code-realm',
+            '--db', PATHS.applicationRealmDb,
+            '--realm', 'application',
+            '--target-root', '.',
+            '--output', 'management/pm/reports/sql-authority-application.json'
+        ]
+        if (strict) {
+            cmd.add('--enforce')
+        }
+        commandLine cmd
+    }
+}
+
+tasks.register('pmRealmSqlAuthorityCheck', Exec) {
+    group = 'verification'
+    description = 'Verifies PM realm files have not drifted from SQL-managed content.'
+    dependsOn(':pm-tools:classes')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        String strictRaw = (System.getenv('AFP_SQL_AUTH_STRICT') ?: 'true').trim().toLowerCase(Locale.ROOT)
+        boolean strict = !(strictRaw in ['0', 'false', 'no'])
+        List<String> cmd = [
+            'java', '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'verify-code-realm',
+            '--db', PATHS.pmRealmDb,
+            '--realm', 'pm',
+            '--target-root', '.',
+            '--output', 'management/pm/reports/sql-authority-pm.json'
+        ]
+        if (strict) {
+            cmd.add('--enforce')
+        }
+        commandLine cmd
+    }
+}
+
+tasks.register('boilerplateRealmSqlAuthorityCheck', Exec) {
+    group = 'verification'
+    description = 'Verifies boilerplate realm files have not drifted from SQL-managed content.'
+    dependsOn(':pm-tools:classes')
+    onlyIf {
+        file(PATHS.boilerplateRealmDb).exists()
+    }
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        String strictRaw = (System.getenv('AFP_SQL_AUTH_STRICT') ?: 'true').trim().toLowerCase(Locale.ROOT)
+        boolean strict = !(strictRaw in ['0', 'false', 'no'])
+        List<String> cmd = [
+            'java', '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'verify-code-realm',
+            '--db', PATHS.boilerplateRealmDb,
+            '--realm', 'boilerplate',
+            '--target-root', '.',
+            '--output', 'management/pm/reports/sql-authority-boilerplate.json'
+        ]
+        if (strict) {
+            cmd.add('--enforce')
+        }
+        commandLine cmd
+    }
+}
+
+tasks.register('sqlAuthorityDriftCheck') {
+    group = 'verification'
+    description = 'Runs SQL-authority drift checks across all realms before source materialization.'
+    dependsOn('applicationRealmSqlAuthorityCheck')
+    dependsOn('pmRealmSqlAuthorityCheck')
+    dependsOn('boilerplateRealmSqlAuthorityCheck')
+}
+
+tasks.register('applicationRealmCoverageReport', Exec) {
+    group = 'verification'
+    description = 'Reports SQL coverage for application realm managed roots.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('applicationRealmCodeDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'report-code-realm-coverage',
+            '--db', PATHS.applicationRealmDb,
+            '--realm', 'application',
+            '--roots', realmRootsCsv('application', 'product/afp-converter/afp-api/src,product/afp-converter/afp-engine/src,product/afp-converter/afp-cli/src,product/afp-converter/afp-api/build.gradle,product/afp-converter/afp-engine/build.gradle,product/afp-converter/afp-cli/build.gradle'),
+            '--output', 'management/pm/reports/sql-coverage-application.json'
+    }
+}
+
+tasks.register('pmRealmCoverageReport', Exec) {
+    group = 'verification'
+    description = 'Reports SQL coverage for PM realm managed roots.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('pmRealmCodeDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'report-code-realm-coverage',
+            '--db', PATHS.pmRealmDb,
+            '--realm', 'pm',
+            '--roots', realmRootsCsv('pm', 'management/pm/policy,management/pm/workflow,management/pm-management/tools/src/main/java,management/pm-management/tools/src/test/java,management/pm-console/src/main/java,tools,build.gradle,settings.gradle,AI-POLICY.md,README.md,management/docs/API.md,management/docs/project-plan.md'),
+            '--output', 'management/pm/reports/sql-coverage-pm.json'
+    }
+}
+
+tasks.register('boilerplateRealmCoverageReport', Exec) {
+    group = 'verification'
+    description = 'Reports SQL coverage for boilerplate realm managed roots.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('boilerplateRealmCodeDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'report-code-realm-coverage',
+            '--db', PATHS.boilerplateRealmDb,
+            '--realm', 'boilerplate',
+            '--roots', realmRootsCsv('boilerplate', 'product/boilerplate/update-packages/pz-boilerplate-intelliJ'),
+            '--output', 'management/pm/reports/sql-coverage-boilerplate.json'
+    }
+}
+
+tasks.register('sqlCoverageReport') {
+    group = 'verification'
+    description = 'Generates SQL coverage reports for all realms.'
+    dependsOn('applicationRealmCoverageReport')
+    dependsOn('pmRealmCoverageReport')
+    dependsOn('boilerplateRealmCoverageReport')
+}
+
+tasks.register('sqlReconstructionCheck') {
+    group = 'verification'
+    description = 'Verifies SQL-managed files can be reconstructed into a clean temp root.'
+    dependsOn('sqlReconstructionVerifyApplication')
+    dependsOn('sqlReconstructionVerifyPm')
+    dependsOn('sqlReconstructionVerifyBoilerplate')
+}
+
+tasks.register('sqlReconstructionPrepare') {
+    group = 'verification'
+    description = 'Prepares temporary root for SQL reconstruction checks.'
+    doLast {
+        File tempRoot = file('build/sql-reconstruction-check')
+        if (tempRoot.exists()) {
+            tempRoot.deleteDir()
+        }
+        tempRoot.mkdirs()
+    }
+}
+
+tasks.register('sqlReconstructionMaterializeApplication', Exec) {
+    group = 'verification'
+    description = 'Materializes application realm into temporary reconstruction root.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmCodeDatabases')
+    dependsOn('sqlReconstructionPrepare')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'materialize-code-realm',
+            '--db', PATHS.applicationRealmDb,
+            '--realm', 'application',
+            '--target-root', 'build/sql-reconstruction-check'
+    }
+}
+
+tasks.register('sqlReconstructionMaterializePm', Exec) {
+    group = 'verification'
+    description = 'Materializes PM realm into temporary reconstruction root.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmCodeDatabases')
+    dependsOn('sqlReconstructionMaterializeApplication')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'materialize-code-realm',
+            '--db', PATHS.pmRealmDb,
+            '--realm', 'pm',
+            '--target-root', 'build/sql-reconstruction-check'
+    }
+}
+
+tasks.register('sqlReconstructionMaterializeBoilerplate', Exec) {
+    group = 'verification'
+    description = 'Materializes boilerplate realm into temporary reconstruction root.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmCodeDatabases')
+    dependsOn('sqlReconstructionMaterializePm')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'materialize-code-realm',
+            '--db', PATHS.boilerplateRealmDb,
+            '--realm', 'boilerplate',
+            '--target-root', 'build/sql-reconstruction-check'
+    }
+}
+
+tasks.register('sqlReconstructionVerifyApplication', Exec) {
+    group = 'verification'
+    description = 'Verifies application reconstruction output against SQL authority.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('sqlReconstructionMaterializeBoilerplate')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'verify-code-realm',
+            '--db', PATHS.applicationRealmDb,
+            '--realm', 'application',
+            '--target-root', 'build/sql-reconstruction-check',
+            '--output', 'management/pm/reports/sql-reconstruction-application.json',
+            '--enforce'
+    }
+}
+
+tasks.register('sqlReconstructionVerifyPm', Exec) {
+    group = 'verification'
+    description = 'Verifies PM reconstruction output against SQL authority.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('sqlReconstructionMaterializeBoilerplate')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'verify-code-realm',
+            '--db', PATHS.pmRealmDb,
+            '--realm', 'pm',
+            '--target-root', 'build/sql-reconstruction-check',
+            '--output', 'management/pm/reports/sql-reconstruction-pm.json',
+            '--enforce'
+    }
+}
+
+tasks.register('sqlReconstructionVerifyBoilerplate', Exec) {
+    group = 'verification'
+    description = 'Verifies boilerplate reconstruction output against SQL authority.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('sqlReconstructionMaterializeBoilerplate')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'verify-code-realm',
+            '--db', PATHS.boilerplateRealmDb,
+            '--realm', 'boilerplate',
+            '--target-root', 'build/sql-reconstruction-check',
+            '--output', 'management/pm/reports/sql-reconstruction-boilerplate.json',
+            '--enforce'
+    }
+}
+
+tasks.register('sqlMaterializationCheckpoint', Exec) {
+    group = 'release'
+    description = 'Creates a pre-materialization rollback checkpoint when a documentation manifest exists.'
+    commandLine 'true'
+    doFirst {
+        File manifest = file('management/pm/reports/documentation-manifest.json')
+        if (!manifest.exists()) {
+            logger.lifecycle("sqlMaterializationCheckpoint: skipping (manifest missing at ${manifest.path})")
+            commandLine 'true'
+            return
+        }
+        commandLine 'python3',
+            'management/tools/rollback_manager.py',
+            '--root', '.',
+            '--base', 'management/pm/checkpoints',
+            '--manifest', manifest.path,
+            'create',
+            '--label', 'pre-sql-materialization'
+    }
+}
+
+tasks.register('realmSourcesExport') {
+    group = 'build'
+    description = 'Materializes all realm-managed files from SQL ahead of build.'
+    dependsOn('sqlMaterializationCheckpoint')
+    dependsOn('sqlAuthorityDriftCheck')
+    dependsOn('applicationRealmSourceExport')
+    dependsOn('pmRealmSourceExport')
+    dependsOn('boilerplateRealmSourceExport')
+}
+
+tasks.register('realmTokenSearch', Exec) {
+    group = 'documentation'
+    description = 'Searches SQL token dictionaries for a keyword (set -Prealm=application|pm|boilerplate and -Pkeyword=<token>).'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmCodeDatabases')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        String realm = (project.findProperty('realm') ?: 'application').toString().trim().toLowerCase(Locale.ROOT)
+        String keyword = (project.findProperty('keyword') ?: 'render').toString().trim().toLowerCase(Locale.ROOT)
+        Map<String, String> dbByRealm = [
+            'application': PATHS.applicationRealmDb,
+            'pm'         : PATHS.pmRealmDb,
+            'boilerplate': PATHS.boilerplateRealmDb
+        ]
+        if (!dbByRealm.containsKey(realm)) {
+            throw new GradleException("Unsupported realm '${realm}'. Use application|pm|boilerplate.")
+        }
+        String out = "management/pm/reports/${realm}-realm-token-search.json"
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'search-code-token',
+            '--db', dbByRealm.get(realm),
+            '--keyword', keyword,
+            '--output', out
+    }
+}
+
+tasks.register('crossRealmTokenSearch', Exec) {
+    group = 'documentation'
+    description = 'Searches token dictionaries across all realm databases (set -Pkeyword=<token>).'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmCodeDatabases')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        String keyword = (project.findProperty('keyword') ?: 'render').toString().trim().toLowerCase(Locale.ROOT)
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'search-code-token-multi',
+            '--dbs', "${PATHS.applicationRealmDb},${PATHS.pmRealmDb},${PATHS.boilerplateRealmDb}",
+            '--keyword', keyword,
+            '--output', 'management/pm/reports/cross-realm-token-search.json'
+    }
+}
+
+tasks.register('crossRealmActionTokenSearch', Exec) {
+    group = 'documentation'
+    description = 'Searches action_items across all realm databases (set -Pkeyword=<token>).'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmCodeDatabases')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        String keyword = (project.findProperty('keyword') ?: 'render').toString().trim().toLowerCase(Locale.ROOT)
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'search-action-token-multi',
+            '--application-db', PATHS.applicationRealmDb,
+            '--pm-db', PATHS.pmRealmDb,
+            '--boilerplate-db', PATHS.boilerplateRealmDb,
+            '--keyword', keyword,
+            '--json', 'management/pm/reports/cross-realm-action-token-search.json'
+    }
+}
+
+tasks.register('dataDictionaryReport', Exec) {
+    group = 'documentation'
+    description = 'Exports SQL-backed PM data dictionary from SQLite state into management/pm/reports/data-dictionary.json'
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-data-dictionary',
+            '--db', PATHS.projectStateDb,
+            '--json', 'management/pm/reports/data-dictionary.json'
+    }
+}
+
+tasks.register('dataDictionaryLint', Exec) {
+    group = 'verification'
+    description = 'Fails when required PM data-dictionary objects are missing from SQLite state'
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'lint-data-dictionary',
+            '--db', PATHS.projectStateDb,
+            '--output', 'management/pm/reports/data-dictionary-lint.json'
+    }
+}
+
+tasks.register('governanceAlerts', Exec) {
+    group = 'documentation'
+    description = 'Generates governance/trust alerts from SQLite project state.'
+    dependsOn('projectStateDb')
+    dependsOn('sqlAuthorityDriftCheck')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        String enforceRaw = (System.getenv('AFP_ENFORCE_GOVERNANCE_ALERTS') ?: '').trim().toLowerCase(Locale.ROOT)
+        boolean enforce = enforceRaw == '1' || enforceRaw == 'true' || enforceRaw == 'yes'
+        List<String> cmd = [
+            'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'governance-alerts',
+            '--db', PATHS.projectStateDb,
+            '--output', 'management/pm/reports/governance-alerts.json',
+            '--sql-drift', 'management/pm/reports/sql-authority-pm.json'
+        ]
+        if (enforce) {
+            cmd.add('--enforce')
+        }
+        commandLine cmd
+    }
+}
+
+tasks.register('versionControlLedger', Exec) {
+    group = 'documentation'
+    description = 'Generates management/pm/reports/version-control-ledger.json from SQLite project state.'
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'version-control-ledger',
+            '--db', PATHS.projectStateDb,
+            '--output', 'management/pm/reports/version-control-ledger.json'
+    }
+}
+
+tasks.register('identifierRegistryReport', Exec) {
+    group = 'documentation'
+    description = 'Generates management/pm/reports/identifier-registry.json from SQLite project state.'
+    dependsOn('pmPersistGovernanceIdentifiers')
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-identifier-registry',
+            '--db', PATHS.projectStateDb,
+            '--json', 'management/pm/reports/identifier-registry.json'
+    }
+}
+
+tasks.register('remanifestDrillSafetyCheck') {
+    group = 'verification'
+    description = 'Non-interactive safety gate for delete-and-remanifest drill; requires AFP_REMANIFEST_APPROVED=true.'
+    doLast {
+        String approved = (System.getenv('AFP_REMANIFEST_APPROVED') ?: '').trim().toLowerCase(Locale.ROOT)
+        if (!(approved in ['1', 'true', 'yes'])) {
+            throw new GradleException(
+                "Remanifest drill blocked. Set AFP_REMANIFEST_APPROVED=true to proceed with managed-file delete/rematerialize."
+            )
+        }
+    }
+}
+
+tasks.register('remanifestDrill', Exec) {
+    group = 'verification'
+    description = 'Deletes SQL-managed endpoints and rematerializes from realm SQL stores; writes management/pm/reports/remanifest-drill.json.'
+    dependsOn('remanifestDrillSafetyCheck')
+    dependsOn('createRollbackCheckpoint')
+    commandLine 'python3',
+        'management/tools/remanifest_drill.py',
+        '--output', 'management/pm/reports/remanifest-drill.json',
+        '--manifest', 'management/pm/state/managed-delete-manifest.txt',
+        '--application-db', PATHS.applicationRealmDb,
+        '--pm-db', PATHS.pmRealmDb,
+        '--boilerplate-db', PATHS.boilerplateRealmDb
+}
+
+tasks.register('remanifestDrillValidate', Exec) {
+    group = 'verification'
+    description = 'Runs remanifest drill then full quality gate, and finalizes drill report status.'
+    dependsOn('remanifestDrill')
+    dependsOn('qualityGate')
+    commandLine 'python3',
+        'management/tools/remanifest_drill.py',
+        '--output', 'management/pm/reports/remanifest-drill.json',
+        '--manifest', 'management/pm/state/managed-delete-manifest.txt',
+        '--finalize-status', 'PASS'
+}
+
+tasks.register('boilerplateStateDb', Exec) {
+    group = 'documentation'
+    description = 'Builds boilerplate-state SQLite from update packages'
+    dependsOn(':pm-tools:classes')
+    onlyIf {
+        File packagesDir = file('product/boilerplate/update-packages/pz-boilerplate-intelliJ')
+        return packagesDir.exists() && packagesDir.isDirectory()
+    }
+    commandLine 'true'
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'sync-boilerplate',
+            '--db', PATHS.boilerplateStateDb,
+            '--packages', 'product/boilerplate/update-packages/pz-boilerplate-intelliJ'
+    }
+}
+
+tasks.register('projectFileInventoryCsv', Exec) {
+    group = 'documentation'
+    description = 'Exports project repo-file inventory with DB provenance and maintenance context.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-project-file-inventory',
+            '--db', PATHS.projectStateDb,
+            '--csv', 'management/pm/reports/repo-file-inventory-with-context.csv'
+    }
+}
+
+tasks.register('boilerplatePackageInventoryCsv', Exec) {
+    group = 'documentation'
+    description = 'Exports boilerplate package-file inventory with DB provenance and maintenance context.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('boilerplateStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-boilerplate-package-inventory',
+            '--db', PATHS.boilerplateStateDb,
+            '--csv', 'management/pm/reports/boilerplate-package-files-with-context.csv'
+    }
+}
+
+tasks.register('boilerplatePromotionReport', Exec) {
+    group = 'documentation'
+    description = 'Exports boilerplate package promotion readiness/status report from SQLite state.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('boilerplateStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-boilerplate-promotion-report',
+            '--db', PATHS.boilerplateStateDb,
+            '--json', 'management/pm/reports/boilerplate-promotion-status.json'
+    }
+}
+
+tasks.register('decisionPriorityReport', Exec) {
+    group = 'documentation'
+    description = 'Exports cross-realm decision priority queue from realm SQL databases.'
+    dependsOn(':pm-tools:classes')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-decision-priority',
+            '--application-db', PATHS.applicationRealmDb,
+            '--pm-db', PATHS.pmRealmDb,
+            '--boilerplate-db', PATHS.boilerplateRealmDb,
+            '--json', 'management/pm/reports/decision-priority-queue.json'
+    }
+}
+
+tasks.register('knowledgeBaseReport', Exec) {
+    group = 'documentation'
+    description = 'Exports SQL knowledge base with evidence and decision links.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-knowledge-base',
+            '--db', PATHS.projectStateDb,
+            '--json', 'management/pm/reports/knowledge-base.json'
+    }
+}
+
+tasks.register('realmKnowledgeSync', Exec) {
+    group = 'documentation'
+    description = 'Mirrors project knowledge base into each realm DB with decision-link resolution stats.'
+    dependsOn('projectStateDb')
+    dependsOn('realmCodeDatabases')
+    commandLine 'python3',
+        'management/tools/realm_knowledge_sync.py',
+        '--project-db', PATHS.projectStateDb,
+        '--application-db', PATHS.applicationRealmDb,
+        '--pm-db', PATHS.pmRealmDb,
+        '--boilerplate-db', PATHS.boilerplateRealmDb,
+        '--report', 'management/pm/reports/realm-knowledge-sync.json'
+}
+
+tasks.register('workstreamKnowledgeDistill', Exec) {
+    group = 'documentation'
+    description = 'Distills implemented workstream knowledge into distributed core/realm SQLite stores with derivation topology.'
+    dependsOn('projectStateDb')
+    dependsOn('realmCodeDatabases')
+    commandLine 'python3',
+        'management/tools/workstream_knowledge_distill.py',
+        '--project-db', PATHS.projectStateDb,
+        '--core-db', PATHS.coreRealmDb,
+        '--application-db', PATHS.applicationRealmDb,
+        '--pm-db', PATHS.pmRealmDb,
+        '--boilerplate-db', PATHS.boilerplateRealmDb,
+        '--topology', 'management/pm/workflow/core-derivative-topology.json',
+        '--report', 'management/pm/reports/workstream-knowledge-sync.json'
+}
+
+tasks.register('managedToolInventoryReport', Exec) {
+    group = 'documentation'
+    description = 'Builds managed tool inventory with realm ownership and entrypoints.'
+    commandLine 'python3',
+        'management/tools/managed_tool_inventory.py',
+        '--root', '.',
+        '--output', 'management/pm/reports/managed-tool-inventory.json'
+}
+
+tasks.register('toolArgumentComplianceReport', Exec) {
+    group = 'documentation'
+    description = 'Builds command argument source compliance matrix (DB-derived vs hardcoded).'
+    commandLine 'python3',
+        'management/tools/tool_argument_compliance.py',
+        '--root', '.',
+        '--output', 'management/pm/reports/tool-argument-compliance.json'
+}
+
+tasks.register('topologyStructureDriftReport', Exec) {
+    group = 'documentation'
+    description = 'Builds topology/structure drift report against core-derivative contract.'
+    commandLine 'python3',
+        'management/tools/topology_structure_drift.py',
+        '--topology', 'management/pm/workflow/core-derivative-topology.json',
+        '--output', 'management/pm/reports/topology-structure-drift.json',
+        '--strict', 'false'
+}
+
+tasks.register('topologyStructureDriftGateStrict', Exec) {
+    group = 'verification'
+    description = 'Fails when topology/structure drift is detected.'
+    commandLine 'python3',
+        'management/tools/topology_structure_drift.py',
+        '--topology', 'management/pm/workflow/core-derivative-topology.json',
+        '--output', 'management/pm/reports/topology-structure-drift.json',
+        '--strict', 'true'
+}
+
+tasks.register('hardcodedCriticalPathGateReport', Exec) {
+    group = 'documentation'
+    description = 'Builds report of hardcoded critical path violations from compliance matrix.'
+    dependsOn('toolArgumentComplianceReport')
+    commandLine 'python3',
+        'management/tools/hardcoded_critical_path_gate.py',
+        '--compliance', 'management/pm/reports/tool-argument-compliance.json',
+        '--output', 'management/pm/reports/hardcoded-critical-path-gate.json',
+        '--strict', 'false'
+}
+
+tasks.register('hardcodedCriticalPathGateStrict', Exec) {
+    group = 'verification'
+    description = 'Fails when hardcoded critical path violations remain.'
+    dependsOn('toolArgumentComplianceReport')
+    commandLine 'python3',
+        'management/tools/hardcoded_critical_path_gate.py',
+        '--compliance', 'management/pm/reports/tool-argument-compliance.json',
+        '--output', 'management/pm/reports/hardcoded-critical-path-gate.json',
+        '--strict', 'true'
+}
+
+tasks.register('realmKnowledgeLinkGate', Exec) {
+    group = 'verification'
+    description = 'Warns/fails when realm knowledge->decision links are unresolved. Strict mode via AFP_KNOWLEDGE_LINK_STRICT=true.'
+    dependsOn('realmKnowledgeSync')
+    dependsOn('decisionPriorityReport')
+    doFirst {
+        String strictRaw = (System.getenv('AFP_KNOWLEDGE_LINK_STRICT') ?: 'false').toString()
+        commandLine 'python3',
+            'management/tools/realm_knowledge_link_gate.py',
+            '--sync-report', 'management/pm/reports/realm-knowledge-sync.json',
+            '--decision-queue', 'management/pm/reports/decision-priority-queue.json',
+            '--output', 'management/pm/reports/realm-knowledge-link-gate.json',
+            '--strict', strictRaw
+    }
+}
+
+tasks.register('realmKnowledgeLinkGateStrict', Exec) {
+    group = 'verification'
+    description = 'Fails when unresolved realm knowledge->decision links remain.'
+    dependsOn('realmKnowledgeSync')
+    dependsOn('decisionPriorityReport')
+    commandLine 'python3',
+        'management/tools/realm_knowledge_link_gate.py',
+        '--sync-report', 'management/pm/reports/realm-knowledge-sync.json',
+        '--decision-queue', 'management/pm/reports/decision-priority-queue.json',
+        '--output', 'management/pm/reports/realm-knowledge-link-gate.json',
+        '--strict', 'true'
+}
+
+tasks.register('actionInboxIngest', Exec) {
+    group = 'documentation'
+    description = 'Ingests prompt-derived actionable items from assistant inbox into project-state SQLite.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'ingest-action-inbox',
+            '--db', PATHS.projectStateDb,
+            '--inbox', 'management/pm/state/assistant-inbox.ndjson',
+            '--source', 'pmconsole-live'
+    }
+}
+
+tasks.register('actionItemsReport', Exec) {
+    group = 'documentation'
+    description = 'Exports actionable item ledger from project-state SQLite.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('actionInboxIngest')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-action-items',
+            '--db', PATHS.projectStateDb,
+            '--json', 'management/pm/reports/action-items.json'
+    }
+}
+
+tasks.register('actionDecisionSuggestionReport', Exec) {
+    group = 'documentation'
+    description = 'Builds suggestions linking open action items to candidate decisions.'
+    dependsOn('actionItemsReport')
+    dependsOn('decisionPriorityReport')
+    commandLine 'python3',
+        'management/tools/action_decision_suggestions.py',
+        '--actions', 'management/pm/reports/action-items.json',
+        '--decisions', 'management/pm/reports/decision-priority-queue.json',
+        '--output', 'management/pm/reports/action-decision-suggestions.json'
+}
+
+tasks.register('actionOwnerSummaryReport', Exec) {
+    group = 'documentation'
+    description = 'Builds action owner summary report from action ledger.'
+    dependsOn('actionItemsReport')
+    commandLine 'python3',
+        'management/tools/action_owner_summary.py',
+        '--actions', 'management/pm/reports/action-items.json',
+        '--output', 'management/pm/reports/action-owner-summary.json'
+}
+
+tasks.register('actionSlaTrendReport', Exec) {
+    group = 'documentation'
+    description = 'Builds action SLA trend report and persists rolling history snapshot.'
+    dependsOn('actionItemsReport')
+    commandLine 'python3',
+        'management/tools/action_sla_trend.py',
+        '--actions', 'management/pm/reports/action-items.json',
+        '--history', 'management/pm/state/action-sla-history.json',
+        '--output', 'management/pm/reports/action-sla-trend.json'
+}
+
+tasks.register('actionIngestStrictGate', Exec) {
+    group = 'verification'
+    description = 'Fails when actionable prompts in assistant inbox have not been ingested into project-state.'
+    dependsOn('actionInboxIngest')
+    commandLine 'python3',
+        'management/tools/check_action_ingest_strict.py',
+        '--db', PATHS.projectStateDb,
+        '--inbox', 'management/pm/state/assistant-inbox.ndjson',
+        '--source', 'pmconsole-live',
+        '--output', 'management/pm/reports/action-ingest-strict.json'
+}
+
+tasks.register('applicationRealmPolicyReport', Exec) {
+    group = 'documentation'
+    description = 'Exports realm governance policy catalog for application realm DB.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmPolicySync')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-realm-policy',
+            '--db', PATHS.applicationRealmDb,
+            '--json', 'management/pm/reports/application-realm-policy.json'
+    }
+}
+
+tasks.register('pmRealmPolicyReport', Exec) {
+    group = 'documentation'
+    description = 'Exports realm governance policy catalog for PM realm DB.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmPolicySync')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-realm-policy',
+            '--db', PATHS.pmRealmDb,
+            '--json', 'management/pm/reports/pm-realm-policy.json'
+    }
+}
+
+tasks.register('boilerplateRealmPolicyReport', Exec) {
+    group = 'documentation'
+    description = 'Exports realm governance policy catalog for boilerplate realm DB.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('realmPolicySync')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'export-realm-policy',
+            '--db', PATHS.boilerplateRealmDb,
+            '--json', 'management/pm/reports/boilerplate-realm-policy.json'
+    }
+}
+
+tasks.register('realmPolicySync', Exec) {
+    group = 'documentation'
+    description = 'Syncs governance policy rules from project-state into each realm policy catalog.'
+    dependsOn('projectStateDb')
+    dependsOn('realmCodeDatabases')
+    commandLine 'python3',
+        'management/tools/realm_policy_sync.py',
+        '--project-db', PATHS.projectStateDb,
+        '--application-db', PATHS.applicationRealmDb,
+        '--pm-db', PATHS.pmRealmDb,
+        '--boilerplate-db', PATHS.boilerplateRealmDb,
+        '--report', 'management/pm/reports/realm-policy-sync.json'
+}
+
+tasks.register('realmPolicyDiffReport', Exec) {
+    group = 'documentation'
+    description = 'Builds per-realm governance policy diff report against prior snapshot.'
+    dependsOn('applicationRealmPolicyReport')
+    dependsOn('pmRealmPolicyReport')
+    dependsOn('boilerplateRealmPolicyReport')
+    commandLine 'python3',
+        'management/tools/realm_policy_diff.py',
+        '--application', 'management/pm/reports/application-realm-policy.json',
+        '--pm', 'management/pm/reports/pm-realm-policy.json',
+        '--boilerplate', 'management/pm/reports/boilerplate-realm-policy.json',
+        '--snapshot', 'management/pm/state/realm-policy-snapshot.json',
+        '--output', 'management/pm/reports/realm-policy-diff.json'
+}
+
+tasks.register('reasoningDatabases', Exec) {
+    group = 'documentation'
+    description = 'Builds reasoning experience/derived SQLite databases and exports reasoning-drive report.'
+    dependsOn('projectStateDb')
+    commandLine 'python3',
+        'management/tools/reasoning_sync.py',
+        '--project-db', PATHS.projectStateDb,
+        '--experience-db', 'management/pm/state/reasoning-experience.sqlite',
+        '--derived-db', 'management/pm/state/reasoning-derived.sqlite',
+        '--report', 'management/pm/reports/reasoning-drive.json'
+}
+
+tasks.register('stateInventoryCsv') {
+    group = 'documentation'
+    description = 'Exports DB-backed project/boilerplate file inventories with maintenance context.'
+    dependsOn('projectFileInventoryCsv')
+    dependsOn('boilerplatePackageInventoryCsv')
+    dependsOn('boilerplatePromotionReport')
+    dependsOn('decisionPriorityReport')
+    dependsOn('knowledgeBaseReport')
+    dependsOn('realmKnowledgeSync')
+    dependsOn('workstreamKnowledgeDistill')
+    dependsOn('managedToolInventoryReport')
+    dependsOn('toolArgumentComplianceReport')
+    dependsOn('topologyStructureDriftReport')
+    dependsOn('hardcodedCriticalPathGateReport')
+    dependsOn('realmKnowledgeLinkGate')
+    dependsOn('actionItemsReport')
+    dependsOn('actionDecisionSuggestionReport')
+    dependsOn('actionOwnerSummaryReport')
+    dependsOn('actionSlaTrendReport')
+    dependsOn('actionIngestStrictGate')
+    dependsOn('applicationRealmPolicyReport')
+    dependsOn('pmRealmPolicyReport')
+    dependsOn('boilerplateRealmPolicyReport')
+    dependsOn('realmPolicyDiffReport')
+    dependsOn('crossRealmActionTokenSearch')
+    dependsOn('reasoningDatabases')
+}
+
+tasks.register('boilerplateSyncWorkbook', Exec) {
+    group = 'documentation'
+    description = 'Builds management/docs/boilerplate-sync-candidates.xlsx from product/boilerplate/update-packages/pz-boilerplate-intelliJ while preserving manual decision columns.'
+    dependsOn(':pm-tools:classes')
+    dependsOn('boilerplateStateDb')
+    onlyIf {
+        File packagesDir = file('product/boilerplate/update-packages/pz-boilerplate-intelliJ')
+        File xlsx = file('management/docs/boilerplate-sync-candidates.xlsx')
+        String forceRaw = (System.getenv('AFP_FORCE_BOILERPLATE_SYNC_UPDATE') ?: '').trim().toLowerCase(Locale.ROOT)
+        boolean force = forceRaw == '1' || forceRaw == 'true' || forceRaw == 'yes'
+        if (force) {
+            logger.lifecycle("boilerplateSyncWorkbook: running because AFP_FORCE_BOILERPLATE_SYNC_UPDATE is set")
+            return true
+        }
+        if (!packagesDir.exists() || !packagesDir.isDirectory()) {
+            logger.lifecycle("boilerplateSyncWorkbook: skipping because packages directory is missing")
+            return false
+        }
+        if (!xlsx.exists()) {
+            logger.lifecycle("boilerplateSyncWorkbook: running because workbook is missing")
+            return true
+        }
+        long newestPackageInput = 0L
+        Set<File> inputs = fileTree(packagesDir) { include '**/*' }.files
+        for (File f : inputs) {
+            newestPackageInput = Math.max(newestPackageInput, f.lastModified())
+        }
+        newestPackageInput = Math.max(newestPackageInput, packagesDir.lastModified())
+        boolean shouldRun = newestPackageInput > xlsx.lastModified()
+        logger.lifecycle(
+            "boilerplateSyncWorkbook: " + (shouldRun ? "running" : "skipping")
+                + " (packagesLastModified=" + newestPackageInput
+                + ", xlsxLastModified=" + xlsx.lastModified() + ")"
+        )
+        return shouldRun
+    }
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.BoilerplateSyncWorkbookUpdater',
+            '--db', PATHS.boilerplateStateDb,
+            '--xlsx', 'management/docs/boilerplate-sync-candidates.xlsx'
+    }
 }
 
 tasks.register('issuesLogTickle', Exec) {
     group = 'documentation'
-    description = 'Checks for changes to issue-referenced components and tickles docs/issues-log.csv expectations'
-    commandLine 'python3',
-        'tools/issues_log_tickle.py',
-        '--issues', 'docs/issues-log.csv',
-        '--output', 'preview/issues-log-tickle.json',
-        '--enforce'
+    description = 'Checks for changes to issue-referenced components using SQLite state and tickles management/docs/issues-log.csv expectations'
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'issues-tickle',
+            '--db', PATHS.projectStateDb,
+            '--issues', 'management/docs/issues-log.csv',
+            '--output', 'management/pm/reports/issues-log-tickle.json',
+            '--enforce'
+    }
 }
 
 tasks.register('issuesEffectivenessReport', Exec) {
     group = 'documentation'
-    description = 'Generates mechanized issue-effectiveness signals from issues, progress, and fidelity artifacts'
+    description = 'Generates mechanized issue-effectiveness signals from SQLite state and tickle artifacts'
     dependsOn('issuesLogTickle')
-    dependsOn('projectPlanProgressJson')
-    dependsOn(':afp-engine:fidelityReport')
-    commandLine 'python3',
-        'tools/issues_effectiveness_report.py',
-        '--issues', 'docs/issues-log.csv',
-        '--tickle', 'preview/issues-log-tickle.json',
-        '--progress', 'docs/project-plan-progress.csv',
-        '--fidelity', 'preview/fidelity-report.json',
-        '--output', 'preview/issues-effectiveness.json'
+    dependsOn('projectStateDb')
+    doFirst {
+        def sourceSets = project(':pm-tools').sourceSets
+        String cp = sourceSets.main.runtimeClasspath.asPath
+        commandLine 'java',
+            '-cp', cp,
+            'solutions.pointzero.symphony.pm.tools.StateDatabaseTool',
+            'issues-effectiveness',
+            '--db', PATHS.projectStateDb,
+            '--tickle', 'management/pm/reports/issues-log-tickle.json',
+            '--output', 'management/pm/reports/issues-effectiveness.json'
+    }
 }
 
 def sha256Hex = { File file ->
@@ -163,35 +1990,118 @@ def sha256Hex = { File file ->
 
 tasks.register('documentationManifest') {
     group = 'documentation'
-    description = 'Updates preview/documentation-manifest.json with checksums for changelog and docs files'
+    description = 'Updates management/pm/reports/documentation-manifest.json with checksums for changelog and docs files'
     dependsOn('versionStamp')
     dependsOn('previewManifest')
     dependsOn(':afp-engine:fidelityReport')
     dependsOn('projectPlanNextStep')
     dependsOn('projectPlanProgressJson')
+    dependsOn('governanceAlerts')
+    dependsOn('versionControlLedger')
     dependsOn('issuesLogTickle')
     dependsOn('issuesEffectivenessReport')
+    dependsOn('environmentHealthSchemaCheck')
+    dependsOn('staleHistorySchemaCheck')
+    dependsOn('environmentPolicyDefaultsLint')
+    dependsOn('policyRulesReport')
+    dependsOn('policyRulesLint')
+    dependsOn('dataDictionaryReport')
+    dependsOn('dataDictionaryLint')
+    dependsOn('realmCodeDatabases')
+    dependsOn('sqlCoverageReport')
+    dependsOn('crossRealmTokenSearch')
+    dependsOn('crossRealmActionTokenSearch')
+    dependsOn('stateInventoryCsv')
+    dependsOn('identifierRegistryReport')
+    dependsOn('pmPersistGovernanceIdentifiers')
+    dependsOn('workstreamSliceReport')
+    dependsOn('workstreamPresentationIndex')
     dependsOn('projectPlanWorkbook')
+    dependsOn('policyGovernanceWorkbook')
+    dependsOn('boilerplateSyncWorkbook')
     doLast {
-        File output = file('preview/documentation-manifest.json')
+        File output = file('management/pm/reports/documentation-manifest.json')
         output.parentFile.mkdirs()
         List<File> tracked = [
             file('AI-POLICY.md'),
             file('README.md'),
-            file('docs/API.md'),
-            file('docs/project-plan.md'),
+            file('management/docs/API.md'),
+            file('management/docs/PRESENTATION_ID_MIGRATION.md'),
+            file('management/docs/project-plan.md'),
+            file('management/docs/boilerplate-sync-candidates.xlsx'),
             file('SESSION_CHANGELOG.md'),
-            file('preview/afp-output.pdf'),
-            file('preview/afp-output.html'),
-            file('preview/afp-meta.json'),
-            file('preview/afp-diag.json'),
-            file('preview/fidelity-report.json'),
-            file('preview/project-plan-progress-data.json'),
-            file('preview/issues-log-tickle.json'),
-            file('preview/issues-effectiveness.json'),
-            file('preview/project-plan-next-step.json'),
-            file('preview/workbook-refresh-status.json'),
-            file('preview/version.json'),
+            file('product/afp-converter/preview/afp-output.pdf'),
+            file('product/afp-converter/preview/afp-output.html'),
+            file('product/afp-converter/preview/afp-meta.json'),
+            file('product/afp-converter/preview/afp-diag.json'),
+            file('product/afp-converter/preview/fidelity-report.json'),
+            file('management/pm/reports/project-plan-progress-data.json'),
+            file('management/pm/reports/project-plan-progress-application.json'),
+            file('management/pm/reports/project-plan-progress-pm.json'),
+            file('management/pm/reports/project-plan-progress-boilerplate.json'),
+            file('management/pm/reports/project-plan-commit-marker-lint.json'),
+            file('management/pm/reports/workstream-j-slice-evidence.json'),
+            file('management/pm/reports/workstream-presentation-index.json'),
+            file('management/pm/reports/governance-alerts.json'),
+            file('management/pm/reports/version-control-ledger.json'),
+            file('management/pm/reports/identifier-registry.json'),
+            file('management/pm/reports/remanifest-drill.json'),
+            file('management/pm/reports/issues-log-tickle.json'),
+            file('management/pm/reports/issues-effectiveness.json'),
+            file('management/pm/reports/environment-health.json'),
+            file('management/pm/reports/pm-console-stale-cleanup.json'),
+            file('management/pm/reports/environment-dashboard.json'),
+            file('management/pm/reports/policy-rules.json'),
+            file('management/pm/reports/policy-rules-lint.json'),
+            file('management/pm/reports/presentation-ref-lint.json'),
+            file('management/pm/reports/sql-authority-application.json'),
+            file('management/pm/reports/sql-authority-pm.json'),
+            file('management/pm/reports/sql-authority-boilerplate.json'),
+            file('management/pm/reports/sql-coverage-application.json'),
+            file('management/pm/reports/sql-coverage-pm.json'),
+            file('management/pm/reports/sql-coverage-boilerplate.json'),
+            file('management/pm/reports/sql-reconstruction-application.json'),
+            file('management/pm/reports/sql-reconstruction-pm.json'),
+            file('management/pm/reports/sql-reconstruction-boilerplate.json'),
+            file('management/pm/reports/cross-realm-token-search.json'),
+            file('management/pm/reports/cross-realm-action-token-search.json'),
+            file('management/pm/reports/data-dictionary.json'),
+            file('management/pm/reports/data-dictionary-lint.json'),
+            file('management/pm/reports/project-plan-next-step.json'),
+            file('management/pm/reports/workstream-presentation-index.json'),
+            file('management/pm/workflow/workstream-realm-map.json'),
+            file('management/pm/reports/workbook-refresh-status.json'),
+            file('management/pm/policy/policy-rule-tables.sql'),
+            file('management/pm/reports/repo-file-inventory-with-context.csv'),
+            file('management/pm/reports/boilerplate-package-files-with-context.csv'),
+            file('management/pm/reports/boilerplate-promotion-status.json'),
+            file('management/pm/reports/decision-priority-queue.json'),
+            file('management/pm/reports/knowledge-base.json'),
+            file('management/pm/reports/realm-knowledge-sync.json'),
+            file('management/pm/reports/realm-knowledge-link-gate.json'),
+            file('management/pm/reports/action-items.json'),
+            file('management/pm/reports/action-decision-suggestions.json'),
+            file('management/pm/reports/action-owner-summary.json'),
+            file('management/pm/reports/action-sla-trend.json'),
+            file('management/pm/reports/action-ingest-strict.json'),
+            file('management/pm/reports/realm-policy-sync.json'),
+            file('management/pm/reports/realm-policy-diff.json'),
+            file('management/pm/reports/application-realm-policy.json'),
+            file('management/pm/reports/pm-realm-policy.json'),
+            file('management/pm/reports/boilerplate-realm-policy.json'),
+            file('management/pm/reports/reasoning-drive.json'),
+            file(PATHS.projectStateDb),
+            file(PATHS.boilerplateStateDb),
+            file('management/pm/state/reasoning-experience.sqlite'),
+            file('management/pm/state/reasoning-derived.sqlite'),
+            file(PATHS.applicationRealmDb),
+            file(PATHS.pmRealmDb),
+            file(PATHS.boilerplateRealmDb),
+            file('management/pm/state/realm-policy-snapshot.json'),
+            file('management/pm/state/action-sla-history.json'),
+            file('management/pm/state/pm-console-stale-history.json'),
+            file('management/pm/reports/environment-dashboard.json'),
+            file('management/pm/reports/version.json'),
             file('VERSION')
         ]
         tracked.addAll(fileTree('docs') {
@@ -236,74 +2146,194 @@ tasks.register('documentationManifest') {
 
 tasks.register('publishCiArtifacts') {
     group = 'verification'
-    description = 'Publishes CI-facing artifact bundle under preview/ci-artifacts/latest'
+    description = 'Publishes realm-ringfenced artifact indices under management/pm/reports/realm-artifacts/'
     dependsOn('documentationManifest')
+    dependsOn('presentationRefLint')
     doLast {
-        File outputDir = file('preview/ci-artifacts/latest')
-        outputDir.mkdirs()
-        List<File> artifacts = [
-            file('AI-POLICY.md'),
-            file('preview/afp-output.pdf'),
-            file('preview/afp-output.html'),
-            file('preview/afp-meta.json'),
-            file('preview/afp-diag.json'),
-            file('preview/fidelity-report.json'),
-            file('preview/project-plan-progress-data.json'),
-            file('preview/issues-log-tickle.json'),
-            file('preview/issues-effectiveness.json'),
-            file('preview/documentation-manifest.json'),
-            file('preview/project-plan-next-step.json'),
-            file('preview/workbook-refresh-status.json'),
-            file('preview/version.json'),
-            file('docs/fidelity-corpus.txt'),
-            file('docs/project-plan.md'),
-            file('docs/project-plan-progress.csv'),
-            file('docs/project-plan-progress.xlsx'),
-            file('VERSION'),
-            file('SESSION_CHANGELOG.md')
-        ]
-        artifacts.each { File source ->
-            if (!source.exists()) {
-                return
-            }
-            File dest = new File(outputDir, source.name)
-            dest.bytes = source.bytes
-        }
         String generatedAt = new Date().format("yyyy-MM-dd'T'HH:mm:ssXXX")
-        List<String> fileEntries = artifacts.collect { File f ->
-            File copied = new File(outputDir, f.name)
-            if (!copied.exists()) {
-                return null
+        File baseDir = file('management/pm/reports/realm-artifacts')
+        baseDir.mkdirs()
+
+        Map<String, List<String>> realmArtifacts = [
+            application: [
+                'product/afp-converter/preview/afp-output.pdf',
+                'product/afp-converter/preview/afp-output.html',
+                'product/afp-converter/preview/afp-meta.json',
+                'product/afp-converter/preview/afp-diag.json',
+                'product/afp-converter/preview/fidelity-report.json',
+                'management/pm/reports/project-plan-progress-application.json',
+                'management/pm/reports/application-realm-policy.json',
+                'management/pm/reports/sql-authority-application.json',
+                'management/pm/reports/sql-coverage-application.json',
+                'management/pm/reports/sql-reconstruction-application.json',
+                PATHS.applicationRealmDb
+            ],
+            pm: [
+                'AI-POLICY.md',
+                'README.md',
+                'SESSION_CHANGELOG.md',
+                'management/docs/project-plan.md',
+                'management/docs/project-plan-progress.csv',
+                'management/docs/project-plan-progress.xlsx',
+                'management/docs/policy-governance-events.csv',
+                'management/docs/policy-governance-events.xlsx',
+                'management/pm/reports/project-plan-progress-pm.json',
+                'management/pm/reports/project-plan-progress-data.json',
+                'management/pm/reports/project-plan-next-step.json',
+                'management/pm/reports/documentation-manifest.json',
+                'management/pm/reports/governance-alerts.json',
+                'management/pm/reports/version-control-ledger.json',
+                'management/pm/reports/identifier-registry.json',
+                'management/pm/reports/issues-log-tickle.json',
+                'management/pm/reports/issues-effectiveness.json',
+                'management/pm/reports/environment-health.json',
+                'management/pm/reports/pm-console-stale-cleanup.json',
+                'management/pm/reports/environment-dashboard.json',
+                'management/pm/reports/policy-rules.json',
+                'management/pm/reports/policy-rules-lint.json',
+                'management/pm/reports/presentation-ref-lint.json',
+                'management/pm/reports/data-dictionary.json',
+                'management/pm/reports/data-dictionary-lint.json',
+                'management/pm/reports/cross-realm-token-search.json',
+                'management/pm/reports/cross-realm-action-token-search.json',
+                'management/pm/reports/decision-priority-queue.json',
+                'management/pm/reports/knowledge-base.json',
+                'management/pm/reports/realm-knowledge-sync.json',
+                'management/pm/reports/realm-knowledge-link-gate.json',
+                'management/pm/reports/action-items.json',
+                'management/pm/reports/action-decision-suggestions.json',
+                'management/pm/reports/action-owner-summary.json',
+                'management/pm/reports/action-sla-trend.json',
+                'management/pm/reports/action-ingest-strict.json',
+                'management/pm/reports/realm-policy-sync.json',
+                'management/pm/reports/realm-policy-diff.json',
+                'management/pm/reports/pm-realm-policy.json',
+                'management/pm/reports/sql-authority-pm.json',
+                'management/pm/reports/sql-coverage-pm.json',
+                'management/pm/reports/sql-reconstruction-pm.json',
+                'management/pm/reports/reasoning-drive.json',
+                'management/pm/state/realm-policy-snapshot.json',
+                'management/pm/state/action-sla-history.json',
+                'management/pm/state/pm-console-stale-history.json',
+                PATHS.projectStateDb,
+                PATHS.pmRealmDb,
+                'management/pm/state/reasoning-experience.sqlite',
+                'management/pm/state/reasoning-derived.sqlite'
+            ],
+            boilerplate: [
+                'product/boilerplate/update-packages/README.md',
+                'product/boilerplate/update-packages/pz-boilerplate-intelliJ',
+                'management/docs/boilerplate-sync-candidates.xlsx',
+                'management/pm/reports/project-plan-progress-boilerplate.json',
+                'management/pm/reports/boilerplate-package-files-with-context.csv',
+                'management/pm/reports/boilerplate-promotion-status.json',
+                'management/pm/reports/boilerplate-realm-policy.json',
+                'management/pm/reports/sql-authority-boilerplate.json',
+                'management/pm/reports/sql-coverage-boilerplate.json',
+                'management/pm/reports/sql-reconstruction-boilerplate.json',
+                PATHS.boilerplateStateDb,
+                PATHS.boilerplateRealmDb
+            ]
+        ]
+
+        Map<String, Object> parentIndex = [
+            schemaVersion : '1',
+            generatedAt   : generatedAt,
+            root          : 'management/pm/reports/realm-artifacts',
+            realms        : [:]
+        ]
+
+        realmArtifacts.each { String realmId, List<String> artifactPaths ->
+            File realmDir = new File(baseDir, "${realmId}/latest")
+            realmDir.mkdirs()
+            List<Map<String, Object>> files = []
+            artifactPaths.each { String path ->
+                File src = file(path)
+                if (!src.exists()) {
+                    return
+                }
+                String srcRel = projectDir.toPath().relativize(src.toPath()).toString().replace('\\', '/')
+                files.add([
+                    source   : srcRel,
+                    sizeBytes: src.isDirectory() ? 0L : src.length(),
+                    sha256   : src.isDirectory() ? '' : sha256Hex(src)
+                ])
             }
-            String originalRel = projectDir.toPath().relativize(f.toPath()).toString().replace('\\', '/')
-            String copiedRel = projectDir.toPath().relativize(copied.toPath()).toString().replace('\\', '/')
-            return "    {\"source\": \"${originalRel}\", \"artifact\": \"${copiedRel}\", \"sizeBytes\": ${copied.length()}, \"sha256\": \"${sha256Hex(copied)}\"}"
-        }.findAll { it != null }
-        String filesJson = fileEntries.join(",\n")
-        File index = new File(outputDir, 'index.json')
-        index.text =
-            "{\n" +
-                "  \"schemaVersion\": \"1\",\n" +
-                "  \"generatedAt\": \"${generatedAt}\",\n" +
-                "  \"artifactCount\": ${fileEntries.size()},\n" +
-                "  \"files\": [\n" +
-                filesJson + "\n" +
-                "  ]\n" +
-                "}\n"
+            Map<String, Object> realmIndex = [
+                schemaVersion: '1',
+                generatedAt  : generatedAt,
+                realm        : realmId,
+                artifactCount: files.size(),
+                files        : files
+            ]
+            File realmIndexFile = new File(realmDir, 'index.json')
+            realmIndexFile.text = JsonOutput.prettyPrint(JsonOutput.toJson(realmIndex)) + '\n'
+            parentIndex.realms[realmId] = [
+                artifactCount: files.size(),
+                indexPath    : projectDir.toPath().relativize(realmIndexFile.toPath()).toString().replace('\\', '/')
+            ]
+        }
+
+        File parentIndexFile = new File(baseDir, 'index.json')
+        parentIndexFile.text = JsonOutput.prettyPrint(JsonOutput.toJson(parentIndex)) + '\n'
+    }
+}
+
+tasks.register('enforceCiArtifactIndexIncludesPolicyLints') {
+    group = 'verification'
+    description = 'Fails when CI artifact index omits policy/data dictionary/presentation-reference lint reports.'
+    dependsOn('publishCiArtifacts')
+    doLast {
+        File index = file('management/pm/reports/realm-artifacts/pm/latest/index.json')
+        if (!index.exists()) {
+            throw new GradleException("Missing PM realm artifact index: " + index.path)
+        }
+        String text = index.getText('UTF-8')
+        List<String> required = [
+            "management/pm/reports/policy-rules-lint.json",
+            "management/pm/reports/data-dictionary-lint.json",
+            "management/pm/reports/presentation-ref-lint.json"
+        ]
+        List<String> missing = required.findAll { !text.contains(it) }
+        if (!missing.isEmpty()) {
+            throw new GradleException("CI artifact index missing required lint reports: " + missing.join(', '))
+        }
+    }
+}
+
+tasks.register('enforceCiArtifactIndexIncludesEnvironmentReports') {
+    group = 'verification'
+    description = 'Fails when CI artifact index omits environment health and stale cleanup reports.'
+    dependsOn('publishCiArtifacts')
+    doLast {
+        File index = file('management/pm/reports/realm-artifacts/pm/latest/index.json')
+        if (!index.exists()) {
+            throw new GradleException("Missing PM realm artifact index: " + index.path)
+        }
+        String text = index.getText('UTF-8')
+        List<String> required = [
+            "management/pm/reports/environment-health.json",
+            "management/pm/reports/pm-console-stale-cleanup.json",
+            "management/pm/reports/environment-dashboard.json"
+        ]
+        List<String> missing = required.findAll { !text.contains(it) }
+        if (!missing.isEmpty()) {
+            throw new GradleException("CI artifact index missing required environment reports: " + missing.join(', '))
+        }
     }
 }
 
 tasks.register('createRollbackCheckpoint', Exec) {
     group = 'release'
-    description = 'Creates a rollback checkpoint under preview/checkpoints from current manifest + baseline files'
+    description = 'Creates a rollback checkpoint under management/pm/checkpoints from current manifest + baseline files'
     dependsOn('documentationManifest')
     doFirst {
         List<String> cmd = [
             'python3',
-            'tools/rollback_manager.py',
+            'management/tools/rollback_manager.py',
             '--root', '.',
-            '--base', 'preview/checkpoints',
-            '--manifest', 'preview/documentation-manifest.json',
+            '--base', 'management/pm/checkpoints',
+            '--manifest', 'management/pm/reports/documentation-manifest.json',
             'create'
         ]
         String label = (System.getenv('CHECKPOINT_LABEL') ?: '').trim()
@@ -318,9 +2348,9 @@ tasks.register('listRollbackCheckpoints', Exec) {
     group = 'release'
     description = 'Lists available rollback checkpoints'
     commandLine 'python3',
-        'tools/rollback_manager.py',
+        'management/tools/rollback_manager.py',
         '--root', '.',
-        '--base', 'preview/checkpoints',
+        '--base', 'management/pm/checkpoints',
         'list'
 }
 
@@ -334,9 +2364,9 @@ tasks.register('rollbackCheckpoint', Exec) {
         }
         List<String> cmd = [
             'python3',
-            'tools/rollback_manager.py',
+            'management/tools/rollback_manager.py',
             '--root', '.',
-            '--base', 'preview/checkpoints',
+            '--base', 'management/pm/checkpoints',
             'restore',
             '--id', checkpointId
         ]
@@ -357,17 +2387,17 @@ tasks.register('releaseSnapshot') {
 
 tasks.register('projectPlanNextStep') {
     group = 'documentation'
-    description = 'Extracts the next instruction from docs/project-plan.md into preview/project-plan-next-step.json'
+    description = 'Extracts the next instruction from management/docs/project-plan.md into management/pm/reports/project-plan-next-step.json'
     doLast {
-        File plan = file('docs/project-plan.md')
-        File output = file('preview/project-plan-next-step.json')
+        File plan = file('management/docs/project-plan.md')
+        File output = file('management/pm/reports/project-plan-next-step.json')
         output.parentFile.mkdirs()
         if (!plan.exists()) {
             output.text = JsonOutput.prettyPrint(JsonOutput.toJson([
                 schemaVersion: '1',
                 generatedAt  : new Date().format("yyyy-MM-dd'T'HH:mm:ssXXX"),
                 status       : 'missing-plan',
-                message      : 'Missing docs/project-plan.md'
+                message      : 'Missing management/docs/project-plan.md'
             ])) + '\n'
             return
         }
@@ -460,7 +2490,7 @@ tasks.register('projectPlanNextStep') {
         output.text = JsonOutput.prettyPrint(JsonOutput.toJson([
             schemaVersion : '1',
             generatedAt   : new Date().format("yyyy-MM-dd'T'HH:mm:ssXXX"),
-            planPath      : 'docs/project-plan.md',
+            planPath      : 'management/docs/project-plan.md',
             actionCount   : actions.size(),
             nextInstruction: next,
             actions       : actions,
@@ -469,17 +2499,365 @@ tasks.register('projectPlanNextStep') {
     }
 }
 
+tasks.register('workstreamPresentationIndex', Exec) {
+    group = 'documentation'
+    description = 'Generates active workstream presentation aliases (A..Z) from unique internal IDs'
+    commandLine 'python3',
+        'management/tools/workstream_presentation_index.py',
+        '--csv', 'management/docs/project-plan-progress.csv',
+        '--output', 'management/pm/reports/workstream-presentation-index.json'
+}
+
 tasks.named('build') {
+    dependsOn('realmSourcesExport')
     dependsOn('documentationManifest')
+}
+
+tasks.register('enforceProjectBoundaries') {
+    group = 'verification'
+    description = 'Fails when product modules reference project-management tooling/state.'
+    doLast {
+        List<String> violations = []
+        List<Map<String, Object>> sourceRoots = [
+            [module: 'afp-api', dir: file('product/afp-converter/afp-api/src/main/java')],
+            [module: 'afp-engine', dir: file('product/afp-converter/afp-engine/src/main/java')],
+            [module: 'afp-cli', dir: file('product/afp-converter/afp-cli/src/main/java')]
+        ]
+        List<Map<String, Object>> forbidden = [
+            [pattern: ~/solutions\.pointzero\.symphony\.pm\.tools\./, reason: 'product modules must not reference pm-tools classes'],
+            [pattern: ~/preview\/state\//, reason: 'product modules must not reference project-management state databases'],
+            [pattern: ~/docs\/policy-governance-events/, reason: 'product modules must not reference governance tracker sources'],
+            [pattern: ~/docs\/project-plan-progress/, reason: 'product modules must not reference project-plan tracker sources'],
+            [pattern: ~/docs\/boilerplate-sync-candidates/, reason: 'product modules must not reference boilerplate sync trackers']
+        ]
+
+        sourceRoots.each { scope ->
+            File root = (File) scope.dir
+            if (!root.exists()) {
+                return
+            }
+            fileTree(root) {
+                include '**/*.java'
+            }.files.each { File src ->
+                List<String> lines = src.readLines('UTF-8')
+                int lineNo = 0
+                lines.each { String line ->
+                    lineNo++
+                    forbidden.each { rule ->
+                        if ((line =~ (rule.pattern as java.util.regex.Pattern)).find()) {
+                            String rel = projectDir.toPath().relativize(src.toPath()).toString().replace('\\', '/')
+                            violations.add("${rel}:${lineNo} -> ${rule.reason}")
+                        }
+                    }
+                }
+            }
+        }
+
+        List<String> moduleBuilds = ['product/afp-converter/afp-api/build.gradle', 'product/afp-converter/afp-engine/build.gradle', 'product/afp-converter/afp-cli/build.gradle']
+        moduleBuilds.each { String path ->
+            File f = file(path)
+            if (!f.exists()) {
+                return
+            }
+            String text = f.getText('UTF-8')
+            if (text.contains("project(':pm-tools')")) {
+                violations.add("${path}: disallowed dependency on :pm-tools")
+            }
+        }
+
+        if (!violations.isEmpty()) {
+            throw new GradleException("Project boundary violations detected:\n - " + violations.join('\n - '))
+        }
+    }
+}
+
+tasks.register('enforceManagedTooling') {
+    group = 'verification'
+    description = 'Fails when project-management tooling files are untracked.'
+    doLast {
+        List<String> roots = [
+            'tools',
+            'management/pm-management/tools/src/main/java/solutions/pointzero/symphony/management/pm/tools'
+        ]
+        List<String> unmanaged = []
+        roots.each { String root ->
+            File dir = file(root)
+            if (!dir.exists()) {
+                return
+            }
+            Process process = new ProcessBuilder('git', 'ls-files', '--others', '--exclude-standard', root)
+                .directory(projectDir)
+                .redirectErrorStream(true)
+                .start()
+            String stdout = new String(process.inputStream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8)
+            int exit = process.waitFor()
+            if (exit != 0) {
+                throw new GradleException("Unable to inspect tooling tracking state for root '${root}'")
+            }
+            List<String> lines = stdout.readLines()
+                .collect { it == null ? '' : it.trim() }
+                .findAll { !it.isEmpty() }
+            unmanaged.addAll(lines)
+        }
+        if (!unmanaged.isEmpty()) {
+            throw new GradleException(
+                "Unmanaged project-management tooling detected:\n - " + unmanaged.join('\n - ') +
+                    "\nAll tooling under management/tools/ and management/pm-management/tools/.../tools must be version-controlled."
+            )
+        }
+    }
+}
+
+tasks.register('enforcePmApplicationRealmSeparation') {
+    group = 'verification'
+    description = 'Fails when PM artifacts leak into product/afp-converter/preview/ or PM state escapes management/pm/state.'
+    doLast {
+        List<String> violations = []
+        File previewCiArtifactDir = file('product/afp-converter/preview/ci-artifacts')
+        if (previewCiArtifactDir.exists()) {
+            violations.add("product/afp-converter/preview/ci-artifacts: realm artifact bundles must be ringfenced under management/pm/reports/realm-artifacts/")
+        }
+        List<String> forbiddenPreviewArtifacts = [
+            'product/afp-converter/preview/governance-alerts.json',
+            'product/afp-converter/preview/version-control-ledger.json',
+            'product/afp-converter/preview/issues-log-tickle.json',
+            'product/afp-converter/preview/issues-effectiveness.json',
+            'product/afp-converter/preview/project-plan-next-step.json',
+            'product/afp-converter/preview/project-plan-progress-data.json',
+            'product/afp-converter/preview/workbook-refresh-status.json',
+            'product/afp-converter/preview/repo-file-inventory-with-context.csv',
+            'product/afp-converter/preview/boilerplate-package-files-with-context.csv',
+            'product/afp-converter/preview/documentation-manifest.json',
+            'product/afp-converter/preview/version.json'
+        ]
+        forbiddenPreviewArtifacts.each { String path ->
+            if (file(path).exists()) {
+                violations.add("${path}: PM artifact must live under management/pm/reports/")
+            }
+        }
+
+        List<String> forbiddenStateLocations = [
+            'product/afp-converter/preview/state/project-state.sqlite',
+            'product/afp-converter/preview/state/boilerplate-state.sqlite',
+            'project/state/project-state.sqlite',
+            'product/boilerplate/state/boilerplate-state.sqlite'
+        ]
+        forbiddenStateLocations.each { String path ->
+            if (file(path).exists()) {
+                violations.add("${path}: PM database must live under management/pm/state/")
+            }
+        }
+
+        if (!violations.isEmpty()) {
+            throw new GradleException("PM/Application realm separation violations detected:\n - " + violations.join('\n - '))
+        }
+    }
+}
+
+tasks.register('enforceSampleOutputReferenceIntegrity') {
+    group = 'verification'
+    description = 'Fails when protected sampleOutput reference artifacts are modified or expanded.'
+    doLast {
+        File manifestFile = file('management/pm/workflow/sample-output-reference-manifest.json')
+        if (!manifestFile.exists()) {
+            throw new GradleException("Missing sample-output reference manifest: " + manifestFile.path)
+        }
+        Map manifest = new JsonSlurper().parse(manifestFile) as Map
+        List<Map> entries = manifest.entries instanceof List ? (manifest.entries as List<Map>) : []
+        if (entries.isEmpty()) {
+            throw new GradleException("Sample-output reference manifest has no entries: " + manifestFile.path)
+        }
+
+        List<String> violations = []
+        Set<String> allowed = new LinkedHashSet<>()
+        entries.each { Map entry ->
+            String path = (entry.path == null ? '' : entry.path.toString().trim())
+            String expectedSha = (entry.sha256 == null ? '' : entry.sha256.toString().trim().toLowerCase(Locale.ROOT))
+            if (path.isEmpty() || expectedSha.isEmpty()) {
+                violations.add("Invalid manifest entry (missing path/sha256): ${entry}")
+                return
+            }
+            allowed.add(path)
+            File target = file(path)
+            if (!target.exists()) {
+                violations.add("${path}: missing protected reference artifact")
+                return
+            }
+            String actualSha = sha256Hex(target).toLowerCase(Locale.ROOT)
+            if (actualSha != expectedSha) {
+                violations.add("${path}: sha256 mismatch expected=${expectedSha} actual=${actualSha}")
+            }
+        }
+
+        File sampleOutputDir = file('product/afp-converter/sampleOutput')
+        if (sampleOutputDir.exists()) {
+            fileTree(sampleOutputDir).matching {
+                include '**/*'
+            }.files.findAll { it.isFile() }.each { File f ->
+                String rel = projectDir.toPath().relativize(f.toPath()).toString().replace('\\', '/')
+                if (!allowed.contains(rel)) {
+                    violations.add("${rel}: unexpected file in protected sampleOutput directory")
+                }
+            }
+        }
+
+        if (!violations.isEmpty()) {
+            throw new GradleException("sampleOutput reference integrity violations detected:\n - " + violations.join('\n - '))
+        }
+    }
+}
+
+tasks.register('enforceBoilerplateRollupForFrameworkChanges') {
+    group = 'verification'
+    description = 'Fails when framework/process mutations are made without an accompanying boilerplate roll-up package update.'
+    doLast {
+        def readGitPaths = { List<String> args, String failureMessage ->
+            Process proc = new ProcessBuilder(args)
+                .directory(projectDir)
+                .redirectErrorStream(true)
+                .start()
+            String out = new String(proc.inputStream.readAllBytes(), java.nio.charset.StandardCharsets.UTF_8)
+            int exit = proc.waitFor()
+            if (exit != 0) {
+                throw new GradleException(failureMessage)
+            }
+            return out.readLines()
+                .collect { it == null ? '' : it.trim() }
+                .findAll { !it.isEmpty() }
+        }
+
+        Set<String> changed = new LinkedHashSet<>()
+        changed.addAll(readGitPaths(['git', 'diff', '--name-only'], 'Unable to inspect unstaged git diff for boilerplate roll-up enforcement.'))
+        changed.addAll(readGitPaths(['git', 'diff', '--cached', '--name-only'], 'Unable to inspect staged git diff for boilerplate roll-up enforcement.'))
+        changed.addAll(readGitPaths(['git', 'ls-files', '--others', '--exclude-standard'], 'Unable to inspect git untracked files for boilerplate roll-up enforcement.'))
+
+        if (changed.isEmpty()) {
+            return
+        }
+
+        List<String> frameworkTriggers = [
+            'AI-POLICY.md',
+            'README.md',
+            'build.gradle',
+            'settings.gradle',
+            'management/pm-management/tools/',
+            'management/pm-console/',
+            'management/tools/run_excel_workbook_refresh.py',
+            'management/tools/issues_effectiveness_report.py',
+            'management/pm/policy/'
+        ]
+        boolean touchedFramework = changed.any { path ->
+            frameworkTriggers.any { trigger ->
+                path == trigger || path.startsWith(trigger)
+            }
+        }
+        if (!touchedFramework) {
+            return
+        }
+
+        boolean hasRollupUpdate = changed.any { path ->
+            path.startsWith('product/boilerplate/update-packages/pz-boilerplate-intelliJ/')
+        }
+        if (!hasRollupUpdate) {
+            throw new GradleException(
+                "Framework/process files changed without boilerplate roll-up update.\n" +
+                "Add/update a package under product/boilerplate/update-packages/pz-boilerplate-intelliJ/ in the same change set."
+            )
+        }
+    }
+}
+
+tasks.register('enforceNamespaceRoot') {
+    group = 'verification'
+    description = 'Fails when active source/build/docs reference legacy namespace roots.'
+    doLast {
+        List<String> scopeRoots = [
+            'product/afp-converter/afp-api/src/main/java',
+            'product/afp-converter/afp-engine/src/main/java',
+            'product/afp-converter/afp-engine/src/test/java',
+            'product/afp-converter/afp-cli/src/main/java',
+            'management/pm-management/tools/src/main/java',
+            'management/pm-console/src/main/java',
+            'product/afp-converter/afp-cli/build.gradle',
+            'management/pm-console/build.gradle'
+        ]
+        List<String> violations = []
+        scopeRoots.each { String root ->
+            File target = file(root)
+            if (!target.exists()) {
+                return
+            }
+            if (target.isFile()) {
+                String text = target.getText('UTF-8')
+                if (text.contains('com.upland.connect') || text.contains('com/upland/connect')) {
+                    violations.add("${root}: contains legacy namespace root")
+                }
+                return
+            }
+            fileTree(target) {
+                include '**/*.java', '**/*.gradle'
+            }.files.each { File src ->
+                String text = src.getText('UTF-8')
+                if (text.contains('com.upland.connect') || text.contains('com/upland/connect')) {
+                    String rel = projectDir.toPath().relativize(src.toPath()).toString().replace('\\', '/')
+                    violations.add("${rel}: contains legacy namespace root")
+                }
+            }
+        }
+        if (!violations.isEmpty()) {
+            throw new GradleException(
+                "Namespace-root violations detected:\n - " + violations.join('\n - ') +
+                    "\nRequired root namespace: solutions.pointzero.symphony"
+            )
+        }
+    }
+}
+
+tasks.register('prodBuild') {
+    group = 'build'
+    description = 'Production build path without test compilation/execution; assumes a prepared runtime/resource environment'
+    dependsOn('pmEnvironmentReady')
+    dependsOn('realmSourcesExport')
+    dependsOn(':afp-api:jar')
+    dependsOn(':afp-engine:jar')
+    dependsOn(':afp-cli:installDist')
+    dependsOn(':afp-cli:distZip')
+}
+
+tasks.register('realmPolicySyncPyTests', Exec) {
+    group = 'verification'
+    description = 'Runs Python unit tests for realm policy sync tooling.'
+    commandLine 'python3', '-m', 'unittest', 'discover', '-s', 'management/tools/tests', '-p', 'test_*.py'
 }
 
 tasks.register('qualityGate') {
     group = 'verification'
     description = 'Runs tests, fidelity gate, and documentation manifest generation as a release readiness gate'
+    dependsOn('pmEnvironmentReady')
+    dependsOn('environmentHealthSchemaCheck')
+    dependsOn('staleHistorySchemaCheck')
+    dependsOn('environmentPolicyDefaultsLint')
+    dependsOn('enforceProjectBoundaries')
+    dependsOn('enforceManagedTooling')
+    dependsOn('enforcePmApplicationRealmSeparation')
+    dependsOn('enforceSampleOutputReferenceIntegrity')
+    dependsOn('enforceBoilerplateRollupForFrameworkChanges')
+    dependsOn('enforceNamespaceRoot')
+    dependsOn('realmPolicySyncPyTests')
+    dependsOn('realmKnowledgeLinkGateStrict')
+    dependsOn('policyRulesLint')
+    dependsOn('dataDictionaryLint')
+    dependsOn('presentationRefLint')
+    dependsOn('planProgressCommitMarkerLint')
+    dependsOn('sqlReconstructionCheck')
+    dependsOn('topologyStructureDriftGateStrict')
+    dependsOn('hardcodedCriticalPathGateStrict')
     dependsOn(':afp-engine:test')
     dependsOn(':afp-engine:fidelityGate')
     dependsOn('documentationManifest')
     dependsOn('publishCiArtifacts')
+    dependsOn('enforceCiArtifactIndexIncludesPolicyLints')
+    dependsOn('enforceCiArtifactIndexIncludesEnvironmentReports')
 }
 
 subprojects {

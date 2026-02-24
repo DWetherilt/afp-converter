@@ -1,0 +1,90 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-24T23:10:55Z",
+  "summary": {
+    "issueCount": 7,
+    "requiresIssuesLogUpdate": false,
+    "taskCount": 60,
+    "triggeredIssueCount": 4,
+    "highSeverityOpenCount": 4,
+    "openIssueCount": 7,
+    "averageTaskPercentComplete": 100.0
+  },
+  "fidelity": {
+    "fidelityScore": 0.952575,
+    "averagePixelDiffRatio": 0.072288,
+    "tokenRecall": 0.959064,
+    "tokenPrecision": 1.0
+  },
+  "signals": [
+    "Average pixel diff ratio above target (0.03).",
+    "Token recall below target (0.98).",
+    "High-severity issues remain open."
+  ],
+  "triggeredIssues": [
+    {
+      "id": "ISSUE-001",
+      "status": "Open",
+      "title": "Excel automation and workbook update fragility due Office account/licensing context",
+      "matchedComponents": [
+        "management/docs/project-plan-progress.csv"
+      ]
+    },
+    {
+      "id": "ISSUE-005",
+      "status": "Open",
+      "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
+      "matchedComponents": [
+        "management/pm/state/boilerplate-state.sqlite",
+        "management/pm/state/project-state.sqlite"
+      ]
+    },
+    {
+      "id": "ISSUE-006",
+      "status": "Open",
+      "title": "Policy-governance sequence drift when updating constitutional/policy text without full checklist sequencing",
+      "matchedComponents": [
+        "management/docs/issues-log.csv",
+        "management/docs/policy-governance-events.csv",
+        "management/docs/policy-governance-events.xlsx",
+        "management/pm/reports/governance-alerts.json",
+        "management/pm/state/project-state.sqlite"
+      ]
+    },
+    {
+      "id": "ISSUE-007",
+      "status": "Open",
+      "title": "Environment readiness drift: daemon-only checks missed visible console verification",
+      "matchedComponents": [
+        "management/pm/reports/environment-health.json",
+        "management/pm/state/project-state.sqlite"
+      ]
+    }
+  ],
+  "openHighSeverityIssues": [
+    {
+      "id": "ISSUE-001",
+      "title": "Excel automation and workbook update fragility due Office account/licensing context",
+      "owner": "Human+AI",
+      "last_reviewed": "2026-02-24"
+    },
+    {
+      "id": "ISSUE-003",
+      "title": "Excel automation unavailable in headless/agent context (Apple event connection invalid), strict Excel-required mode fails as designed",
+      "owner": "Human+AI",
+      "last_reviewed": "2026-02-23"
+    },
+    {
+      "id": "ISSUE-005",
+      "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
+      "owner": "Human+AI",
+      "last_reviewed": "2026-02-24"
+    },
+    {
+      "id": "ISSUE-007",
+      "title": "Environment readiness drift: daemon-only checks missed visible console verification",
+      "owner": "Human+AI",
+      "last_reviewed": "2026-02-24"
+    }
+  ]
+}

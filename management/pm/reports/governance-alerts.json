@@ -1,0 +1,142 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-24T23:10:53Z",
+  "source": "sqlite",
+  "hasActiveGovernanceBreach": false,
+  "activeBreachCount": 0,
+  "trustEventCount": 3,
+  "policyGovernanceEventCount": 6,
+  "activeBreaches": [],
+  "trustEvents": [
+    {
+      "event_id": "GOV-2026-02-24-001",
+      "event_date": "2026-02-24",
+      "phase": "Trust Governance",
+      "status": "closed",
+      "checkpoint_id": "20260224T000000Z-realm-artifact-ringfencing",
+      "issue_id": "ISSUE-006",
+      "summary": "Human instruction required strict realm ringfencing so each realm keeps private artifact manifestation with only parent-level linkage.",
+      "evidence": "build.gradle|AI-POLICY.md|README.md|management/docs/project-plan-progress.csv|management/pm/workflow/workstream-realm-map.json",
+      "updated_by": "Human+AI",
+      "event_ref": "Governance Event | 2026-02-24 | #001"
+    },
+    {
+      "event_id": "GOV-2026-02-18-004",
+      "event_date": "2026-02-18",
+      "phase": "Trust Governance",
+      "status": "closed",
+      "checkpoint_id": "20260218T215420Z-0.2.0-beta.1-governance-breach-and-trust-sot",
+      "issue_id": "ISSUE-006",
+      "summary": "Human instruction established database-backed file discipline and mirrored VCS snapshot reporting as part of trust mechanics.",
+      "evidence": "management/pm-management/tools/src/main/java/solutions/pointzero/symphony/management/pm/management/tools/StateDatabaseTool.java|build.gradle|management/pm/reports/version-control-ledger.json|management/pm/state/project-state.sqlite",
+      "updated_by": "Human+AI",
+      "event_ref": "Governance Event | 2026-02-18 | #004"
+    },
+    {
+      "event_id": "GOV-2026-02-18-003",
+      "event_date": "2026-02-18",
+      "phase": "Trust Governance",
+      "status": "closed",
+      "checkpoint_id": "20260218T215420Z-0.2.0-beta.1-governance-breach-and-trust-sot",
+      "issue_id": "ISSUE-006",
+      "summary": "Human instruction established mandatory governance-breach notification and trust-grant logging via database-backed governance mechanics.",
+      "evidence": "AI-POLICY.md|build.gradle|management/pm-management/tools/src/main/java/solutions/pointzero/symphony/management/pm/management/tools/StateDatabaseTool.java|management/pm/reports/governance-alerts.json",
+      "updated_by": "Human+AI",
+      "event_ref": "Governance Event | 2026-02-18 | #003"
+    }
+  ],
+  "policyGovernanceEvents": [
+    {
+      "event_id": "GOV-2026-02-24-003",
+      "event_date": "2026-02-24",
+      "phase": "Policy Governance",
+      "status": "closed",
+      "checkpoint_id": "20260224T000000Z-renderer-output-detemplate",
+      "issue_id": "ISSUE-006",
+      "summary": "Resolved renderer normalization regression by enforcing raw AFP text HTML defaults, explicit semantic-template opt-in, and workstream-governed validation across sample corpus.",
+      "evidence": "product/afp-converter/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpHtmlRenderer.java|product/afp-converter/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java|management/docs/project-plan-progress.csv|management/pm/workflow/workstream-realm-map.json",
+      "updated_by": "Human+AI",
+      "event_ref": "Governance Event | 2026-02-24 | #003"
+    },
+    {
+      "event_id": "GOV-2026-02-24-002",
+      "event_date": "2026-02-24",
+      "phase": "Policy Governance",
+      "status": "closed",
+      "checkpoint_id": "20260224T000000Z-sample-baseline-protection-correction",
+      "issue_id": "ISSUE-006",
+      "summary": "Corrected sample baseline handling by restoring protected comparison artifacts and enforcing build-output separation from baseline references.",
+      "evidence": "product/afp-converter/afp-cli/build.gradle|build.gradle|management/pm/workflow/sample-output-reference-manifest.json|AI-POLICY.md|README.md|management/docs/project-plan-progress.csv",
+      "updated_by": "Human+AI",
+      "event_ref": "Governance Event | 2026-02-24 | #002"
+    },
+    {
+      "event_id": "GOV-2026-02-23-001",
+      "event_date": "2026-02-23",
+      "phase": "Policy Governance",
+      "status": "closed",
+      "checkpoint_id": "20260223T221349Z-unknown-posthoc-progress-realm-reports-2026-02-23",
+      "issue_id": "ISSUE-006",
+      "summary": "Recorded and remediated policy-governance sequencing breach where AI-POLICY.md was edited before checkpoint creation; applied compensating checkpoint/listing controls and documented breach.",
+      "evidence": "AI-POLICY.md|SESSION_CHANGELOG.md|management/docs/policy-governance-events.csv|management/pm/checkpoints/20260223T221349Z-unknown-posthoc-progress-realm-reports-2026-02-23",
+      "updated_by": "Human+AI",
+      "event_ref": "Governance Event | 2026-02-23 | #001"
+    },
+    {
+      "event_id": "GOV-2026-02-19-001",
+      "event_date": "2026-02-19",
+      "phase": "Policy Governance",
+      "status": "closed",
+      "checkpoint_id": "20260219T194452Z-0.2.0-beta.1-checkpoint",
+      "issue_id": "ISSUE-006",
+      "summary": "Executed controlled SQL managed-file delete-and-remanifest drill with rollback checkpoint and reconstruction/quality verification.",
+      "evidence": "management/pm/state/managed-delete-manifest.txt|management/pm/reports/remanifest-drill.json|management/pm/checkpoints/20260219T194452Z-0.2.0-beta.1-checkpoint|build.gradle",
+      "updated_by": "Human+AI",
+      "event_ref": "Governance Event | 2026-02-19 | #001"
+    },
+    {
+      "event_id": "GOV-2026-02-18-002",
+      "event_date": "2026-02-18",
+      "phase": "Policy Governance",
+      "status": "closed",
+      "checkpoint_id": "20260218T214702Z-0.2.0-beta.1-governance-events-workbook",
+      "issue_id": "ISSUE-006",
+      "summary": "Introduced dedicated governance events tracker workbook and build task automation.",
+      "evidence": "management/docs/policy-governance-events.csv|management/docs/policy-governance-events.xlsx|build.gradle|management/pm-management/tools/src/main/java/solutions/pointzero/symphony/management/pm/management/tools/PolicyGovernanceWorkbookUpdater.java",
+      "updated_by": "Human+AI",
+      "event_ref": "Governance Event | 2026-02-18 | #002"
+    },
+    {
+      "event_id": "GOV-2026-02-18-001",
+      "event_date": "2026-02-18",
+      "phase": "Policy Governance",
+      "status": "closed",
+      "checkpoint_id": "20260218T214353Z-0.2.0-beta.1-policy-first-principles-governance-fix",
+      "issue_id": "ISSUE-006",
+      "summary": "Corrected policy-governance sequence drift and encoded first-principles sequencing invariance.",
+      "evidence": "AI-POLICY.md|management/docs/issues-log.csv|SESSION_CHANGELOG.md|management/pm/checkpoints/20260218T214353Z-0.2.0-beta.1-policy-first-principles-governance-fix",
+      "updated_by": "Human+AI",
+      "event_ref": "Governance Event | 2026-02-18 | #001"
+    }
+  ],
+  "policyRuleAudit": {
+    "enabledPolicyRuleCount": 71,
+    "requiredRuleEnabled": true,
+    "requiredRuleId": "PM-COMMS-001"
+  },
+  "sqlAuthorityAudit": {
+    "driftDetected": false,
+    "driftReportPath": "management/pm/reports/sql-authority-pm.json"
+  },
+  "sqlAuthorityDrift": {
+    "schemaVersion": "1",
+    "generatedAt": "2026-02-24T23:10:53Z",
+    "realm": "pm",
+    "trackedFileCount": 35,
+    "mismatchCount": 0,
+    "ok": true,
+    "mismatches": [],
+    "message": "SQL authority verification passed."
+  },
+  "message": "No active governance breaches."
+}

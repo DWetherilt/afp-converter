@@ -1,0 +1,71 @@
+plugins {
+    id 'java-library'
+}
+
+dependencies {
+    api project(':afp-api')
+    implementation 'org.apache.pdfbox:pdfbox:2.0.31'
+    implementation 'com.openhtmltopdf:openhtmltopdf-pdfbox:1.0.10'
+    implementation 'org.afplib:afplib:0.0.15'
+}
+
+tasks.register('fidelityReport', Test) {
+    group = 'verification'
+    description = 'Generates a corpus-based PDF fidelity report using management/docs/fidelity-corpus.txt'
+    dependsOn tasks.named('testClasses')
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform()
+    include '**/*FidelityReportIT.class'
+    systemProperty 'afp.fidelity.reportPath', rootProject.file('product/afp-converter/preview/fidelity-report.json').path
+}
+
+tasks.register('fidelityGate') {
+    group = 'verification'
+    description = 'Fails build when fidelity metrics regress past configured thresholds'
+    dependsOn tasks.named('fidelityReport')
+    doLast {
+        File reportFile = rootProject.file('product/afp-converter/preview/fidelity-report.json')
+        if (!reportFile.exists()) {
+            File corpusFile = rootProject.file('management/docs/fidelity-corpus.txt')
+            boolean corpusAssetsPresent = false
+            if (corpusFile.exists()) {
+                corpusFile.readLines('UTF-8').each { String raw ->
+                    String line = (raw ?: '').trim()
+                    if (!line || line.startsWith('#')) {
+                        return
+                    }
+                    List<String> parts = line.split(/\|/, -1)*.trim()
+                    if (parts.size() >= 3) {
+                        File afp = rootProject.file(parts[1])
+                        File expected = rootProject.file(parts[2])
+                        if (afp.exists() && expected.exists()) {
+                            corpusAssetsPresent = true
+                        }
+                    }
+                }
+            }
+            if (!corpusAssetsPresent) {
+                logger.warn("Skipping fidelity gate: no fidelity corpus assets available; report not generated at ${reportFile}")
+                return
+            }
+            throw new GradleException("Missing fidelity report: ${reportFile}")
+        }
+        def json = new groovy.json.JsonSlurper().parse(reportFile)
+        double maxPixelDiff = (System.getProperty('afp.fidelity.maxPixelDiff', '0.20')) as double
+        double minTokenRecall = (System.getProperty('afp.fidelity.minTokenRecall', '0.90')) as double
+        double minFidelityScore = (System.getProperty('afp.fidelity.minScore', '0.85')) as double
+
+        double pixelDiff = (json.summary.averagePixelDiffRatio ?: 1.0) as double
+        double tokenRecall = (json.text.tokenRecall ?: 0.0) as double
+        double score = (json.summary.fidelityScore ?: 0.0) as double
+        int caseCount = (json.inputs?.cases ?: 0) as int
+
+        if (caseCount <= 0 || pixelDiff > maxPixelDiff || tokenRecall < minTokenRecall || score < minFidelityScore) {
+            throw new GradleException(
+                "Fidelity gate failed: cases=${caseCount}, pixelDiff=${pixelDiff}, tokenRecall=${tokenRecall}, score=${score} " +
+                "(thresholds: cases>0, maxPixelDiff=${maxPixelDiff}, minTokenRecall=${minTokenRecall}, minScore=${minFidelityScore})"
+            )
+        }
+    }
+}

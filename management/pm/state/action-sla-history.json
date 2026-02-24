@@ -1,0 +1,23 @@
+{
+  "schemaVersion": "1",
+  "generatedAt": "2026-02-24T23:11:06Z",
+  "source": "management/pm/reports/action-items.json",
+  "history": [
+    {
+      "date": "2026-02-23",
+      "capturedAt": "2026-02-23T23:30:35Z",
+      "total": 5,
+      "open": 3,
+      "stale": 0,
+      "breachRatioPct": 0.0
+    },
+    {
+      "date": "2026-02-24",
+      "capturedAt": "2026-02-24T23:11:06Z",
+      "total": 5,
+      "open": 3,
+      "stale": 0,
+      "breachRatioPct": 0.0
+    }
+  ]
+}

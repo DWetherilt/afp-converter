@@ -1,0 +1,43 @@
+{
+  "schemaVersion": "1",
+  "packageId": "pz-boilerplate-intelliJ-boilerplate-sync-triage-workbook-2026-02-18",
+  "sourceRepo": "afp-converter",
+  "targetRepo": "pz-boilerplate-intelliJ",
+  "files": [
+    {
+      "path": "README.md",
+      "sizeBytes": 715,
+      "sha256": "3c883eb5a5ab2d5790bc4c1e5170afb67406b9b3beb1ae8c568f0b9f2c8d15a4"
+    },
+    {
+      "path": "apply-checklist.md",
+      "sizeBytes": 964,
+      "sha256": "80e4bc1b1d12505e04b8708f2e75b5c899e3aff8787c5f48be5f81a8a29b4e27"
+    },
+    {
+      "path": "fresh-session-prompt.md",
+      "sizeBytes": 341,
+      "sha256": "53c5e3a97385e418b0fcb631b4b72d926967e28c7209405004d80911960d47e4"
+    },
+    {
+      "path": "patches/0001-boilerplate-sync-triage-framework.patch",
+      "sizeBytes": 30117,
+      "sha256": "8a193644f0b55ac5c26a8b21a4d63301d16d4b1b6d30be06483252af9789a964"
+    },
+    {
+      "path": "templates/BoilerplateSyncWorkbookUpdater.java",
+      "sizeBytes": 13845,
+      "sha256": "d3b1be050a54c7b14358bce6ac5664ba4fa9e4f360d734946c6d3348d73c97fc"
+    },
+    {
+      "path": "templates/build-gradle-snippets.md",
+      "sizeBytes": 2644,
+      "sha256": "0be55ecb63d9a9ab4c906f2fcc721090d9be29a7cf6fc748b73a80cdcc96f2c6"
+    },
+    {
+      "path": "templates/policy-readme-snippets.md",
+      "sizeBytes": 544,
+      "sha256": "ed2919736404428a8fec4d5f9d485a6fe3a04499b5ebd8c782c7de43ede8acf9"
+    }
+  ]
+}

@@ -1,3 +1,9 @@
-rootProject.name = 'afp-converter'
+rootProject.name = 'pzAiCore'
 
-include 'afp-api', 'afp-engine', 'afp-cli', 'afp-tools'
+include 'afp-api', 'afp-engine', 'afp-cli', 'pm-tools', 'pm-console'
+
+project(':afp-api').projectDir = file('product/afp-converter/afp-api')
+project(':afp-engine').projectDir = file('product/afp-converter/afp-engine')
+project(':afp-cli').projectDir = file('product/afp-converter/afp-cli')
+project(':pm-tools').projectDir = file('management/pm-tools')
+project(':pm-console').projectDir = file('management/pm-console')

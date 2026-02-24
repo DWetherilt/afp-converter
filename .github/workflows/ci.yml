@@ -1,0 +1,99 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    - cron: "17 3 * * 1"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure no tracked SQLite transient files
+        run: |
+          if git ls-files | grep -E '\.sqlite-(wal|shm)$' >/dev/null; then
+            echo "Tracked SQLite transient files detected (.sqlite-wal/.sqlite-shm)."
+            git ls-files | grep -E '\.sqlite-(wal|shm)$'
+            exit 1
+          fi
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Validate boilerplate packages
+        run: |
+          for dir in product/boilerplate/update-packages/pz-boilerplate-intelliJ/*; do
+            [ -d "$dir" ] || continue
+            management/tools/validate_boilerplate_package.sh "$dir"
+          done
+      - name: Validate boilerplate package checksums
+        run: |
+          base="product/boilerplate/update-packages/pz-boilerplate-intelliJ"
+          for sumfile in "$base"/*.zip.sha256; do
+            [ -f "$sumfile" ] || continue
+            (cd "$base" && sha256sum -c "$(basename "$sumfile")")
+          done
+      - name: Recovery quick check
+        run: management/tools/recovery_quick_check.sh
+      - name: Production build
+        run: ./gradlew --no-daemon prodBuild
+      - name: Environment health schema check
+        run: ./gradlew --no-daemon environmentHealthSchemaCheck
+      - name: Stale history schema check
+        run: ./gradlew --no-daemon staleHistorySchemaCheck
+      - name: Environment policy defaults lint
+        run: ./gradlew --no-daemon environmentPolicyDefaultsLint
+      - name: Documentation manifest
+        run: ./gradlew --no-daemon documentationManifest
+      - name: Upload recovery artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: recovery-artifacts
+          path: |
+            management/pm/reports/sql-drift-summary.json
+            management/pm/reports/project-plan-progress-data.json
+            management/pm/reports/issues-log-tickle.json
+            management/pm/reports/issues-effectiveness.json
+            management/pm/reports/environment-health.json
+            management/pm/reports/pm-console-stale-cleanup.json
+            management/pm/reports/recovery-status.json
+            management/pm/state/critical-db-sha256.txt
+            management/pm/state/pm-console-stale-history.json
+
+  remanifest-drill:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Execute remanifest drill
+        env:
+          AFP_REMANIFEST_APPROVED: "true"
+        run: ./gradlew --no-daemon remanifestDrillValidate
+      - name: Upload remanifest drill artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: remanifest-drill-artifacts
+          path: |
+            management/pm/reports/remanifest-drill.json
+            management/pm/state/managed-delete-manifest.txt

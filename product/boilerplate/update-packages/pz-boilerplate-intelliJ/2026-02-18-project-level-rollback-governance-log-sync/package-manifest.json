@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1",
+  "packageId": "pz-boilerplate-intelliJ-rollback-governance-log-sync-2026-02-18",
+  "sourceRepo": "afp-converter",
+  "targetRepo": "pz-boilerplate-intelliJ",
+  "files": [
+    {
+      "path": "README.md",
+      "sizeBytes": 832,
+      "sha256": "f509387141904b9c73fd7e4ac77b112ce790f8900ab3453e2b15c22969d1e05b"
+    },
+    {
+      "path": "apply-checklist.md",
+      "sizeBytes": 866,
+      "sha256": "ca20cb5d68edaca0713cfd2fac92ae49a810fba48a09308f8685bd4f7a270878"
+    },
+    {
+      "path": "fresh-session-prompt.md",
+      "sizeBytes": 508,
+      "sha256": "d6742ca82c20a431486fe11e87b62889896cd9b6ac53e193150ff1b7c9d098fc"
+    },
+    {
+      "path": "patches/0001-log-sync-template.patch",
+      "sizeBytes": 1120,
+      "sha256": "85e51e0f271b6ece55fe7d9a1e729d24d242486b57e076f972fede89bc7e4ce8"
+    },
+    {
+      "path": "templates/process-evolution-entry.md",
+      "sizeBytes": 347,
+      "sha256": "0482dccc000409a4ceec06c2b7d906ddcaa187f6919acb0d06c984e22176ea15"
+    },
+    {
+      "path": "templates/session-changelog-entry.md",
+      "sizeBytes": 400,
+      "sha256": "d9abe6283afd29a9387b2e34e8059e6128f4bb824cbe998915d280ff61e12ab7"
+    }
+  ]
+}
