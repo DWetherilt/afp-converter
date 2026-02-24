@@ -1,10 +1,10 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:22:36Z",
+  "generatedAt": "2026-02-23T23:30:45Z",
   "issuesLogPath": "management/docs/issues-log.csv",
   "issuesLogTouchedInWorkingTree": true,
-  "changedPathCount": 41,
-  "triggeredIssueCount": 4,
+  "changedPathCount": 143,
+  "triggeredIssueCount": 6,
   "requiresIssuesLogUpdate": false,
   "triggeredIssues": [
     {
@@ -13,7 +13,24 @@
       "title": "Excel automation and workbook update fragility due Office account/licensing context",
       "matchedComponents": [
         "management/docs/project-plan-progress.csv",
+        "management/docs/project-plan-progress.xlsx",
         "management/pm/reports/project-plan-progress-data.json"
+      ]
+    },
+    {
+      "id": "ISSUE-002",
+      "status": "Open",
+      "title": "Workbook repair/corruption when managed sheets are added by XML updater without synchronizing docProps/app.xml sheet metadata",
+      "matchedComponents": [
+        "management/docs/project-plan-progress.xlsx"
+      ]
+    },
+    {
+      "id": "ISSUE-004",
+      "status": "Open",
+      "title": "Progress Graph sheet visual/layout quality needs tuning despite functional correctness",
+      "matchedComponents": [
+        "management/docs/project-plan-progress.xlsx"
       ]
     },
     {
@@ -21,7 +38,7 @@
       "status": "Open",
       "title": "Workbook corruption recurrence control: restore-first protocol and strict no-XML-fallback handling",
       "matchedComponents": [
-        "management/docs/boilerplate-sync-candidates.xlsx",
+        "management/docs/project-plan-progress.xlsx",
         "management/pm/state/boilerplate-state.sqlite",
         "management/pm/state/project-state.sqlite"
       ]
@@ -32,7 +49,9 @@
       "title": "Policy-governance sequence drift when updating constitutional/policy text without full checklist sequencing",
       "matchedComponents": [
         "management/docs/issues-log.csv",
+        "management/pm/reports/documentation-manifest.json",
         "management/pm/reports/governance-alerts.json",
+        "management/pm/reports/version-control-ledger.json",
         "management/pm/state/project-state.sqlite"
       ]
     },
@@ -42,6 +61,7 @@
       "title": "Environment readiness drift: daemon-only checks missed visible console verification",
       "matchedComponents": [
         "management/pm/reports/environment-health.json",
+        "management/pm/reports/pm-console-stale-cleanup.json",
         "management/pm/state/project-state.sqlite"
       ]
     }

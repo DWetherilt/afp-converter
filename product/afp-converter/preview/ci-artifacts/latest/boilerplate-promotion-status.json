@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:22:41Z",
+  "generatedAt": "2026-02-23T23:30:49Z",
   "source": "sqlite",
   "sourceTable": "package_candidates",
   "candidateCount": 25,

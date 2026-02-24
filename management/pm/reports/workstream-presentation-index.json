@@ -1,9 +1,22 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:22:23Z",
+  "generatedAt": "2026-02-23T23:30:33Z",
   "sourceCsv": "management/docs/project-plan-progress.csv",
-  "activeWorkstreamCount": 0,
-  "activeWorkstreams": [],
+  "activeWorkstreamCount": 1,
+  "activeWorkstreams": [
+    {
+      "presentationWorkstream": "Workstream A",
+      "presentationToken": "A",
+      "internalWorkstreamUid": "WS-2026-002",
+      "internalWorkstreamLabel": "Renderer Continuation 2026-02-23-B",
+      "priorityRank": 12,
+      "taskCount": 2,
+      "tasks": [
+        "Add deterministic ordering assertions for resource-depth tie cases across paint kinds",
+        "Publish continuation diagnostics and next-step delta after slice validations"
+      ]
+    }
+  ],
   "rules": {
     "internalIds": "Persistent unique IDs (workstream_uid) are authoritative for storage/history.",
     "presentationIds": "A..Z aliases are generated for active workstreams only and can change between cycles.",

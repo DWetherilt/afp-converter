@@ -1,11 +1,11 @@
 {
     "schemaVersion": "1",
-    "generatedAt": "2026-02-23T23:22:23Z",
+    "generatedAt": "2026-02-23T23:30:33Z",
     "planPath": "management/docs/project-plan.md",
     "actionCount": 9,
     "nextInstruction": {
         "title": "Immediate Next Step",
-        "task": "formalize the next active workstream using a new unique internal `workstream_uid` (do not reuse historical IDs such as `WS-A` or `WS-2026-001`).",
+        "task": "execute `WS-2026-002` slice 2 (deterministic resource-depth tie ordering assertions across paint kinds) and keep progress notes linked to internal UID.",
         "source": "## Proposed Immediate Next Execution Sequence"
     },
     "actions": [
@@ -90,9 +90,9 @@
         }
     ],
     "immediateSequence": [
-        "formalize the next active workstream using a new unique internal `workstream_uid` (do not reuse historical IDs such as `WS-A` or `WS-2026-001`).",
+        "execute `WS-2026-002` slice 2 (deterministic resource-depth tie ordering assertions across paint kinds) and keep progress notes linked to internal UID.",
         "publish active presentation aliases (`Workstream A..Z`) from current active rows via `management/pm/reports/workstream-presentation-index.json`.",
-        "start implementation against the top active presentation alias while retaining internal UID traceability in progress/report artifacts.",
+        "execute `WS-2026-002` slice 3 closeout (publish continuation diagnostics and next-step delta after slice validations).",
         "rerun `qualityGate` and PM refresh/report phases, then publish updated next-step guidance."
     ]
 }

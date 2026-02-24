@@ -114,6 +114,7 @@ public final class AfpInterpreter {
         }
         decodeWarnings.addAll(afplib.warnings());
         decodeWarnings.add(scopeGraph.summaryLine());
+        decodeWarnings.add(scopeGraph.transitionBreakdownLine());
         List<String> afplibFragments = new ArrayList<>();
         for (AfplibSemanticPass.TextChunk chunk : afplib.textDataChunks()) {
             AfpCodePageProfile chunkProfile = codePage;

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:22:32Z",
+  "generatedAt": "2026-02-23T23:30:41Z",
   "source": "sqlite",
   "query": "render",
   "databaseCount": 3,
@@ -9,7 +9,7 @@
   "dictionaryMatches": [
     {
       "token": "renderer",
-      "totalOccurrences": 60
+      "totalOccurrences": 66
     },
     {
       "token": "rendering",
@@ -1069,7 +1069,7 @@
       "db": "management/pm/state/pm-realm.sqlite",
       "token": "renderer",
       "path": "management/docs/project-plan-progress.csv",
-      "occurrences": 10,
+      "occurrences": 16,
       "realm": "pm",
       "language": "csv"
     },

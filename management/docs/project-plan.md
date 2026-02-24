@@ -195,7 +195,7 @@ Deliver near-IBM parity rendering for AFP input by implementing true AFP object/
   - `fidelityScore >= 0.95` and `averagePixelDiffRatio <= 0.03` on agreed corpus.
 
 ## Proposed Immediate Next Execution Sequence
-1. formalize the next active workstream using a new unique internal `workstream_uid` (do not reuse historical IDs such as `WS-A` or `WS-2026-001`).
+1. execute `WS-2026-002` slice 2 (deterministic resource-depth tie ordering assertions across paint kinds) and keep progress notes linked to internal UID.
 2. publish active presentation aliases (`Workstream A..Z`) from current active rows via `management/pm/reports/workstream-presentation-index.json`.
-3. start implementation against the top active presentation alias while retaining internal UID traceability in progress/report artifacts.
+3. execute `WS-2026-002` slice 3 closeout (publish continuation diagnostics and next-step delta after slice validations).
 4. rerun `qualityGate` and PM refresh/report phases, then publish updated next-step guidance.

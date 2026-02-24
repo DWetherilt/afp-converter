@@ -80,6 +80,12 @@ class AfpInterpreterTest {
             interpretation.semantics().decodeWarnings().stream().anyMatch(s -> s.startsWith("scope-graph: transitions=")),
             "expected scope-graph summary in decode warnings"
         );
+        assertTrue(
+            interpretation.semantics().decodeWarnings().contains(
+                "scope-graph: transition-breakdown overlay(+1/-1,underflow=1,final=0), resource(+1/-0,underflow=0,final=1), page(+1/-1,underflow=0,final=0)"
+            ),
+            "expected scope-graph transition breakdown in decode warnings"
+        );
     }
 
     private static byte[] sf(String sfIdHex, byte[] payload) {

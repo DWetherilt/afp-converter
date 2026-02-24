@@ -15,17 +15,53 @@ final class AfpScopeGraph {
     private final int maxResourceDepth;
     private final int maxPageDepth;
     private final int transitionCount;
+    private final int overlayBeginTransitions;
+    private final int overlayEndTransitions;
+    private final int overlayUnderflows;
+    private final int resourceBeginTransitions;
+    private final int resourceEndTransitions;
+    private final int resourceUnderflows;
+    private final int pageBeginTransitions;
+    private final int pageEndTransitions;
+    private final int pageUnderflows;
+    private final int finalOverlayDepth;
+    private final int finalResourceDepth;
+    private final int finalPageDepth;
     private final List<String> warnings;
 
     private AfpScopeGraph(int maxOverlayDepth,
                           int maxResourceDepth,
                           int maxPageDepth,
                           int transitionCount,
+                          int overlayBeginTransitions,
+                          int overlayEndTransitions,
+                          int overlayUnderflows,
+                          int resourceBeginTransitions,
+                          int resourceEndTransitions,
+                          int resourceUnderflows,
+                          int pageBeginTransitions,
+                          int pageEndTransitions,
+                          int pageUnderflows,
+                          int finalOverlayDepth,
+                          int finalResourceDepth,
+                          int finalPageDepth,
                           List<String> warnings) {
         this.maxOverlayDepth = maxOverlayDepth;
         this.maxResourceDepth = maxResourceDepth;
         this.maxPageDepth = maxPageDepth;
         this.transitionCount = transitionCount;
+        this.overlayBeginTransitions = overlayBeginTransitions;
+        this.overlayEndTransitions = overlayEndTransitions;
+        this.overlayUnderflows = overlayUnderflows;
+        this.resourceBeginTransitions = resourceBeginTransitions;
+        this.resourceEndTransitions = resourceEndTransitions;
+        this.resourceUnderflows = resourceUnderflows;
+        this.pageBeginTransitions = pageBeginTransitions;
+        this.pageEndTransitions = pageEndTransitions;
+        this.pageUnderflows = pageUnderflows;
+        this.finalOverlayDepth = finalOverlayDepth;
+        this.finalResourceDepth = finalResourceDepth;
+        this.finalPageDepth = finalPageDepth;
         this.warnings = List.copyOf(warnings);
     }
 
@@ -37,6 +73,15 @@ final class AfpScopeGraph {
         int maxResourceDepth = 0;
         int maxPageDepth = 0;
         int transitions = 0;
+        int overlayBeginTransitions = 0;
+        int overlayEndTransitions = 0;
+        int overlayUnderflows = 0;
+        int resourceBeginTransitions = 0;
+        int resourceEndTransitions = 0;
+        int resourceUnderflows = 0;
+        int pageBeginTransitions = 0;
+        int pageEndTransitions = 0;
+        int pageUnderflows = 0;
         List<String> warnings = new ArrayList<>();
 
         for (int i = 0; i < fields.size(); i++) {
@@ -47,28 +92,43 @@ final class AfpScopeGraph {
             int beforePage = pageDepth;
 
             switch (sfId) {
-                case SF_BMO -> overlayDepth++;
+                case SF_BMO -> {
+                    overlayDepth++;
+                    overlayBeginTransitions++;
+                }
                 case SF_EMO -> {
                     if (overlayDepth == 0) {
+                        overlayUnderflows++;
                         warnings.add("scope-graph: overlay scope underflow at field index " + i + " (EMO)");
                     } else {
                         overlayDepth--;
+                        overlayEndTransitions++;
                     }
                 }
-                case SF_BRS -> resourceDepth++;
+                case SF_BRS -> {
+                    resourceDepth++;
+                    resourceBeginTransitions++;
+                }
                 case SF_ERS -> {
                     if (resourceDepth == 0) {
+                        resourceUnderflows++;
                         warnings.add("scope-graph: resource scope underflow at field index " + i + " (ERS)");
                     } else {
                         resourceDepth--;
+                        resourceEndTransitions++;
                     }
                 }
-                case SF_BPG -> pageDepth++;
+                case SF_BPG -> {
+                    pageDepth++;
+                    pageBeginTransitions++;
+                }
                 case SF_EPG -> {
                     if (pageDepth == 0) {
+                        pageUnderflows++;
                         warnings.add("scope-graph: page scope underflow at field index " + i + " (EPG)");
                     } else {
                         pageDepth--;
+                        pageEndTransitions++;
                     }
                 }
                 default -> {
@@ -98,6 +158,18 @@ final class AfpScopeGraph {
             maxResourceDepth,
             maxPageDepth,
             transitions,
+            overlayBeginTransitions,
+            overlayEndTransitions,
+            overlayUnderflows,
+            resourceBeginTransitions,
+            resourceEndTransitions,
+            resourceUnderflows,
+            pageBeginTransitions,
+            pageEndTransitions,
+            pageUnderflows,
+            overlayDepth,
+            resourceDepth,
+            pageDepth,
             warnings
         );
     }
@@ -112,5 +184,33 @@ final class AfpScopeGraph {
             + ", maxOverlayDepth=" + maxOverlayDepth
             + ", maxResourceDepth=" + maxResourceDepth
             + ", maxPageDepth=" + maxPageDepth;
+    }
+
+    String transitionBreakdownLine() {
+        return "scope-graph: transition-breakdown overlay(+"
+            + overlayBeginTransitions
+            + "/-"
+            + overlayEndTransitions
+            + ",underflow="
+            + overlayUnderflows
+            + ",final="
+            + finalOverlayDepth
+            + "), resource(+"
+            + resourceBeginTransitions
+            + "/-"
+            + resourceEndTransitions
+            + ",underflow="
+            + resourceUnderflows
+            + ",final="
+            + finalResourceDepth
+            + "), page(+"
+            + pageBeginTransitions
+            + "/-"
+            + pageEndTransitions
+            + ",underflow="
+            + pageUnderflows
+            + ",final="
+            + finalPageDepth
+            + ")";
     }
 }

@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-23T23:22:26Z",
+  "generatedAt": "2026-02-23T23:30:34Z",
   "source": "sqlite",
   "realm": "application",
   "realmMapPath": "management/pm/workflow/workstream-realm-map.json",
@@ -10,9 +10,10 @@
     "WS-C",
     "WS-D",
     "WS-F",
-    "WS-2026-001"
+    "WS-2026-001",
+    "WS-2026-002"
   ],
-  "taskCount": 18,
+  "taskCount": 21,
   "filteredCompletedCommittedCount": 11,
   "completedCommittedRule": "Rows with status=complete/completed/done and notes marker '[github:committed]' are excluded.",
   "tasks": [
@@ -231,6 +232,42 @@
       "percent_complete": "100",
       "last_updated": "2026-02-20",
       "notes": "Extended PTX alias normalization and image evidence diagnostics, filtered non-raster BIM payloads, switched to deterministic matching, surfaced token+payload binding evidence (sample shows JPEG candidate payload with zero BIM token overlap), implemented evidence-driven resource-first image selection with dedicated image-resolution policy service, and added confidence-aware embedded-resource matching (token/sequence/size heuristics) with strict per-object fallback behavior. Closed in single-pass closeout after full qualityGate/documentationManifest validation and cross-realm sync. [github:not-committed]"
+    },
+    {
+      "workstream_uid": "WS-2026-002",
+      "workstream_label": "Renderer Continuation 2026-02-23-B",
+      "workstream_priority_rank": "12",
+      "workstream": "Renderer Continuation 2026-02-23-B",
+      "task": "Add scope-graph transition diagnostics breakdown for continuation triage",
+      "priority": "High",
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-23",
+      "notes": "Implemented scope-graph transition breakdown diagnostics (begin/end/underflow/final depth per scope) and validated interpreter coverage in unit tests. [github:not-committed]"
+    },
+    {
+      "workstream_uid": "WS-2026-002",
+      "workstream_label": "Renderer Continuation 2026-02-23-B",
+      "workstream_priority_rank": "12",
+      "workstream": "Renderer Continuation 2026-02-23-B",
+      "task": "Add deterministic ordering assertions for resource-depth tie cases across paint kinds",
+      "priority": "High",
+      "status": "Not Started",
+      "percent_complete": "0",
+      "last_updated": "2026-02-23",
+      "notes": "Pending after scope-graph diagnostics slice."
+    },
+    {
+      "workstream_uid": "WS-2026-002",
+      "workstream_label": "Renderer Continuation 2026-02-23-B",
+      "workstream_priority_rank": "12",
+      "workstream": "Renderer Continuation 2026-02-23-B",
+      "task": "Publish continuation diagnostics and next-step delta after slice validations",
+      "priority": "Medium",
+      "status": "Not Started",
+      "percent_complete": "0",
+      "last_updated": "2026-02-23",
+      "notes": "Closeout task for WS-2026-002."
     }
   ]
 }
