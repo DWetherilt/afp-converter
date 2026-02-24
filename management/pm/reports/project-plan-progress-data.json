@@ -1,8 +1,8 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-24T17:03:25Z",
+  "generatedAt": "2026-02-24T23:11:03Z",
   "source": "sqlite",
-  "taskCount": 37,
+  "taskCount": 40,
   "filteredCompletedCommittedCount": 20,
   "completedCommittedRule": "Rows with status=complete/completed/done and notes marker '[github:committed]' are excluded.",
   "tasks": [
@@ -449,13 +449,49 @@
       "percent_complete": "100",
       "last_updated": "2026-02-20",
       "notes": "Quality gate validation completed after migration fixes for artifact indexing, tooling guards, tests, and fidelity gate pathing. [github:not-committed]"
+    },
+    {
+      "workstream_uid": "WS-2026-005",
+      "workstream_label": "Renderer Output De-Templating 2026-02-24",
+      "workstream_priority_rank": "15",
+      "workstream": "Renderer Output De-Templating 2026-02-24",
+      "task": "Remove forced semantic template rendering from default HTML sample generation path",
+      "priority": "High",
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-24",
+      "notes": "Updated `AfpHtmlRenderer` default behavior to render raw extracted AFP text preview; semantic template mode is now explicit opt-in only. [github:not-committed]"
+    },
+    {
+      "workstream_uid": "WS-2026-005",
+      "workstream_label": "Renderer Output De-Templating 2026-02-24",
+      "workstream_priority_rank": "15",
+      "workstream": "Renderer Output De-Templating 2026-02-24",
+      "task": "Prevent template table injection in DOM diagnostics unless semantic template mode is explicitly enabled",
+      "priority": "High",
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-24",
+      "notes": "Guarded `FakeEngineOutputGenerator` layout-table DOM injection behind the same semantic-template opt-in flag. [github:not-committed]"
+    },
+    {
+      "workstream_uid": "WS-2026-005",
+      "workstream_label": "Renderer Output De-Templating 2026-02-24",
+      "workstream_priority_rank": "15",
+      "workstream": "Renderer Output De-Templating 2026-02-24",
+      "task": "Validate non-normalized sample outputs across all AFP fixtures in preview generated output",
+      "priority": "Medium",
+      "status": "Complete",
+      "percent_complete": "100",
+      "last_updated": "2026-02-24",
+      "notes": "Executed `:afp-engine:test` and `:afp-cli:generateSampleOutputs`; regenerated distinct sample HTML/PDF artifacts under `preview/generated-sample-output`. [github:not-committed]"
     }
   ],
   "followUps": [
     {
-      "note": "Circle back and review restored workbook content against JSON/CSV sources.",
       "status": "pending",
-      "id": "restored-workbook-content-review"
+      "id": "restored-workbook-content-review",
+      "note": "Circle back and review restored workbook content against JSON/CSV sources."
     }
   ]
 }

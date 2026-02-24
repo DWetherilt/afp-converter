@@ -1,11 +1,11 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-24T17:03:35Z",
+  "generatedAt": "2026-02-24T23:10:53Z",
   "source": "sqlite",
   "hasActiveGovernanceBreach": false,
   "activeBreachCount": 0,
   "trustEventCount": 3,
-  "policyGovernanceEventCount": 5,
+  "policyGovernanceEventCount": 6,
   "activeBreaches": [],
   "trustEvents": [
     {
@@ -46,6 +46,18 @@
     }
   ],
   "policyGovernanceEvents": [
+    {
+      "event_id": "GOV-2026-02-24-003",
+      "event_date": "2026-02-24",
+      "phase": "Policy Governance",
+      "status": "closed",
+      "checkpoint_id": "20260224T000000Z-renderer-output-detemplate",
+      "issue_id": "ISSUE-006",
+      "summary": "Resolved renderer normalization regression by enforcing raw AFP text HTML defaults, explicit semantic-template opt-in, and workstream-governed validation across sample corpus.",
+      "evidence": "product/afp-converter/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/AfpHtmlRenderer.java|product/afp-converter/afp-engine/src/main/java/solutions/pointzero/symphony/afp/engine/FakeEngineOutputGenerator.java|management/docs/project-plan-progress.csv|management/pm/workflow/workstream-realm-map.json",
+      "updated_by": "Human+AI",
+      "event_ref": "Governance Event | 2026-02-24 | #003"
+    },
     {
       "event_id": "GOV-2026-02-24-002",
       "event_date": "2026-02-24",
@@ -108,9 +120,9 @@
     }
   ],
   "policyRuleAudit": {
+    "enabledPolicyRuleCount": 71,
     "requiredRuleEnabled": true,
-    "requiredRuleId": "PM-COMMS-001",
-    "enabledPolicyRuleCount": 71
+    "requiredRuleId": "PM-COMMS-001"
   },
   "sqlAuthorityAudit": {
     "driftDetected": false,
@@ -118,7 +130,7 @@
   },
   "sqlAuthorityDrift": {
     "schemaVersion": "1",
-    "generatedAt": "2026-02-24T17:03:34Z",
+    "generatedAt": "2026-02-24T23:10:53Z",
     "realm": "pm",
     "trackedFileCount": 35,
     "mismatchCount": 0,

@@ -1,23 +1,23 @@
 {
     "schemaVersion": "1",
-    "generatedAt": "2026-02-24T17:03:49Z",
+    "generatedAt": "2026-02-24T23:11:11Z",
     "realm": "application",
     "artifactCount": 11,
     "files": [
         {
             "source": "product/afp-converter/preview/afp-output.pdf",
             "sizeBytes": 1957,
-            "sha256": "e8dbc68738cff3bbd84c2764998bb9899700b8c7cb303bad96a5897fa51c38be"
+            "sha256": "96ca4918271b74c28a29e0d2262b0623b7dfb098fe322f3482bb6483b4ddfe4f"
         },
         {
             "source": "product/afp-converter/preview/afp-output.html",
-            "sizeBytes": 3461,
-            "sha256": "f9028529313a32541fadf1c16ac3deb8f209a6970046bbe83a2805afa186ef9b"
+            "sizeBytes": 2857,
+            "sha256": "1262120916742f8aedd61eb5677304b6f9ab91d976b63ed143b7ba17f64c0d5e"
         },
         {
             "source": "product/afp-converter/preview/afp-meta.json",
-            "sizeBytes": 59533,
-            "sha256": "d2d8d379db1f5f0cc38b7c59ec32648aa8029aea109b860cb2c3722ced44c2c1"
+            "sizeBytes": 58087,
+            "sha256": "4e86e684343e30a40e8b3d4ebee708217c08522c98f84c9a568ecb8cd933bc91"
         },
         {
             "source": "product/afp-converter/preview/afp-diag.json",
@@ -31,33 +31,33 @@
         },
         {
             "source": "management/pm/reports/project-plan-progress-application.json",
-            "sizeBytes": 11443,
-            "sha256": "d4967be33c95c0e4440659b8202a124f32410554b2e540a5ede2ccb0573c4cdf"
+            "sizeBytes": 13361,
+            "sha256": "c2f52129f83ce1ff05508006cad40f8b3557652d24ebf2b22c1264a36ef88cb0"
         },
         {
             "source": "management/pm/reports/application-realm-policy.json",
             "sizeBytes": 26418,
-            "sha256": "adf71688201c3d7a04bcfc4eeab901009dcde13e4eff9199b0d839cfce011469"
+            "sha256": "ac997338598e120ba57643f833ed5265162bdb9c4f1bdcf6c1f34c4a22a2bc30"
         },
         {
             "source": "management/pm/reports/sql-authority-application.json",
             "sizeBytes": 227,
-            "sha256": "b3822c312a11f1cb3121cb1365a93651eb25169a2f68f5538a103fc41fa01dc5"
+            "sha256": "b56343de94362d2d9e313a409c107273e0d1ff0f0b2ae2794ab28bca09833de9"
         },
         {
             "source": "management/pm/reports/sql-coverage-application.json",
             "sizeBytes": 330,
-            "sha256": "210efd2a9d29c3700afa4cd0c1786557fa147afe05b7a3a8974aadefcf9803a9"
+            "sha256": "b9e88c2c4156eee7b332dc186d659befdced35786344b1b14dd68ed8fb7b03c9"
         },
         {
             "source": "management/pm/reports/sql-reconstruction-application.json",
             "sizeBytes": 227,
-            "sha256": "9ff3dcd3cbe8ed4113068c94142e283546b66967354153b994ce7b4489353441"
+            "sha256": "9bcf54dd8faefe4b666123f5a6c3d811f1193d9523608200f5bc69a4460da71f"
         },
         {
             "source": "management/pm/state/application-realm.sqlite",
-            "sizeBytes": 5316608,
-            "sha256": "2ee8ff5e9bde360fdc3f78e1fdc5d48f8de9cb6a8f157c2502bdd53e70e6d539"
+            "sizeBytes": 5341184,
+            "sha256": "d4ff805a8e5800756cce4aa1334eb9f13bfdd1be5d742f9f4e3772a8a8ba1be4"
         }
     ]
 }

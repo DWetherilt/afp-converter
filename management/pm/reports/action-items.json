@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1",
-  "generatedAt": "2026-02-24T17:03:26Z",
+  "generatedAt": "2026-02-24T23:11:05Z",
   "source": "sqlite",
   "sourceTable": "action_items",
   "itemCount": 5,
@@ -28,7 +28,7 @@
       "actionRef": "Action | 2026-02-23 | #001",
       "createdAt": "2026-02-23T21:56:33Z",
       "updatedAt": "2026-02-23T21:56:33Z",
-      "ageDays": 0,
+      "ageDays": 1,
       "staleAfterDays": 3,
       "isStale": false,
       "decisionLinks": [
@@ -55,7 +55,7 @@
       "actionRef": "Action | 2026-02-23 | #002",
       "createdAt": "2026-02-23T19:38:03Z",
       "updatedAt": "2026-02-23T19:38:03Z",
-      "ageDays": 0,
+      "ageDays": 1,
       "staleAfterDays": 3,
       "isStale": false,
       "decisionLinks": []
@@ -75,7 +75,7 @@
       "actionRef": "Action | 2026-02-23 | #003",
       "createdAt": "2026-02-23T19:38:02Z",
       "updatedAt": "2026-02-23T19:38:02Z",
-      "ageDays": 0,
+      "ageDays": 1,
       "staleAfterDays": 3,
       "isStale": false,
       "decisionLinks": []

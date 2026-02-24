@@ -30,6 +30,8 @@ import java.util.Set;
 import javax.imageio.ImageIO;
 
 public final class FakeEngineOutputGenerator {
+    private static final boolean SEMANTIC_TEMPLATE_OPT_IN =
+        Boolean.parseBoolean(System.getProperty("afp.render.html.semanticTemplate", "false"));
     private static final Map<String, String> SF_NAMES = Map.ofEntries(
         Map.entry("D3A8A8", "BDT"),
         Map.entry("D3A9A8", "EDT"),
@@ -2059,7 +2061,7 @@ public final class FakeEngineOutputGenerator {
                                   List<DocumentNode> documents,
                                   List<TextElementNode> textElements,
                                   StyleMode styleMode) {
-        AfpDocumentLayout layout = AfpLayoutInterpreter.infer(interpretation);
+        AfpDocumentLayout layout = SEMANTIC_TEMPLATE_OPT_IN ? AfpLayoutInterpreter.infer(interpretation) : null;
         StringBuilder sb = new StringBuilder();
         sb.append("{\"rootId\": \"dom-root\", \"nodes\": [");
         sb.append("{\"id\": \"dom-root\", \"type\": \"documentSet\", \"children\": ");
@@ -2146,6 +2148,9 @@ public final class FakeEngineOutputGenerator {
     }
 
     private static boolean hasLayoutTable(AfpDocumentLayout layout) {
+        if (layout == null) {
+            return false;
+        }
         for (AfpOptionRow row : layout.options()) {
             if (!"Option".equalsIgnoreCase(row.option())) {
                 return true;

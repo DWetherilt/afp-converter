@@ -2,11 +2,6 @@
   "schemaVersion": "1",
   "events": [
     {
-      "generatedAt": "2026-02-23T21:05:20Z",
-      "staleCandidateCount": 0,
-      "status": "PASS"
-    },
-    {
       "generatedAt": "2026-02-23T21:06:03Z",
       "staleCandidateCount": 0,
       "status": "PASS"
@@ -248,6 +243,11 @@
     },
     {
       "generatedAt": "2026-02-24T17:03:46Z",
+      "staleCandidateCount": 0,
+      "status": "PASS"
+    },
+    {
+      "generatedAt": "2026-02-24T23:11:05Z",
       "staleCandidateCount": 0,
       "status": "PASS"
     }

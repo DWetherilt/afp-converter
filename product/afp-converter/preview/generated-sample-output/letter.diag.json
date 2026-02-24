@@ -28,7 +28,7 @@
     "resolvedDbcsCharset": "x-IBM939",
     "codePageResolutionSource": "fallback-heuristic",
     "codePageHints": [1004, 1252],
-    "codePageMappingMatrix": ["cpgid=1252 sbcs=-(unmapped) dbcs=-(unmapped)", "cpgid=1004 sbcs=-(unmapped) dbcs=-(unmapped)"],
+    "codePageMappingMatrix": ["cpgid=1004 sbcs=-(unmapped) dbcs=-(unmapped)", "cpgid=1252 sbcs=-(unmapped) dbcs=-(unmapped)"],
     "mixedRunChunkCount": 0,
     "hintedChunkCount": 0,
     "fontResolution": {"parsedWithAfplib": true, "cfiFieldCount": 0, "definedFontCount": 0, "distinctUsedLocalFontCount": 0, "unresolvedUsedLocalFontCount": 0, "substitutedFontCount": 0, "scopedUsageCount": 0, "scopedResolvedUsageCount": 0, "scopedUnresolvedUsageCount": 0, "unresolvedUsedLocalFontIds": [], "warnings": [], "entries": [], "resolvedUsageEvents": [], "unresolvedUsageEvents": []},
